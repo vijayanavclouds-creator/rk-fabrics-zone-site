@@ -1,0 +1,169 @@
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Product {
+  id               String   @id @default(cuid())
+  name             String
+  slug             String   @unique
+  description      String
+  shortDescription String
+  category         String
+  subcategory      String?
+  gender           String
+  type             String
+  basePrice        Float
+  salePrice        Float?
+  discountPercent  Int      @default(0)
+  isOnSale         Boolean  @default(false)
+  isFreeDelivery   Boolean  @default(true)
+  fabric           String
+  occasion         String // Stored as JSON array string
+  tags             String // Stored as JSON array string
+  rating           Float
+  reviewCount      Int
+  isFeatured       Boolean  @default(false)
+  isNewArrival     Boolean  @default(false)
+  isBestseller     Boolean  @default(false)
+  createdAt        DateTime @default(now())
+
+  variants         ProductVariant[]
+  images           ProductImage[]
+  reviews          Review[]
+}
+
+model ProductVariant {
+  id        String   @id @default(cuid())
+  sku       String   @unique
+  size      String
+  color     String
+  colorHex  String
+  price     Float
+  salePrice Float?
+  stock     Int
+
+  productId String
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+}
+
+model ProductImage {
+  id        String   @id @default(cuid())
+  url       String
+  alt       String
+  isPrimary Boolean  @default(false)
+
+  productId String
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+}
+
+model Review {
+  id        String   @id @default(cuid())
+  userName  String
+  rating    Int
+  comment   String
+  createdAt DateTime @default(now())
+
+  productId String
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+}
+
+model Banner {
+  id        String   @id @default(cuid())
+  type      String   // "hero" or "carousel"
+  imageUrl  String
+  title     String?
+  subtitle  String?
+  link      String?
+  order     Int      @default(0)
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+}
+
+// NextAuth Models
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime?
+  image         String?
+  password      String?
+  role          String    @default("CUSTOMER") // "CUSTOMER" or "ADMIN"
+  createdAt     DateTime  @default(now())
+  
+  accounts      Account[]
+  sessions      Session[]
+  orders        Order[]
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+model Order {
+  id              String      @id @default(cuid())
+  userId          String
+  user            User        @relation(fields: [userId], references: [id])
+  status          String      @default("PENDING") // PENDING, PROCESSING, SHIPPED, DELIVERED, CANCELLED
+  totalAmount     Float
+  shippingAmount  Float
+  subtotalAmount  Float
+  shippingAddress String
+  phone           String
+  email           String
+  paymentMethod   String      @default("COD")
+  paymentStatus   String      @default("PENDING") // PENDING, PAID, FAILED
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+  
+  items           OrderItem[]
+}
+
+model OrderItem {
+  id          String   @id @default(cuid())
+  orderId     String
+  order       Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId   String
+  variantId   String
+  productName String
+  variantName String
+  quantity    Int
+  price       Float
+  image       String?
+}

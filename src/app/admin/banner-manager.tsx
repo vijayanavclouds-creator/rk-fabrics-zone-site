@@ -1,0 +1,209 @@
+"use client"
+
+import { useState, useTransition, useRef, useEffect } from "react"
+import { uploadBannerImage, createBanner, deleteBanner, updateBannerOrder, getFileSize, updateBannerTitle } from "@/actions/admin"
+import { toast } from "sonner"
+import { Upload, X, GripVertical, Image as ImageIcon, Loader2 } from "lucide-react"
+import Image from "next/image"
+
+function FileSizeDisplay({ url }: { url: string }) {
+  const [size, setSize] = useState<string | null>(null)
+  
+  useEffect(() => {
+    getFileSize(url).then(bytes => {
+      if (bytes) {
+        const mb = bytes / (1024 * 1024)
+        if (mb >= 1) setSize(`${mb.toFixed(2)} MB`)
+        else setSize(`${(bytes / 1024).toFixed(0)} KB`)
+      } else {
+        setSize("Unknown size")
+      }
+    })
+  }, [url])
+
+  if (!size) return <span className="text-xs text-slate-400">Loading size...</span>
+  return <span className="text-sm font-medium text-slate bg-white px-3 py-1 rounded-lg border border-charcoal/5 shadow-sm">{size}</span>
+}
+
+function BannerTitleInput({ banner }: { banner: any }) {
+  const [title, setTitle] = useState(banner.title || "")
+  const [isSaving, setIsSaving] = useState(false)
+  
+  const handleSave = async () => {
+    if (title === banner.title) return
+    setIsSaving(true)
+    const res = await updateBannerTitle(banner.id, title)
+    if (res.success) toast.success("Tag updated")
+    else toast.error("Failed to update tag")
+    setIsSaving(false)
+  }
+
+  return (
+    <div className="flex gap-2 items-center mt-2">
+      <input 
+        type="text" 
+        value={title} 
+        onChange={e => setTitle(e.target.value)} 
+        onBlur={handleSave}
+        onKeyDown={e => e.key === 'Enter' && handleSave()}
+        placeholder="Enter tag (e.g. Cottons)" 
+        className="text-sm px-3 py-1.5 rounded-lg border border-charcoal/10 bg-white focus:outline-none focus:border-teal-500 w-48"
+      />
+      {isSaving && <Loader2 size={14} className="animate-spin text-slate-400" />}
+    </div>
+  )
+}
+
+export function BannerManager({ banners }: { banners: any[] }) {
+  const [isPending, startTransition] = useTransition()
+  const [uploadingType, setUploadingType] = useState<"hero" | "carousel" | null>(null)
+  
+  const heroBanners = banners.filter(b => b.type === "hero").sort((a, b) => a.order - b.order)
+  const carouselBanners = banners.filter(b => b.type === "carousel").sort((a, b) => a.order - b.order)
+
+  const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>, type: "hero" | "carousel") => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    setUploadingType(type)
+    try {
+      const formData = new FormData()
+      formData.append("file", file)
+      
+      const uploadRes = await uploadBannerImage(formData)
+      if (!uploadRes.success || !uploadRes.url) {
+        throw new Error(uploadRes.error || "Upload failed")
+      }
+
+      const createData = new FormData()
+      createData.append("type", type)
+      createData.append("imageUrl", uploadRes.url)
+
+      const createRes = await createBanner(createData)
+      if (createRes.success) {
+        toast.success(`${type} image added successfully!`)
+      } else {
+        throw new Error(createRes.error || "Failed to save banner")
+      }
+    } catch (error: any) {
+      toast.error(error.message)
+    } finally {
+      setUploadingType(null)
+      if (e.target) e.target.value = ''
+    }
+  }
+
+  const handleDelete = (id: string) => {
+    if (!confirm("Remove this image?")) return
+    startTransition(async () => {
+      const res = await deleteBanner(id)
+      if (res.success) toast.success("Image removed")
+      else toast.error("Failed to remove image")
+    })
+  }
+
+  const moveItem = async (typeBanners: any[], index: number, direction: 'up' | 'down') => {
+    if ((direction === 'up' && index === 0) || (direction === 'down' && index === typeBanners.length - 1)) return
+    
+    const newItems = [...typeBanners]
+    const swapIndex = direction === 'up' ? index - 1 : index + 1
+    const temp = newItems[index]
+    newItems[index] = newItems[swapIndex]
+    newItems[swapIndex] = temp
+
+    startTransition(async () => {
+      await updateBannerOrder(newItems.map(b => b.id))
+      toast.success("Order updated")
+    })
+  }
+
+  const BannerList = ({ title, items, type }: { title: string, items: any[], type: "hero" | "carousel" }) => (
+    <div className="bg-white rounded-3xl border border-charcoal/10 p-8 shadow-sm">
+      <div className="flex justify-between items-center mb-6 border-b border-charcoal/10 pb-4">
+        <div>
+          <h3 className="text-xl font-bold text-charcoal">{title}</h3>
+          <p className="text-sm text-slate mt-1">
+            {items.length} of 7 images • Recommended Size: {type === "hero" ? "1920 × 800px" : "1200 × 600px"}
+          </p>
+        </div>
+        <label className={`
+          flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold shadow-neo-btn transition-all cursor-pointer
+          ${uploadingType === type || isPending ? 'bg-slate-200 text-slate-400 cursor-not-allowed shadow-none' : 'bg-charcoal text-white hover:bg-black hover:shadow-neo-pressed'}
+        `}>
+          {uploadingType === type ? <Loader2 size={16} className="animate-spin" /> : <Upload size={16} />}
+          Upload Image
+          <input 
+            type="file" 
+            accept="image/*" 
+            className="hidden" 
+            disabled={uploadingType === type || isPending}
+            onClick={(e) => {
+              if (items.length >= 7) {
+                e.preventDefault();
+                toast.error(`Maximum 7 images allowed for ${type} section.`);
+              }
+            }}
+            onChange={(e) => handleUpload(e, type)} 
+          />
+        </label>
+      </div>
+
+      <div className="space-y-4">
+        {items.length === 0 && (
+          <div className="text-center py-12 bg-slate-50 rounded-2xl border border-dashed border-charcoal/20">
+            <ImageIcon className="mx-auto text-slate-400 mb-3" size={32} />
+            <p className="text-slate font-medium">No images added yet.</p>
+          </div>
+        )}
+        
+        {items.map((banner, index) => (
+          <div key={banner.id} className="flex items-center gap-4 bg-slate-50 p-3 rounded-2xl border border-charcoal/5 group">
+            <div className="flex flex-col gap-1 px-2 text-slate-400">
+              <button 
+                onClick={() => moveItem(items, index, 'up')} 
+                disabled={index === 0 || isPending}
+                className="hover:text-charcoal disabled:opacity-30"
+              >
+                ▲
+              </button>
+              <button 
+                onClick={() => moveItem(items, index, 'down')} 
+                disabled={index === items.length - 1 || isPending}
+                className="hover:text-charcoal disabled:opacity-30"
+              >
+                ▼
+              </button>
+            </div>
+            
+            <div className="relative w-32 h-20 rounded-xl overflow-hidden shadow-inner bg-charcoal/5 flex-shrink-0">
+              <Image src={banner.imageUrl} alt="Banner" fill className="object-cover" />
+            </div>
+
+            <div className="flex-grow pl-4 flex flex-col justify-center">
+              <div>
+                <FileSizeDisplay url={banner.imageUrl} />
+              </div>
+              {type === "carousel" && <BannerTitleInput banner={banner} />}
+            </div>
+
+            <button 
+              onClick={() => handleDelete(banner.id)}
+              disabled={isPending}
+              className="p-2 text-rose-500 hover:bg-rose-100 rounded-full transition-colors mr-2"
+              title="Remove"
+            >
+              <X size={20} />
+            </button>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+
+  return (
+    <div className="grid lg:grid-cols-2 gap-8 animate-in fade-in slide-in-from-bottom-4 duration-300">
+      <BannerList title="Hero Images" items={heroBanners} type="hero" />
+      <BannerList title="Carousel Images" items={carouselBanners} type="carousel" />
+    </div>
+  )
+}
