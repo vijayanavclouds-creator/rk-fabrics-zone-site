@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useTransition } from "react";
+import { useState, useMemo, useTransition, useEffect } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
@@ -23,6 +23,9 @@ import {
  Check,
  Ruler,
  Link as LinkIcon,
+ X,
+ ZoomIn,
+ ZoomOut,
 } from "lucide-react";
 import { cn, formatPrice, calculateDiscount } from "@/lib/utils";
 import { getProductBySlug, products } from "@/lib/data";
@@ -80,7 +83,17 @@ function ProductDetail({ product }: { product: NonNullable<ReturnType<typeof get
  const [isAdding, setIsAdding] = useState(false);
  const [isPending, startTransition] = useTransition();
  const [reviewForm, setReviewForm] = useState(false);
- const [selectedImage, setSelectedImage] = useState(0);
+ const [isLightboxOpen, setIsLightboxOpen] = useState(false);
+ const [selectedImage, setSelectedImage] = useState(() => {
+   const idx = product.images.findIndex((img: any) => img.isPrimary);
+   return idx !== -1 ? idx : 0;
+ });
+ const [viewingCount, setViewingCount] = useState(0);
+ const [isSizeGuideOpen, setIsSizeGuideOpen] = useState(false);
+
+ useEffect(() => {
+   setViewingCount(Math.floor(Math.random() * 30) + 12);
+ }, []);
 
  // Find matching variant
  const selectedVariant = useMemo(() => {
@@ -177,18 +190,25 @@ function ProductDetail({ product }: { product: NonNullable<ReturnType<typeof get
  <motion.div
  initial={{ opacity: 0 }}
  animate={{ opacity: 1 }}
- className="relative aspect-[3/4] bg-gradient-to-br from-cream-dark to-cream rounded-2xl overflow-hidden flex items-center justify-center"
+ className="relative aspect-[3/4] bg-gradient-to-br from-cream-dark to-cream rounded-2xl overflow-hidden flex items-center justify-center cursor-zoom-in group"
+ onClick={() => setIsLightboxOpen(true)}
  >
  {product.images && product.images.length > 0 ? (
    <Image
      src={product.images[selectedImage]?.url || product.images[0].url}
      alt={product.name}
      fill
-     className="object-cover"
+     className="object-cover group-hover:scale-105 transition-transform duration-500"
    />
  ) : (
    <span className="text-[150px] opacity-30">{fabricEmoji}</span>
  )}
+
+ <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center z-10 pointer-events-none">
+   <div className="bg-white/95 backdrop-blur-md text-charcoal px-5 py-2.5 rounded-full flex items-center gap-2 font-bold shadow-2xl transform translate-y-4 group-hover:translate-y-0 transition-all duration-300">
+     <ZoomIn size={20} className="text-teal-600" /> Click to View Fullscreen
+   </div>
+ </div>
 
  {/* Badges */}
  <div className="absolute top-4 left-4 flex flex-col gap-2">
@@ -243,7 +263,7 @@ function ProductDetail({ product }: { product: NonNullable<ReturnType<typeof get
  {/* Title */}
  <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
  <p className="font-[family-name:var(--font-cinzel)] text-xs tracking-[0.2em] text-gold-dark uppercase mb-2">
- {product.fabric}
+ {product.fabricDetails ? `${product.fabric} - ${product.fabricDetails}` : product.fabric}
  </p>
  <h1 className="font-[family-name:var(--font-playfair)] text-2xl md:text-3xl lg:text-4xl font-bold text-charcoal leading-snug">
  {product.name}
@@ -269,9 +289,11 @@ function ProductDetail({ product }: { product: NonNullable<ReturnType<typeof get
  <span className="text-sm text-slate ">
  ({product.reviewCount} reviews)
  </span>
- <span className="flex items-center gap-1 text-xs text-slate ">
- <Eye size={12} /> 24 viewing now
- </span>
+ {viewingCount > 0 && (
+    <span className="flex items-center gap-1 text-xs text-slate ">
+      <Eye size={12} /> {viewingCount} viewing now
+    </span>
+ )}
  </div>
 
  {/* Price */}
@@ -333,9 +355,9 @@ function ProductDetail({ product }: { product: NonNullable<ReturnType<typeof get
  <div className="mb-5">
  <div className="flex items-center justify-between mb-3">
  <h3 className="text-sm font-semibold text-charcoal ">Size</h3>
- <Link href="/size-guide" className="flex items-center gap-1 text-xs text-teal-600 font-medium hover:underline">
+ <button type="button" onClick={() => setIsSizeGuideOpen(true)} className="flex items-center gap-1 text-xs text-teal-600 font-medium hover:underline cursor-pointer">
  <Ruler size={12} /> Size Guide
- </Link>
+ </button>
  </div>
  <div className="flex flex-wrap gap-2">
  {uniqueSizes.map((size) => {
@@ -637,6 +659,83 @@ function ProductDetail({ product }: { product: NonNullable<ReturnType<typeof get
  </AnimatePresence>
  </div>
 
+ {/* Size Guide Modal */}
+  {isSizeGuideOpen && (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-charcoal/50 backdrop-blur-sm" onClick={() => setIsSizeGuideOpen(false)}>
+      <motion.div 
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        exit={{ opacity: 0, scale: 0.95 }}
+        className="bg-white rounded-2xl p-6 md:p-8 max-w-2xl w-full shadow-2xl overflow-hidden relative"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <button onClick={() => setIsSizeGuideOpen(false)} className="absolute top-4 right-4 p-2 text-slate hover:text-charcoal bg-slate/10 hover:bg-slate/20 rounded-full transition-colors">
+          <X size={20} />
+        </button>
+        <h2 className="text-2xl font-bold font-[family-name:var(--font-playfair)] text-charcoal mb-2">Size Guide</h2>
+        <p className="text-sm text-slate mb-6">Measurements are in inches. Please allow ± 0.5" tolerance.</p>
+        
+        <div className="overflow-x-auto custom-scrollbar">
+          <table className="w-full text-left text-sm whitespace-nowrap">
+            <thead className="bg-slate/5 text-charcoal border-b border-charcoal/10">
+              <tr>
+                <th className="py-3 px-4 font-semibold">Size</th>
+                <th className="py-3 px-4 font-semibold">Bust</th>
+                <th className="py-3 px-4 font-semibold">Waist</th>
+                <th className="py-3 px-4 font-semibold">Hip</th>
+                <th className="py-3 px-4 font-semibold">Shoulder</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-charcoal/10 text-charcoal">
+              <tr className="hover:bg-slate/5 transition-colors">
+                <td className="py-3 px-4 font-bold">XS</td>
+                <td className="py-3 px-4">32</td>
+                <td className="py-3 px-4">26</td>
+                <td className="py-3 px-4">34</td>
+                <td className="py-3 px-4">13.5</td>
+              </tr>
+              <tr className="hover:bg-slate/5 transition-colors">
+                <td className="py-3 px-4 font-bold">S</td>
+                <td className="py-3 px-4">34</td>
+                <td className="py-3 px-4">28</td>
+                <td className="py-3 px-4">36</td>
+                <td className="py-3 px-4">14</td>
+              </tr>
+              <tr className="hover:bg-slate/5 transition-colors">
+                <td className="py-3 px-4 font-bold">M</td>
+                <td className="py-3 px-4">36</td>
+                <td className="py-3 px-4">30</td>
+                <td className="py-3 px-4">38</td>
+                <td className="py-3 px-4">14.5</td>
+              </tr>
+              <tr className="hover:bg-slate/5 transition-colors">
+                <td className="py-3 px-4 font-bold">L</td>
+                <td className="py-3 px-4">38.5</td>
+                <td className="py-3 px-4">32.5</td>
+                <td className="py-3 px-4">40.5</td>
+                <td className="py-3 px-4">15</td>
+              </tr>
+              <tr className="hover:bg-slate/5 transition-colors">
+                <td className="py-3 px-4 font-bold">XL</td>
+                <td className="py-3 px-4">41</td>
+                <td className="py-3 px-4">35</td>
+                <td className="py-3 px-4">43</td>
+                <td className="py-3 px-4">15.5</td>
+              </tr>
+              <tr className="hover:bg-slate/5 transition-colors">
+                <td className="py-3 px-4 font-bold">XXL</td>
+                <td className="py-3 px-4">43.5</td>
+                <td className="py-3 px-4">37.5</td>
+                <td className="py-3 px-4">45.5</td>
+                <td className="py-3 px-4">16</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </motion.div>
+    </div>
+  )}
+
  {/* Related Products */}
  {related.length > 0 && (
  <section className="mt-16 md:mt-20">
@@ -650,6 +749,66 @@ function ProductDetail({ product }: { product: NonNullable<ReturnType<typeof get
  </div>
  </section>
  )}
+
+ {/* Lightbox Modal */}
+ <AnimatePresence>
+   {isLightboxOpen && (
+     <motion.div
+       initial={{ opacity: 0 }}
+       animate={{ opacity: 1 }}
+       exit={{ opacity: 0 }}
+       className="fixed inset-0 z-50 flex items-center justify-center bg-black/95 backdrop-blur-2xl"
+       onClick={() => setIsLightboxOpen(false)}
+     >
+       <button 
+         onClick={(e) => { e.stopPropagation(); setIsLightboxOpen(false); }}
+         className="absolute top-6 right-6 text-white/50 hover:text-white transition-colors bg-white/10 hover:bg-white/20 p-3 rounded-full z-50"
+       >
+         <X size={24} />
+       </button>
+       
+       {product.images && product.images.length > 0 && (
+         <motion.div 
+           initial={{ scale: 0.9, opacity: 0 }}
+           animate={{ scale: 1, opacity: 1 }}
+           exit={{ scale: 0.95, opacity: 0 }}
+           transition={{ type: "spring", damping: 25, stiffness: 300 }}
+           className="relative w-[100vw] h-[100vh] flex items-center justify-center p-4 md:p-12"
+           onClick={(e) => e.stopPropagation()}
+         >
+           <div className="relative w-full h-full max-w-5xl max-h-[85vh]">
+             <Image
+               src={product.images[selectedImage]?.url || product.images[0].url}
+               alt={product.name}
+               fill
+               className="object-contain"
+               quality={100}
+               priority
+             />
+           </div>
+           
+           {/* Lightbox Thumbnails */}
+           {product.images.length > 1 && (
+             <div className="absolute bottom-6 md:bottom-8 left-1/2 -translate-x-1/2 flex gap-3 p-3 bg-white/10 backdrop-blur-xl border border-white/10 rounded-2xl overflow-x-auto max-w-[90vw] shadow-2xl">
+               {product.images.map((img, i) => (
+                 <div
+                   key={img.id}
+                   onClick={() => setSelectedImage(i)}
+                   className={cn(
+                     "relative w-16 h-16 md:w-20 md:h-20 rounded-xl flex-shrink-0 flex items-center justify-center cursor-pointer border-2 transition-all overflow-hidden",
+                     i === selectedImage ? "border-teal-400 opacity-100 ring-4 ring-teal-400/20" : "border-transparent opacity-50 hover:opacity-100"
+                   )}
+                 >
+                   <Image src={img.url} alt="thumbnail" fill className="object-cover" />
+                 </div>
+               ))}
+             </div>
+           )}
+         </motion.div>
+       )}
+     </motion.div>
+   )}
+ </AnimatePresence>
  </div>
  );
 }

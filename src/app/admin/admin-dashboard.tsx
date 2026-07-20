@@ -1,20 +1,39 @@
 "use client"
 
-import { useState, useTransition, useEffect } from "react"
+import { useState, useTransition, useEffect, useRef } from "react"
 import { updateProduct, createProduct, deleteProduct, bulkUpdateImagesAndVariants } from "@/actions/admin"
 import { toast } from "sonner"
-import { Save, Upload, X, Star, Trash2, Plus, Edit, Image as ImageIcon, ChevronDown, LayoutTemplate, Activity, User } from "lucide-react"
+import { Save, Upload, X, Star, Trash2, Plus, Edit, Image as ImageIcon, ChevronDown, LayoutTemplate, Activity, User, Menu, Tag, Scissors } from "lucide-react"
+import { cn } from "@/lib/utils"
 import Image from "next/image"
+import imageCompression from 'browser-image-compression'
+import { PRODUCT_CATEGORIES } from "@/lib/constants"
 
 import { BannerManager } from "./banner-manager"
 import { SystemStatus } from "./system-status"
 import { UsersManager } from "./users-manager"
 import { OrdersManager } from "./orders-manager"
+import { NavigationManager } from "./navigation-manager"
+import { TaxonomyManager } from "./taxonomy-manager"
 
-export function AdminDashboard({ products, initialBanners = [] }: { products: any[], initialBanners?: any[] }) {
-  const [activeView, setActiveView] = useState<"list" | "new" | "edit" | "banners" | "system" | "users" | "orders">("list")
+export function AdminDashboard({ 
+  products, 
+  initialBanners = [],
+  storeCategories = [],
+  storeFabrics = []
+}: { 
+  products: any[], 
+  initialBanners?: any[],
+  storeCategories?: { value: string, label: string }[],
+  storeFabrics?: { value: string, label: string }[]
+}) {
+  const [activeView, setActiveView] = useState<"list" | "new" | "edit" | "banners" | "system" | "users" | "orders" | "navigation" | "taxonomy">("list")
   const [editingProduct, setEditingProduct] = useState<any>(null)
   const [isPending, startTransition] = useTransition()
+  
+  // State for new product
+  const [newCategory, setNewCategory] = useState<string[]>([])
+  const [newFabric, setNewFabric] = useState<string>("")
 
   useEffect(() => {
     if (editingProduct) {
@@ -70,7 +89,12 @@ export function AdminDashboard({ products, initialBanners = [] }: { products: an
             </div>
             <div>
               <label className="block text-sm font-semibold text-charcoal mb-2">Category</label>
-              <CategorySelect defaultValue="women-ethnic" />
+              <CategorySelect 
+                selected={newCategory} 
+                onChange={setNewCategory} 
+                options={storeCategories} 
+                name="category"
+              />
             </div>
             <div>
               <label className="block text-sm font-semibold text-charcoal mb-2">Base Price (MRP ₹)</label>
@@ -91,6 +115,18 @@ export function AdminDashboard({ products, initialBanners = [] }: { products: an
             <div>
               <label className="block text-sm font-semibold text-charcoal mb-2">Color</label>
               <input name="color" type="text" defaultValue="Default" className="w-full p-3 rounded-xl border border-charcoal/10 focus:outline-none focus:border-teal-600 focus:ring-2 focus:ring-teal-600/20 shadow-inner bg-slate-50 transition-all" />
+            </div>
+            <div className="md:col-span-2 mt-2 pt-6 border-t border-charcoal/10">
+              <label className="block text-sm font-semibold text-charcoal mb-2">Fabric Details (Optional)</label>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <FabricSelect 
+                  value={newFabric} 
+                  onChange={setNewFabric} 
+                  options={storeFabrics}
+                  name="fabric"
+                />
+                <input name="fabricDetails" type="text" className="w-full p-2.5 rounded-xl border border-charcoal/10 focus:outline-none focus:border-teal-600 focus:ring-2 focus:ring-teal-600/20 shadow-inner bg-slate-50 transition-all text-sm" placeholder="e.g. 100% Pure, Handwoven" />
+              </div>
             </div>
 
             <div className="flex flex-wrap items-center gap-6 pt-4 md:col-span-2">
@@ -130,6 +166,9 @@ export function AdminDashboard({ products, initialBanners = [] }: { products: an
     return (
       <ProductEditor 
         product={editingProduct} 
+        products={products}
+        storeCategories={storeCategories}
+        storeFabrics={storeFabrics}
         onClose={() => { setActiveView("list"); setEditingProduct(null); }} 
       />
     )
@@ -159,6 +198,18 @@ export function AdminDashboard({ products, initialBanners = [] }: { products: an
             <LayoutTemplate size={16} /> Banners
           </button>
           <button 
+            onClick={() => setActiveView("navigation")}
+            className={`px-6 py-2.5 rounded-xl font-bold text-sm transition-all flex items-center gap-2 ${activeView === "navigation" ? "bg-white text-charcoal shadow-sm" : "text-slate hover:text-charcoal"}`}
+          >
+            <Menu size={16} /> Navigation
+          </button>
+          <button 
+            onClick={() => setActiveView("taxonomy")} 
+            className={cn("px-6 py-2.5 rounded-xl text-sm transition-all flex items-center gap-2 font-bold", activeView === "taxonomy" ? "bg-white text-charcoal shadow-sm" : "text-slate hover:text-charcoal")}
+          >
+            <Tag size={16} /> Taxonomy
+          </button>
+          <button 
             onClick={() => setActiveView("system")}
             className={`px-6 py-2.5 rounded-xl font-bold text-sm transition-all flex items-center gap-2 ${activeView === "system" ? "bg-white text-charcoal shadow-sm" : "text-slate hover:text-charcoal"}`}
           >
@@ -184,6 +235,14 @@ export function AdminDashboard({ products, initialBanners = [] }: { products: an
 
       {activeView === "banners" && (
         <BannerManager banners={initialBanners} />
+      )}
+
+      {activeView === "navigation" && (
+        <NavigationManager />
+      )}
+
+      {activeView === "taxonomy" && (
+        <TaxonomyManager initialCategories={storeCategories} initialFabrics={storeFabrics} />
       )}
 
       {activeView === "system" && (
@@ -212,9 +271,20 @@ export function AdminDashboard({ products, initialBanners = [] }: { products: an
             {products.map((product) => (
               <tr key={product.id} className="border-b border-charcoal/5 hover:bg-cream/40 transition-colors group">
                 <td className="p-5">
-                  <span className="font-semibold text-charcoal block group-hover:text-teal-700 transition-colors">{product.name}</span>
-                  <span className="text-xs text-slate mt-1 block">Slug: {product.slug}</span>
-                  {product.isFreeDelivery && <span className="inline-block mt-2 text-[10px] uppercase font-bold tracking-wider text-teal-700 bg-teal-50 px-2 py-0.5 rounded border border-teal-200">Free Delivery</span>}
+                  <div className="flex items-center gap-3">
+                    <div className="w-12 h-12 rounded-lg overflow-hidden bg-cream border border-charcoal/10 shrink-0 relative">
+                      {product.images && product.images.length > 0 ? (
+                        <Image src={product.images.find((i:any)=>i.isPrimary)?.url || product.images[0].url} alt={product.name} fill className="object-cover" />
+                      ) : (
+                        <div className="absolute inset-0 flex items-center justify-center text-slate/30"><ImageIcon size={20} /></div>
+                      )}
+                    </div>
+                    <div>
+                      <span className="font-semibold text-charcoal block group-hover:text-teal-700 transition-colors">{product.name}</span>
+                      <span className="text-xs text-slate mt-1 block">Slug: {product.slug}</span>
+                      {product.isFreeDelivery && <span className="inline-block mt-2 text-[10px] uppercase font-bold tracking-wider text-teal-700 bg-teal-50 px-2 py-0.5 rounded border border-teal-200">Free Delivery</span>}
+                    </div>
+                  </div>
                 </td>
                 <td className="p-5 text-charcoal font-medium capitalize whitespace-nowrap">
                   {(() => {
@@ -265,16 +335,26 @@ export function AdminDashboard({ products, initialBanners = [] }: { products: an
   )
 }
 
-function ProductEditor({ product, onClose }: { product: any, onClose: () => void }) {
+function ProductEditor({ product, products, storeCategories, storeFabrics, onClose }: { product: any, products: any[], storeCategories: any[], storeFabrics: any[], onClose: () => void }) {
   const [isPending, startTransition] = useTransition()
   const [isSavingBulk, setIsSavingBulk] = useState(false)
 
-  // Variant State
+  // Top level fields state
+  const [updatedCategory, setUpdatedCategory] = useState<string[]>(() => {
+    try {
+      const parsed = JSON.parse(product.category);
+      return Array.isArray(parsed) ? parsed : (product.category ? [product.category] : []);
+    } catch {
+      return product.category ? [product.category] : [];
+    }
+  })
+  const [updatedFabric, setUpdatedFabric] = useState<string>(product.fabric || "")
+  const [updatedFabricDetails, setUpdatedFabricDetails] = useState<string>(product.fabricDetails || "")
+
   const [variants, setVariants] = useState<any[]>(product.variants || [])
   const [newVariants, setNewVariants] = useState<any[]>([])
   const [deletedVariantIds, setDeletedVariantIds] = useState<string[]>([])
 
-  // Image State
   const [images, setImages] = useState<any[]>(product.images || [])
   const [newImageFiles, setNewImageFiles] = useState<{file: File, preview: string}[]>([])
   const [deletedImageIds, setDeletedImageIds] = useState<string[]>([])
@@ -284,6 +364,9 @@ function ProductEditor({ product, onClose }: { product: any, onClose: () => void
 
   const handleUpdateBaseDetails = (formData: FormData) => {
     formData.append("id", product.id)
+    formData.append("category", JSON.stringify(updatedCategory))
+    formData.append("fabric", updatedFabric)
+    formData.append("fabricDetails", updatedFabricDetails)
     startTransition(async () => {
       const res = await updateProduct(formData)
       if (res.success) toast.success("Base details updated!")
@@ -291,43 +374,98 @@ function ProductEditor({ product, onClose }: { product: any, onClose: () => void
     })
   }
 
-  const handleBulkSave = () => {
+  const updatedVariants = variants.filter(v => {
+    const original = product.variants.find((ov:any) => ov.id === v.id)
+    if (!original) return false
+    return original.size !== v.size || original.color !== v.color || original.colorHex !== v.colorHex || original.price !== v.price || original.stock !== v.stock
+  })
+
+  const handleBulkSave = async () => {
     setIsSavingBulk(true)
-    
-    // Find variants that were updated (existing variants whose properties changed)
-    const updatedVariants = variants.filter(v => {
-      const original = product.variants.find((ov:any) => ov.id === v.id)
-      if (!original) return false
-      return original.size !== v.size || original.color !== v.color || original.colorHex !== v.colorHex || original.price !== v.price || original.stock !== v.stock
-    })
+    try {
+      let uploadedImagesUrls = []
+      if (newImageFiles.length > 0) {
+        toast.loading("Uploading high-res images to Cloudinary...", { id: "uploadToast" })
+        const { getCloudinarySignature } = await import("@/actions/cloudinary")
+        const { timestamp, signature, cloudName, apiKey } = await getCloudinarySignature()
+        
+        for (let i = 0; i < newImageFiles.length; i++) {
+          const file = newImageFiles[i].file
+          const uploadData = new FormData()
+          uploadData.append("file", file)
+          uploadData.append("api_key", apiKey!)
+          uploadData.append("timestamp", String(timestamp))
+          uploadData.append("signature", signature)
+          uploadData.append("folder", "rk-fabrics/products")
+          uploadData.append("transformation", "w_1500,c_limit,q_auto:good,f_auto")
+          
+          const uploadRes = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
+            method: "POST",
+            body: uploadData
+          })
+          
+          if (!uploadRes.ok) {
+            const err = await uploadRes.text()
+            throw new Error("Cloudinary upload failed: " + err)
+          }
+          
+          const data = await uploadRes.json()
+          uploadedImagesUrls.push({
+            url: data.secure_url,
+            name: file.name
+          })
+        }
+        toast.dismiss("uploadToast")
+      }
 
-    const payload = {
-      productId: product.id,
-      newVariants,
-      updatedVariants,
-      deletedVariantIds,
-      deletedImageIds,
-      primaryImageId,
-      newPrimaryIndex
-    }
+      if (deletedImageIds.length > 0) {
+        await fetch('/api/upload', {
+          method: 'DELETE',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ publicIds: deletedImageIds })
+        })
+      }
 
-    const formData = new FormData()
-    formData.append("payload", JSON.stringify(payload))
-    newImageFiles.forEach(ni => formData.append("images", ni.file))
+      const payload = {
+        productId: product.id,
+        newVariants,
+        updatedVariants,
+        deletedVariantIds,
+        deletedImageIds,
+        primaryImageId,
+        newPrimaryIndex,
+        uploadedImagesUrls
+      }
 
-    startTransition(async () => {
+      const formData = new FormData()
+      formData.append("payload", JSON.stringify(payload))
+      formData.append("category", JSON.stringify(updatedCategory))
+      formData.append("fabric", updatedFabric)
+      formData.append("fabricDetails", updatedFabricDetails)
+      
       const res = await bulkUpdateImagesAndVariants(formData)
       if (res.success) {
         toast.success("Images and Variants saved successfully!")
+        if (res.product) {
+          setVariants(res.product.variants || [])
+          setImages(res.product.images || [])
+          const primaryImg = res.product.images?.find((i:any) => i.isPrimary)
+          if (primaryImg) setPrimaryImageId(primaryImg.id)
+        }
         setNewVariants([])
         setNewImageFiles([])
         setDeletedVariantIds([])
         setDeletedImageIds([])
+        setNewPrimaryIndex(null)
       } else {
         toast.error(res.error || "Failed to save")
       }
+    } catch (err) {
+      console.error(err)
+      toast.error("An upload error occurred. Please try again.")
+    } finally {
       setIsSavingBulk(false)
-    })
+    }
   }
 
   return (
@@ -354,7 +492,11 @@ function ProductEditor({ product, onClose }: { product: any, onClose: () => void
           </div>
           <div>
             <label className="block text-sm font-semibold text-charcoal mb-2">Category</label>
-            <CategorySelect defaultValue={product.category || "women-ethnic"} />
+            <CategorySelect 
+              selected={updatedCategory} 
+              onChange={setUpdatedCategory} 
+              options={storeCategories} 
+            />
           </div>
           <div>
             <label className="block text-sm font-semibold text-charcoal mb-2">Base Price (MRP ₹)</label>
@@ -384,6 +526,23 @@ function ProductEditor({ product, onClose }: { product: any, onClose: () => void
             <div className="flex items-center gap-2">
               <input type="checkbox" name="isOnSale" value="true" defaultChecked={product.isOnSale} id="isOnSaleEdit" className="w-5 h-5 rounded border-gray-300 text-teal-600 focus:ring-teal-600 accent-teal-600" />
               <label htmlFor="isOnSaleEdit" className="text-sm font-bold text-charcoal cursor-pointer">On Sale</label>
+            </div>
+          </div>
+          <div className="mt-8 pt-6 border-t border-charcoal/10">
+            <h3 className="text-lg font-semibold text-charcoal mb-4">Fabric Details</h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="flex gap-2 relative">
+                <div className="absolute -left-12 top-2 text-teal-600/20">
+                  <Scissors size={40} />
+                </div>
+                <FabricSelect 
+                  value={updatedFabric} 
+                  onChange={setUpdatedFabric} 
+                  options={storeFabrics}
+                  name="fabric"
+                />
+              </div>
+              <input name="fabricDetails" type="text" value={updatedFabricDetails} onChange={(e) => setUpdatedFabricDetails(e.target.value)} className="w-full p-3 rounded-xl border border-charcoal/10 focus:outline-none focus:border-teal-600 focus:ring-2 focus:ring-teal-600/20 shadow-inner bg-slate-50 transition-all text-sm" placeholder="e.g. 100% Pure, Handwoven" />
             </div>
           </div>
           <div className="md:col-span-2 flex justify-end mt-4 pt-6 border-t border-charcoal/10">
@@ -423,7 +582,7 @@ function ProductEditor({ product, onClose }: { product: any, onClose: () => void
       
       <div className="sticky bottom-4 z-10 bg-white/90 backdrop-blur-md rounded-2xl border border-teal-200 p-4 shadow-[0_10px_40px_rgba(13,148,136,0.15)] flex justify-between items-center">
         <div className="text-sm text-teal-800 font-medium px-4">
-          Unsaved changes to Images ({newImageFiles.length + deletedImageIds.length}) or Variants ({newVariants.length + deletedVariantIds.length})?
+          Unsaved changes to Images or Variants?
         </div>
         <button 
           onClick={handleBulkSave}
@@ -438,19 +597,27 @@ function ProductEditor({ product, onClose }: { product: any, onClose: () => void
 }
 
 function ImageManager({ images, setImages, newImageFiles, setNewImageFiles, deletedImageIds, setDeletedImageIds, primaryImageId, setPrimaryImageId, newPrimaryIndex, setNewPrimaryIndex }: any) {
-  
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files
     if (!files || files.length === 0) return
-    
-    const newFilesArray = Array.from(files).map(file => ({
-      file,
-      preview: URL.createObjectURL(file)
-    }))
-    
-    setNewImageFiles([...newImageFiles, ...newFilesArray])
-    
-    // Reset the input so the same files can be selected again if needed
+    toast.info(`Optimizing ${files.length} image(s)...`)
+    try {
+      const options = { maxSizeMB: 7, maxWidthOrHeight: 4000, useWebWorker: true, initialQuality: 0.95 }
+      const newFilesArray = await Promise.all(
+        Array.from(files).map(async (file) => {
+          let finalFile = file;
+          if (file.size > 7 * 1024 * 1024) finalFile = await imageCompression(file, options)
+          return { file: finalFile, preview: URL.createObjectURL(finalFile) }
+        })
+      )
+      setNewImageFiles((prev: any) => [...prev, ...newFilesArray])
+      toast.success("Images optimized!")
+    } catch (error) {
+      console.error("Compression error:", error)
+      toast.error("Compression failed. Using original files.")
+      const fallbackArray = Array.from(files).map(file => ({ file, preview: URL.createObjectURL(file) }))
+      setNewImageFiles((prev: any) => [...prev, ...fallbackArray])
+    }
     e.target.value = ""
   }
 
@@ -477,12 +644,27 @@ function ImageManager({ images, setImages, newImageFiles, setNewImageFiles, dele
     setPrimaryImageId(null)
   }
 
+  const [imageSizes, setImageSizes] = useState<Record<string, string>>({})
   const visibleImages = images.filter((img:any) => !deletedImageIds.includes(img.id))
+
+  useEffect(() => {
+    visibleImages.forEach(async (img: any) => {
+      if (!imageSizes[img.id]) {
+        try {
+          const res = await fetch(img.url, { method: 'HEAD' })
+          const length = res.headers.get('Content-Length')
+          if (length) {
+            const mb = (parseInt(length) / (1024 * 1024)).toFixed(2)
+            setImageSizes(prev => ({ ...prev, [img.id]: `${mb} MB` }))
+          }
+        } catch (e) {}
+      }
+    })
+  }, [visibleImages])
 
   return (
     <div className="bg-white rounded-3xl border border-charcoal/10 p-8 shadow-[0_8px_30px_rgb(0,0,0,0.08)] bg-gradient-to-br from-white to-cream/20">
       <h3 className="text-xl font-semibold text-charcoal mb-6 border-b border-charcoal/10 pb-3">Product Images</h3>
-      
       <div className="flex flex-wrap gap-4 mb-6">
         {visibleImages.map((img: any) => (
           <div key={img.id} className="relative group w-32 h-32 rounded-2xl overflow-hidden border border-charcoal/10 shadow-sm">
@@ -492,6 +674,9 @@ function ImageManager({ images, setImages, newImageFiles, setNewImageFiles, dele
                 <Star size={12} className="fill-white" />
               </div>
             )}
+            <div className="absolute bottom-0 w-full bg-black/50 text-white text-[10px] py-1 text-center font-medium backdrop-blur-sm">
+              {imageSizes[img.id] || "Loading..."}
+            </div>
             <div className="absolute inset-0 bg-charcoal/70 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-2 backdrop-blur-[2px]">
               {img.id !== primaryImageId && (
                 <button type="button" onClick={() => handleSetPrimaryExisting(img.id)} className="flex items-center justify-center w-3/4 gap-1 text-[10px] uppercase tracking-wide font-bold text-charcoal bg-gold hover:bg-yellow-400 py-1.5 rounded transition-colors shadow-sm">
@@ -513,6 +698,9 @@ function ImageManager({ images, setImages, newImageFiles, setNewImageFiles, dele
                 <Star size={12} className="fill-white" />
               </div>
             )}
+            <div className="absolute bottom-0 w-full bg-black/50 text-white text-[10px] py-1 text-center font-medium backdrop-blur-sm z-10">
+              {(nimg.file.size / (1024 * 1024)).toFixed(2)} MB
+            </div>
             <div className="absolute inset-0 bg-charcoal/70 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-2 backdrop-blur-[2px] z-20">
               {newPrimaryIndex !== idx && (
                 <button type="button" onClick={() => handleSetPrimaryNew(idx)} className="flex items-center justify-center w-3/4 gap-1 text-[10px] uppercase tracking-wide font-bold text-charcoal bg-gold hover:bg-yellow-400 py-1.5 rounded transition-colors shadow-sm">
@@ -536,39 +724,128 @@ function ImageManager({ images, setImages, newImageFiles, setNewImageFiles, dele
   )
 }
 
-function VariantManager({ basePrice, variants, setVariants, newVariants, setNewVariants, deletedVariantIds, setDeletedVariantIds }: any) {
+const COLOR_MAP = [
+  { name: "Red", hex: "#FF0000" },
+  { name: "Crimson", hex: "#DC143C" },
+  { name: "Maroon", hex: "#800000" },
+  { name: "Pink", hex: "#FFC0CB" },
+  { name: "Hot Pink", hex: "#FF69B4" },
+  { name: "Orange", hex: "#FFA500" },
+  { name: "Coral", hex: "#FF7F50" },
+  { name: "Peach", hex: "#FFDAB9" },
+  { name: "Yellow", hex: "#FFFF00" },
+  { name: "Gold", hex: "#FFD700" },
+  { name: "Green", hex: "#008000" },
+  { name: "Lime", hex: "#00FF00" },
+  { name: "Olive", hex: "#808000" },
+  { name: "Teal", hex: "#008080" },
+  { name: "Cyan", hex: "#00FFFF" },
+  { name: "Blue", hex: "#0000FF" },
+  { name: "Navy", hex: "#000080" },
+  { name: "Sky Blue", hex: "#87CEEB" },
+  { name: "Purple", hex: "#800080" },
+  { name: "Magenta", hex: "#FF00FF" },
+  { name: "Lavender", hex: "#E6E6FA" },
+  { name: "Brown", hex: "#A52A2A" },
+  { name: "Beige", hex: "#F5F5DC" },
+  { name: "White", hex: "#FFFFFF" },
+  { name: "Black", hex: "#000000" },
+  { name: "Gray", hex: "#808080" },
+  { name: "Silver", hex: "#C0C0C0" }
+];
+
+const SIZE_OPTIONS = ["XS", "S", "M", "L", "XL", "XXL", "Free Size", "Unstitched", "Per Meter", "Custom"];
+
+function SizeSelect({ value, onChange }: { value: string, onChange: (val: string) => void }) {
+  const [open, setOpen] = useState(false);
   
+  return (
+    <div className="relative w-full h-full">
+      <button 
+        type="button" 
+        onClick={(e) => { e.preventDefault(); e.stopPropagation(); setOpen(!open); }}
+        className="w-full h-full flex justify-between items-center text-left focus:outline-none focus:border-teal-600 focus:ring-1 focus:ring-teal-600 bg-transparent px-2 rounded-lg"
+      >
+        <span className="truncate pr-2 font-medium">{value}</span>
+        <ChevronDown size={14} className={`shrink-0 transition-transform duration-200 ${open ? 'rotate-180 text-teal-600' : 'text-slate-400'}`} />
+      </button>
+      
+      {open && (
+        <>
+          <div className="fixed inset-0 z-40" onClick={(e) => { e.stopPropagation(); setOpen(false); }} />
+          <div className="absolute top-full left-0 mt-1 w-full bg-white rounded-xl shadow-xl border border-charcoal/10 z-50 overflow-hidden max-h-[200px] overflow-y-auto animate-in fade-in slide-in-from-top-2">
+            {SIZE_OPTIONS.map(s => (
+              <div 
+                key={s}
+                onClick={(e) => { e.stopPropagation(); onChange(s); setOpen(false); }}
+                className={`px-3 py-2 text-sm cursor-pointer transition-colors ${value === s ? 'bg-teal-50 text-teal-700 font-bold border-l-4 border-teal-600 pl-2' : 'text-charcoal hover:bg-slate-50 border-l-4 border-transparent pl-3'}`}
+              >
+                {s}
+              </div>
+            ))}
+          </div>
+        </>
+      )}
+    </div>
+  )
+}
+
+function hexToRgb(hex: string) {
+  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  return result ? { r: parseInt(result[1], 16), g: parseInt(result[2], 16), b: parseInt(result[3], 16) } : null;
+}
+
+function getNearestColorName(hex: string) {
+  const rgb = hexToRgb(hex);
+  if (!rgb) return "";
+  let minDistance = Infinity;
+  let closestName = "";
+  for (const color of COLOR_MAP) {
+    const cRgb = hexToRgb(color.hex);
+    if (!cRgb) continue;
+    const dist = Math.pow(rgb.r - cRgb.r, 2) + Math.pow(rgb.g - cRgb.g, 2) + Math.pow(rgb.b - cRgb.b, 2);
+    if (dist < minDistance) { minDistance = dist; closestName = color.name; }
+  }
+  return closestName;
+}
+
+function VariantManager({ basePrice, variants, setVariants, newVariants, setNewVariants, deletedVariantIds, setDeletedVariantIds }: any) {
+  const [newHex, setNewHex] = useState("#000000");
+  const [newColorName, setNewColorName] = useState("Black");
+  const [newSize, setNewSize] = useState("Free Size");
+
+  const handleHexChange = (hex: string) => {
+    setNewHex(hex);
+    if (hex.match(/^#[0-9a-fA-F]{6}$/)) {
+      const name = getNearestColorName(hex);
+      if (name) setNewColorName(name);
+    }
+  }
+
   const handleAddVariant = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     const form = e.currentTarget
     const formData = new FormData(form)
-    
     const nv = {
       tempId: Date.now().toString(),
       color: formData.get("color") as string,
       colorHex: formData.get("colorHex") as string,
-      size: formData.get("size") as string,
+      size: newSize,
       price: parseFloat((formData.get("price") as string) || basePrice.toString()),
       stock: parseInt(formData.get("stock") as string || "10")
     }
-    
     setNewVariants([...newVariants, nv])
     form.reset()
+    setNewHex("#000000")
+    setNewColorName("Black")
+    setNewSize("Free Size")
   }
 
-  const handleDeleteExisting = (id: string) => {
-    setDeletedVariantIds([...deletedVariantIds, id])
-  }
-  const handleDeleteNew = (tempId: string) => {
-    setNewVariants(newVariants.filter((v:any) => v.tempId !== tempId))
-  }
+  const handleDeleteExisting = (id: string) => setDeletedVariantIds([...deletedVariantIds, id])
+  const handleDeleteNew = (tempId: string) => setNewVariants(newVariants.filter((v:any) => v.tempId !== tempId))
 
-  const handleUpdateExisting = (id: string, field: string, val: any) => {
-    setVariants(variants.map((v:any) => v.id === id ? { ...v, [field]: val } : v))
-  }
-  const handleUpdateNew = (tempId: string, field: string, val: any) => {
-    setNewVariants(newVariants.map((v:any) => v.tempId === tempId ? { ...v, [field]: val } : v))
-  }
+  const handleUpdateExisting = (id: string, field: string, val: any) => setVariants((prev: any[]) => prev.map((v:any) => v.id === id ? { ...v, [field]: val } : v))
+  const handleUpdateNew = (tempId: string, field: string, val: any) => setNewVariants((prev: any[]) => prev.map((v:any) => v.tempId === tempId ? { ...v, [field]: val } : v))
 
   const visibleVariants = variants.filter((v:any) => !deletedVariantIds.includes(v.id))
 
@@ -590,17 +867,19 @@ function VariantManager({ basePrice, variants, setVariants, newVariants, setNewV
 
       <h4 className="font-semibold text-charcoal mb-3 text-sm">Add New Variant</h4>
       <form onSubmit={handleAddVariant} className="flex flex-wrap items-end gap-3 bg-white p-4 rounded-xl border border-charcoal/10 shadow-sm shadow-charcoal/5">
-        <div className="flex-1 min-w-[120px]">
-          <label className="block text-xs font-bold text-slate-600 mb-1">Color Name</label>
-          <input required name="color" type="text" placeholder="e.g. Red" className="w-full p-2.5 text-sm rounded-lg border border-charcoal/10 focus:outline-none focus:border-teal-600 focus:ring-1 focus:ring-teal-600 bg-slate-50" />
-        </div>
-        <div className="w-14">
-          <label className="block text-xs font-bold text-slate-600 mb-1 text-center">Hex</label>
-          <input name="colorHex" type="color" defaultValue="#000000" className="w-full h-10 rounded-lg cursor-pointer border border-charcoal/10 p-0.5 bg-slate-50" />
+        <input type="hidden" name="color" value={newColorName} />
+        <div className="w-[110px]">
+          <label className="block text-xs font-bold text-slate-600 mb-1">Color (Hex)</label>
+          <div className="flex items-center gap-1 bg-slate-50 border border-charcoal/10 rounded-lg h-10 px-1 focus-within:border-teal-600 focus-within:ring-1 focus-within:ring-teal-600">
+            <input name="colorHex" type="text" value={newHex} onChange={(e) => handleHexChange(e.target.value)} placeholder="#HEX" className="w-16 bg-transparent text-sm font-mono uppercase focus:outline-none pl-1" />
+            <input type="color" value={newHex} onChange={(e) => handleHexChange(e.target.value)} className="w-7 h-7 rounded cursor-pointer border-none p-0 bg-transparent shrink-0" />
+          </div>
         </div>
         <div className="flex-1 min-w-[100px]">
           <label className="block text-xs font-bold text-slate-600 mb-1">Size</label>
-          <input required name="size" type="text" placeholder="e.g. XL" className="w-full p-2.5 text-sm rounded-lg border border-charcoal/10 focus:outline-none focus:border-teal-600 focus:ring-1 focus:ring-teal-600 bg-slate-50" />
+          <div className="w-full h-10 text-sm rounded-lg border border-charcoal/10 bg-slate-50 relative group">
+            <SizeSelect value={newSize} onChange={setNewSize} />
+          </div>
         </div>
         <div className="w-24">
           <label className="block text-xs font-bold text-slate-600 mb-1">Price (₹)</label>
@@ -619,11 +898,26 @@ function VariantManager({ basePrice, variants, setVariants, newVariants, setNewV
 }
 
 function VariantRow({ variant, onUpdate, onDelete, isNew }: any) {
+  const handleHexChange = (hex: string) => {
+    onUpdate("colorHex", hex);
+    if (hex.match(/^#[0-9a-fA-F]{6}$/)) {
+      const name = getNearestColorName(hex);
+      if (name) onUpdate("color", name);
+    }
+  };
+
   return (
     <div className={`flex items-center gap-3 p-2 rounded-xl border transition-colors group ${isNew ? 'bg-sky-50 border-sky-200' : 'bg-slate-50 border-charcoal/5 hover:border-teal-200'}`}>
-      <div className="w-6 h-6 rounded-full border-2 border-white shadow-sm ml-1" style={{ backgroundColor: variant.colorHex }} title={variant.colorHex} />
-      <input type="text" value={variant.color} onChange={e => onUpdate("color", e.target.value)} className="flex-1 min-w-[90px] p-2 text-sm font-medium rounded-lg border border-transparent hover:border-charcoal/20 focus:border-teal-600 focus:bg-white outline-none transition-all bg-transparent" />
-      <input type="text" value={variant.size} onChange={e => onUpdate("size", e.target.value)} className="flex-1 min-w-[80px] p-2 text-sm font-medium rounded-lg border border-transparent hover:border-charcoal/20 focus:border-teal-600 focus:bg-white outline-none transition-all bg-transparent" />
+      <div className="flex items-center gap-1">
+        <input type="color" value={variant.colorHex} onChange={e => handleHexChange(e.target.value)} className="w-7 h-7 rounded-full cursor-pointer border-none p-0 bg-transparent shrink-0" title="Pick Color" />
+        <input type="text" value={variant.colorHex} onChange={e => handleHexChange(e.target.value)} className="w-[72px] p-2 text-xs font-mono font-medium rounded-lg border border-transparent hover:border-charcoal/20 focus:border-teal-600 focus:bg-white outline-none transition-all bg-transparent uppercase" />
+      </div>
+      <input type="text" value={variant.color} onChange={e => onUpdate("color", e.target.value)} className="flex-1 min-w-[80px] p-2 text-sm font-medium rounded-lg border border-transparent hover:border-charcoal/20 focus:border-teal-600 focus:bg-white outline-none transition-all bg-transparent" />
+      <div className="flex-1 min-w-[80px]">
+        <div className="w-full h-9 rounded-lg border border-transparent hover:border-charcoal/20 focus-within:border-teal-600 focus-within:bg-white transition-all bg-transparent">
+          <SizeSelect value={variant.size} onChange={val => onUpdate("size", val)} />
+        </div>
+      </div>
       <div className="flex items-center gap-1 w-24 relative">
         <span className="text-xs text-slate font-bold absolute left-2 pointer-events-none">₹</span>
         <input type="number" value={variant.price} onChange={e => onUpdate("price", Number(e.target.value))} className="w-full pl-6 p-2 text-sm font-bold text-teal-700 rounded-lg border border-transparent hover:border-charcoal/20 focus:border-teal-600 focus:bg-white outline-none transition-all bg-transparent" />
@@ -632,76 +926,106 @@ function VariantRow({ variant, onUpdate, onDelete, isNew }: any) {
         <span className="text-[10px] uppercase text-slate font-bold absolute left-2 pointer-events-none">Qty</span>
         <input type="number" value={variant.stock} onChange={e => onUpdate("stock", Number(e.target.value))} className="w-full pl-8 p-2 text-sm font-bold text-charcoal rounded-lg border border-transparent hover:border-charcoal/20 focus:border-teal-600 focus:bg-white outline-none transition-all bg-transparent" />
       </div>
-      <button type="button" onClick={onDelete} className="p-2 text-rose-600 bg-rose-50 hover:bg-rose-100 hover:text-rose-700 rounded-lg border border-rose-100 transition-all active:scale-95" title="Remove Variant">
+      <button type="button" onClick={onDelete} className="p-2 text-rose-600 bg-rose-50 hover:bg-rose-100 hover:text-rose-700 rounded-lg border border-rose-100 transition-all active:scale-95 shrink-0" title="Remove Variant">
         <Trash2 size={16} />
       </button>
     </div>
   )
 }
 
-function CategorySelect({ defaultValue }: { defaultValue: string }) {
-  const [open, setOpen] = useState(false)
-  const [selected, setSelected] = useState<string[]>(() => {
-    try {
-      const parsed = JSON.parse(defaultValue);
-      return Array.isArray(parsed) ? parsed : [defaultValue];
-    } catch(e) {
-      return defaultValue ? [defaultValue] : [];
-    }
-  })
-  const options = [
-    { value: "women-ethnic", label: "Women's Ethnic" },
-    { value: "women-western", label: "Women's Western" },
-    { value: "men-ethnic", label: "Men's Ethnic" },
-    { value: "men-formal", label: "Men's Formal" },
-    { value: "men-casual", label: "Men's Casual" },
-    { value: "fabrics", label: "Fabrics" },
-    { value: "unstitched", label: "Unstitched" },
-    { value: "accessories", label: "Accessories" },
-  ]
-  
-  const getLabel = () => {
-    if (selected.length === 0) return "Select Categories"
-    if (selected.length === 1) return options.find(o => o.value === selected[0])?.label || "Unknown"
-    return `${selected.length} Categories Selected`
-  }
+const CategorySelect = ({ selected, onChange, options, name }: { selected: string[], onChange: (v: string[]) => void, options: {value: string, label: string}[], name?: string }) => {
+  const [isOpen, setIsOpen] = useState(false)
+  const dropdownRef = useRef<HTMLDivElement>(null)
 
-  const toggleOption = (val: string) => {
-    setSelected(prev => prev.includes(val) ? prev.filter(v => v !== val) : [...prev, val])
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [])
+
+  const missingOptions = selected.filter(val => !options.some(o => o.value === val))
+  const validOptionsCount = selected.length - missingOptions.length
+
+  const getLabel = () => {
+    if (selected.length === 0) return "Select categories..."
+    if (selected.length === 1) return options.find(o => o.value === selected[0])?.label || selected[0]
+    return `${selected.length} selected`
   }
+  return (
+    <div className="relative" ref={dropdownRef}>
+      {name && <input type="hidden" name={name} value={JSON.stringify(selected)} />}
+      <button type="button" onClick={() => setIsOpen(!isOpen)} className="w-full bg-white border border-charcoal/20 rounded-xl px-4 py-2.5 focus:border-teal-500 focus:ring-1 focus:ring-teal-500 outline-none text-sm flex justify-between items-center">
+        <span className={selected.length === 0 ? "text-slate" : "text-charcoal"}>{getLabel()}</span>
+        <ChevronDown size={16} className={cn("text-slate transition-transform", isOpen && "rotate-180")} />
+      </button>
+      {isOpen && (
+        <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-charcoal/10 rounded-xl shadow-xl z-50 p-2 max-h-64 overflow-y-auto custom-scrollbar">
+          {missingOptions.map(val => (
+            <label key={val} className="flex items-center gap-2.5 px-3 py-2 hover:bg-slate/5 rounded-lg cursor-pointer group transition-colors">
+              <input type="checkbox" checked={true} onChange={() => onChange(selected.filter(v => v !== val))} className="w-4 h-4 rounded border-2 border-rose-300 text-rose-500 focus:ring-rose-500 cursor-pointer accent-rose-500" />
+              <span className="text-sm text-rose-500 font-medium">{val} <span className="text-xs text-rose-400 font-normal">(Deleted Category)</span></span>
+            </label>
+          ))}
+          {options.map(opt => (
+            <label key={opt.value} className="flex items-center gap-2.5 px-3 py-2 hover:bg-slate/5 rounded-lg cursor-pointer group transition-colors">
+              <input type="checkbox" checked={selected.includes(opt.value)} onChange={(e) => { if (e.target.checked) onChange([...selected, opt.value]); else onChange(selected.filter(v => v !== opt.value)) }} className="w-4 h-4 rounded border-2 border-charcoal/20 text-teal-600 focus:ring-teal-500 cursor-pointer accent-teal-600" />
+              <span className="text-sm text-charcoal">{opt.label}</span>
+            </label>
+          ))}
+          {options.length === 0 && missingOptions.length === 0 && <div className="px-3 py-2 text-sm text-slate">No categories configured.</div>}
+        </div>
+      )}
+    </div>
+  )
+}
+
+const FabricSelect = ({ value, onChange, options, name }: { value: string, onChange: (v: string) => void, options: {value: string, label: string}[], name?: string }) => {
+  const [isOpen, setIsOpen] = useState(false)
+  const dropdownRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [])
+
+  const selectedLabel = options.find(o => o.value === value)?.label || value || "Select fabric..."
 
   return (
-    <div className="relative">
-      <input type="hidden" name="category" value={JSON.stringify(selected)} />
-      <button 
-        type="button" 
-        onClick={() => setOpen(!open)}
-        className="w-full p-3 rounded-xl border border-charcoal/10 focus:outline-none focus:border-teal-600 focus:ring-2 focus:ring-teal-600/20 shadow-inner bg-white text-charcoal transition-all flex justify-between items-center text-left"
-      >
-        <span>{getLabel()}</span>
-        <ChevronDown size={16} className={`transition-transform duration-200 ${open ? 'rotate-180 text-teal-600' : 'text-slate-400'}`} />
+    <div className="relative w-full" ref={dropdownRef}>
+      {name && <input type="hidden" name={name} value={value} />}
+      <button type="button" onClick={() => setIsOpen(!isOpen)} className="w-full bg-white border border-charcoal/20 rounded-xl px-4 py-2.5 focus:border-teal-500 focus:ring-1 focus:ring-teal-500 outline-none text-sm flex justify-between items-center">
+        <span className={!value ? "text-slate" : "text-charcoal"}>{selectedLabel}</span>
+        <ChevronDown size={16} className={cn("text-slate transition-transform", isOpen && "rotate-180")} />
       </button>
-      
-      {open && (
-        <>
-          <div className="fixed inset-0 z-40" onClick={() => setOpen(false)} />
-          <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-xl shadow-xl border border-charcoal/10 z-50 overflow-hidden max-h-[240px] overflow-y-auto animate-in fade-in slide-in-from-top-2">
-            {options.map(opt => (
-              <label
-                key={opt.value}
-                className={`w-full flex items-center px-4 py-3 text-sm transition-colors cursor-pointer ${selected.includes(opt.value) ? 'bg-teal-50 text-teal-700 font-bold border-l-4 border-teal-600 pl-3' : 'text-charcoal hover:bg-slate-50 border-l-4 border-transparent'}`}
-              >
-                <input 
-                  type="checkbox" 
-                  checked={selected.includes(opt.value)} 
-                  onChange={() => toggleOption(opt.value)} 
-                  className="mr-3 w-4 h-4 rounded text-teal-600 focus:ring-teal-600" 
-                />
-                {opt.label}
-              </label>
-            ))}
-          </div>
-        </>
+      {isOpen && (
+        <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-charcoal/10 rounded-xl shadow-xl z-50 p-2 max-h-64 overflow-y-auto custom-scrollbar">
+          {value && !options.some(o => o.value === value) && (
+            <button type="button" onClick={() => { onChange(value); setIsOpen(false) }} className="w-full text-left flex items-center gap-2.5 px-3 py-2 bg-rose-50 hover:bg-rose-100 rounded-lg cursor-pointer group transition-colors">
+              <div className="w-4 h-4 rounded-full border-2 border-rose-500 flex items-center justify-center shrink-0">
+                <div className="w-2 h-2 rounded-full bg-rose-500" />
+              </div>
+              <span className="text-sm text-rose-600 font-medium">{value} <span className="text-xs text-rose-400 font-normal">(Deleted Fabric)</span></span>
+            </button>
+          )}
+          {options.map(opt => (
+            <button key={opt.value} type="button" onClick={() => { onChange(opt.value); setIsOpen(false) }} className="w-full text-left flex items-center gap-2.5 px-3 py-2 hover:bg-slate/5 rounded-lg cursor-pointer group transition-colors">
+              <div className={cn("w-4 h-4 rounded-full border-2 flex items-center justify-center transition-colors shrink-0", value === opt.value ? "border-teal-600" : "border-charcoal/20 group-hover:border-teal-600")}>
+                {value === opt.value && <div className="w-2 h-2 rounded-full bg-teal-600" /> }
+              </div>
+              <span className="text-sm text-charcoal">{opt.label}</span>
+            </button>
+          ))}
+          {options.length === 0 && <div className="px-3 py-2 text-sm text-slate">No fabrics configured.</div>}
+        </div>
       )}
     </div>
   )

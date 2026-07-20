@@ -17,6 +17,7 @@ export interface Product {
  variants: ProductVariant[];
  images: ProductImage[];
  fabric: string;
+ fabricDetails?: string | null;
  occasion?: string[];
  tags: string[];
  rating: number;

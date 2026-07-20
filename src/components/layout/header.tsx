@@ -24,7 +24,7 @@ import { cn } from "@/lib/utils";
 import { useCartStore, useWishlistStore, useUIStore } from "@/store";
 import { SearchOverlay } from "@/components/ui/search-overlay";
 
-const navLinks = [
+export const defaultNavLinks = [
  {
  label: "Women",
  href: "/shop?category=women-ethnic",
@@ -48,23 +48,24 @@ const navLinks = [
  { label: "Sherwanis", href: "/shop?category=men-ethnic&sub=sherwanis" },
  ],
  },
- {
- label: "Fabrics",
- href: "/shop?category=fabrics",
- submenu: [
- { label: "Silk", href: "/shop?category=fabrics&sub=silk" },
- { label: "Cotton", href: "/shop?category=fabrics&sub=cotton" },
- { label: "Linen", href: "/shop?category=fabrics&sub=linen" },
- { label: "Khadi", href: "/shop?category=fabrics&sub=khadi" },
- { label: "Chiffon", href: "/shop?category=fabrics&sub=chiffon" },
- ],
- },
- { label: "New Arrivals", href: "/shop?filter=new" },
- { label: "Sale", href: "/shop?filter=sale" },
+  {
+  label: "Fabrics",
+  href: "/shop?category=fabrics-cotton,fabrics-silk,fabrics-prints,unstitched",
+  submenu: [
+  { label: "Silk", href: "/shop?fabric=silk" },
+  { label: "Cotton", href: "/shop?fabric=cotton" },
+  { label: "Linen", href: "/shop?fabric=linen" },
+  { label: "Khadi", href: "/shop?fabric=khadi" },
+  { label: "Chiffon", href: "/shop?fabric=chiffon" },
+  ],
+  },
+ { label: "New Arrivals", href: "/shop?features=new_arrival" },
+ { label: "Sale", href: "/shop?features=on_sale" },
  { label: "Blog", href: "/blog" },
 ];
 
-export function Header() {
+export function Header({ initialNavLinks }: { initialNavLinks?: any }) {
+ const navLinks = initialNavLinks && initialNavLinks.length > 0 ? initialNavLinks : defaultNavLinks;
  const pathname = usePathname();
  const { data: session } = useSession();
  const [scrolled, setScrolled] = useState(false);
@@ -148,17 +149,32 @@ export function Header() {
  onMouseEnter={() => setActiveMenu(link.label)}
  onMouseLeave={() => setActiveMenu(null)}
  >
- <Link
- href={link.href}
- className={cn(
- "flex items-center gap-1 px-3 py-2 text-sm font-semibold transition-colors rounded-lg",
- "text-charcoal hover:text-teal-600 :text-teal-400",
- link.label === "Sale" && "!text-rose dark:!text-rose"
- )}
- >
- {link.label}
- {link.submenu && <ChevronDown size={14} className="opacity-50" />}
- </Link>
+ {link.submenu ? (
+    <button
+      onClick={(e) => {
+        e.preventDefault();
+        setActiveMenu(activeMenu === link.label ? null : link.label);
+      }}
+      className={cn(
+        "flex items-center gap-1 px-3 py-2 text-sm font-semibold transition-colors rounded-lg focus:outline-none",
+        "text-charcoal hover:text-teal-600 :text-teal-400"
+      )}
+    >
+      {link.label}
+      <ChevronDown size={14} className="opacity-50" />
+    </button>
+  ) : (
+    <Link
+      href={link.href}
+      className={cn(
+        "flex items-center gap-1 px-3 py-2 text-sm font-semibold transition-colors rounded-lg",
+        "text-charcoal hover:text-teal-600 :text-teal-400",
+        link.label === "Sale" && "!text-rose dark:!text-rose"
+      )}
+    >
+      {link.label}
+    </Link>
+  )}
 
  {/* Dropdown */}
  <AnimatePresence>

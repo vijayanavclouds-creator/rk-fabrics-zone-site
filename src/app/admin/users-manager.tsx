@@ -14,7 +14,7 @@ export function UsersManager() {
     try {
       const res = await getUsers()
       if (res.success) {
-        setUsers(res.users)
+        setUsers(res.users || [])
       } else {
         toast.error(res.error)
       }

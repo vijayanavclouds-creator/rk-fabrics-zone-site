@@ -1,5 +1,6 @@
 import prisma from "@/lib/prisma"
 import { AdminDashboard } from "./admin-dashboard"
+import { getStoreTaxonomy } from "@/actions/system"
 
 export default async function AdminPage() {
   const products = await prisma.product.findMany({
@@ -8,6 +9,7 @@ export default async function AdminPage() {
   const banners = await prisma.banner.findMany({
     orderBy: { order: 'asc' }
   })
+  const { categories, fabrics } = await getStoreTaxonomy()
 
   return (
     <div className="container mx-auto px-4 py-12 pt-32">
@@ -20,7 +22,12 @@ export default async function AdminPage() {
         </p>
       </div>
 
-      <AdminDashboard products={products} initialBanners={banners} />
+      <AdminDashboard 
+        products={products} 
+        initialBanners={banners} 
+        storeCategories={categories}
+        storeFabrics={fabrics}
+      />
     </div>
   )
 }

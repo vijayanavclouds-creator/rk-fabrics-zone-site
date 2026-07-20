@@ -6,6 +6,7 @@ import { Footer } from "@/components/layout/footer";
 import { MobileNav } from "@/components/layout/mobile-nav";
 import { CartDrawer } from "@/components/cart/cart-drawer";
 import { Toaster } from "sonner";
+import { getNavigationLinks } from "@/actions/system";
 import "./globals.css";
 
 const playfair = Playfair_Display({
@@ -76,11 +77,12 @@ export const viewport: Viewport = {
   colorScheme: "light",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
  children,
 }: Readonly<{
  children: React.ReactNode;
 }>) {
+ const navLinks = await getNavigationLinks();
  return (
  <html
  lang="en"
@@ -95,7 +97,7 @@ export default function RootLayout({
  enableSystem={false}
  disableTransitionOnChange={false}
  >
- <Header />
+ <Header initialNavLinks={navLinks} />
  <main className="flex-1 pb-20 md:pb-0">{children}</main>
  <Footer />
  <MobileNav />

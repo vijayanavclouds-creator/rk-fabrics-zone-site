@@ -1,7 +1,8 @@
 "use client"
 
 import { useState, useTransition, useRef, useEffect } from "react"
-import { uploadBannerImage, createBanner, deleteBanner, updateBannerOrder, getFileSize, updateBannerTitle } from "@/actions/admin"
+import { createBanner, deleteBanner, updateBannerOrder, getFileSize, updateBannerTitle, getCloudinarySignature } from "@/actions/admin"
+import imageCompression from 'browser-image-compression';
 import { toast } from "sonner"
 import { Upload, X, GripVertical, Image as ImageIcon, Loader2 } from "lucide-react"
 import Image from "next/image"
@@ -67,17 +68,47 @@ export function BannerManager({ banners }: { banners: any[] }) {
 
     setUploadingType(type)
     try {
-      const formData = new FormData()
-      formData.append("file", file)
+      let fileToUpload = file;
       
-      const uploadRes = await uploadBannerImage(formData)
-      if (!uploadRes.success || !uploadRes.url) {
-        throw new Error(uploadRes.error || "Upload failed")
+      // Always compress images to ensure fast loading and save Cloudinary storage
+      toast.info("Optimizing image for fast loading...");
+      const options = {
+        maxSizeMB: 0.3, // Compress to ~300KB max
+        maxWidthOrHeight: 1600, // Limit dimensions for web
+        useWebWorker: true,
+        initialQuality: 0.8
+      }
+      fileToUpload = await imageCompression(file, options);
+
+      // 1. Get secure upload signature from our server
+      const sigData = await getCloudinarySignature()
+      if (!sigData.success || !sigData.signature || !sigData.apiKey || !sigData.cloudName) {
+        throw new Error("Failed to get upload signature from server")
       }
 
+      // 2. Upload file directly to Cloudinary from the browser!
+      const formData = new FormData()
+      formData.append("file", fileToUpload)
+      formData.append("api_key", sigData.apiKey)
+      formData.append("timestamp", sigData.timestamp!.toString())
+      formData.append("signature", sigData.signature)
+      formData.append("folder", "rk-fabrics/banners")
+
+      const uploadRes = await fetch(`https://api.cloudinary.com/v1_1/${sigData.cloudName}/image/upload`, {
+        method: "POST",
+        body: formData,
+      })
+
+      const uploadData = await uploadRes.json()
+      
+      if (!uploadRes.ok) {
+        throw new Error(uploadData.error?.message || "Upload to Cloudinary failed")
+      }
+
+      // 3. Save the returned URL to our database
       const createData = new FormData()
       createData.append("type", type)
-      createData.append("imageUrl", uploadRes.url)
+      createData.append("imageUrl", uploadData.secure_url)
 
       const createRes = await createBanner(createData)
       if (createRes.success) {

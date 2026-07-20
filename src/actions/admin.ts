@@ -24,6 +24,8 @@ export async function updateProduct(formData: FormData) {
     const isBestseller = formData.get("isBestseller") === "true"
     const isFeatured = formData.get("isFeatured") === "true"
     const isOnSale = formData.get("isOnSale") === "true"
+    const fabric = formData.get("fabric") as string
+    const fabricDetails = formData.get("fabricDetails") as string || null
 
     if (!id || !name || !category || isNaN(basePrice)) {
       return { success: false, error: `Invalid input. ID: ${id}, Name: ${name}, Category: ${category}, Price: ${basePrice}` }
@@ -45,7 +47,9 @@ export async function updateProduct(formData: FormData) {
         isNewArrival,
         isBestseller,
         isFeatured,
-        isOnSale
+        isOnSale,
+        fabric,
+        fabricDetails
       }
     })
 
@@ -74,10 +78,12 @@ export async function updateProduct(formData: FormData) {
 export async function createProduct(formData: FormData) {
   try {
     const name = formData.get("name") as string
-    const category = formData.get("category") as string
+    const category = formData.get("category") as string || "women-ethnic"
     const basePrice = parseFloat(formData.get("basePrice") as string)
     const stock = parseInt(formData.get("stock") as string)
     const discountPercent = parseInt(formData.get("discountPercent") as string) || 0
+    const fabric = formData.get("fabric") as string || "Silk"
+    const fabricDetails = formData.get("fabricDetails") as string || null
     const isFreeDelivery = formData.get("isFreeDelivery") === "true"
     const isNewArrival = formData.get("isNewArrival") === "true"
     const isBestseller = formData.get("isBestseller") === "true"
@@ -110,7 +116,8 @@ export async function createProduct(formData: FormData) {
         isBestseller,
         isFeatured,
         isOnSale,
-        fabric: "Cotton",
+        fabric,
+        fabricDetails,
         occasion: "[]",
         tags: "[]",
         rating: 0,
@@ -225,7 +232,7 @@ export async function updateProductVariant(formData: FormData) {
     revalidatePath("/admin")
     revalidatePath(`/product/[slug]`, "page")
     return { success: true }
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error updating variant:", error)
     return { success: false, error: "Failed to update variant" }
   }
@@ -274,7 +281,7 @@ export async function bulkUpdateImagesAndVariants(formData: FormData) {
     const payloadStr = formData.get("payload") as string
     if (!payloadStr) return { success: false, error: "Missing payload" }
     const payload = JSON.parse(payloadStr)
-    const { productId, newVariants, updatedVariants, deletedVariantIds, deletedImageIds, primaryImageId, newPrimaryIndex } = payload
+    const { productId, newVariants, updatedVariants, deletedVariantIds, deletedImageIds, primaryImageId, newPrimaryIndex, uploadedImagesUrls } = payload
 
     if (!productId) return { success: false, error: "Missing product ID" }
     
@@ -316,55 +323,65 @@ export async function bulkUpdateImagesAndVariants(formData: FormData) {
       }
     }
 
-    if (deletedImageIds?.length) {
+    if (deletedImageIds && deletedImageIds.length > 0) {
       await prisma.productImage.deleteMany({ where: { id: { in: deletedImageIds } } })
     }
 
-    const files = formData.getAll("images") as File[]
-    if (files && files.length > 0) {
-      if (!process.env.CLOUDINARY_CLOUD_NAME || !process.env.CLOUDINARY_API_KEY) {
-        throw new Error("Cloudinary credentials not configured in .env file")
-      }
-      for (let i = 0; i < files.length; i++) {
-        const file = files[i]
-        const arrayBuffer = await file.arrayBuffer()
-        const buffer = Buffer.from(arrayBuffer)
-        const base64Data = `data:${file.type};base64,${buffer.toString("base64")}`
+    // Clear out existing primary flags if a new one is selected
+    if (primaryImageId || newPrimaryIndex !== null) {
+      await prisma.productImage.updateMany({ where: { productId }, data: { isPrimary: false } })
+    }
 
-        const result = await cloudinary.uploader.upload(base64Data, {
-          folder: "rk-fabrics/products",
-          transformation: [
-            { width: 1500, crop: "limit" },
-            { quality: "auto:good" },
-            { fetch_format: "auto" }
-          ]
-        })
+    const imagesToUpload = uploadedImagesUrls || []
+    if (imagesToUpload && imagesToUpload.length > 0) {
+      for (let i = 0; i < imagesToUpload.length; i++) {
+        const imgData = imagesToUpload[i]
         
         const isThisPrimary = newPrimaryIndex === i
         await prisma.productImage.create({
           data: {
-            url: result.secure_url,
-            alt: file.name || "Product Image",
+            url: imgData.url,
+            alt: imgData.name || "Product Image",
             isPrimary: isThisPrimary,
             productId
           }
         })
       }
     }
+    
+    await prisma.$transaction(async (tx) => {
+      if (formData) {
+        const category = formData.get("category") as string
+        const fabric = formData.get("fabric") as string
+        const fabricDetails = formData.get("fabricDetails") as string || null
+        if (category || fabric) {
+          await tx.product.update({
+            where: { id: productId },
+            data: { 
+              ...(category ? { category } : {}),
+              ...(fabric ? { fabric } : {}),
+              fabricDetails
+            }
+          })
+        }
+      }
+    })
 
+    // Assign existing primary image if selected
     if (primaryImageId && typeof primaryImageId === "string") {
-      await prisma.productImage.updateMany({ where: { productId }, data: { isPrimary: false } })
       await prisma.productImage.update({ where: { id: primaryImageId }, data: { isPrimary: true } })
-    } else if (newPrimaryIndex !== undefined && newPrimaryIndex !== null) {
-      await prisma.productImage.updateMany({ where: { productId }, data: { isPrimary: false } })
-      // The new primary was just created as primary above.
     }
 
     syncDatabaseToStatic()
     revalidatePath("/admin")
     revalidatePath(`/product/[slug]`, "page")
     
-    return { success: true }
+    const updatedProduct = await prisma.product.findUnique({
+      where: { id: productId },
+      include: { variants: true, images: true }
+    })
+    
+    return { success: true, product: updatedProduct }
   } catch (error: any) {
     console.error("Bulk save error:", error)
     return { success: false, error: error.message || "Failed to save images and variants" }
@@ -387,36 +404,27 @@ export async function getBanners() {
   }
 }
 
-export async function uploadBannerImage(formData: FormData) {
+export async function getCloudinarySignature() {
   try {
-    const file = formData.get("file") as File
-    if (!file) return { success: false, error: "No file provided" }
-
-    const arrayBuffer = await file.arrayBuffer()
-    const buffer = Buffer.from(arrayBuffer)
-
-    const uploadPromise = new Promise((resolve, reject) => {
-      cloudinary.uploader.upload_stream(
-        { 
-          folder: "rk-fabrics/banners",
-          transformation: [
-            { width: 1920, height: 1080, crop: "limit" },
-            { quality: "auto:eco" },
-            { fetch_format: "auto" }
-          ]
-        },
-        (error, result) => {
-          if (error) reject(error)
-          else resolve(result)
-        }
-      ).end(buffer)
-    })
-
-    const result = await uploadPromise as any
-    return { success: true, url: result.secure_url }
+    const timestamp = Math.round(new Date().getTime() / 1000);
+    const signature = cloudinary.utils.api_sign_request(
+      {
+        timestamp,
+        folder: "rk-fabrics/banners",
+      },
+      process.env.CLOUDINARY_API_SECRET!
+    );
+    
+    return { 
+      success: true,
+      timestamp, 
+      signature, 
+      apiKey: process.env.CLOUDINARY_API_KEY, 
+      cloudName: process.env.CLOUDINARY_CLOUD_NAME 
+    };
   } catch (error: any) {
-    console.error("Error uploading banner image:", error)
-    return { success: false, error: "Upload failed" }
+    console.error("Error generating signature:", error);
+    return { success: false, error: "Failed to generate upload signature" };
   }
 }
 

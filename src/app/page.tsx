@@ -7,7 +7,12 @@ import { ArrowRight, Star, Shield, Truck, RefreshCw, Headphones, Sparkles, Crown
 import { cn } from "@/lib/utils";
 import { getBanners } from "@/actions/admin";
 import { useEffect, useState } from "react";
-
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { EffectCoverflow, Pagination, Navigation, Autoplay } from 'swiper/modules';
+import 'swiper/css';
+import 'swiper/css/effect-coverflow';
+import 'swiper/css/pagination';
+import 'swiper/css/navigation';
 /* ── Hero Section ── */
 function HeroSection({ banners }: { banners: any[] }) {
   const heroImages = banners.length > 0 
@@ -27,10 +32,10 @@ function HeroSection({ banners }: { banners: any[] }) {
       <div className="absolute top-20 right-0 w-[500px] h-[500px] bg-gradient-to-br from-cream to-transparent rounded-full blur-[100px] -z-10" />
       <div className="absolute bottom-20 left-10 w-96 h-96 bg-teal-500/5 rounded-full blur-3xl -z-10" />
 
-      <div className="relative max-w-7xl mx-auto px-4 md:px-6 lg:px-8 py-8 md:py-0 w-full">
-        <div className="grid md:grid-cols-2 gap-[5px] md:gap-12 items-center">
+      <div className="relative max-w-[1600px] mx-auto px-4 md:px-6 lg:px-8 py-8 md:py-0 w-full">
+        <div className="grid lg:grid-cols-12 md:grid-cols-2 gap-[5px] md:gap-12 items-center">
           {/* Text */}
-          <div className="text-center md:text-left z-10 order-2 md:order-1">
+          <div className="text-center md:text-left z-10 order-2 md:order-1 lg:col-span-6">
             <motion.h1
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
@@ -101,106 +106,48 @@ function HeroSection({ banners }: { banners: any[] }) {
             </motion.div>
           </div>
 
-          {/* Hero Visual - Floating Garments */}
+          {/* Hero Visual - Floating Bento Grid */}
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="relative block order-1 md:order-2 mb-8 md:mb-0"
+            className="relative block order-1 md:order-2 mb-8 md:mb-0 w-full lg:col-span-6"
           >
-            <div className="relative w-full aspect-square max-w-lg mx-auto md:ml-auto">
-              
-              {/* Decorative Background Glows */}
-              <div className="absolute inset-10 rounded-full bg-gradient-to-br from-cream to-transparent shadow-2xl opacity-60" />
+            {/* Decorative Background Glows */}
+            <div className="absolute inset-10 rounded-full bg-gradient-to-br from-cream to-transparent shadow-2xl opacity-60 pointer-events-none" />
 
-              {/* Floating Garment 1 - T-Shirt (Top Left) */}
-              <motion.div
-                animate={{ y: [-10, 10, -10] }}
-                transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-                className="absolute top-[5%] left-[5%] w-[45%] aspect-square z-20"
-              >
-                <div className="relative w-full h-full">
-                  <Image
-                    src={getImg(0)}
-                    alt="Hero Image 1"
-                    fill
-                    className="object-contain drop-shadow-xl"
-                  />
-                </div>
-                {/* Dynamic Drop Shadow */}
-                <motion.div
-                  animate={{ scale: [1, 0.8, 1], opacity: [0.3, 0.1, 0.3] }}
-                  transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-                  className="absolute -bottom-4 left-1/2 -translate-x-1/2 w-2/3 h-4 bg-black/40 blur-md rounded-[100%]"
-                />
-              </motion.div>
+            <div className="columns-2 md:columns-3 gap-4 md:gap-5 lg:gap-6 w-[85%] sm:w-full mx-auto relative z-10 overflow-visible pb-8">
+              {heroImages.slice(0, 10).map((imgSrc, i) => {
+                const duration = 4 + (i % 3);
+                const delay = i * 0.2;
 
-              {/* Floating Garment 2 - Jeans (Top Right) */}
-              <motion.div
-                animate={{ y: [12, -12, 12] }}
-                transition={{ duration: 6, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-                className="absolute top-[10%] right-[0%] w-[40%] aspect-[3/4] z-10"
-              >
-                <div className="relative w-full h-full">
-                  <Image
-                    src={getImg(1)}
-                    alt="Hero Image 2"
-                    fill
-                    className="object-contain drop-shadow-xl"
-                  />
-                </div>
-                {/* Dynamic Drop Shadow */}
-                <motion.div
-                  animate={{ scale: [0.8, 1, 0.8], opacity: [0.1, 0.3, 0.1] }}
-                  transition={{ duration: 6, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-                  className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-1/2 h-3 bg-black/40 blur-md rounded-[100%]"
-                />
-              </motion.div>
-
-              {/* Floating Garment 3 - Jacket (Bottom Left) */}
-              <motion.div
-                animate={{ y: [-8, 8, -8] }}
-                transition={{ duration: 5.5, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
-                className="absolute bottom-[5%] left-[0%] w-[50%] aspect-square z-30"
-              >
-                <div className="relative w-full h-full">
-                  <Image
-                    src={getImg(2)}
-                    alt="Hero Image 3"
-                    fill
-                    className="object-contain drop-shadow-xl"
-                  />
-                </div>
-                {/* Dynamic Drop Shadow */}
-                <motion.div
-                  animate={{ scale: [1, 0.85, 1], opacity: [0.3, 0.15, 0.3] }}
-                  transition={{ duration: 5.5, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
-                  className="absolute bottom-0 left-1/2 -translate-x-1/2 w-3/4 h-5 bg-black/40 blur-md rounded-[100%]"
-                />
-              </motion.div>
-
-              {/* Floating Garment 4 - Kurta (Bottom Right) */}
-              <motion.div
-                animate={{ y: [15, -15, 15] }}
-                transition={{ duration: 7, repeat: Infinity, ease: "easeInOut", delay: 1.5 }}
-                className="absolute bottom-[0%] right-[5%] w-[45%] aspect-[3/4] z-20"
-              >
-                <div className="relative w-full h-full">
-                  <Image
-                    src={getImg(3)}
-                    alt="Hero Image 4"
-                    fill
-                    className="object-contain drop-shadow-xl"
-                  />
-                </div>
-                {/* Dynamic Drop Shadow */}
-                <motion.div
-                  animate={{ scale: [0.85, 1, 0.85], opacity: [0.15, 0.35, 0.15] }}
-                  transition={{ duration: 7, repeat: Infinity, ease: "easeInOut", delay: 1.5 }}
-                  className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-2/3 h-4 bg-black/40 blur-md rounded-[100%]"
-                />
-              </motion.div>
-
+                return (
+                  <div key={i} className="break-inside-avoid mb-3 md:mb-5" style={{ perspective: 1200 }}>
+                    <motion.div
+                      animate={{ 
+                        y: [-5, 5, -5],
+                        rotateX: [-1, 1, -1],
+                        rotateY: [-1, 1, -1]
+                      }}
+                      whileHover={{ 
+                        scale: 1.05, 
+                        rotateX: 4, 
+                        rotateY: -4,
+                        z: 20,
+                        transition: { duration: 0.3 }
+                      }}
+                      transition={{ duration, repeat: Infinity, ease: "easeInOut", delay }}
+                      className="relative rounded-2xl overflow-hidden shadow-md hover:shadow-2xl border border-slate-200/50 transition-shadow duration-300 bg-white"
+                    >
+                      <img
+                        src={imgSrc}
+                        alt={`Hero Banner ${i + 1}`}
+                        className="w-full h-auto"
+                      />
+                    </motion.div>
+                  </div>
+                );
+              })}
             </div>
           </motion.div>
         </div>
@@ -249,67 +196,86 @@ function CustomCategories({ banners }: { banners: any[] }) {
         { imageUrl: "/carousel/carousel_three.png", title: "Kurtis" },
         { imageUrl: "/carousel/carousel_four.png", title: "Prints" }
       ];
-  
-  const getBanner = (idx: number) => carouselBanners[idx % carouselBanners.length];
 
+  // Swiper needs at least 2x the slidesPerView to loop perfectly. 
+  // Duplicating the array ensures it never glitches on ultra-wide screens.
+  const extendedBanners = [...carouselBanners, ...carouselBanners, ...carouselBanners, ...carouselBanners];
+  
   return (
-    <section className="py-20 bg-cream relative overflow-hidden">
-      <div className="max-w-7xl mx-auto px-4 md:px-6">
-        
-        <div className="grid md:grid-cols-2 gap-12 items-center mb-16">
-          <div>
-            <h2 className="font-[family-name:var(--font-playfair)] text-4xl md:text-5xl font-bold text-charcoal mb-4">
-              From Our Looms <br/><span className="text-teal-600">To Your Wardrobe</span>
-            </h2>
-            <p className="text-slate text-lg mb-8 max-w-md">
-              We weave stories in every thread. Explore our handcrafted collections, from rich festive silks to breezy summer cottons.
-            </p>
-            <Link href="/shop" className="btn-primary inline-flex items-center gap-2">
-              View All Categories <ArrowRight size={18} />
-            </Link>
-          </div>
-          
-          {/* RIGHT SIDE - 4 Small Squares (Irregular Staggered Masonry) */}
-          <motion.div
-            initial={{ opacity: 0, x: 30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, margin: "-100px" }}
-            transition={{ duration: 0.8 }}
-            className="grid grid-cols-2 gap-4 md:gap-6 relative"
-          >
-            <div className="space-y-4 md:space-y-6 mt-12">
-              <div className="w-full aspect-[4/5] rounded-3xl overflow-hidden relative shadow-neo-card group">
-                <Image src={getBanner(1).imageUrl} fill alt="Fabric 2" className="object-cover group-hover:scale-110 transition-transform duration-700" />
-                <div className="absolute inset-0 bg-gradient-to-t from-charcoal/80 to-transparent flex flex-col justify-end p-6">
-                  <h3 className="text-white font-bold text-xl">{getBanner(1).title || "Category"}</h3>
+    <section className="py-24 bg-cream relative overflow-hidden flex flex-col items-center">
+      <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10 mb-12 text-center">
+        <h2 className="font-[family-name:var(--font-playfair)] text-4xl md:text-5xl font-bold text-charcoal mb-4">
+          From Our Looms <br className="md:hidden" /><span className="text-teal-600">To Your Wardrobe</span>
+        </h2>
+        <p className="text-slate text-lg mx-auto max-w-2xl mb-8">
+          We weave stories in every thread. Explore our handcrafted collections, from rich festive silks to breezy summer cottons.
+        </p>
+      </div>
+      
+      {/* 3D Coverflow Swiper Carousel */}
+      <div className="relative w-full pb-16 pt-8 max-w-[100vw] overflow-hidden">
+        <Swiper
+          effect={'coverflow'}
+          grabCursor={true}
+          centeredSlides={true}
+          slidesPerView={'auto'}
+          loop={true}
+          initialSlide={1}
+          coverflowEffect={{
+            rotate: 30, // Angle of the side cards
+            stretch: 0, // Space between cards
+            depth: 250, // Z-depth push for side cards
+            modifier: 1.5, // Effect multiplier
+            slideShadows: true, // Auto-generate 3D shadows
+          }}
+          autoplay={{
+            delay: 3000,
+            disableOnInteraction: false,
+          }}
+          pagination={{ clickable: true, dynamicBullets: true }}
+          modules={[EffectCoverflow, Pagination, Autoplay]}
+          className="w-full max-w-[1200px] !pb-12"
+        >
+          {extendedBanners.map((banner: any, i: number) => (
+            <SwiperSlide key={i} className="!w-[280px] md:!w-[350px]">
+              <div 
+                className="relative aspect-[4/5] rounded-[2rem] overflow-hidden shadow-[0_20px_50px_rgba(13,148,136,0.25)] group"
+                style={{ transformStyle: "preserve-3d" }}
+              >
+                {/* Image */}
+                <img 
+                  src={banner.imageUrl} 
+                  alt={banner.title || `Category`} 
+                  className="w-full h-full object-contain bg-white group-hover:scale-110 transition-transform duration-700" 
+                />
+                
+                {/* 3D Glass & Shadow Overlay */}
+                <div className="absolute inset-0 bg-gradient-to-t from-charcoal/90 via-charcoal/20 to-teal-500/10 mix-blend-multiply transition-colors duration-500 z-10" />
+                <div className="absolute inset-0 rounded-[2rem] border-[2px] border-white/20 z-30 pointer-events-none shadow-[inset_0_0_30px_rgba(255,255,255,0.2)]" />
+
+                {/* Sweeping Holographic Glare */}
+                <div className="absolute top-[-50%] left-[-150%] w-[100%] h-[200%] bg-gradient-to-r from-transparent via-white/40 to-transparent rotate-[35deg] z-20 group-hover:left-[200%] transition-all duration-[1.5s] ease-in-out pointer-events-none" />
+
+                {/* Floating Content */}
+                <div 
+                  className="absolute inset-0 flex flex-col justify-end p-6 md:p-8 z-40 pointer-events-none"
+                  style={{ transform: "translateZ(40px)" }}
+                >
+                  <h3 className="text-white font-[family-name:var(--font-playfair)] font-bold text-3xl md:text-4xl tracking-wider drop-shadow-[0_0_15px_rgba(255,255,255,0.5)] transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
+                    {banner.title || "Category"}
+                  </h3>
+                  <div className="w-12 h-[3px] bg-gold mt-4 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100 shadow-[0_0_10px_rgba(212,175,55,0.8)]" />
                 </div>
               </div>
-              <div className="w-full aspect-square rounded-3xl overflow-hidden relative shadow-neo-card group">
-                <Image src={getBanner(3).imageUrl} fill alt="Fabric 4" className="object-cover group-hover:scale-110 transition-transform duration-700" />
-                <div className="absolute inset-0 bg-gradient-to-t from-charcoal/80 to-transparent flex flex-col justify-end p-6">
-                  <h3 className="text-white font-bold text-xl">{getBanner(3).title || "Category"}</h3>
-                </div>
-              </div>
-            </div>
-            
-            <div className="space-y-4 md:space-y-6 -ml-8 md:-ml-12 lg:-ml-24 relative z-10">
-              <div className="w-full aspect-square rounded-3xl overflow-hidden relative shadow-neo-card group bg-white p-2">
-                <div className="w-full h-full relative rounded-2xl overflow-hidden">
-                  <Image src={getBanner(0).imageUrl} fill alt="Fabric 1" className="object-cover group-hover:scale-110 transition-transform duration-700" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-charcoal/80 to-transparent flex flex-col justify-end p-6">
-                    <h3 className="text-white font-bold text-xl">{getBanner(0).title || "Category"}</h3>
-                  </div>
-                </div>
-              </div>
-              <div className="w-full aspect-[4/5] rounded-3xl overflow-hidden relative shadow-neo-card group">
-                <Image src={getBanner(2).imageUrl} fill alt="Fabric 3" className="object-cover group-hover:scale-110 transition-transform duration-700" />
-                <div className="absolute inset-0 bg-gradient-to-t from-charcoal/80 to-transparent flex flex-col justify-end p-6">
-                  <h3 className="text-white font-bold text-xl">{getBanner(2).title || "Category"}</h3>
-                </div>
-              </div>
-            </div>
-          </motion.div>
-        </div>
+            </SwiperSlide>
+          ))}
+        </Swiper>
+      </div>
+
+      <div className="mt-8 relative z-10">
+        <Link href="/shop" className="btn-primary inline-flex items-center gap-2">
+          View All Categories <ArrowRight size={18} />
+        </Link>
       </div>
     </section>
   );

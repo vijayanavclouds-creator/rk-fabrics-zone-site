@@ -199,7 +199,11 @@ export default function CheckoutPage() {
                   <div key={item.variant.id} className="flex gap-4">
                     <div className="w-16 h-16 bg-slate-100 rounded-lg overflow-hidden flex-shrink-0">
                       <Image 
-                        src={item.variant.images?.[0]?.url || item.product.images?.[0]?.url || "/placeholder.jpg"} 
+                        src={
+                          (typeof item.variant.images?.[0] === 'string' ? item.variant.images[0] : (item.variant.images?.[0] as any)?.url) 
+                          || item.product.images?.[0]?.url 
+                          || "/placeholder.jpg"
+                        } 
                         alt={item.product.name} 
                         width={64} 
                         height={64} 
