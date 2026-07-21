@@ -2,10 +2,21 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Home, LayoutGrid, Heart, ShoppingBag, User } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useCartStore, useWishlistStore, useUIStore } from "@/store";
+import { useSession } from "next-auth/react";
+import Image from "next/image";
+
+const getInitials = (name: string) => {
+  const parts = name.trim().split(" ");
+  if (parts.length > 1) {
+    return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+  }
+  return (name[0] || "U").toUpperCase();
+};
 
 const navItems = [
  { icon: Home, label: "Home", href: "/" },
@@ -16,11 +27,17 @@ const navItems = [
 ];
 
 export function MobileNav() {
- const pathname = usePathname();
- const cartItemCount = useCartStore((s) => s.getItemCount());
- const wishlistCount = useWishlistStore((s) => s.items.length);
+  const pathname = usePathname();
+  const [mounted, setMounted] = useState(false);
+  const cartItemCount = useCartStore((s) => s.getItemCount());
+  const wishlistCount = useWishlistStore((s) => s.items.length);
+  const { data: session } = useSession();
 
- return (
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  return (
  <nav className="fixed bottom-0 left-0 right-0 z-50 md:hidden glass border-t border-charcoal/5 mobile-nav-safe">
  <div className="flex items-center justify-around h-16 px-2">
  {navItems.map((item) => {
@@ -39,9 +56,27 @@ export function MobileNav() {
  : "text-slate "
  )}
  >
- <div className="relative">
- <Icon size={22} strokeWidth={isActive ? 2.5 : 1.8} />
- {badgeCount > 0 && (
+  <div className="relative">
+  {item.label === "Account" && session?.user ? (
+    session.user.image ? (
+      <div className={cn("w-[22px] h-[22px] rounded-full overflow-hidden border", isActive ? "border-teal-600 border-2" : "border-charcoal/20")}>
+        <Image 
+          src={session.user.image} 
+          alt={session.user.name || "User"} 
+          width={22} 
+          height={22} 
+          className="object-cover w-full h-full"
+        />
+      </div>
+    ) : (
+      <div className={cn("w-[22px] h-[22px] rounded-full flex items-center justify-center text-[9px] font-bold border", isActive ? "bg-teal-600 text-white border-teal-600" : "bg-teal-100 text-teal-700 border-teal-200")}>
+        {session.user.name ? getInitials(session.user.name) : <Icon size={22} strokeWidth={isActive ? 2.5 : 1.8} />}
+      </div>
+    )
+  ) : (
+    <Icon size={22} strokeWidth={isActive ? 2.5 : 1.8} />
+  )}
+  {mounted && badgeCount > 0 && (
  <motion.span
  key={badgeCount}
  initial={{ scale: 0 }}

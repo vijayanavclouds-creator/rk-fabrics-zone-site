@@ -5,6 +5,7 @@ import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { MobileNav } from "@/components/layout/mobile-nav";
 import { CartDrawer } from "@/components/cart/cart-drawer";
+import { AuthHydration } from "@/components/layout/auth-hydration";
 import { Toaster } from "sonner";
 import { getNavigationLinks } from "@/actions/system";
 import "./globals.css";
@@ -98,6 +99,7 @@ export default async function RootLayout({
  disableTransitionOnChange={false}
  >
  <Header initialNavLinks={navLinks} />
+ <AuthHydration />
  <main className="flex-1 pb-20 md:pb-0">{children}</main>
  <Footer />
  <MobileNav />

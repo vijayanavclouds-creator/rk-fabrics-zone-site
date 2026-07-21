@@ -1,13 +1,13 @@
 "use client"
 
-import { useState } from "react"
+import { useState, Suspense } from "react"
 import { signIn } from "next-auth/react"
 import { useRouter, useSearchParams } from "next/navigation"
 import Link from "next/link"
 import { toast } from "sonner"
 import { ArrowRight, Lock, Mail } from "lucide-react"
 
-export default function Login() {
+function LoginContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const [loading, setLoading] = useState(false)
@@ -31,7 +31,12 @@ export default function Login() {
       })
 
       if (res?.error) {
-        toast.error("Invalid email or password")
+        if (res.error === "AccountDeactivated") {
+          toast.error("Account is deactivated. Redirecting to reactivation...")
+          router.push(`/reactivate?email=${encodeURIComponent(email)}`)
+        } else {
+          toast.error("Invalid email or password")
+        }
       } else {
         toast.success("Successfully logged in!")
         router.push(callbackUrl)
@@ -85,6 +90,11 @@ export default function Login() {
                   placeholder="••••••••"
                 />
               </div>
+              <div className="flex justify-between items-center mt-1">
+                <Link href="/forgot-password" className="text-xs font-bold text-teal-600 hover:underline">
+                  Forgot Password?
+                </Link>
+              </div>
             </div>
 
             <button
@@ -125,5 +135,13 @@ export default function Login() {
         </div>
       </main>
     </div>
+  )
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><p>Loading...</p></div>}>
+      <LoginContent />
+    </Suspense>
   )
 }

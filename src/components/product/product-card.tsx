@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
@@ -10,6 +10,8 @@ import { cn, formatPrice, calculateDiscount } from "@/lib/utils";
 import { useCartStore, useWishlistStore } from "@/store";
 import { toast } from "sonner";
 import type { Product } from "@/types";
+import { useSession } from "next-auth/react";
+import { toggleWishlistDb } from "@/actions/wishlist";
 
 interface ProductCardProps {
  product: Product;
@@ -17,14 +19,18 @@ interface ProductCardProps {
  variant?: "default" | "compact" | "featured";
 }
 
-export function ProductCard({ product, index = 0, variant = "default" }: ProductCardProps) {
- const [isHovered, setIsHovered] = useState(false);
- const router = useRouter();
- const addItem = useCartStore((s) => s.addItem);
- const { toggleItem, isInWishlist } = useWishlistStore();
- const wishlisted = isInWishlist(product.id);
+ export function ProductCard({ product, index = 0, variant = "default" }: ProductCardProps) {
+  const [isHovered, setIsHovered] = useState(false);
+  const router = useRouter();
+  const addItem = useCartStore((s) => s.addItem);
+  const [isMounted, setIsMounted] = useState(false);
+  const { toggleItem, isInWishlist } = useWishlistStore();
+  const wishlisted = isInWishlist(product.id);
+  const { data: session } = useSession();
 
- const primaryVariant = product.variants[0];
+  useEffect(() => setIsMounted(true), []);
+
+  const primaryVariant = product.variants[0];
  const price = primaryVariant?.salePrice || primaryVariant?.price || product.salePrice || product.basePrice;
  const originalPrice = primaryVariant?.price || product.basePrice;
  const hasDiscount = product.salePrice && product.salePrice < product.basePrice;
@@ -44,14 +50,19 @@ export function ProductCard({ product, index = 0, variant = "default" }: Product
  }
  };
 
- const handleWishlist = (e: React.MouseEvent) => {
- e.preventDefault();
- e.stopPropagation();
- toggleItem(product.id);
- toast(wishlisted ? "Removed from wishlist" : "Added to wishlist ❤️", {
- description: product.name,
- });
- };
+  const handleWishlist = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    toggleItem(product.id);
+    toast(wishlisted ? "Removed from wishlist" : "Added to wishlist ❤️", {
+      description: product.name,
+    });
+
+    if (session?.user) {
+      await toggleWishlistDb(product.id);
+    }
+  };
 
  const handleQuickView = (e: React.MouseEvent) => {
  e.preventDefault();
@@ -139,7 +150,7 @@ export function ProductCard({ product, index = 0, variant = "default" }: Product
  size={16}
  className={cn(
  "transition-colors",
- wishlisted ? "fill-rose text-rose" : "text-charcoal/50 "
+ isMounted && wishlisted ? "fill-rose text-rose" : "text-charcoal/50 "
  )}
  />
  </button>

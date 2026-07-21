@@ -69,6 +69,51 @@ export async function uploadProductImage(formData: FormData) {
   }
 }
 
+import { getServerSession } from "next-auth/next"
+import { authOptions } from "@/lib/auth"
+
+export async function uploadProfileImage(formData: FormData) {
+  try {
+    const session = await getServerSession(authOptions)
+    if (!session?.user?.email) {
+      return { success: false, error: "Unauthorized" }
+    }
+
+    const file = formData.get("file") as File
+    if (!file) return { success: false, error: "Missing file" }
+
+    if (!process.env.CLOUDINARY_CLOUD_NAME || !process.env.CLOUDINARY_API_KEY) {
+      return { success: false, error: "Cloudinary credentials not configured" }
+    }
+
+    const arrayBuffer = await file.arrayBuffer()
+    const buffer = Buffer.from(arrayBuffer)
+    const base64Data = `data:${file.type};base64,${buffer.toString("base64")}`
+
+    const result = await cloudinary.uploader.upload(base64Data, {
+      folder: "rk-fabrics/profiles",
+      transformation: [
+        { width: 400, height: 400, crop: "fill", gravity: "face" },
+        { quality: "auto:good" },
+        { fetch_format: "auto" }
+      ]
+    })
+
+    await prisma.user.update({
+      where: { email: session.user.email },
+      data: { image: result.secure_url }
+    })
+
+    revalidatePath("/account")
+    revalidatePath("/account/profile")
+
+    return { success: true, url: result.secure_url }
+  } catch (error: any) {
+    console.error("Profile image upload error:", error)
+    return { success: false, error: error.message || "Upload failed" }
+  }
+}
+
 export async function deleteProductImage(imageId: string) {
   try {
     const image = await prisma.productImage.findUnique({ where: { id: imageId } })

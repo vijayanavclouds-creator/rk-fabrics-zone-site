@@ -120,13 +120,31 @@ model User {
   email         String?   @unique
   emailVerified DateTime?
   image         String?
+  phone         String?
+  dob           String?
   password      String?
   role          String    @default("CUSTOMER") // "CUSTOMER" or "ADMIN"
+  isActive      Boolean   @default(true)
   createdAt     DateTime  @default(now())
   
   accounts      Account[]
   sessions      Session[]
   orders        Order[]
+  addresses     Address[]
+  wishlistItems WishlistItem[]
+  coupons       Coupon[]
+  notifications Notification[]
+}
+
+model WishlistItem {
+  id        String   @id @default(cuid())
+  userId    String
+  productId String
+  createdAt DateTime @default(now())
+  
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@unique([userId, productId])
 }
 
 model VerificationToken {
@@ -137,15 +155,64 @@ model VerificationToken {
   @@unique([identifier, token])
 }
 
+model Otp {
+  id        String   @id @default(cuid())
+  email     String
+  otp       String
+  type      String   // SIGNUP, REACTIVATE, RESET_PASSWORD
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+}
+
+model Coupon {
+  id             String   @id @default(cuid())
+  code           String   @unique
+  discountValue  Float
+  discountType   String   // "PERCENTAGE" or "FIXED"
+  validForUserId String
+  user           User     @relation(fields: [validForUserId], references: [id], onDelete: Cascade)
+  isUsed         Boolean  @default(false)
+  expiresAt      DateTime
+  createdAt      DateTime @default(now())
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title     String
+  message   String
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
+model AdminNotification {
+  id        String   @id @default(cuid())
+  type      String   // e.g. "ORDER", "REVIEW", "QUERY", "SYSTEM"
+  message   String
+  link      String?  // Optional link to redirect when clicked
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
+model AdminSettings {
+  id                         String   @id @default("singleton")
+  lateShippingThresholdHours Int      @default(6)
+  updatedAt                  DateTime @updatedAt
+}
+
 model Order {
   id              String      @id @default(cuid())
   userId          String
-  user            User        @relation(fields: [userId], references: [id])
+  user            User        @relation(fields: [userId], references: [id], onDelete: Cascade)
   status          String      @default("PENDING") // PENDING, PROCESSING, SHIPPED, DELIVERED, CANCELLED
-  totalAmount     Float
-  shippingAmount  Float
-  subtotalAmount  Float
-  shippingAddress String
+  totalAmount       Float
+  shippingAmount    Float
+  platformFeeAmount Float       @default(0)
+  subtotalAmount    Float
+  discountAmount    Float       @default(0)
+  couponCode        String?
+  shippingAddress   String
   phone           String
   email           String
   paymentMethod   String      @default("COD")
@@ -173,5 +240,21 @@ model SystemSetting {
   id        String   @id @default(cuid())
   key       String   @unique
   value     String   // Stored as JSON string
+  updatedAt DateTime @updatedAt
+}
+
+model Address {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  firstName String
+  lastName  String
+  phone     String
+  address   String
+  city      String
+  state     String
+  pincode   String
+  isDefault Boolean  @default(false)
+  createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }

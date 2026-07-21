@@ -5,14 +5,57 @@ import bcrypt from "bcryptjs"
 import { revalidatePath } from "next/cache"
 import { getServerSession } from "next-auth/next"
 import { authOptions } from "@/lib/auth"
+import { sendOTPEmail } from "@/lib/email"
+
+function generateOTP() {
+  return Math.floor(100000 + Math.random() * 900000).toString();
+}
+
+export async function sendSignupOtp(email: string) {
+  try {
+    if (!email) return { success: false, error: "Email is required" };
+
+    const existingUser = await prisma.user.findUnique({ where: { email } });
+    if (existingUser) {
+      return { success: false, error: "User with this email already exists" };
+    }
+
+    const otp = generateOTP();
+    const expiresAt = new Date(Date.now() + 15 * 60 * 1000); // 15 mins
+
+    // Remove any existing unused OTPs for this email of this type
+    await prisma.otp.deleteMany({
+      where: { email, type: "SIGNUP" }
+    });
+
+    await prisma.otp.create({
+      data: {
+        email,
+        otp,
+        type: "SIGNUP",
+        expiresAt
+      }
+    });
+
+    const emailRes = await sendOTPEmail(email, otp, "SIGNUP");
+    if (!emailRes.success) {
+      return { success: false, error: "Failed to send OTP email" };
+    }
+
+    return { success: true };
+  } catch (error: any) {
+    return { success: false, error: error.message || "Failed to send OTP" };
+  }
+}
 
 export async function registerUser(formData: FormData) {
   try {
     const name = formData.get("name") as string
     const email = formData.get("email") as string
     const password = formData.get("password") as string
+    const otp = formData.get("otp") as string
 
-    if (!name || !email || !password) {
+    if (!name || !email || !password || !otp) {
       return { success: false, error: "All fields are required" }
     }
 
@@ -23,6 +66,20 @@ export async function registerUser(formData: FormData) {
     const existingUser = await prisma.user.findUnique({ where: { email } })
     if (existingUser) {
       return { success: false, error: "User with this email already exists" }
+    }
+
+    // Verify OTP
+    const validOtp = await prisma.otp.findFirst({
+      where: {
+        email,
+        otp,
+        type: "SIGNUP",
+        expiresAt: { gt: new Date() }
+      }
+    });
+
+    if (!validOtp) {
+      return { success: false, error: "Invalid or expired OTP" };
     }
 
     const hashedPassword = await bcrypt.hash(password, 10)
@@ -37,12 +94,96 @@ export async function registerUser(formData: FormData) {
         email,
         password: hashedPassword,
         role,
+        isActive: true
       }
     })
+
+    // Clean up OTP
+    await prisma.otp.deleteMany({
+      where: { email, type: "SIGNUP" }
+    });
 
     return { success: true }
   } catch (error: any) {
     return { success: false, error: error.message || "Failed to register" }
+  }
+}
+
+export async function sendResetPasswordOtp(email: string) {
+  try {
+    if (!email) return { success: false, error: "Email is required" };
+
+    const existingUser = await prisma.user.findUnique({ where: { email } });
+    if (!existingUser) {
+      // Return success anyway to prevent email enumeration
+      return { success: true };
+    }
+
+    const otp = generateOTP();
+    const expiresAt = new Date(Date.now() + 15 * 60 * 1000); // 15 mins
+
+    await prisma.otp.deleteMany({
+      where: { email, type: "RESET_PASSWORD" }
+    });
+
+    await prisma.otp.create({
+      data: {
+        email,
+        otp,
+        type: "RESET_PASSWORD",
+        expiresAt
+      }
+    });
+
+    await sendOTPEmail(email, otp, "RESET_PASSWORD");
+
+    return { success: true };
+  } catch (error: any) {
+    return { success: false, error: "Failed to send reset OTP" };
+  }
+}
+
+export async function resetPassword(formData: FormData) {
+  try {
+    const email = formData.get("email") as string;
+    const otp = formData.get("otp") as string;
+    const password = formData.get("password") as string;
+
+    if (!email || !otp || !password) {
+      return { success: false, error: "All fields are required" };
+    }
+    
+    if (password.length < 6) {
+      return { success: false, error: "Password must be at least 6 characters" };
+    }
+
+    const validOtp = await prisma.otp.findFirst({
+      where: {
+        email,
+        otp,
+        type: "RESET_PASSWORD",
+        expiresAt: { gt: new Date() }
+      }
+    });
+
+    if (!validOtp) {
+      return { success: false, error: "Invalid or expired OTP" };
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    await prisma.user.update({
+      where: { email },
+      data: { password: hashedPassword }
+    });
+
+    await prisma.otp.deleteMany({
+      where: { email, type: "RESET_PASSWORD" }
+    });
+
+    return { success: true };
+  } catch (error: any) {
+    return { success: false, error: "Failed to reset password" };
   }
 }
 

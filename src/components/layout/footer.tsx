@@ -7,11 +7,11 @@ import { Heart, MapPin, Phone, Mail, Globe, Bookmark, AtSign, MessageCircle } fr
 
 const footerLinks = {
  shop: [
- { label: "Women's Ethnic", href: "/shop/women-ethnic" },
- { label: "Women's Western", href: "/shop/women-western" },
- { label: "Men's Formal", href: "/shop/men-formal" },
- { label: "Men's Ethnic", href: "/shop/men-ethnic" },
- { label: "Premium Fabrics", href: "/shop/fabrics" },
+ { label: "Women's Ethnic", href: "/shop?category=women-ethnic" },
+ { label: "Women's Western", href: "/shop?category=women-western" },
+ { label: "Men's Formal", href: "/shop?category=men-formal" },
+ { label: "Men's Ethnic", href: "/shop?category=men-ethnic" },
+ { label: "Premium Fabrics", href: "/shop?category=fabrics-cotton,fabrics-silk,fabrics-prints" },
  { label: "New Arrivals", href: "/shop?filter=new" },
  { label: "Sale", href: "/shop?filter=sale" },
  ],
@@ -33,9 +33,9 @@ const footerLinks = {
  ],
 };
 export function Footer() {
- return (
- <footer className="hidden md:block bg-gradient-to-br from-charcoal to-slate text-white">
-  {/* Newsletter Strip */}
+  return (
+  <footer className="bg-gradient-to-br from-charcoal to-slate text-white pb-20 md:pb-0">
+   {/* Newsletter Strip */}
   <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 pt-8 pb-4">
     <div className="bg-transparent rounded-3xl p-6 md:p-8 flex flex-col md:flex-row items-center justify-between gap-6 shadow-[8px_8px_20px_rgba(0,0,0,0.4),-8px_-8px_20px_rgba(255,255,255,0.05)] border border-white/5">
       <div className="flex items-center gap-4">

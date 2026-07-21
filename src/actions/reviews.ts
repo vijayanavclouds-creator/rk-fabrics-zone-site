@@ -25,6 +25,25 @@ export async function addReview(formData: FormData) {
         comment,
       }
     })
+
+    // Create an Admin Notification
+    try {
+      const productForNotification = await prisma.product.findUnique({
+        where: { id: productId },
+        select: { name: true, slug: true }
+      });
+      if (productForNotification) {
+        await prisma.adminNotification.create({
+          data: {
+            type: "REVIEW",
+            message: `New ${rating}-star review from ${userName} on ${productForNotification.name}`,
+            link: `/product/${productForNotification.slug}`
+          }
+        });
+      }
+    } catch (e) {
+      console.error("Failed to create admin notification:", e);
+    }
     
     // Update product rating and review count
     const product = await prisma.product.findUnique({

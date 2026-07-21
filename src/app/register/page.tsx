@@ -5,33 +5,64 @@ import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { toast } from "sonner"
 import { signIn } from "next-auth/react"
-import { ArrowRight, Lock, Mail, User } from "lucide-react"
-import { registerUser } from "@/actions/auth"
+import { ArrowRight, Lock, Mail, User, KeyRound } from "lucide-react"
+import { registerUser, sendSignupOtp } from "@/actions/auth"
 
 export default function Register() {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
+  const [step, setStep] = useState<"DETAILS" | "OTP">("DETAILS")
+  const [formDataState, setFormDataState] = useState<FormData | null>(null)
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSendOtp = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setLoading(true)
     
     const formData = new FormData(e.currentTarget)
+    const email = formData.get("email") as string
+    setFormDataState(formData)
 
     try {
-      const res = await registerUser(formData)
-
+      const res = await sendSignupOtp(email)
+      
       if (!res.success) {
         toast.error(res.error)
       } else {
-        toast.success("Account created successfully! Please sign in.")
-        router.push("/login")
+        toast.success("Verification code sent to your email")
+        setStep("OTP")
       }
     } catch (error) {
       toast.error("Something went wrong")
     } finally {
       setLoading(false)
     }
+  }
+
+  const handleVerifyAndRegister = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    setLoading(true)
+    
+    const otpData = new FormData(e.currentTarget)
+    const otp = otpData.get("otp") as string
+
+    if (formDataState) {
+      formDataState.append("otp", otp)
+      
+      try {
+        const res = await registerUser(formDataState)
+
+        if (!res.success) {
+          toast.error(res.error)
+        } else {
+          toast.success("Account created successfully! Please sign in.")
+          router.push("/login")
+        }
+      } catch (error) {
+        toast.error("Something went wrong")
+      }
+    }
+    
+    setLoading(false)
   }
 
   return (
@@ -44,65 +75,113 @@ export default function Register() {
             <p className="text-slate">Join RK Fabrics Zone today</p>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-5">
-            <div>
-              <label className="block text-sm font-bold text-charcoal mb-2">Full Name</label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate">
-                  <User size={18} />
+          {step === "DETAILS" ? (
+            <form onSubmit={handleSendOtp} className="space-y-5">
+              <div>
+                <label className="block text-sm font-bold text-charcoal mb-2">Full Name</label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate">
+                    <User size={18} />
+                  </div>
+                  <input
+                    type="text"
+                    name="name"
+                    required
+                    className="w-full pl-11 pr-4 py-3 rounded-xl border border-charcoal/20 bg-transparent focus:outline-none focus:border-teal-600 focus:ring-1 focus:ring-teal-600 transition-all text-charcoal"
+                    placeholder="John Doe"
+                  />
                 </div>
-                <input
-                  type="text"
-                  name="name"
-                  required
-                  className="w-full pl-11 pr-4 py-3 rounded-xl border border-charcoal/20 bg-transparent focus:outline-none focus:border-teal-600 focus:ring-1 focus:ring-teal-600 transition-all text-charcoal"
-                  placeholder="John Doe"
-                />
               </div>
-            </div>
 
-            <div>
-              <label className="block text-sm font-bold text-charcoal mb-2">Email Address</label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate">
-                  <Mail size={18} />
+              <div>
+                <label className="block text-sm font-bold text-charcoal mb-2">Email Address</label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate">
+                    <Mail size={18} />
+                  </div>
+                  <input
+                    type="email"
+                    name="email"
+                    required
+                    className="w-full pl-11 pr-4 py-3 rounded-xl border border-charcoal/20 bg-transparent focus:outline-none focus:border-teal-600 focus:ring-1 focus:ring-teal-600 transition-all text-charcoal"
+                    placeholder="you@example.com"
+                  />
                 </div>
-                <input
-                  type="email"
-                  name="email"
-                  required
-                  className="w-full pl-11 pr-4 py-3 rounded-xl border border-charcoal/20 bg-transparent focus:outline-none focus:border-teal-600 focus:ring-1 focus:ring-teal-600 transition-all text-charcoal"
-                  placeholder="you@example.com"
-                />
               </div>
-            </div>
 
-            <div>
-              <label className="block text-sm font-bold text-charcoal mb-2">Password</label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate">
-                  <Lock size={18} />
+              <div>
+                <label className="block text-sm font-bold text-charcoal mb-2">Password</label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate">
+                    <Lock size={18} />
+                  </div>
+                  <input
+                    type="password"
+                    name="password"
+                    required
+                    minLength={6}
+                    className="w-full pl-11 pr-4 py-3 rounded-xl border border-charcoal/20 bg-transparent focus:outline-none focus:border-teal-600 focus:ring-1 focus:ring-teal-600 transition-all text-charcoal"
+                    placeholder="At least 6 characters"
+                  />
                 </div>
-                <input
-                  type="password"
-                  name="password"
-                  required
-                  minLength={6}
-                  className="w-full pl-11 pr-4 py-3 rounded-xl border border-charcoal/20 bg-transparent focus:outline-none focus:border-teal-600 focus:ring-1 focus:ring-teal-600 transition-all text-charcoal"
-                  placeholder="At least 6 characters"
-                />
               </div>
-            </div>
 
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full py-4 bg-charcoal text-white font-bold rounded-xl shadow-neo-btn hover:bg-black hover:shadow-neo-pressed transition-all flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed mt-2"
-            >
-              {loading ? "Creating account..." : "Sign Up"}
-              {!loading && <ArrowRight size={18} />}
-            </button>
-          </form>
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full py-4 bg-charcoal text-white font-bold rounded-xl shadow-neo-btn hover:bg-black hover:shadow-neo-pressed transition-all flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed mt-2"
+              >
+                {loading ? "Sending Code..." : "Continue"}
+                {!loading && <ArrowRight size={18} />}
+              </button>
+            </form>
+          ) : (
+            <form onSubmit={handleVerifyAndRegister} className="space-y-5">
+              <div className="text-center mb-6">
+                <p className="text-sm font-medium text-slate">
+                  We've sent a verification code to <br/>
+                  <strong className="text-charcoal">{formDataState?.get("email") as string}</strong>
+                </p>
+              </div>
+
+              <div>
+                <label className="block text-sm font-bold text-charcoal mb-2">Verification Code</label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate">
+                    <KeyRound size={18} />
+                  </div>
+                  <input
+                    type="text"
+                    name="otp"
+                    required
+                    maxLength={6}
+                    className="w-full pl-11 pr-4 py-3 rounded-xl border border-charcoal/20 bg-transparent focus:outline-none focus:border-teal-600 focus:ring-1 focus:ring-teal-600 transition-all text-charcoal text-center tracking-widest text-lg font-bold"
+                    placeholder="000000"
+                  />
+                </div>
+              </div>
+
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full py-4 bg-teal-600 text-white font-bold rounded-xl shadow-neo-btn hover:bg-teal-700 hover:shadow-neo-pressed transition-all flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed mt-2"
+              >
+                {loading ? "Verifying..." : "Verify & Sign Up"}
+                {!loading && <ArrowRight size={18} />}
+              </button>
+
+              <div className="text-center mt-4">
+                <button
+                  type="button"
+                  onClick={() => setStep("DETAILS")}
+                  disabled={loading}
+                  className="text-sm font-bold text-teal-600 hover:underline"
+                >
+                  Change Email or Details
+                </button>
+              </div>
+            </form>
+          )}
 
           <div className="mt-6 flex items-center justify-between">
             <span className="w-1/5 border-b border-charcoal/10 lg:w-1/4"></span>

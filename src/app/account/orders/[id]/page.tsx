@@ -6,15 +6,16 @@ import Link from "next/link"
 import { ArrowLeft, Package, Clock, Truck, CheckCircle, XCircle } from "lucide-react"
 import Image from "next/image"
 
-export default async function OrderDetailsPage({ params }: { params: { id: string } }) {
+export default async function OrderDetailsPage({ params }: { params: Promise<{ id: string }> }) {
+  const resolvedParams = await params
   const session = await getServerSession(authOptions)
 
   if (!session) {
     redirect("/login")
   }
 
-  const order = await prisma.order.findUnique({
-    where: { id: params.id, userId: session.user.id },
+  const order = await prisma.order.findFirst({
+    where: { id: resolvedParams.id, userId: session.user.id },
     include: { items: true }
   })
 
@@ -98,9 +99,15 @@ export default async function OrderDetailsPage({ params }: { params: { id: strin
                   </div>
                   <div className="flex justify-between">
                     <span className="text-slate">Shipping</span>
-                    <span className="font-bold text-charcoal">{order.shippingAmount === 0 ? "Free" : `₹${order.shippingAmount}`}</span>
+                    <span className="font-bold text-charcoal">{order.shippingAmount === 0 ? "Free" : `₹${order.shippingAmount.toLocaleString()}`}</span>
                   </div>
-                  <div className="flex justify-between">
+                  {order.platformFeeAmount > 0 && (
+                    <div className="flex justify-between">
+                      <span className="text-slate">Platform Fee</span>
+                      <span className="font-bold text-charcoal">₹{order.platformFeeAmount.toLocaleString()}</span>
+                    </div>
+                  )}
+                  <div className="flex justify-between items-center">
                     <span className="text-slate">Payment Method</span>
                     <span className="font-bold text-charcoal">{order.paymentMethod}</span>
                   </div>

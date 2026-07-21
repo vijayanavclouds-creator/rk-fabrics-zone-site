@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useTransition, useEffect, useRef } from "react"
+import { useSearchParams } from "next/navigation"
 import { updateProduct, createProduct, deleteProduct, bulkUpdateImagesAndVariants } from "@/actions/admin"
 import { toast } from "sonner"
 import { Save, Upload, X, Star, Trash2, Plus, Edit, Image as ImageIcon, ChevronDown, LayoutTemplate, Activity, User, Menu, Tag, Scissors } from "lucide-react"
@@ -15,6 +16,7 @@ import { UsersManager } from "./users-manager"
 import { OrdersManager } from "./orders-manager"
 import { NavigationManager } from "./navigation-manager"
 import { TaxonomyManager } from "./taxonomy-manager"
+import { PortalHeader } from "@/components/layout/portal-header"
 
 export function AdminDashboard({ 
   products, 
@@ -27,13 +29,24 @@ export function AdminDashboard({
   storeCategories?: { value: string, label: string }[],
   storeFabrics?: { value: string, label: string }[]
 }) {
-  const [activeView, setActiveView] = useState<"list" | "new" | "edit" | "banners" | "system" | "users" | "orders" | "navigation" | "taxonomy">("list")
+  const searchParams = useSearchParams()
+  const tabParam = searchParams.get("tab") as any
+  const initialView = ["list", "new", "edit", "banners", "system", "users", "orders", "navigation", "taxonomy"].includes(tabParam) ? tabParam : "list"
+  
+  const [activeView, setActiveView] = useState<"list" | "new" | "edit" | "banners" | "system" | "users" | "orders" | "navigation" | "taxonomy">(initialView)
   const [editingProduct, setEditingProduct] = useState<any>(null)
   const [isPending, startTransition] = useTransition()
   
   // State for new product
   const [newCategory, setNewCategory] = useState<string[]>([])
   const [newFabric, setNewFabric] = useState<string>("")
+
+  // Sync state with URL when URL changes
+  useEffect(() => {
+    if (tabParam && ["list", "new", "edit", "banners", "system", "users", "orders", "navigation", "taxonomy"].includes(tabParam)) {
+      setActiveView(tabParam)
+    }
+  }, [tabParam])
 
   useEffect(() => {
     if (editingProduct) {
@@ -177,61 +190,20 @@ export function AdminDashboard({
   // LIST VIEW
   return (
     <div className="space-y-6 animate-in fade-in duration-300">
-      <div className="flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center">
-        <div className="flex bg-slate-100 p-1.5 rounded-2xl">
-          <button 
-            onClick={() => setActiveView("list")}
-            className={`px-6 py-2.5 rounded-xl font-bold text-sm transition-all ${activeView === "list" ? "bg-white text-charcoal shadow-sm" : "text-slate hover:text-charcoal"}`}
-          >
-            Products
-          </button>
-          <button 
-            onClick={() => setActiveView("orders")}
-            className={`px-6 py-2.5 rounded-xl font-bold text-sm transition-all flex items-center gap-2 ${activeView === "orders" ? "bg-white text-charcoal shadow-sm" : "text-slate hover:text-charcoal"}`}
-          >
-            Orders
-          </button>
-          <button 
-            onClick={() => setActiveView("banners")}
-            className={`px-6 py-2.5 rounded-xl font-bold text-sm transition-all flex items-center gap-2 ${activeView === "banners" ? "bg-white text-charcoal shadow-sm" : "text-slate hover:text-charcoal"}`}
-          >
-            <LayoutTemplate size={16} /> Banners
-          </button>
-          <button 
-            onClick={() => setActiveView("navigation")}
-            className={`px-6 py-2.5 rounded-xl font-bold text-sm transition-all flex items-center gap-2 ${activeView === "navigation" ? "bg-white text-charcoal shadow-sm" : "text-slate hover:text-charcoal"}`}
-          >
-            <Menu size={16} /> Navigation
-          </button>
-          <button 
-            onClick={() => setActiveView("taxonomy")} 
-            className={cn("px-6 py-2.5 rounded-xl text-sm transition-all flex items-center gap-2 font-bold", activeView === "taxonomy" ? "bg-white text-charcoal shadow-sm" : "text-slate hover:text-charcoal")}
-          >
-            <Tag size={16} /> Taxonomy
-          </button>
-          <button 
-            onClick={() => setActiveView("system")}
-            className={`px-6 py-2.5 rounded-xl font-bold text-sm transition-all flex items-center gap-2 ${activeView === "system" ? "bg-white text-charcoal shadow-sm" : "text-slate hover:text-charcoal"}`}
-          >
-            <Activity size={16} /> System
-          </button>
-          <button 
-            onClick={() => setActiveView("users")}
-            className={`px-6 py-2.5 rounded-xl font-bold text-sm transition-all flex items-center gap-2 ${activeView === "users" ? "bg-white text-charcoal shadow-sm" : "text-slate hover:text-charcoal"}`}
-          >
-            <User size={16} /> Users
-          </button>
-        </div>
-        
-        {activeView === "list" && (
-          <button 
-            onClick={() => setActiveView("new")}
-            className="flex items-center gap-2 bg-charcoal text-white px-6 py-3 rounded-2xl font-bold hover:bg-black transition-all shadow-neo-btn hover:-translate-y-1 w-full sm:w-auto justify-center"
-          >
-            <Plus size={20} /> Add Product
-          </button>
-        )}
-      </div>
+      {activeView === "list" && (
+        <PortalHeader 
+          title="Admin Dashboard"
+          description="Manage your products and inventory in real-time."
+          rightElement={
+            <button 
+              onClick={() => setActiveView("new")}
+              className="flex items-center gap-2 bg-charcoal text-white px-6 py-2.5 rounded-2xl font-bold hover:bg-black transition-all shadow-neo-btn hover:-translate-y-1 w-full sm:w-auto justify-center whitespace-nowrap text-sm"
+            >
+              <Plus size={18} /> Add Product
+            </button>
+          }
+        />
+      )}
 
       {activeView === "banners" && (
         <BannerManager banners={initialBanners} />
@@ -258,7 +230,7 @@ export function AdminDashboard({
             <table className="w-full text-left border-collapse">
             <thead>
               <tr className="bg-cream-dark/30 border-b border-charcoal/10">
-              <th className="p-5 font-bold text-charcoal min-w-[200px]">Product Name</th>
+              <th className="p-5 font-bold text-charcoal min-w-[320px]">Product Name</th>
               <th className="p-5 font-bold text-charcoal w-40 whitespace-nowrap">Category</th>
               <th className="p-5 font-bold text-charcoal w-32 whitespace-nowrap">MRP (₹)</th>
               <th className="p-5 font-bold text-charcoal w-28 whitespace-nowrap">Disc.</th>
@@ -280,8 +252,7 @@ export function AdminDashboard({
                       )}
                     </div>
                     <div>
-                      <span className="font-semibold text-charcoal block group-hover:text-teal-700 transition-colors">{product.name}</span>
-                      <span className="text-xs text-slate mt-1 block">Slug: {product.slug}</span>
+                      <span className="font-semibold text-charcoal block group-hover:text-teal-700 transition-colors truncate max-w-[280px]" title={product.name}>{product.name}</span>
                       {product.isFreeDelivery && <span className="inline-block mt-2 text-[10px] uppercase font-bold tracking-wider text-teal-700 bg-teal-50 px-2 py-0.5 rounded border border-teal-200">Free Delivery</span>}
                     </div>
                   </div>
@@ -311,16 +282,18 @@ export function AdminDashboard({
                   <div className="flex justify-center gap-3">
                     <button 
                       onClick={() => { setEditingProduct(product); setActiveView("edit") }}
-                      className="flex items-center justify-center gap-2 py-2 px-5 text-white rounded-xl font-bold transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5 active:translate-y-1 active:border-b-transparent border-b-4 border-b-slate-900 bg-slate-700 hover:bg-slate-800 text-sm whitespace-nowrap"
+                      className="btn-primary w-12 h-12 flex items-center justify-center p-0 !px-0 rounded-xl flex-shrink-0"
+                      title="Edit"
                     >
-                      <Edit size={16} /> Edit
+                      <Edit size={18} />
                     </button>
                     <button 
                       onClick={() => handleDeleteProduct(product.id, product.name)}
                       disabled={isPending}
-                      className="flex items-center justify-center gap-2 py-2 px-5 text-white rounded-xl font-bold transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5 active:translate-y-1 active:border-b-transparent border-b-4 border-b-rose-950 bg-rose-800 hover:bg-rose-900 disabled:opacity-50 text-sm whitespace-nowrap"
+                      className="btn-primary w-12 h-12 flex items-center justify-center p-0 !px-0 rounded-xl flex-shrink-0 text-rose-600 disabled:opacity-50"
+                      title="Delete"
                     >
-                      <Trash2 size={16} /> Delete
+                      <Trash2 size={18} />
                     </button>
                   </div>
                 </td>

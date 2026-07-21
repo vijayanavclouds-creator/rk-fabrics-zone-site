@@ -9,25 +9,38 @@ import { ProductCard } from "@/components/product/product-card";
 import { products } from "@/lib/data";
 import { useState } from "react";
 import { toast } from "sonner";
+import Image from "next/image";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 export default function CartPage() {
- const { items, updateQuantity, removeItem, getSubtotal, getShipping, getTotal, getItemCount } = useCartStore();
- const [couponCode, setCouponCode] = useState("");
- const [couponApplied, setCouponApplied] = useState(false);
+  const { items, updateQuantity, removeItem, getSubtotal, getShipping, getTotal, getItemCount } = useCartStore();
+  const [couponCode, setCouponCode] = useState("");
+  const [couponApplied, setCouponApplied] = useState(false);
+  const { data: session } = useSession();
+  const router = useRouter();
 
- const subtotal = getSubtotal();
- const shipping = getShipping();
- const discount = couponApplied ? Math.round(subtotal * 0.1) : 0;
- const total = subtotal + shipping - discount;
+  const subtotal = getSubtotal();
+  const shipping = getShipping();
+  const discount = couponApplied ? Math.round(subtotal * 0.1) : 0;
+  const total = subtotal + shipping - discount;
 
- const handleApplyCoupon = () => {
- if (couponCode.toUpperCase() === "RK30" || couponCode.toUpperCase() === "WELCOME10") {
- setCouponApplied(true);
- toast.success("Coupon applied! 🎉", { description: "10% discount activated" });
- } else {
- toast.error("Invalid coupon code");
- }
- };
+  const handleApplyCoupon = () => {
+    if (couponCode.toUpperCase() === "RK30" || couponCode.toUpperCase() === "WELCOME10") {
+      setCouponApplied(true);
+      toast.success("Coupon applied! 🎉", { description: "10% discount activated" });
+    } else {
+      toast.error("Invalid coupon code");
+    }
+  };
+
+  const handleCheckout = () => {
+    if (!session) {
+      router.push("/login?callbackUrl=/checkout/payment");
+    } else {
+      router.push("/checkout/payment");
+    }
+  };
 
  const suggestedProducts = products.filter(
  (p) => !items.some((item) => item.product.id === p.id)
@@ -95,11 +108,21 @@ export default function CartPage() {
  initial={{ opacity: 0, y: 20 }}
  animate={{ opacity: 1, y: 0 }}
  exit={{ opacity: 0, x: -100 }}
- className="flex gap-4 p-4 md:p-5 bg-white rounded-2xl border border-charcoal/5 "
+ className="flex gap-4 p-4 md:p-5 bg-white rounded-2xl border border-charcoal/5"
  >
  {/* Image */}
- <div className="w-24 h-28 md:w-28 md:h-32 bg-cream-dark rounded-xl flex items-center justify-center text-4xl shrink-0">
- 🧵
+ <div className="w-20 h-28 md:w-24 md:h-32 bg-cream-dark rounded-xl flex items-center justify-center shrink-0 overflow-hidden relative border border-charcoal/5">
+   <Image
+     src={
+       (typeof item.variant.images?.[0] === 'string' ? item.variant.images[0] : (item.variant.images?.[0] as any)?.url) 
+       || item.product.images?.find((img) => img.isPrimary)?.url
+       || item.product.images?.[0]?.url 
+       || "/placeholder.jpg"
+     }
+     alt={item.product.name}
+     fill
+     className="object-cover object-top"
+   />
  </div>
 
  <div className="flex-1 min-w-0">
@@ -220,21 +243,21 @@ export default function CartPage() {
  </div>
 
  {/* Free Shipping */}
- {shipping > 0 && (
- <div className="flex items-center gap-2 text-xs text-teal-700/80 bg-teal-50/50 p-3 rounded-xl">
- <Truck size={14} />
- <span>Add <strong>{formatPrice(999 - subtotal)}</strong> more for FREE shipping</span>
- </div>
- )}
+  {shipping > 0 && (
+  <div className="flex items-center gap-2 text-xs text-teal-700/80 bg-teal-50/50 p-3 rounded-xl">
+  <Truck size={14} />
+  <span>Add <strong>{formatPrice(999 - subtotal)}</strong> more for FREE shipping</span>
+  </div>
+  )}
 
- <Link
- href="/checkout"
- className="btn-primary w-full flex items-center justify-center gap-2 text-center py-4"
- >
- Proceed to Checkout <ArrowRight size={16} />
- </Link>
+  <button
+  onClick={handleCheckout}
+  className="btn-primary w-full flex items-center justify-center gap-2 text-center py-4"
+  >
+  Proceed to Checkout <ArrowRight size={16} />
+  </button>
 
- {/* Payment Icons */}
+  {/* Payment Icons */}
  <div className="flex items-center justify-center gap-3 text-xs text-slate pt-2">
  <span>UPI</span>•<span>Cards</span>•<span>Net Banking</span>•<span>COD</span>
  </div>

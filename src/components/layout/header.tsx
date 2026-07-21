@@ -23,6 +23,17 @@ import {
 import { cn } from "@/lib/utils";
 import { useCartStore, useWishlistStore, useUIStore } from "@/store";
 import { SearchOverlay } from "@/components/ui/search-overlay";
+import { NotificationDropdown } from "@/components/layout/notification-dropdown";
+import { AdminHeaderActions } from "@/components/admin/admin-header-actions";
+import { AccountDropdown } from "@/components/layout/account-dropdown";
+
+const getInitials = (name: string) => {
+  const parts = name.trim().split(" ");
+  if (parts.length > 1) {
+    return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+  }
+  return (name[0] || "U").toUpperCase();
+};
 
 export const defaultNavLinks = [
  {
@@ -142,7 +153,7 @@ export function Header({ initialNavLinks }: { initialNavLinks?: any }) {
 
  {/* Desktop Navigation */}
  <nav className="hidden md:flex items-center gap-1">
- {navLinks.map((link) => (
+ {navLinks.map((link: any) => (
  <div
  key={link.label}
  className="relative"
@@ -186,7 +197,7 @@ export function Header({ initialNavLinks }: { initialNavLinks?: any }) {
  transition={{ duration: 0.2 }}
  className="absolute top-full left-0 mt-1 w-52 bg-white rounded-xl shadow-xl shadow-black/15 border border-charcoal/10 p-2"
  >
- {link.submenu.map((sub) => (
+ {link.submenu.map((sub: any) => (
  <Link
  key={sub.label}
  href={sub.href}
@@ -215,57 +226,71 @@ export function Header({ initialNavLinks }: { initialNavLinks?: any }) {
 
 
 
- {/* Wishlist */}
- <Link
- href="/wishlist"
- className="hidden md:flex relative p-2 text-charcoal/70 hover:text-teal-600 :text-teal-400 transition-colors"
- aria-label="Wishlist"
- >
- <Heart size={20} />
- {wishlistCount > 0 && (
- <span className="absolute -top-0.5 -right-0.5 w-4 h-4 bg-rose text-white text-[10px] font-bold flex items-center justify-center rounded-full">
- {wishlistCount}
- </span>
- )}
- </Link>
+          {/* Admin Icons */}
+          {session?.user?.role === 'ADMIN' && (
+            <div className="hidden md:flex">
+              <AdminHeaderActions />
+            </div>
+          )}
 
- {/* Account or Auth Buttons */}
- {session ? (
-  <Link
-  href="/account"
-  className="hidden md:flex p-2 text-charcoal/70 hover:text-teal-600 :text-teal-400 transition-colors"
-  aria-label="Account"
-  >
-  <User size={20} />
-  </Link>
- ) : pathname !== '/login' && pathname !== '/register' ? (
-  <Link
-    href="/login"
-    className="hidden md:flex items-center gap-1.5 p-2 text-sm font-semibold text-charcoal/70 hover:text-teal-600 transition-colors"
-  >
-    <User size={20} />
-    Login
-  </Link>
- ) : null}
+          {/* Wishlist */}
+          {(pathname !== '/login' && pathname !== '/register') && session?.user?.role !== 'ADMIN' && (
+            <Link
+              href="/wishlist"
+              className="hidden md:flex relative p-2 text-charcoal/70 hover:text-teal-600 :text-teal-400 transition-colors"
+              aria-label="Wishlist"
+            >
+              <Heart size={20} />
+              {mounted && wishlistCount > 0 && (
+                <span className="absolute -top-0.5 -right-0.5 w-4 h-4 bg-rose text-white text-[10px] font-bold flex items-center justify-center rounded-full">
+                  {wishlistCount}
+                </span>
+              )}
+            </Link>
+          )}
 
- {/* Cart */}
- <button
- onClick={() => useCartStore.getState().toggleCart()}
- className="hidden md:flex relative p-2 text-charcoal/70 hover:text-teal-600 :text-teal-400 transition-colors"
- aria-label="Cart"
- >
- <ShoppingBag size={20} />
- {cartItemCount > 0 && (
- <motion.span
- key={cartItemCount}
- initial={{ scale: 0 }}
- animate={{ scale: 1 }}
- className="absolute -top-0.5 -right-0.5 w-5 h-5 bg-teal-600 text-white text-[10px] font-bold flex items-center justify-center rounded-full"
- >
- {cartItemCount}
- </motion.span>
- )}
- </button>
+          {/* Notifications */}
+          {(pathname !== '/login' && pathname !== '/register') && session?.user?.role !== 'ADMIN' && (
+            <div className="hidden md:flex">
+              <NotificationDropdown />
+            </div>
+          )}
+
+          {/* Cart */}
+          {(pathname !== '/login' && pathname !== '/register') && session?.user?.role !== 'ADMIN' && (
+            <button
+              onClick={() => useCartStore.getState().toggleCart()}
+              className="hidden md:flex relative p-2 text-charcoal/70 hover:text-teal-600 :text-teal-400 transition-colors"
+              aria-label="Cart"
+            >
+              <ShoppingBag size={20} />
+              {mounted && cartItemCount > 0 && (
+                <motion.span
+                  key={cartItemCount}
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  className="absolute -top-0.5 -right-0.5 w-5 h-5 bg-teal-600 text-white text-[10px] font-bold flex items-center justify-center rounded-full"
+                >
+                  {cartItemCount}
+                </motion.span>
+              )}
+            </button>
+          )}
+
+          {/* Account or Auth Buttons */}
+          {(pathname !== '/login' && pathname !== '/register') && (
+            session?.user ? (
+              <AccountDropdown />
+            ) : (
+              <Link
+                href="/login"
+                className="hidden md:flex items-center gap-1.5 p-2 text-sm font-semibold text-charcoal/70 hover:text-teal-600 transition-colors"
+              >
+                <User size={20} />
+                Login
+              </Link>
+            )
+          )}
 
  {/* Mobile Menu Button */}
  <button
@@ -294,7 +319,7 @@ export function Header({ initialNavLinks }: { initialNavLinks?: any }) {
  className="px-6 pt-4 pb-24 space-y-1 overflow-y-auto h-full [&::-webkit-scrollbar]:hidden"
  style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
  >
- {navLinks.map((link) => (
+ {navLinks.map((link: any) => (
  <div key={link.label}>
  <Link
  href={link.href}
@@ -309,7 +334,7 @@ export function Header({ initialNavLinks }: { initialNavLinks?: any }) {
  </Link>
  {link.submenu && (
  <div className="pl-4 py-1 space-y-1">
- {link.submenu.map((sub) => (
+ {link.submenu.map((sub: any) => (
  <Link
  key={sub.label}
  href={sub.href}

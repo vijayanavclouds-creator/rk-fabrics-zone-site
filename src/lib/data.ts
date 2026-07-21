@@ -103,10 +103,10 @@ export const products: Product[] = [
   {
     "id": "12",
     "name": "A-Line Kurti — Meadow Bloom",
-    "slug": "a-line-kurti-meadow-bloom-6778",
+    "slug": "a-line-kurti-meadow-bloom-0165",
     "description": "Cheerful A-line cotton kurti with digital floral print and mirror work accents. The flattering silhouette, three-quarter sleeves, and mandarin collar make it a versatile piece for daily wear and casual outings. Machine washable.",
     "shortDescription": "Digital print cotton kurti with mirror work",
-    "category": "[\"kurtis\"]",
+    "category": "[\"womens-kurtis\"]",
     "subcategory": "kurtis",
     "gender": "women",
     "type": "readymade",
@@ -130,8 +130,8 @@ export const products: Product[] = [
       "daily-wear",
       "floral"
     ],
-    "rating": 4,
-    "reviewCount": 1,
+    "rating": 5,
+    "reviewCount": 89,
     "isFeatured": false,
     "isNewArrival": true,
     "isBestseller": false,
@@ -282,8 +282,8 @@ export const products: Product[] = [
       "handwoven",
       "premium"
     ],
-    "rating": 4.8,
-    "reviewCount": 124,
+    "rating": 4.3,
+    "reviewCount": 82,
     "isFeatured": true,
     "isNewArrival": true,
     "isBestseller": false,
@@ -399,8 +399,8 @@ export const products: Product[] = [
       "block-print",
       "festive"
     ],
-    "rating": 4.7,
-    "reviewCount": 67,
+    "rating": 4.1,
+    "reviewCount": 115,
     "isFeatured": true,
     "isNewArrival": true,
     "isBestseller": false,
@@ -524,8 +524,8 @@ export const products: Product[] = [
       "handcrafted",
       "premium"
     ],
-    "rating": 4.9,
-    "reviewCount": 45,
+    "rating": 4.3,
+    "reviewCount": 36,
     "isFeatured": true,
     "isNewArrival": true,
     "isBestseller": false,
@@ -539,7 +539,7 @@ export const products: Product[] = [
         "colorHex": "#C49A52",
         "price": 249,
         "salePrice": 224.1,
-        "stock": 6,
+        "stock": 5,
         "productId": "10"
       },
       {
@@ -615,7 +615,7 @@ export const products: Product[] = [
     "description": "New product description",
     "shortDescription": "Short description",
     "category": "[\"dresses\"]",
-    "subcategory": null,
+    "subcategory": undefined,
     "gender": "women",
     "type": "readymade",
     "basePrice": 399,
@@ -627,8 +627,8 @@ export const products: Product[] = [
     "fabricDetails": null,
     "occasion": [],
     "tags": [],
-    "rating": 0,
-    "reviewCount": 0,
+    "rating": 3.7,
+    "reviewCount": 173,
     "isFeatured": true,
     "isNewArrival": true,
     "isBestseller": false,
@@ -698,6 +698,13 @@ export const products: Product[] = [
         "id": "cmrtfwtsw00052o7l6fyf7ixo",
         "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1784564976/rk-fabrics/products/pjwrf3lkizlgg59zjs9q.jpg",
         "alt": "Gemini_Generated_Image_owupo1owupo1owup.png",
+        "isPrimary": false,
+        "productId": "cmrtex4wp0000cyygm2lwgihs"
+      },
+      {
+        "id": "cmru6vfle0001ybi5fe31tgt6",
+        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1784610263/rk-fabrics/products/jk0kp6dhbgrjr1sk72z4.jpg",
+        "alt": "Gemini_Generated_Image_ck2ks1ck2ks1ck2k.png",
         "isPrimary": false,
         "productId": "cmrtex4wp0000cyygm2lwgihs"
       }

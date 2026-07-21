@@ -16,6 +16,11 @@ interface CartStore {
  getSubtotal: () => number;
  getItemCount: () => number;
  getShipping: () => number;
+ getPlatformFee: () => number;
+ couponCode: string | null;
+ discountAmount: number;
+ applyCoupon: (code: string, discount: number) => void;
+ removeCoupon: () => void;
 }
 
 export const useCartStore = create<CartStore>()(
@@ -23,6 +28,8 @@ export const useCartStore = create<CartStore>()(
  (set, get) => ({
  items: [],
  isOpen: false,
+ couponCode: null,
+ discountAmount: 0,
 
  addItem: (product, variant, quantity = 1) => {
  set((state) => {
@@ -64,10 +71,12 @@ export const useCartStore = create<CartStore>()(
  }));
  },
 
- clearCart: () => set({ items: [] }),
+ clearCart: () => set({ items: [], couponCode: null, discountAmount: 0 }),
  toggleCart: () => set((state) => ({ isOpen: !state.isOpen })),
  openCart: () => set({ isOpen: true }),
  closeCart: () => set({ isOpen: false }),
+ applyCoupon: (code, discount) => set({ couponCode: code, discountAmount: discount }),
+ removeCoupon: () => set({ couponCode: null, discountAmount: 0 }),
 
  getSubtotal: () => {
  return get().items.reduce((total, item) => {
@@ -81,8 +90,14 @@ export const useCartStore = create<CartStore>()(
  return subtotal >= 999 ? 0 : 79;
  },
 
+ getPlatformFee: () => {
+ const subtotal = get().getSubtotal();
+ return Math.round(subtotal * 0.02 * 100) / 100; // 2% platform fee
+ },
+
  getTotal: () => {
- return get().getSubtotal() + get().getShipping();
+   const total = get().getSubtotal() + get().getShipping() + get().getPlatformFee();
+   return Math.max(0, total - get().discountAmount);
  },
 
  getItemCount: () => {
@@ -101,6 +116,7 @@ interface WishlistStore {
  toggleItem: (productId: string) => void;
  isInWishlist: (productId: string) => boolean;
  clearWishlist: () => void;
+ setItems: (items: string[]) => void;
 }
 
 export const useWishlistStore = create<WishlistStore>()(
@@ -122,6 +138,7 @@ export const useWishlistStore = create<WishlistStore>()(
  },
 
  clearWishlist: () => set({ items: [] }),
+ setItems: (items) => set({ items }),
  }),
  {
  name: "rk-fabrics-wishlist",

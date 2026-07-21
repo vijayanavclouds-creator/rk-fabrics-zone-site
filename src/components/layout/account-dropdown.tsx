@@ -1,0 +1,126 @@
+"use client"
+
+import { useState, useRef, useEffect } from "react"
+import Link from "next/link"
+import Image from "next/image"
+import { useSession, signOut } from "next-auth/react"
+import { motion, AnimatePresence } from "framer-motion"
+import { User, LayoutDashboard, ShoppingBag, Heart, Ticket, Settings, Bell, HelpCircle, MessageSquare, LogOut, Package, Image as ImageIcon, Users, Menu, Scissors, AlertTriangle } from "lucide-react"
+
+export function AccountDropdown() {
+  const { data: session } = useSession()
+  const [isOpen, setIsOpen] = useState(false)
+  const dropdownRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsOpen(false)
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside)
+    return () => document.removeEventListener("mousedown", handleClickOutside)
+  }, [])
+
+  if (!session?.user) return null
+
+  const getInitials = (name: string) => {
+    const parts = name.trim().split(" ");
+    if (parts.length > 1) {
+      return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+    }
+    return (name[0] || "U").toUpperCase();
+  }
+
+  const customerLinks = [
+    { href: "/account/orders", label: "Your Orders", icon: ShoppingBag },
+    { href: "/account/profile", label: "Account Information", icon: User },
+    { href: "/account/addresses", label: "Saved Addresses", icon: User },
+    { href: "/account/wishlist", label: "Wishlist", icon: Heart },
+    { href: "/account/coupons", label: "Coupons & Offers", icon: Ticket },
+    { href: "/account/reviews", label: "My Reviews & Q&A", icon: MessageSquare },
+    { href: "/account/notifications", label: "Notification Settings", icon: Bell },
+    { href: "/account/help", label: "Help Center & FAQs", icon: HelpCircle },
+  ]
+
+  const adminLinks = [
+    { href: "/account/admin?tab=list", label: "Product Settings", icon: Package },
+    { href: "/account/admin?tab=orders", label: "Orders Management", icon: ShoppingBag },
+    { href: "/account/admin?tab=banners", label: "Banner Settings", icon: ImageIcon },
+    { href: "/account/admin?tab=users", label: "User Management", icon: Users },
+    { href: "/account/admin?tab=system", label: "System Status", icon: Settings },
+    { href: "/account/admin?tab=navigation", label: "Navigation Settings", icon: Menu },
+    { href: "/account/admin?tab=taxonomy", label: "Taxonomy Settings", icon: Scissors },
+    { href: "/account/admin-settings", label: "General Settings", icon: AlertTriangle },
+  ]
+
+  const activeLinks = session.user.role === "ADMIN" ? adminLinks : customerLinks
+
+  return (
+    <div className="relative hidden md:block" ref={dropdownRef}>
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="flex p-2 text-charcoal/70 hover:text-teal-600 transition-colors items-center justify-center focus:outline-none"
+        aria-label="Account Menu"
+      >
+        {session.user.image ? (
+          <Image 
+            src={session.user.image} 
+            alt={session.user.name || "User"} 
+            width={28} 
+            height={28} 
+            className="rounded-full object-cover w-7 h-7 border border-charcoal/10"
+          />
+        ) : (
+          <div className="w-7 h-7 rounded-full bg-teal-100 text-teal-700 flex items-center justify-center text-[11px] font-bold border border-teal-200">
+            {session.user.name ? getInitials(session.user.name) : <User size={20} />}
+          </div>
+        )}
+      </button>
+
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: 10, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 10, scale: 0.95 }}
+            transition={{ duration: 0.2 }}
+            className="absolute right-0 mt-2 w-64 bg-white rounded-2xl shadow-neo-card border border-charcoal/10 overflow-hidden z-50 flex flex-col"
+          >
+            <div className="p-4 border-b border-charcoal/10 bg-slate-50/50">
+              <p className="font-bold text-charcoal truncate">{session.user.name}</p>
+              <p className="text-xs text-slate truncate">{session.user.email}</p>
+            </div>
+            <div className="max-h-[60vh] overflow-y-auto custom-scrollbar p-2">
+              <nav className="space-y-1">
+                {activeLinks.map((link) => (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    onClick={() => setIsOpen(false)}
+                    className="flex items-center gap-3 px-3 py-2 rounded-xl text-charcoal hover:bg-teal-50 hover:text-teal-700 transition-colors"
+                  >
+                    <link.icon size={16} />
+                    <span className="font-medium text-sm">{link.label}</span>
+                  </Link>
+                ))}
+              </nav>
+            </div>
+            <div className="p-2 border-t border-charcoal/10">
+              <button
+                onClick={() => {
+                  setIsOpen(false)
+                  signOut({ callbackUrl: "/" })
+                }}
+                className="flex w-full items-center gap-3 px-3 py-2 rounded-xl text-rose-600 hover:bg-rose-50 transition-colors font-medium text-sm"
+              >
+                <LogOut size={16} />
+                Sign Out
+              </button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  )
+}

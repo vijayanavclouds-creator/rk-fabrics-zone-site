@@ -33,6 +33,8 @@ import { addReview } from "@/actions/reviews";
 import { useCartStore, useWishlistStore } from "@/store";
 import { ProductCard } from "@/components/product/product-card";
 import { toast } from "sonner";
+import { useSession } from "next-auth/react";
+import { toggleWishlistDb } from "@/actions/wishlist";
 
 export default function ProductPage() {
  const params = useParams();
@@ -61,11 +63,12 @@ export default function ProductPage() {
 }
 
 function ProductDetail({ product }: { product: NonNullable<ReturnType<typeof getProductBySlug>> }) {
- const addItem = useCartStore((s) => s.addItem);
- const { toggleItem, isInWishlist } = useWishlistStore();
- const wishlisted = isInWishlist(product.id);
+  const addItem = useCartStore((s) => s.addItem);
+  const { toggleItem, isInWishlist } = useWishlistStore();
+  const wishlisted = isInWishlist(product.id);
+  const { data: session } = useSession();
 
- // Get unique colors and sizes
+  // Get unique colors and sizes
  const uniqueColors = useMemo(() => {
  const map = new Map<string, { color: string; hex: string }>();
  product.variants.forEach((v) => map.set(v.colorHex, { color: v.color, hex: v.colorHex }));
@@ -442,13 +445,16 @@ function ProductDetail({ product }: { product: NonNullable<ReturnType<typeof get
  </AnimatePresence>
  </motion.button>
 
- {/* Wishlist */}
- <button
- onClick={() => {
- toggleItem(product.id);
- toast(wishlisted ? "Removed from wishlist" : "Saved to wishlist ❤️");
- }}
- className={cn(
+          {/* Wishlist */}
+          <button
+            onClick={async () => {
+              toggleItem(product.id);
+              toast(wishlisted ? "Removed from wishlist" : "Saved to wishlist ❤️");
+              if (session?.user) {
+                await toggleWishlistDb(product.id);
+              }
+            }}
+            className={cn(
  "w-12 h-12 rounded-full border-2 flex items-center justify-center transition-all hover:scale-110",
  wishlisted
  ? "border-rose bg-rose/5 text-rose"

@@ -6,7 +6,9 @@ import { useSearchParams } from "next/navigation"
 import { CheckCircle2, Package, ShoppingBag, ArrowRight } from "lucide-react"
 import confetti from "canvas-confetti"
 
-export default function CheckoutSuccessPage() {
+import { Suspense } from "react"
+
+function CheckoutSuccessContent() {
   const searchParams = useSearchParams()
   const orderId = searchParams.get("orderId")
 
@@ -40,7 +42,7 @@ export default function CheckoutSuccessPage() {
   }, [])
 
   return (
-    <div className="min-h-screen bg-[#fdfaf6] flex flex-col items-center justify-center py-20 px-4">
+    <div className="min-h-screen flex flex-col items-center justify-center py-20 px-4">
       <div className="w-full max-w-lg bg-white rounded-3xl border border-charcoal/10 p-8 shadow-sm text-center relative overflow-hidden">
         
         {/* Background Decoration */}
@@ -68,17 +70,17 @@ export default function CheckoutSuccessPage() {
           </div>
         )}
 
-        <div className="flex flex-col sm:flex-row gap-4">
+        <div className="flex flex-col sm:flex-row gap-4 mt-8">
           <Link 
             href="/account"
-            className="flex-1 py-4 px-6 bg-white border-2 border-charcoal/10 text-charcoal font-bold rounded-xl hover:bg-slate-50 hover:border-charcoal/20 transition-all flex items-center justify-center gap-2"
+            className="btn-primary flex-1 py-4 px-6 flex items-center justify-center gap-2 text-center whitespace-nowrap text-sm"
           >
             <ShoppingBag size={18} />
             View Order
           </Link>
           <Link 
             href="/shop"
-            className="flex-1 py-4 px-6 bg-charcoal text-white font-bold rounded-xl shadow-neo-btn hover:bg-black hover:shadow-neo-pressed transition-all flex items-center justify-center gap-2"
+            className="btn-primary flex-1 py-4 px-6 flex items-center justify-center gap-2 text-center whitespace-nowrap text-sm"
           >
             Continue Shopping
             <ArrowRight size={18} />
@@ -86,5 +88,13 @@ export default function CheckoutSuccessPage() {
         </div>
       </div>
     </div>
+  )
+}
+
+export default function CheckoutSuccessPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><p>Loading...</p></div>}>
+      <CheckoutSuccessContent />
+    </Suspense>
   )
 }
