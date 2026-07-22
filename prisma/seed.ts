@@ -1,7 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 import { products } from '../src/lib/data';
 
-process.env.DATABASE_URL = "file:./dev.db";
+
 const prisma = new PrismaClient();
 
 async function main() {

@@ -1,7 +1,7 @@
 "use server"
 
 import prisma from "@/lib/prisma"
-import { revalidatePath } from "next/cache"
+import { revalidatePath, unstable_cache } from "next/cache";
 import fs from "fs"
 import path from "path"
 import { v2 as cloudinary } from "cloudinary"
@@ -379,15 +379,19 @@ export async function bulkUpdateImagesAndVariants(formData: FormData) {
 // ========================
 
 export async function getBanners() {
-  try {
-    const banners = await prisma.banner.findMany({
-      orderBy: { order: 'asc' }
-    })
-    return { success: true, banners }
-  } catch (error: any) {
-    console.error("Error fetching banners:", error)
-    return { success: false, error: error.message }
-  }
+  const fetchBanners = unstable_cache(async () => {
+    try {
+      const banners = await prisma.banner.findMany({
+        orderBy: { order: 'asc' }
+      })
+      return { success: true, banners }
+    } catch (error: any) {
+      console.error("Error fetching banners:", error)
+      return { success: false, error: error.message }
+    }
+  }, ['banners_cache'], { tags: ['banners_cache'], revalidate: 3600 });
+  
+  return fetchBanners();
 }
 
 export async function getCloudinarySignature() {
@@ -443,8 +447,9 @@ export async function createBanner(formData: FormData) {
       }
     })
 
-    revalidatePath("/")
-    revalidatePath("/admin")
+
+    revalidatePath("/");
+    revalidatePath("/admin");
     return { success: true, banner }
   } catch (error: any) {
     console.error("Error creating banner:", error)
@@ -455,8 +460,9 @@ export async function createBanner(formData: FormData) {
 export async function deleteBanner(id: string) {
   try {
     await prisma.banner.delete({ where: { id } })
-    revalidatePath("/")
-    revalidatePath("/admin")
+
+    revalidatePath("/");
+    revalidatePath("/admin");
     return { success: true }
   } catch (error: any) {
     console.error("Error deleting banner:", error)
@@ -472,8 +478,9 @@ export async function updateBannerOrder(orderedIds: string[]) {
         data: { order: i }
       })
     }
-    revalidatePath("/")
-    revalidatePath("/admin")
+
+    revalidatePath("/");
+    revalidatePath("/admin");
     return { success: true }
   } catch (error: any) {
     console.error("Error updating banner order:", error)
