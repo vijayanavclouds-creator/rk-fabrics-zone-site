@@ -103,7 +103,7 @@ export const products: Product[] = [
   {
     "id": "12",
     "name": "A-Line Kurti — Meadow Bloom",
-    "slug": "a-line-kurti-meadow-bloom-0165",
+    "slug": "a-line-kurti-meadow-bloom-8654",
     "description": "Cheerful A-line cotton kurti with digital floral print and mirror work accents. The flattering silhouette, three-quarter sleeves, and mandarin collar make it a versatile piece for daily wear and casual outings. Machine washable.",
     "shortDescription": "Digital print cotton kurti with mirror work",
     "category": "[\"womens-kurtis\"]",
@@ -111,8 +111,8 @@ export const products: Product[] = [
     "gender": "women",
     "type": "readymade",
     "basePrice": 1299,
-    "salePrice": 779.4,
-    "discountPercent": 40,
+    "salePrice": 909.3,
+    "discountPercent": 30,
     "isOnSale": true,
     "isFreeDelivery": false,
     "fabric": "Cotton",
@@ -135,6 +135,7 @@ export const products: Product[] = [
     "isFeatured": false,
     "isNewArrival": true,
     "isBestseller": false,
+    "isActive": true,
     "createdAt": "2026-07-19T09:34:38.973Z",
     "variants": [
       {
@@ -144,8 +145,8 @@ export const products: Product[] = [
         "color": "Green",
         "colorHex": "#3d573e",
         "price": 1299,
-        "salePrice": 779.4,
-        "stock": 5,
+        "salePrice": 909.3,
+        "stock": 6,
         "productId": "12"
       },
       {
@@ -155,7 +156,7 @@ export const products: Product[] = [
         "color": "Green",
         "colorHex": "#3d573e",
         "price": 1299,
-        "salePrice": 779.4,
+        "salePrice": 909.3,
         "stock": 5,
         "productId": "12"
       },
@@ -166,7 +167,7 @@ export const products: Product[] = [
         "color": "Green",
         "colorHex": "#3d573e",
         "price": 1299,
-        "salePrice": 779.4,
+        "salePrice": 909.3,
         "stock": 5,
         "productId": "12"
       },
@@ -177,7 +178,7 @@ export const products: Product[] = [
         "color": "Green",
         "colorHex": "#3d573e",
         "price": 1299,
-        "salePrice": 779.4,
+        "salePrice": 909.3,
         "stock": 5,
         "productId": "12"
       },
@@ -188,7 +189,7 @@ export const products: Product[] = [
         "color": "Green",
         "colorHex": "#3d573e",
         "price": 1299,
-        "salePrice": 779.4,
+        "salePrice": 909.3,
         "stock": 5,
         "productId": "12"
       },
@@ -199,8 +200,8 @@ export const products: Product[] = [
         "color": "Green",
         "colorHex": "#3d573e",
         "price": 1299,
-        "salePrice": 779.4,
-        "stock": 6,
+        "salePrice": 909.3,
+        "stock": 7,
         "productId": "12"
       }
     ],
@@ -287,6 +288,7 @@ export const products: Product[] = [
     "isFeatured": true,
     "isNewArrival": true,
     "isBestseller": false,
+    "isActive": true,
     "createdAt": "2026-07-19T09:34:38.978Z",
     "variants": [
       {
@@ -404,6 +406,7 @@ export const products: Product[] = [
     "isFeatured": true,
     "isNewArrival": true,
     "isBestseller": false,
+    "isActive": true,
     "createdAt": "2026-07-19T09:34:38.980Z",
     "variants": [
       {
@@ -414,7 +417,7 @@ export const products: Product[] = [
         "colorHex": "#4f2fee",
         "price": 499,
         "salePrice": 349.3,
-        "stock": 5,
+        "stock": 4,
         "productId": "3"
       },
       {
@@ -529,6 +532,7 @@ export const products: Product[] = [
     "isFeatured": true,
     "isNewArrival": true,
     "isBestseller": false,
+    "isActive": true,
     "createdAt": "2026-07-19T09:34:38.982Z",
     "variants": [
       {
@@ -539,7 +543,7 @@ export const products: Product[] = [
         "colorHex": "#C49A52",
         "price": 249,
         "salePrice": 224.1,
-        "stock": 5,
+        "stock": 2,
         "productId": "10"
       },
       {
@@ -615,7 +619,7 @@ export const products: Product[] = [
     "description": "New product description",
     "shortDescription": "Short description",
     "category": "[\"dresses\"]",
-    "subcategory": undefined,
+    "subcategory": "",
     "gender": "women",
     "type": "readymade",
     "basePrice": 399,
@@ -632,6 +636,7 @@ export const products: Product[] = [
     "isFeatured": true,
     "isNewArrival": true,
     "isBestseller": false,
+    "isActive": true,
     "createdAt": "2026-07-20T16:01:52.921Z",
     "variants": [
       {
@@ -642,7 +647,7 @@ export const products: Product[] = [
         "colorHex": "#F5F4F0",
         "price": 399,
         "salePrice": 319.2,
-        "stock": 7,
+        "stock": 3,
         "productId": "cmrtex4wp0000cyygm2lwgihs"
       },
       {
@@ -714,33 +719,34 @@ export const products: Product[] = [
 ];
 
 export function getProductBySlug(slug: string): Product | undefined {
- return products.find((p) => p.slug === slug);
+ return products.find((p) => p.slug === slug && p.isActive !== false);
 }
 
 export function getProductsByCategory(category: string): Product[] {
- return products.filter((p) => p.category === category);
+ return products.filter((p) => p.category === category && p.isActive !== false);
 }
 
 export function getFeaturedProducts(): Product[] {
- return products.filter((p) => p.isFeatured);
+ return products.filter((p) => p.isFeatured && p.isActive !== false);
 }
 
 export function getNewArrivals(): Product[] {
- return products.filter((p) => p.isNewArrival);
+ return products.filter((p) => p.isNewArrival && p.isActive !== false);
 }
 
 export function getBestsellers(): Product[] {
- return products.filter((p) => p.isBestseller);
+ return products.filter((p) => p.isBestseller && p.isActive !== false);
 }
 
 export function searchProducts(query: string): Product[] {
  const q = query.toLowerCase();
  return products.filter(
- (p) =>
- p.name.toLowerCase().includes(q) ||
- p.description.toLowerCase().includes(q) ||
- p.tags.some((t) => t.includes(q)) ||
- p.fabric.toLowerCase().includes(q) ||
- p.category.includes(q)
- );
+  (p) =>
+  p.isActive !== false && (
+  p.name.toLowerCase().includes(q) ||
+  p.description.toLowerCase().includes(q) ||
+  p.tags.some((t) => t.includes(q)) ||
+  p.fabric.toLowerCase().includes(q) ||
+  p.category.includes(q))
+  );
 }

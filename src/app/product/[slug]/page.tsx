@@ -35,12 +35,13 @@ import { ProductCard } from "@/components/product/product-card";
 import { toast } from "sonner";
 import { useSession } from "next-auth/react";
 import { toggleWishlistDb } from "@/actions/wishlist";
+import { getCompanyProfile } from "@/actions/system";
 
 export default function ProductPage() {
- const params = useParams();
- const product = getProductBySlug(params.slug as string);
+  const params = useParams();
+  const product = getProductBySlug(params.slug as string);
 
- if (!product) {
+  if (!product) {
  return (
  <div className="min-h-[60vh] flex items-center justify-center text-center px-4">
  <div>
@@ -63,6 +64,11 @@ export default function ProductPage() {
 }
 
 function ProductDetail({ product }: { product: NonNullable<ReturnType<typeof getProductBySlug>> }) {
+  const [companyProfile, setCompanyProfile] = useState<any>(null);
+
+  useEffect(() => {
+    getCompanyProfile().then(setCompanyProfile);
+  }, []);
   const addItem = useCartStore((s) => s.addItem);
   const { toggleItem, isInWishlist } = useWishlistStore();
   const wishlisted = isInWishlist(product.id);
@@ -508,8 +514,8 @@ function ProductDetail({ product }: { product: NonNullable<ReturnType<typeof get
 
  {/* WhatsApp CTA */}
  <a
- href={`https://wa.me/919876543210?text=Hi!%20I'm%20interested%20in%20${encodeURIComponent(product.name)}%20(${formatPrice(price)})`}
- target="_blank"
+  href={`https://wa.me/${(companyProfile?.contactNumber || '+919876543210').replace(/[^0-9]/g, '')}?text=Hi!%20I'm%20interested%20in%20${encodeURIComponent(product.name)}%20(${formatPrice(price)})`}
+  target="_blank"
  rel="noopener noreferrer"
  className="flex items-center justify-center gap-2 mt-4 py-3 rounded-full border-2 border-green-500 text-green-600 font-semibold text-sm hover:bg-green-50 :bg-green-900/10 transition-colors"
  >

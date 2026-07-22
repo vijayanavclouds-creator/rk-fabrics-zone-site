@@ -52,6 +52,18 @@ export async function markAllAdminNotificationsAsRead() {
   }
 }
 
+export async function clearAllAdminNotifications() {
+  try {
+    await checkAdmin()
+    await prisma.adminNotification.deleteMany({
+      where: { type: { not: "PAYMENT_ALERT" } }
+    })
+    return { success: true }
+  } catch (error: any) {
+    return { success: false, error: error.message }
+  }
+}
+
 // ---------------- ALERTS & SETTINGS ----------------
 
 export async function getAdminSettings() {

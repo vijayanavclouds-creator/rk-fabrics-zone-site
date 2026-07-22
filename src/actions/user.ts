@@ -18,6 +18,18 @@ export async function updateProfile(data: { name?: string, phone?: string, dob?:
       return { success: false, error: "Unauthorized" }
     }
 
+    if (data.phone && !/^[0-9]{10}$/.test(data.phone)) {
+      return { success: false, error: "Please enter a valid 10-digit phone number" }
+    }
+
+    if (data.dob) {
+      const dobDate = new Date(data.dob)
+      const age = new Date().getFullYear() - dobDate.getFullYear()
+      if (age < 13 || isNaN(dobDate.getTime())) {
+        return { success: false, error: "You must be at least 13 years old" }
+      }
+    }
+
     await prisma.user.update({
       where: { email: session.user.email },
       data: {

@@ -20,16 +20,7 @@ export function PortalHeader({ title, description, rightElement }: PortalHeaderP
 
   const headerContent = (
     <div className="flex flex-col sm:flex-row gap-4 justify-end items-end w-full lg:w-auto text-right">
-      <div>
-        <h2 className="text-2xl font-[family-name:var(--font-playfair)] font-bold text-charcoal">
-          {title}
-        </h2>
-        {description && (
-          <p className="text-slate mt-1 text-xs">
-            {description}
-          </p>
-        )}
-      </div>
+      {/* Title and description removed as requested */}
       
       {rightElement && (
         <div>{rightElement}</div>

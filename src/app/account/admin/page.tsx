@@ -1,6 +1,7 @@
 import prisma from "@/lib/prisma"
 import { AdminDashboard } from "@/app/admin/admin-dashboard"
 import { getStoreTaxonomy } from "@/actions/system"
+import { getContactQueries } from "@/actions/contact"
 import { Suspense } from "react"
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
@@ -20,6 +21,7 @@ export default async function AccountAdminPage() {
     orderBy: { order: 'asc' }
   })
   const { categories, fabrics } = await getStoreTaxonomy()
+  const queries = await getContactQueries()
 
   return (
     <div className="bg-white rounded-3xl border border-charcoal/10 p-6 md:p-8 shadow-sm">
@@ -30,6 +32,7 @@ export default async function AccountAdminPage() {
           initialBanners={banners} 
           storeCategories={categories}
           storeFabrics={fabrics}
+          queries={queries}
         />
       </Suspense>
     </div>

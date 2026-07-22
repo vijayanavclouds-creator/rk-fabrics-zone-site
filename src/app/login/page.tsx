@@ -12,7 +12,7 @@ function LoginContent() {
   const searchParams = useSearchParams()
   const [loading, setLoading] = useState(false)
   
-  const callbackUrl = searchParams.get("from") || "/account"
+  const callbackUrl = searchParams.get("from") || "/shop"
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()

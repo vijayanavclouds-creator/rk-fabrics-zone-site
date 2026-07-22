@@ -11,6 +11,16 @@ export async function getUserNotifications() {
       return { success: false, error: "Unauthorized" }
     }
 
+    // Delete notifications older than 24 hours
+    const oneDayAgo = new Date();
+    oneDayAgo.setDate(oneDayAgo.getDate() - 1);
+    await prisma.notification.deleteMany({
+      where: {
+        userId: session.user.id,
+        createdAt: { lt: oneDayAgo }
+      }
+    });
+
     const notifications = await prisma.notification.findMany({
       where: { userId: session.user.id },
       orderBy: { createdAt: "desc" },
@@ -66,5 +76,23 @@ export async function markAllNotificationsAsRead() {
   } catch (error: any) {
     console.error("Error marking all notifications read:", error)
     return { success: false, error: "Failed to mark all as read" }
+  }
+}
+
+export async function clearAllNotifications() {
+  try {
+    const session = await getServerSession(authOptions)
+    if (!session) {
+      return { success: false, error: "Unauthorized" }
+    }
+
+    await prisma.notification.deleteMany({
+      where: { userId: session.user.id }
+    })
+
+    return { success: true }
+  } catch (error: any) {
+    console.error("Error clearing notifications:", error)
+    return { success: false, error: "Failed to clear notifications" }
   }
 }

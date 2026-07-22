@@ -1,9 +1,11 @@
 "use client"
 
 import { useState, useEffect, useRef } from "react"
-import { Bell, Check, X } from "lucide-react"
-import { getUserNotifications, markNotificationAsRead, markAllNotificationsAsRead } from "@/actions/notification"
+import { Bell, Check, X, Trash2 } from "lucide-react"
+import { getUserNotifications, markNotificationAsRead, markAllNotificationsAsRead, clearAllNotifications } from "@/actions/notification"
 import { useSession } from "next-auth/react"
+import Link from "next/link"
+import { useRouter } from "next/navigation"
 
 export function NotificationDropdown() {
   const { data: session } = useSession()
@@ -11,10 +13,13 @@ export function NotificationDropdown() {
   const [notifications, setNotifications] = useState<any[]>([])
   const [loading, setLoading] = useState(false)
   const dropdownRef = useRef<HTMLDivElement>(null)
+  const router = useRouter()
 
   useEffect(() => {
     if (session?.user) {
       fetchNotifications()
+      const interval = setInterval(fetchNotifications, 10000) // fetch every 10 seconds for real-time updates
+      return () => clearInterval(interval)
     }
   }, [session])
 
@@ -47,9 +52,25 @@ export function NotificationDropdown() {
     await markNotificationAsRead(id)
   }
 
+  const handleNotificationClick = async (id: string, isRead: boolean, link?: string | null) => {
+    if (!isRead) {
+      setNotifications(prev => prev.map(n => n.id === id ? { ...n, isRead: true } : n))
+      await markNotificationAsRead(id)
+    }
+    if (link) {
+      setIsOpen(false)
+      router.push(link)
+    }
+  }
+
   const handleMarkAllRead = async () => {
     setNotifications(prev => prev.map(n => ({ ...n, isRead: true })))
     await markAllNotificationsAsRead()
+  }
+
+  const handleClearAll = async () => {
+    setNotifications([])
+    await clearAllNotifications()
   }
 
   if (!session?.user) return null
@@ -71,14 +92,24 @@ export function NotificationDropdown() {
         <div className="absolute right-0 mt-2 w-80 bg-white rounded-2xl shadow-neo-card border border-charcoal/10 overflow-hidden z-50 transform origin-top-right transition-all">
           <div className="p-4 border-b border-charcoal/5 flex items-center justify-between bg-cream/50">
             <h3 className="font-bold text-charcoal">Notifications</h3>
-            {unreadCount > 0 && (
-              <button 
-                onClick={handleMarkAllRead}
-                className="text-xs font-bold text-teal-600 hover:text-teal-800 transition-colors flex items-center gap-1"
-              >
-                <Check size={12} /> Mark all read
-              </button>
-            )}
+            <div className="flex gap-3">
+              {unreadCount > 0 && (
+                <button 
+                  onClick={handleMarkAllRead}
+                  className="text-xs font-bold text-teal-600 hover:text-teal-800 transition-colors flex items-center gap-1"
+                >
+                  <Check size={12} /> Mark all read
+                </button>
+              )}
+              {notifications.length > 0 && (
+                <button 
+                  onClick={handleClearAll}
+                  className="text-xs font-bold text-rose hover:text-rose/80 transition-colors flex items-center gap-1"
+                >
+                  <Trash2 size={12} /> Clear all
+                </button>
+              )}
+            </div>
           </div>
 
           <div className="max-h-96 overflow-y-auto custom-scrollbar">
@@ -94,7 +125,8 @@ export function NotificationDropdown() {
                 {notifications.map(notification => (
                   <div 
                     key={notification.id} 
-                    className={`p-4 hover:bg-slate-50 transition-colors cursor-default relative ${!notification.isRead ? 'bg-teal-50/30' : ''}`}
+                    onClick={() => handleNotificationClick(notification.id, notification.isRead, notification.link)}
+                    className={`p-4 hover:bg-slate-50 transition-colors ${notification.link ? 'cursor-pointer' : 'cursor-default'} relative ${!notification.isRead ? 'bg-teal-50/30' : ''}`}
                   >
                     {!notification.isRead && (
                       <div className="absolute left-0 top-0 bottom-0 w-1 bg-teal-500 rounded-r"></div>
@@ -123,6 +155,12 @@ export function NotificationDropdown() {
                 ))}
               </div>
             )}
+          </div>
+          
+          <div className="p-3 border-t border-charcoal/5 bg-slate-50 text-center">
+            <Link href="/account/notifications" onClick={() => setIsOpen(false)} className="text-sm font-semibold text-teal-600 hover:text-teal-800 transition-colors inline-block w-full">
+              View All Notifications
+            </Link>
           </div>
         </div>
       )}

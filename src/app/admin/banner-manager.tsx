@@ -232,9 +232,19 @@ export function BannerManager({ banners }: { banners: any[] }) {
   )
 
   return (
-    <div className="grid lg:grid-cols-2 gap-8 animate-in fade-in slide-in-from-bottom-4 duration-300">
-      <BannerList title="Hero Images" items={heroBanners} type="hero" />
-      <BannerList title="Carousel Images" items={carouselBanners} type="carousel" />
+    <div className="animate-in fade-in duration-300 space-y-6">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 border-b border-charcoal/10 pb-4">
+        <div>
+          <h2 className="font-[family-name:var(--font-playfair)] text-2xl font-bold text-charcoal">
+            Banner Settings
+          </h2>
+          <p className="text-slate mt-1 text-sm">Manage your store's hero and carousel images.</p>
+        </div>
+      </div>
+      <div className="grid lg:grid-cols-2 gap-8">
+        <BannerList title="Hero Images" items={heroBanners} type="hero" />
+        <BannerList title="Carousel Images" items={carouselBanners} type="carousel" />
+      </div>
     </div>
   )
 }

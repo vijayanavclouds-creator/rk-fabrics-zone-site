@@ -9,6 +9,7 @@ import { cn } from "@/lib/utils"
 interface Option {
   value: string;
   label: string;
+  showInFooter?: boolean;
 }
 
 interface TaxonomyManagerProps {
@@ -21,11 +22,16 @@ export function TaxonomyManager({ initialCategories, initialFabrics }: TaxonomyM
   const [fabrics, setFabrics] = useState<Option[]>(initialFabrics)
   const [isPending, startTransition] = useTransition()
 
-  // Form states
   const [newCatLabel, setNewCatLabel] = useState("")
   const [newCatValue, setNewCatValue] = useState("")
+  const [newCatFooter, setNewCatFooter] = useState(false)
   const [newFabLabel, setNewFabLabel] = useState("")
   const [newFabValue, setNewFabValue] = useState("")
+  const [newFabFooter, setNewFabFooter] = useState(false)
+
+  const getFooterCount = () => {
+    return categories.filter(c => c.showInFooter).length + fabrics.filter(f => f.showInFooter).length;
+  }
 
   const autoGenerateSlug = (label: string) => {
     return label.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '')
@@ -37,9 +43,14 @@ export function TaxonomyManager({ initialCategories, initialFabrics }: TaxonomyM
       toast.error("A category with this URL slug already exists.")
       return
     }
-    setCategories([...categories, { value: newCatValue, label: newCatLabel }])
+    if (newCatFooter && getFooterCount() >= 5) {
+      toast.error("Maximum 5 items allowed in footer.");
+      return;
+    }
+    setCategories([...categories, { value: newCatValue, label: newCatLabel, showInFooter: newCatFooter }])
     setNewCatLabel("")
     setNewCatValue("")
+    setNewCatFooter(false)
   }
 
   const handleAddFabric = () => {
@@ -48,9 +59,14 @@ export function TaxonomyManager({ initialCategories, initialFabrics }: TaxonomyM
       toast.error("A fabric with this URL slug already exists.")
       return
     }
-    setFabrics([...fabrics, { value: newFabValue, label: newFabLabel }])
+    if (newFabFooter && getFooterCount() >= 5) {
+      toast.error("Maximum 5 items allowed in footer.");
+      return;
+    }
+    setFabrics([...fabrics, { value: newFabValue, label: newFabLabel, showInFooter: newFabFooter }])
     setNewFabLabel("")
     setNewFabValue("")
+    setNewFabFooter(false)
   }
 
   const handleSave = () => {
@@ -66,7 +82,7 @@ export function TaxonomyManager({ initialCategories, initialFabrics }: TaxonomyM
 
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-      <div className="flex items-center justify-between bg-white rounded-2xl border border-charcoal/10 px-8 py-5 shadow-sm">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 border-b border-charcoal/10 pb-4 mb-6">
         <div>
           <h2 className="font-[family-name:var(--font-playfair)] text-2xl font-bold text-charcoal flex items-center gap-2">
             <Tag size={24} className="text-teal-600" />
@@ -123,6 +139,16 @@ export function TaxonomyManager({ initialCategories, initialFabrics }: TaxonomyM
                   placeholder="e.g. summer-collection"
                 />
               </div>
+              <div className="flex flex-col items-center justify-center">
+                <label className="text-xs font-semibold text-slate uppercase mb-1 block">Footer</label>
+                <input 
+                  type="checkbox"
+                  checked={newCatFooter}
+                  onChange={(e) => setNewCatFooter(e.target.checked)}
+                  className="w-5 h-5 rounded border-charcoal/20 text-teal-600 focus:ring-teal-500 mb-2 cursor-pointer"
+                  title="Add in footer"
+                />
+              </div>
               <button 
                 onClick={handleAddCategory}
                 disabled={!newCatLabel || !newCatValue}
@@ -139,12 +165,32 @@ export function TaxonomyManager({ initialCategories, initialFabrics }: TaxonomyM
                     <div className="font-medium text-sm text-charcoal">{cat.label}</div>
                     <div className="text-xs font-mono text-teal-600/70 mt-0.5">{cat.value}</div>
                   </div>
-                  <button 
-                    onClick={() => setCategories(categories.filter((_, idx) => idx !== i))}
-                    className="p-2 text-rose/50 hover:text-rose hover:bg-rose/5 rounded-lg transition-colors opacity-0 group-hover:opacity-100"
-                  >
-                    <X size={16} />
-                  </button>
+                  <div className="flex items-center gap-3">
+                    <label className="flex items-center gap-1.5 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={!!cat.showInFooter}
+                        onChange={(e) => {
+                          if (e.target.checked && getFooterCount() >= 5) {
+                            toast.error("Maximum 5 items allowed in footer.");
+                            return;
+                          }
+                          const newCats = [...categories];
+                          newCats[i].showInFooter = e.target.checked;
+                          setCategories(newCats);
+                        }}
+                        className="w-4 h-4 rounded border-charcoal/20 text-teal-600 focus:ring-teal-500"
+                      />
+                      <span className="text-[10px] uppercase font-bold text-slate">Footer</span>
+                    </label>
+                    <button 
+                      onClick={() => setCategories(categories.filter((_, idx) => idx !== i))}
+                      className="w-8 h-8 flex items-center justify-center rounded-lg text-rose hover:bg-rose/10 transition-colors"
+                      title="Remove category"
+                    >
+                      <X size={16} />
+                    </button>
+                  </div>
                 </div>
               ))}
               {categories.length === 0 && (
@@ -188,6 +234,16 @@ export function TaxonomyManager({ initialCategories, initialFabrics }: TaxonomyM
                   placeholder="e.g. organza"
                 />
               </div>
+              <div className="flex flex-col items-center justify-center">
+                <label className="text-xs font-semibold text-slate uppercase mb-1 block">Footer</label>
+                <input 
+                  type="checkbox"
+                  checked={newFabFooter}
+                  onChange={(e) => setNewFabFooter(e.target.checked)}
+                  className="w-5 h-5 rounded border-charcoal/20 text-teal-600 focus:ring-teal-500 mb-2 cursor-pointer"
+                  title="Add in footer"
+                />
+              </div>
               <button 
                 onClick={handleAddFabric}
                 disabled={!newFabLabel || !newFabValue}
@@ -204,12 +260,32 @@ export function TaxonomyManager({ initialCategories, initialFabrics }: TaxonomyM
                     <div className="font-medium text-sm text-charcoal">{fab.label}</div>
                     <div className="text-xs font-mono text-teal-600/70 mt-0.5">{fab.value}</div>
                   </div>
-                  <button 
-                    onClick={() => setFabrics(fabrics.filter((_, idx) => idx !== i))}
-                    className="p-2 text-rose/50 hover:text-rose hover:bg-rose/5 rounded-lg transition-colors opacity-0 group-hover:opacity-100"
-                  >
-                    <X size={16} />
-                  </button>
+                  <div className="flex items-center gap-3">
+                    <label className="flex items-center gap-1.5 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={!!fab.showInFooter}
+                        onChange={(e) => {
+                          if (e.target.checked && getFooterCount() >= 5) {
+                            toast.error("Maximum 5 items allowed in footer.");
+                            return;
+                          }
+                          const newFabs = [...fabrics];
+                          newFabs[i].showInFooter = e.target.checked;
+                          setFabrics(newFabs);
+                        }}
+                        className="w-4 h-4 rounded border-charcoal/20 text-teal-600 focus:ring-teal-500"
+                      />
+                      <span className="text-[10px] uppercase font-bold text-slate">Footer</span>
+                    </label>
+                    <button 
+                      onClick={() => setFabrics(fabrics.filter((_, idx) => idx !== i))}
+                      className="w-8 h-8 flex items-center justify-center rounded-lg text-rose hover:bg-rose/10 transition-colors"
+                      title="Remove fabric"
+                    >
+                      <X size={16} />
+                    </button>
+                  </div>
                 </div>
               ))}
               {fabrics.length === 0 && (

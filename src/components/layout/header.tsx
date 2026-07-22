@@ -26,6 +26,7 @@ import { SearchOverlay } from "@/components/ui/search-overlay";
 import { NotificationDropdown } from "@/components/layout/notification-dropdown";
 import { AdminHeaderActions } from "@/components/admin/admin-header-actions";
 import { AccountDropdown } from "@/components/layout/account-dropdown";
+import { PwaNotifier } from "@/components/pwa-notifier";
 
 const getInitials = (name: string) => {
   const parts = name.trim().split(" ");
@@ -152,7 +153,8 @@ export function Header({ initialNavLinks }: { initialNavLinks?: any }) {
  </Link>
 
  {/* Desktop Navigation */}
- <nav className="hidden md:flex items-center gap-1">
+ {session?.user?.role !== "ADMIN" && (
+    <nav className="hidden md:flex items-center gap-1">
  {navLinks.map((link: any) => (
  <div
  key={link.label}
@@ -211,7 +213,8 @@ export function Header({ initialNavLinks }: { initialNavLinks?: any }) {
  </AnimatePresence>
  </div>
  ))}
- </nav>
+    </nav>
+  )}
 
  {/* Right Actions */}
  <div className="flex items-center gap-1 md:gap-2">
@@ -279,17 +282,20 @@ export function Header({ initialNavLinks }: { initialNavLinks?: any }) {
 
           {/* Account or Auth Buttons */}
           {(pathname !== '/login' && pathname !== '/register') && (
-            session?.user ? (
-              <AccountDropdown />
-            ) : (
-              <Link
-                href="/login"
-                className="hidden md:flex items-center gap-1.5 p-2 text-sm font-semibold text-charcoal/70 hover:text-teal-600 transition-colors"
-              >
-                <User size={20} />
-                Login
-              </Link>
-            )
+            <div className="relative flex items-center">
+              {session?.user ? (
+                <AccountDropdown />
+              ) : (
+                <Link
+                  href="/login"
+                  className="hidden md:flex items-center gap-1.5 p-2 text-sm font-semibold text-charcoal/70 hover:text-teal-600 transition-colors"
+                >
+                  <User size={20} />
+                  Login
+                </Link>
+              )}
+              <PwaNotifier />
+            </div>
           )}
 
  {/* Mobile Menu Button */}
@@ -319,7 +325,7 @@ export function Header({ initialNavLinks }: { initialNavLinks?: any }) {
  className="px-6 pt-4 pb-24 space-y-1 overflow-y-auto h-full [&::-webkit-scrollbar]:hidden"
  style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
  >
- {navLinks.map((link: any) => (
+ {session?.user?.role !== "ADMIN" && navLinks.map((link: any) => (
  <div key={link.label}>
  <Link
  href={link.href}
@@ -349,17 +355,21 @@ export function Header({ initialNavLinks }: { initialNavLinks?: any }) {
  </div>
  ))}
 
- <div className="pt-6 border-t border-charcoal/10 space-y-3">
- <Link href="/account" onClick={closeMobileMenu} className="flex items-center gap-3 py-2 text-slate ">
- <User size={18} /> My Account
- </Link>
- <Link href="/about" onClick={closeMobileMenu} className="flex items-center gap-3 py-2 text-slate ">
- <MapPin size={18} /> About Us
- </Link>
- <Link href="/contact" onClick={closeMobileMenu} className="flex items-center gap-3 py-2 text-slate ">
- <Phone size={18} /> Contact
- </Link>
- </div>
+ {session?.user?.role !== "ADMIN" && (
+   <div className="pt-6 border-t border-charcoal/10 space-y-3">
+     <Link href="/account" onClick={closeMobileMenu} className="flex items-center gap-3 py-2 text-slate ">
+       <User size={18} /> My Account
+     </Link>
+     <Link href="/about" onClick={closeMobileMenu} className="flex items-center gap-3 py-2 text-slate ">
+       <MapPin size={18} /> About Us
+     </Link>
+     {session?.user && (
+       <Link href="/contact" onClick={closeMobileMenu} className="flex items-center gap-3 py-2 text-slate ">
+         <Phone size={18} /> Contact
+       </Link>
+     )}
+   </div>
+ )}
  </div>
  </motion.div>
  )}

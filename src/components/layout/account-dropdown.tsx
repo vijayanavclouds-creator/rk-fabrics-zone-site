@@ -5,12 +5,18 @@ import Link from "next/link"
 import Image from "next/image"
 import { useSession, signOut } from "next-auth/react"
 import { motion, AnimatePresence } from "framer-motion"
-import { User, LayoutDashboard, ShoppingBag, Heart, Ticket, Settings, Bell, HelpCircle, MessageSquare, LogOut, Package, Image as ImageIcon, Users, Menu, Scissors, AlertTriangle } from "lucide-react"
+import { User, LayoutDashboard, ShoppingBag, Heart, Ticket, Settings, Bell, HelpCircle, MessageSquare, LogOut, Package, Image as ImageIcon, Users, Menu, Scissors, AlertTriangle, Building2, DollarSign, Mail } from "lucide-react"
+import { useCartStore, useWishlistStore } from "@/store"
+import { useCheckoutStore } from "@/store/checkout"
 
 export function AccountDropdown() {
   const { data: session } = useSession()
   const [isOpen, setIsOpen] = useState(false)
   const dropdownRef = useRef<HTMLDivElement>(null)
+  
+  const clearCart = useCartStore((state) => state.clearCart)
+  const clearWishlist = useWishlistStore((state) => state.clearWishlist)
+  const clearCheckout = useCheckoutStore((state) => state.clearCheckout)
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -38,19 +44,26 @@ export function AccountDropdown() {
     { href: "/account/addresses", label: "Saved Addresses", icon: User },
     { href: "/account/wishlist", label: "Wishlist", icon: Heart },
     { href: "/account/coupons", label: "Coupons & Offers", icon: Ticket },
-    { href: "/account/reviews", label: "My Reviews & Q&A", icon: MessageSquare },
-    { href: "/account/notifications", label: "Notification Settings", icon: Bell },
+    { href: "/account/reviews", label: "My Reviews & Queries", icon: MessageSquare },
+    { href: "/account/newsletters", label: "Newsletters", icon: Mail },
+    { href: "/account/notifications", label: "Notifications", icon: Bell },
     { href: "/account/help", label: "Help Center & FAQs", icon: HelpCircle },
   ]
 
   const adminLinks = [
+    { href: "/account/admin?tab=overview", label: "Dashboard Overview", icon: LayoutDashboard },
     { href: "/account/admin?tab=list", label: "Product Settings", icon: Package },
     { href: "/account/admin?tab=orders", label: "Orders Management", icon: ShoppingBag },
+    { href: "/account/admin?tab=queries", label: "Queries Management", icon: MessageSquare },
+    { href: "/account/admin?tab=newsletters", label: "Newsletter Studio", icon: Mail },
+    { href: "/account/admin?tab=finance", label: "Finance Management", icon: DollarSign },
     { href: "/account/admin?tab=banners", label: "Banner Settings", icon: ImageIcon },
     { href: "/account/admin?tab=users", label: "User Management", icon: Users },
     { href: "/account/admin?tab=system", label: "System Status", icon: Settings },
     { href: "/account/admin?tab=navigation", label: "Navigation Settings", icon: Menu },
     { href: "/account/admin?tab=taxonomy", label: "Taxonomy Settings", icon: Scissors },
+    { href: "/account/admin?tab=company_profile", label: "Company Profile", icon: Building2 },
+    { href: "/account/profile", label: "My Profile", icon: User },
     { href: "/account/admin-settings", label: "General Settings", icon: AlertTriangle },
   ]
 
@@ -110,6 +123,9 @@ export function AccountDropdown() {
               <button
                 onClick={() => {
                   setIsOpen(false)
+                  clearCart()
+                  clearWishlist()
+                  clearCheckout()
                   signOut({ callbackUrl: "/" })
                 }}
                 className="flex w-full items-center gap-3 px-3 py-2 rounded-xl text-rose-600 hover:bg-rose-50 transition-colors font-medium text-sm"

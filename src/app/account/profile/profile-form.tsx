@@ -40,6 +40,21 @@ export default function ProfileForm({ user }: { user: { name: string, email: str
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+
+    if (phone && !/^[0-9]{10}$/.test(phone)) {
+      toast.error("Please enter a valid 10-digit phone number")
+      return
+    }
+    
+    if (dob) {
+      const dobDate = new Date(dob)
+      const age = new Date().getFullYear() - dobDate.getFullYear()
+      if (age < 13 || isNaN(dobDate.getTime())) {
+        toast.error("You must be at least 13 years old")
+        return
+      }
+    }
+
     setLoading(true)
     const result = await updateProfile({ name, phone, dob })
     setLoading(false)

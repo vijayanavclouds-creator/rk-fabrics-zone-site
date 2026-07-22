@@ -101,3 +101,50 @@ export async function saveStoreTaxonomy(categories: any[], fabrics: any[]) {
     return { success: false, error: error.message };
   }
 }
+
+// Get Company Profile Settings
+export async function getCompanyProfile() {
+  try {
+    const setting = await prisma.systemSetting.findUnique({
+      where: { key: "company_profile" }
+    });
+    
+    if (setting) {
+      return JSON.parse(setting.value);
+    }
+    
+    // Default empty profile
+    return {
+      instagramUrl: "",
+      facebookUrl: "",
+      contactNumber: "",
+      helpCenterNumber: "",
+      supportEmail: "",
+      ownerName: "",
+      websiteUrl: "",
+      address: "",
+      companyDescription: "",
+      gstNumber: ""
+    };
+  } catch (error) {
+    console.error("Error fetching company profile:", error);
+    return null;
+  }
+}
+
+// Save Company Profile Settings
+export async function saveCompanyProfile(profileData: any) {
+  try {
+    await prisma.systemSetting.upsert({
+      where: { key: "company_profile" },
+      update: { value: JSON.stringify(profileData) },
+      create: { key: "company_profile", value: JSON.stringify(profileData) }
+    });
+    
+    revalidatePath("/", "layout"); // Revalidate all pages in case footer/header uses this
+    return { success: true };
+  } catch (error: any) {
+    console.error("Error saving company profile:", error);
+    return { success: false, error: error.message };
+  }
+}

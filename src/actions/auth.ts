@@ -54,9 +54,21 @@ export async function registerUser(formData: FormData) {
     const email = formData.get("email") as string
     const password = formData.get("password") as string
     const otp = formData.get("otp") as string
+    const phone = formData.get("phone") as string
+    const dob = formData.get("dob") as string
 
     if (!name || !email || !password || !otp) {
       return { success: false, error: "All fields are required" }
+    }
+
+    if (!/^[0-9]{10}$/.test(phone)) {
+      return { success: false, error: "Please enter a valid 10-digit phone number" }
+    }
+
+    const dobDate = new Date(dob)
+    const age = new Date().getFullYear() - dobDate.getFullYear()
+    if (age < 13 || isNaN(dobDate.getTime())) {
+      return { success: false, error: "You must be at least 13 years old to register" }
     }
 
     if (password.length < 6) {
@@ -92,6 +104,8 @@ export async function registerUser(formData: FormData) {
       data: {
         name,
         email,
+        phone,
+        dob,
         password: hashedPassword,
         role,
         isActive: true
@@ -140,6 +154,31 @@ export async function sendResetPasswordOtp(email: string) {
     return { success: true };
   } catch (error: any) {
     return { success: false, error: "Failed to send reset OTP" };
+  }
+}
+
+export async function verifyResetOtp(email: string, otp: string) {
+  try {
+    if (!email || !otp) {
+      return { success: false, error: "Email and OTP are required" };
+    }
+
+    const validOtp = await prisma.otp.findFirst({
+      where: {
+        email,
+        otp,
+        type: "RESET_PASSWORD",
+        expiresAt: { gt: new Date() }
+      }
+    });
+
+    if (!validOtp) {
+      return { success: false, error: "Invalid or expired OTP" };
+    }
+
+    return { success: true };
+  } catch (error: any) {
+    return { success: false, error: "Failed to verify OTP" };
   }
 }
 

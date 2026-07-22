@@ -40,8 +40,8 @@ export function SystemStatus() {
 
   return (
     <div className="space-y-6 animate-in fade-in duration-300">
-      <div className="flex justify-between items-center bg-white rounded-2xl border border-charcoal/10 px-8 py-5 shadow-sm">
-        <h2 className="font-[family-name:var(--font-playfair)] text-3xl font-bold text-charcoal flex items-center gap-3">
+      <div className="flex justify-between items-end border-b border-charcoal/10 pb-4 mb-6">
+        <h2 className="font-[family-name:var(--font-playfair)] text-2xl font-bold text-charcoal flex items-center gap-3">
           <Activity className="text-teal-600" /> System Status & Usage
         </h2>
         <button 

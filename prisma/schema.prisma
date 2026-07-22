@@ -31,6 +31,7 @@ model Product {
   isFeatured       Boolean  @default(false)
   isNewArrival     Boolean  @default(false)
   isBestseller     Boolean  @default(false)
+  isActive         Boolean  @default(true)
   createdAt        DateTime @default(now())
 
   variants         ProductVariant[]
@@ -134,6 +135,10 @@ model User {
   wishlistItems WishlistItem[]
   coupons       Coupon[]
   notifications Notification[]
+  queries       ContactQuery[]
+  newsletters   UserNewsletter[]
+  cartData      String?   // JSON string of the cart
+  cartUpdatedAt DateTime?
 }
 
 model WishlistItem {
@@ -182,6 +187,7 @@ model Notification {
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   title     String
   message   String
+  link      String?
   isRead    Boolean  @default(false)
   createdAt DateTime @default(now())
 }
@@ -217,6 +223,7 @@ model Order {
   email           String
   paymentMethod   String      @default("COD")
   paymentStatus   String      @default("PENDING") // PENDING, PAID, FAILED
+  isReadByAdmin   Boolean     @default(false)
   createdAt       DateTime    @default(now())
   updatedAt       DateTime    @updatedAt
   
@@ -257,4 +264,56 @@ model Address {
   isDefault Boolean  @default(false)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model ContactQuery {
+  id        String   @id @default(cuid())
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  name      String
+  email     String
+  phone     String?
+  subject   String
+  status    String   @default("OPEN") // OPEN, RESOLVED
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  messages  QueryMessage[]
+}
+
+model QueryMessage {
+  id          String       @id @default(cuid())
+  queryId     String
+  query       ContactQuery @relation(fields: [queryId], references: [id], onDelete: Cascade)
+  senderType  String       // CUSTOMER or ADMIN
+  message     String
+  createdAt   DateTime     @default(now())
+}
+
+model NewsletterSubscriber {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  createdAt DateTime @default(now())
+}
+
+model Newsletter {
+  id        String   @id @default(cuid())
+  subject   String
+  content   String
+  createdAt DateTime @default(now())
+  
+  recipients UserNewsletter[]
+}
+
+model UserNewsletter {
+  id           String     @id @default(cuid())
+  userId       String
+  user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  newsletterId String
+  newsletter   Newsletter @relation(fields: [newsletterId], references: [id], onDelete: Cascade)
+  isRead       Boolean    @default(false)
+  createdAt    DateTime   @default(now())
+  
+  @@unique([userId, newsletterId])
 }

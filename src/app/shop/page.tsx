@@ -8,6 +8,7 @@ export const dynamic = 'force-dynamic';
 export default async function ShopPage() {
   // Fetch products from database
   const products = await prisma.product.findMany({
+    where: { isActive: true },
     include: { variants: true, images: true, reviews: true },
     orderBy: { createdAt: 'desc' }
   });

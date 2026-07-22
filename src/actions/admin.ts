@@ -80,7 +80,6 @@ export async function createProduct(formData: FormData) {
     const name = formData.get("name") as string
     const category = formData.get("category") as string || "women-ethnic"
     const basePrice = parseFloat(formData.get("basePrice") as string)
-    const stock = parseInt(formData.get("stock") as string)
     const discountPercent = parseInt(formData.get("discountPercent") as string) || 0
     const fabric = formData.get("fabric") as string || "Silk"
     const fabricDetails = formData.get("fabricDetails") as string || null
@@ -89,17 +88,15 @@ export async function createProduct(formData: FormData) {
     const isBestseller = formData.get("isBestseller") === "true"
     const isFeatured = formData.get("isFeatured") === "true"
     const isOnSale = formData.get("isOnSale") === "true"
-    const size = formData.get("size") as string || "Free Size"
-    const color = formData.get("color") as string || "Default"
 
-    if (!name || !category || isNaN(basePrice) || isNaN(stock)) {
+    if (!name || !category || isNaN(basePrice)) {
       return { success: false, error: "Invalid input" }
     }
 
     const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, "-") + "-" + Date.now().toString().slice(-4)
     const salePrice = discountPercent > 0 ? basePrice * (1 - discountPercent / 100) : null
 
-    await prisma.product.create({
+    const newProduct = await prisma.product.create({
       data: {
         name,
         slug,
@@ -121,18 +118,7 @@ export async function createProduct(formData: FormData) {
         occasion: "[]",
         tags: "[]",
         rating: 0,
-        reviewCount: 0,
-        variants: {
-          create: [{
-            sku: slug.toUpperCase() + "-01",
-            size,
-            color,
-            colorHex: "#000000",
-            price: basePrice,
-            salePrice,
-            stock
-          }]
-        }
+        reviewCount: 0
       }
     })
 
@@ -140,7 +126,7 @@ export async function createProduct(formData: FormData) {
     revalidatePath("/admin")
     revalidatePath("/shop")
     
-    return { success: true }
+    return { success: true, product: newProduct }
   } catch (error: any) {
     console.error("Error creating product:", error)
     return { success: false, error: error.message || "Failed to create product" }
@@ -564,5 +550,24 @@ export async function updateBannerTitle(id: string, title: string) {
     return { success: true }
   } catch (error: any) {
     return { success: false, error: error.message }
+  }
+}
+
+export async function toggleProductStatus(productId: string, isActive: boolean) {
+  try {
+    const updatedProduct = await prisma.product.update({
+      where: { id: productId },
+      data: { isActive },
+    });
+    
+    // Revalidate paths where products are listed
+    revalidatePath("/admin");
+    revalidatePath("/shop");
+    revalidatePath("/");
+    
+    return { success: true, product: updatedProduct };
+  } catch (error: any) {
+    console.error("Failed to toggle product status:", error);
+    return { success: false, error: error.message };
   }
 }

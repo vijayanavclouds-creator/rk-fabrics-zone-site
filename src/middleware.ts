@@ -10,12 +10,18 @@ export default withAuth(
 
     if (isAuthPage) {
       if (isAuth) {
-        return NextResponse.redirect(new URL('/account', req.url))
+        return NextResponse.redirect(new URL('/shop', req.url))
       }
       return null
     }
 
-    if (!isAuth) {
+    if (req.nextUrl.pathname === '/' && token?.role === 'ADMIN') {
+      return NextResponse.redirect(new URL('/account/admin?tab=overview', req.url))
+    }
+
+    const isProtectedRoute = req.nextUrl.pathname.startsWith('/account') || req.nextUrl.pathname.startsWith('/admin') || req.nextUrl.pathname.startsWith('/contact')
+
+    if (isProtectedRoute && !isAuth) {
       let from = req.nextUrl.pathname;
       if (req.nextUrl.search) {
         from += req.nextUrl.search;
@@ -35,5 +41,5 @@ export default withAuth(
 )
 
 export const config = {
-  matcher: ['/admin/:path*', '/account/:path*', '/login', '/register']
+  matcher: ['/', '/admin/:path*', '/account/:path*', '/contact', '/login', '/register']
 }

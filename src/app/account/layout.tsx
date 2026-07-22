@@ -25,7 +25,7 @@ export default async function AccountLayout({
     { href: "/account/addresses", label: "Saved Addresses", icon: User },
     { href: "/account/wishlist", label: "Wishlist", icon: Heart },
     { href: "/account/coupons", label: "Coupons & Offers", icon: Ticket },
-    { href: "/account/reviews", label: "My Reviews & Q&A", icon: MessageSquare },
+    { href: "/account/reviews", label: "My Reviews & Queries", icon: MessageSquare },
     { href: "/account/notifications", label: "Notification Settings", icon: Bell },
     { href: "/account/help", label: "Help Center & FAQs", icon: HelpCircle },
   ]

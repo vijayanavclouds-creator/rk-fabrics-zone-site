@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { Search, X, TrendingUp, Clock } from "lucide-react";
 import { useUIStore } from "@/store";
@@ -87,8 +88,18 @@ export function SearchOverlay() {
  onClick={closeSearch}
  className="flex items-center gap-4 p-3 rounded-xl hover:bg-teal-50/60 :bg-teal-900/10 transition-colors group"
  >
- <div className="w-14 h-14 rounded-lg bg-cream-dark flex items-center justify-center text-2xl shrink-0">
- 🧵
+ <div className="w-14 h-14 rounded-lg bg-cream-dark flex items-center justify-center text-2xl shrink-0 overflow-hidden relative">
+ {product.images && product.images[0] ? (
+   <Image
+     src={product.images[0].url}
+     alt={product.name}
+     fill
+     className="object-cover"
+     sizes="56px"
+   />
+ ) : (
+   "🧵"
+ )}
  </div>
  <div className="flex-1 min-w-0">
  <p className="text-sm font-medium text-charcoal truncate group-hover:text-teal-600 :text-teal-400 transition-colors">

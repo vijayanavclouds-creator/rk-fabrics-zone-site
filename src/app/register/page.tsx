@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { toast } from "sonner"
 import { signIn } from "next-auth/react"
-import { ArrowRight, Lock, Mail, User, KeyRound } from "lucide-react"
+import { ArrowRight, Lock, Mail, User, KeyRound, Phone, Calendar } from "lucide-react"
 import { registerUser, sendSignupOtp } from "@/actions/auth"
 
 export default function Register() {
@@ -20,6 +20,23 @@ export default function Register() {
     
     const formData = new FormData(e.currentTarget)
     const email = formData.get("email") as string
+    const phone = formData.get("phone") as string
+    const dob = formData.get("dob") as string
+
+    if (!/^[0-9]{10}$/.test(phone)) {
+      toast.error("Please enter a valid 10-digit phone number")
+      setLoading(false)
+      return
+    }
+
+    const dobDate = new Date(dob)
+    const age = new Date().getFullYear() - dobDate.getFullYear()
+    if (age < 13 || isNaN(dobDate.getTime())) {
+      toast.error("You must be at least 13 years old to register")
+      setLoading(false)
+      return
+    }
+
     setFormDataState(formData)
 
     try {
@@ -105,6 +122,38 @@ export default function Register() {
                     required
                     className="w-full pl-11 pr-4 py-3 rounded-xl border border-charcoal/20 bg-transparent focus:outline-none focus:border-teal-600 focus:ring-1 focus:ring-teal-600 transition-all text-charcoal"
                     placeholder="you@example.com"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-bold text-charcoal mb-2">Mobile Number</label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate">
+                    <Phone size={18} />
+                  </div>
+                  <input
+                    type="tel"
+                    name="phone"
+                    required
+                    maxLength={10}
+                    className="w-full pl-11 pr-4 py-3 rounded-xl border border-charcoal/20 bg-transparent focus:outline-none focus:border-teal-600 focus:ring-1 focus:ring-teal-600 transition-all text-charcoal"
+                    placeholder="10-digit mobile number"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-bold text-charcoal mb-2">Date of Birth</label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate">
+                    <Calendar size={18} />
+                  </div>
+                  <input
+                    type="date"
+                    name="dob"
+                    required
+                    className="w-full pl-11 pr-4 py-3 rounded-xl border border-charcoal/20 bg-transparent focus:outline-none focus:border-teal-600 focus:ring-1 focus:ring-teal-600 transition-all text-charcoal"
                   />
                 </div>
               </div>

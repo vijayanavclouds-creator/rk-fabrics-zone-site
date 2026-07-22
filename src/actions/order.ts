@@ -4,7 +4,7 @@ import prisma from "@/lib/prisma"
 import { getServerSession } from "next-auth/next"
 import { authOptions } from "@/lib/auth"
 import { revalidatePath } from "next/cache"
-import { sendOrderConfirmationEmail, sendOrderShippedEmail } from "@/lib/email"
+import { sendOrderConfirmationEmail, sendOrderShippedEmail, sendOrderDeliveredEmail, sendOrderCancelledEmail } from "@/lib/email"
 
 export async function createOrder(data: any) {
   try {
@@ -230,6 +230,18 @@ export async function updateOrderStatus(orderId: string, status: string) {
       return { success: false, error: "Unauthorized" }
     }
 
+    const existingOrder = await prisma.order.findUnique({
+      where: { id: orderId }
+    })
+
+    if (!existingOrder) {
+      return { success: false, error: "Order not found" }
+    }
+
+    if (existingOrder.status === "DELIVERED" || existingOrder.status === "CANCELLED") {
+      return { success: false, error: "Order status cannot be changed once delivered or cancelled" }
+    }
+
     const updatedOrder = await prisma.order.update({
       where: { id: orderId },
       data: { status },
@@ -239,6 +251,10 @@ export async function updateOrderStatus(orderId: string, status: string) {
     if (status === "SHIPPED") {
       // Don't await to avoid blocking response
       sendOrderShippedEmail(updatedOrder).catch(console.error);
+    } else if (status === "DELIVERED") {
+      sendOrderDeliveredEmail(updatedOrder).catch(console.error);
+    } else if (status === "CANCELLED") {
+      sendOrderCancelledEmail(updatedOrder).catch(console.error);
     }
 
     revalidatePath("/admin")
@@ -247,5 +263,31 @@ export async function updateOrderStatus(orderId: string, status: string) {
     return { success: true }
   } catch (error: any) {
     return { success: false, error: "Failed to update order status" }
+  }
+}
+
+export async function toggleUserOrdersReadStatus(userIdOrEmail: string, isRead: boolean) {
+  try {
+    const session = await getServerSession(authOptions)
+    if (!session || session.user.role !== "ADMIN") {
+      return { success: false, error: "Unauthorized" }
+    }
+
+    await prisma.order.updateMany({
+      where: {
+        OR: [
+          { userId: userIdOrEmail },
+          { email: userIdOrEmail }
+        ]
+      },
+      data: { isReadByAdmin: isRead }
+    })
+
+    revalidatePath("/admin")
+    
+    return { success: true }
+  } catch (error: any) {
+    console.error("toggleUserOrdersReadStatus Error:", error)
+    return { success: false, error: "Failed to update read status: " + error.message }
   }
 }

@@ -98,10 +98,10 @@ export function NavigationManager() {
   }
 
   return (
-    <div className="bg-white rounded-3xl border border-charcoal/10 p-8 shadow-[0_8px_30px_rgb(0,0,0,0.08)]">
-      <div className="flex justify-between items-center mb-6">
+    <div className="animate-in fade-in duration-300">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 border-b border-charcoal/10 pb-4 mb-6">
         <div>
-          <h2 className="text-2xl font-bold text-charcoal">Storefront Navigation</h2>
+          <h2 className="font-[family-name:var(--font-playfair)] text-2xl font-bold text-charcoal">Storefront Navigation</h2>
           <p className="text-sm text-slate mt-1">Manage the main menu tabs and dropdown links shown on the website header.</p>
         </div>
         <button 
@@ -112,6 +112,7 @@ export function NavigationManager() {
           {isPending ? <span className="animate-pulse">Saving...</span> : <><Save size={18} /> Save Changes</>}
         </button>
       </div>
+      <div className="bg-white rounded-3xl border border-charcoal/10 p-8 shadow-[0_8px_30px_rgb(0,0,0,0.08)]">
 
       <div className="space-y-4">
         {links.map((link, idx) => (
@@ -215,6 +216,7 @@ export function NavigationManager() {
         >
           <Plus size={20} /> Add Main Menu Tab
         </button>
+      </div>
       </div>
     </div>
   )

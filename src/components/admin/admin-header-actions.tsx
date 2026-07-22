@@ -1,8 +1,8 @@
 "use client"
 
 import { useState, useEffect, useRef } from "react"
-import { Bell, AlertTriangle, Settings, Check } from "lucide-react"
-import { getAdminNotifications, markAdminNotificationAsRead, markAllAdminNotificationsAsRead, getLateShippingAlerts, updateLateShippingThreshold } from "@/actions/admin-notifications"
+import { Bell, AlertTriangle, Settings, Check, Trash2 } from "lucide-react"
+import { getAdminNotifications, markAdminNotificationAsRead, markAllAdminNotificationsAsRead, getLateShippingAlerts, updateLateShippingThreshold, clearAllAdminNotifications } from "@/actions/admin-notifications"
 import { toast } from "sonner"
 import Link from "next/link"
 
@@ -20,8 +20,15 @@ export function AdminHeaderActions() {
 
   useEffect(() => {
     fetchData()
-    const interval = setInterval(fetchData, 60000) // refresh every minute
-    return () => clearInterval(interval)
+    const interval = setInterval(fetchData, 10000) // refresh every 10 seconds for near real-time updates
+    
+    const handleStatusUpdate = () => fetchData()
+    window.addEventListener('orderStatusUpdated', handleStatusUpdate)
+    
+    return () => {
+      clearInterval(interval)
+      window.removeEventListener('orderStatusUpdated', handleStatusUpdate)
+    }
   }, [])
 
   useEffect(() => {
@@ -62,8 +69,13 @@ export function AdminHeaderActions() {
   }
 
   const handleMarkAllRead = async () => {
-    setNotifications(prev => prev.map(n => ({ ...n, isRead: true })))
+    setNotifications(notifications.map(n => ({ ...n, isRead: true })))
     await markAllAdminNotificationsAsRead()
+  }
+
+  const handleClearAll = async () => {
+    setNotifications([])
+    await clearAllAdminNotifications()
   }
 
   const handleMarkPaymentAlertAsRead = async (id: string, e: React.MouseEvent) => {
@@ -185,14 +197,24 @@ export function AdminHeaderActions() {
           <div className="absolute right-0 mt-2 w-80 sm:w-96 bg-white rounded-2xl shadow-neo-card border border-charcoal/10 overflow-hidden z-50">
             <div className="p-4 border-b border-charcoal/5 flex items-center justify-between bg-cream/50">
               <h3 className="font-bold text-charcoal">System Activity</h3>
-              {unreadNotifs > 0 && (
-                <button 
-                  onClick={handleMarkAllRead}
-                  className="text-xs font-bold text-teal-600 hover:text-teal-800 transition-colors flex items-center gap-1"
-                >
-                  <Check size={12} /> Mark all read
-                </button>
-              )}
+              <div className="flex gap-3">
+                {unreadNotifs > 0 && (
+                  <button 
+                    onClick={handleMarkAllRead}
+                    className="text-xs font-bold text-teal-600 hover:text-teal-800 transition-colors flex items-center gap-1"
+                  >
+                    <Check size={12} /> Mark all read
+                  </button>
+                )}
+                {notifications.length > 0 && (
+                  <button 
+                    onClick={handleClearAll}
+                    className="text-xs font-bold text-rose hover:text-rose/80 transition-colors flex items-center gap-1"
+                  >
+                    <Trash2 size={12} /> Clear all
+                  </button>
+                )}
+              </div>
             </div>
 
             <div className="max-h-96 overflow-y-auto custom-scrollbar">
@@ -235,6 +257,12 @@ export function AdminHeaderActions() {
                   ))}
                 </div>
               )}
+            </div>
+
+            <div className="p-3 border-t border-charcoal/5 bg-slate-50 text-center">
+              <Link href="/account/admin/notifications" onClick={() => setShowNotifications(false)} className="text-sm font-semibold text-teal-600 hover:text-teal-800 transition-colors inline-block w-full">
+                View All Activity
+              </Link>
             </div>
           </div>
         )}

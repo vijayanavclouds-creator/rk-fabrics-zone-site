@@ -116,10 +116,20 @@ export function CartDrawer() {
  exit={{ opacity: 0, x: -20 }}
  className="flex gap-3 p-3 bg-white rounded-xl border border-charcoal/5 "
  >
- {/* Product Image Placeholder */}
- <div className="w-20 h-20 bg-cream-dark rounded-lg flex items-center justify-center text-2xl shrink-0">
- 🧵
- </div>
+  {/* Product Image */}
+  <div className="w-20 h-20 bg-cream-dark rounded-lg flex items-center justify-center text-2xl shrink-0 overflow-hidden relative">
+  {item.product.images && item.product.images[0] ? (
+    <Image
+      src={item.product.images[0].url}
+      alt={item.product.name}
+      fill
+      className="object-cover"
+      sizes="80px"
+    />
+  ) : (
+    "🧵"
+  )}
+  </div>
 
  <div className="flex-1 min-w-0">
  <h4 className="text-sm font-medium text-charcoal truncate">

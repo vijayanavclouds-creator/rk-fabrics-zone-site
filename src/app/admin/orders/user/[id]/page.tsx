@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { useParams, useRouter } from "next/navigation"
-import { getAdminUserOrders, updateOrderStatus } from "@/actions/order"
+import { getAdminUserOrders, updateOrderStatus, toggleUserOrdersReadStatus } from "@/actions/order"
 import { toast } from "sonner"
 import { Package, CheckCircle, Clock, Truck, XCircle, ArrowLeft, Gift, Send } from "lucide-react"
 import { createCoupon } from "@/actions/coupon"
@@ -24,6 +24,8 @@ export default function UserOrdersPage() {
 
   useEffect(() => {
     fetchOrders()
+    // Automatically mark the user's orders as read when opening their page
+    toggleUserOrdersReadStatus(userIdOrEmail, true).catch(console.error)
   }, [userIdOrEmail])
 
   const fetchOrders = async () => {
@@ -45,6 +47,7 @@ export default function UserOrdersPage() {
     if (res.success) {
       toast.success("Order status updated!")
       fetchOrders()
+      window.dispatchEvent(new CustomEvent('orderStatusUpdated'))
     } else {
       toast.error(res.error || "Failed to update status")
     }
@@ -97,6 +100,17 @@ export default function UserOrdersPage() {
     }
   }
 
+  const getOrderCardBg = (status: string) => {
+    switch (status) {
+      case "PENDING": return "bg-emerald-50/50"
+      case "PROCESSING": return "bg-blue-50/50"
+      case "SHIPPED": return "bg-indigo-50/50"
+      case "DELIVERED": return "bg-slate-50/50"
+      case "CANCELLED": return "bg-rose-50/50"
+      default: return "bg-white"
+    }
+  }
+
   if (loading) {
     return <div className="p-12 text-center text-slate">Loading orders...</div>
   }
@@ -112,9 +126,9 @@ export default function UserOrdersPage() {
         <ArrowLeft size={16} /> Back
       </button>
 
-      <div className="flex justify-between items-center bg-white rounded-2xl border border-charcoal/10 px-8 py-5 shadow-sm">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 border-b border-charcoal/10 pb-4 mb-6">
         <div>
-          <h2 className="font-[family-name:var(--font-playfair)] text-3xl font-bold text-charcoal">
+          <h2 className="font-[family-name:var(--font-playfair)] text-2xl font-bold text-charcoal">
             Orders for {userName}
           </h2>
           <p className="text-slate mt-1 text-sm">{userIdOrEmail}</p>
@@ -123,16 +137,16 @@ export default function UserOrdersPage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-6">
-          <div className="bg-white rounded-3xl border border-charcoal/10 shadow-sm overflow-hidden p-6 divide-y divide-charcoal/10">
+          <div className="space-y-6">
         {orders.length === 0 ? (
-          <div className="p-12 text-center text-slate">
+          <div className="bg-white rounded-3xl border border-charcoal/10 shadow-sm p-12 text-center text-slate">
             <Package size={48} className="mx-auto mb-4 opacity-50" />
             <h3 className="text-lg font-bold text-charcoal">No Orders Found</h3>
             <p>This user has not placed any orders.</p>
           </div>
         ) : (
           orders.map((order: any) => (
-            <div key={order.id} className="py-6 first:pt-0 last:pb-0">
+            <div key={order.id} className={`rounded-3xl border border-charcoal/10 shadow-sm p-6 transition-colors ${getOrderCardBg(order.status)}`}>
               <div className="flex flex-col xl:flex-row gap-6 justify-between">
                 
                 {/* Order Details */}
@@ -165,7 +179,7 @@ export default function UserOrdersPage() {
 
                   <div>
                     <h4 className="text-xs font-bold text-slate uppercase tracking-wider mb-2">Order Items</h4>
-                    <div className="flex gap-4 overflow-x-auto pb-2 custom-scrollbar">
+                    <div className="flex flex-wrap gap-4">
                       {order.items.map((item: any) => (
                         <div key={item.id} className="flex-shrink-0 flex items-center gap-3 bg-white p-2 pr-4 rounded-xl border border-charcoal/10 shadow-sm">
                           <div className="w-12 h-12 bg-slate-100 rounded-lg overflow-hidden border border-charcoal/5">
@@ -216,7 +230,8 @@ export default function UserOrdersPage() {
                     <select 
                       value={order.status}
                       onChange={(e) => handleStatusChange(order.id, e.target.value)}
-                      className="w-full p-2.5 rounded-xl border border-charcoal/20 bg-slate-50 focus:outline-none focus:border-teal-600 focus:ring-1 focus:ring-teal-600 transition-all text-sm font-bold text-charcoal cursor-pointer"
+                      disabled={order.status === "DELIVERED" || order.status === "CANCELLED"}
+                      className={`w-full p-2.5 rounded-xl border border-charcoal/20 bg-slate-50 focus:outline-none focus:border-teal-600 focus:ring-1 focus:ring-teal-600 transition-all text-sm font-bold text-charcoal ${order.status === "DELIVERED" || order.status === "CANCELLED" ? "opacity-60 cursor-not-allowed" : "cursor-pointer"}`}
                     >
                       <option value="PENDING">PENDING</option>
                       <option value="PROCESSING">PROCESSING</option>
