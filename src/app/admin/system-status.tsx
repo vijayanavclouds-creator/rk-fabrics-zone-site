@@ -159,7 +159,7 @@ export function SystemStatus() {
               <div className="text-sm text-amber-900">
                 <p className="font-bold mb-1">Vercel Token Required</p>
                 <p>
-                  To view Vercel limits here, you must generate a Personal Access Token in your Vercel Dashboard and add it to your <code>.env</code> file as <code>VERCEL_ACCESS_TOKEN</code>.
+                  To view Vercel limits here, you must generate a Personal Access Token in your Vercel Dashboard and add it to your <code>.env</code> file as <code>API_VERCEL_ACCESS_TOKEN</code>.
                 </p>
               </div>
             </div>

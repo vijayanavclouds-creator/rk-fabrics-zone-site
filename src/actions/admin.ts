@@ -490,7 +490,7 @@ export async function getSystemUsage() {
     const usage = await cloudinary.api.usage()
     
     let vercelData = null;
-    const vercelToken = process.env.VERCEL_ACCESS_TOKEN;
+    const vercelToken = process.env.API_VERCEL_ACCESS_TOKEN;
     
     if (vercelToken) {
       try {
