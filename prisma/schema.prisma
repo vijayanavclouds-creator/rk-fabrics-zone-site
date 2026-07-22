@@ -1,5 +1,5 @@
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -24,8 +24,8 @@ model Product {
   isFreeDelivery   Boolean  @default(true)
   fabric           String
   fabricDetails    String?
-  occasion         String // Stored as JSON array string
-  tags             String // Stored as JSON array string
+  occasion         String[]
+  tags             String[]
   rating           Float
   reviewCount      Int
   isFeatured       Boolean  @default(false)

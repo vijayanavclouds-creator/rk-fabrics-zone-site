@@ -115,8 +115,8 @@ export async function createProduct(formData: FormData) {
         isOnSale,
         fabric,
         fabricDetails,
-        occasion: "[]",
-        tags: "[]",
+        occasion: [],
+        tags: [],
         rating: 0,
         reviewCount: 0
       }
@@ -244,8 +244,8 @@ async function syncDatabaseToStatic() {
     
     const formattedProducts = allProducts.map(p => ({
       ...p,
-      occasion: JSON.parse(p.occasion as string),
-      tags: JSON.parse(p.tags as string),
+      occasion: p.occasion,
+      tags: p.tags,
     }))
 
     const dataFile = path.join(process.cwd(), 'src', 'lib', 'data.ts')
