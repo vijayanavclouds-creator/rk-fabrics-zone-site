@@ -1,7 +1,8 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Heart, MapPin, Phone, Mail, Globe, Bookmark, AtSign, MessageCircle } from "lucide-react";
-import { getCompanyProfile, getStoreTaxonomy } from "@/actions/system";
+import { getCompanyProfile } from "@/actions/system";
+import { getStoreTaxonomyData } from "@/lib/data/system";
 import { NewsletterForm } from "./newsletter-form";
 
 const footerLinks = {
@@ -22,13 +23,11 @@ const footerLinks = {
  { label: "Terms & Conditions", href: "/account/help#terms" },
  ],
 };
-import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 
 export async function Footer() {
-  const session = await getServerSession(authOptions);
   const companyProfile = await getCompanyProfile();
-  const { categories, fabrics } = await getStoreTaxonomy();
+  const { categories, fabrics } = await getStoreTaxonomyData();
   
   const dynamicShopLinks = [...categories, ...fabrics]
     .filter((c: any) => c.showInFooter)
@@ -44,8 +43,7 @@ export async function Footer() {
   return (
   <footer className="bg-gradient-to-br from-charcoal to-slate text-white pb-20 md:pb-0">
    {/* Newsletter Strip */}
-   {session?.user?.role !== "ADMIN" && (
-     <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 pt-8 pb-4">
+   <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 pt-8 pb-4">
        <div className="bg-transparent rounded-3xl p-6 md:p-8 flex flex-col md:flex-row items-center justify-between gap-6 shadow-[8px_8px_20px_rgba(0,0,0,0.4),-8px_-8px_20px_rgba(255,255,255,0.05)] border border-white/5">
          <div className="flex items-center gap-4">
            <div className="w-12 h-12 rounded-full bg-gradient-to-br from-gold to-yellow-600 flex items-center justify-center shadow-lg hidden sm:flex">
@@ -63,7 +61,6 @@ export async function Footer() {
          <NewsletterForm />
        </div>
      </div>
-   )}
  {/* Main Footer */}
  <div className="max-w-7xl mx-auto px-6 lg:px-8 py-12">
  <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
@@ -133,10 +130,6 @@ export async function Footer() {
  </h4>
             <ul className="space-y-4">
               {footerLinks.company.map((link, i) => {
-                // Hide contact links for guest users
-                if (!session && link.href.startsWith("/contact")) {
-                  return null;
-                }
                 return (
                   <li key={i}>
                     <Link href={link.href} className="text-sm text-white/70 hover:text-white transition-colors">

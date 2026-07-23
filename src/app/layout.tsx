@@ -8,7 +8,7 @@ import { CartDrawer } from "@/components/cart/cart-drawer";
 import { AuthHydration } from "@/components/layout/auth-hydration";
 import { CartSync } from "@/components/cart-sync";
 import { Toaster } from "sonner";
-import { getNavigationLinks } from "@/actions/system";
+import { getNavigationLinksData } from "@/lib/data/system";
 import "./globals.css";
 
 const playfair = Playfair_Display({
@@ -84,7 +84,7 @@ export default async function RootLayout({
 }: Readonly<{
  children: React.ReactNode;
 }>) {
- const navLinks = await getNavigationLinks();
+ const navLinks = await getNavigationLinksData();
  return (
  <html
  lang="en"

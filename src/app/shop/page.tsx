@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import prisma from "@/lib/prisma";
-import { getStoreTaxonomy } from "@/actions/system";
+import { getStoreTaxonomyData } from "@/lib/data/system";
 import { ShopContent } from "./shop-content";
 
 export const dynamic = 'force-dynamic';
@@ -13,7 +13,7 @@ export default async function ShopPage() {
     orderBy: { createdAt: 'desc' }
   });
 
-  const { categories: storeCats, fabrics: storeFabs } = await getStoreTaxonomy();
+  const { categories: storeCats, fabrics: storeFabs } = await getStoreTaxonomyData();
 
   // Format categories for the UI using the exact predefined options from the database
   const categories = storeCats.map((c: any) => ({
