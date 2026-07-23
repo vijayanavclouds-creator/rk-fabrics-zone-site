@@ -33,10 +33,21 @@ function NavigationLoaderInner() {
         return;
       }
 
-      // Check if it's the exact same page, in which case it might not trigger a route change
-      // or if they are holding Ctrl/Cmd to open in new tab
+      // Check if they are holding Ctrl/Cmd to open in new tab
       if (e.ctrlKey || e.metaKey || e.shiftKey || e.altKey) {
         return;
+      }
+
+      // Check if it's the exact same page, in which case it won't trigger a route change
+      try {
+        const targetUrl = new URL(target.href);
+        const currentUrl = new URL(window.location.href);
+
+        if (targetUrl.pathname === currentUrl.pathname && targetUrl.search === currentUrl.search) {
+          return;
+        }
+      } catch (err) {
+        // Fallback if URL parsing fails
       }
 
       // If it's a valid internal link, show the loader
