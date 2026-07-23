@@ -3,7 +3,7 @@ import prisma from "@/lib/prisma";
 import { getStoreTaxonomyData } from "@/lib/data/system";
 import { ShopContent } from "./shop-content";
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 60; // Revalidate every 60 seconds for near-instant loads
 
 export default async function ShopPage() {
   // Fetch products from database
