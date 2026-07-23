@@ -129,9 +129,6 @@ function ProductDetail({ product }: { product: NonNullable<ReturnType<typeof get
  if (!selectedVariant || stock <= 0) return;
  setIsAdding(true);
  addItem(product, selectedVariant, quantity);
- toast.success("Added to cart! 🎉", {
- description: `${product.name} — ${selectedVariant.color}, ${selectedVariant.size}`,
- });
  setTimeout(() => setIsAdding(false), 600);
  };
 
