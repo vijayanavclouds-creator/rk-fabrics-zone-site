@@ -90,6 +90,7 @@ export async function createOrder(data: any) {
               quantity: item.quantity,
               price: item.variant.salePrice || item.variant.price,
               image: item.variant.images?.[0]?.url || item.product.images?.[0]?.url || null,
+              isReturnable: item.product.isReturnable ?? true,
             })),
           },
         },
@@ -242,19 +243,32 @@ export async function updateOrderStatus(orderId: string, status: string) {
       return { success: false, error: "Order status cannot be changed once delivered or cancelled" }
     }
 
+    const updateData: any = { status }
+    if (status === "SHIPPED") {
+      updateData.shippedAt = new Date()
+    } else if (status === "DELIVERED") {
+      updateData.deliveredAt = new Date()
+    } else if (status === "CANCELLED") {
+      updateData.cancelledAt = new Date()
+    }
+
     const updatedOrder = await prisma.order.update({
       where: { id: orderId },
-      data: { status },
-      include: { items: true } // Need items for the email
+      data: updateData,
+      include: { 
+        items: true,
+        user: { select: { receiveOrderEmails: true } } 
+      }
     })
 
-    if (status === "SHIPPED") {
-      // Don't await to avoid blocking response
-      sendOrderShippedEmail(updatedOrder).catch(console.error);
-    } else if (status === "DELIVERED") {
-      sendOrderDeliveredEmail(updatedOrder).catch(console.error);
-    } else if (status === "CANCELLED") {
-      sendOrderCancelledEmail(updatedOrder).catch(console.error);
+    if (updatedOrder.user.receiveOrderEmails) {
+      if (status === "SHIPPED") {
+        sendOrderShippedEmail(updatedOrder).catch(console.error);
+      } else if (status === "DELIVERED") {
+        sendOrderDeliveredEmail(updatedOrder).catch(console.error);
+      } else if (status === "CANCELLED") {
+        sendOrderCancelledEmail(updatedOrder).catch(console.error);
+      }
     }
 
     revalidatePath("/admin")

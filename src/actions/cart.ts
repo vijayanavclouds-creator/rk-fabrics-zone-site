@@ -31,6 +31,25 @@ export async function syncCartToDb(items: any[]) {
   }
 }
 
+export async function fetchUserCart() {
+  try {
+    const session = await getServerSession(authOptions);
+    if (!session?.user?.email) return { success: false, items: [] };
+
+    const user = await prisma.user.findUnique({
+      where: { email: session.user.email },
+      select: { cartData: true }
+    });
+
+    if (user?.cartData) {
+      return { success: true, items: JSON.parse(user.cartData) };
+    }
+    return { success: true, items: [] };
+  } catch (error) {
+    return { success: false, items: [] };
+  }
+}
+
 export async function getAbandonedCarts() {
   try {
     const session = await getServerSession(authOptions);

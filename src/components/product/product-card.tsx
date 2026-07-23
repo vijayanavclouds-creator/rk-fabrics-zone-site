@@ -39,16 +39,13 @@ interface ProductCardProps {
 
  const productUrl = `/product/${product.slug}`;
 
- const handleAddToCart = (e: React.MouseEvent) => {
- e.preventDefault();
- e.stopPropagation();
- if (primaryVariant) {
- addItem(product, primaryVariant);
- toast.success(`${product.name} added to cart!`, {
- description: `${primaryVariant.color} • ${primaryVariant.size}`,
- });
- }
- };
+  const handleAddToCart = (e: React.MouseEvent) => {
+  e.preventDefault();
+  e.stopPropagation();
+  if (primaryVariant) {
+  addItem(product, primaryVariant);
+  }
+  };
 
   const handleWishlist = async (e: React.MouseEvent) => {
     e.preventDefault();

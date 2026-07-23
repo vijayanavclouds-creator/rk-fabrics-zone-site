@@ -25,6 +25,7 @@ export async function updateProduct(formData: FormData) {
     const isBestseller = formData.get("isBestseller") === "true"
     const isFeatured = formData.get("isFeatured") === "true"
     const isOnSale = formData.get("isOnSale") === "true"
+    const isReturnable = formData.get("isReturnable") !== "false" // default true unless explicitly false
     const fabric = formData.get("fabric") as string
     const fabricDetails = formData.get("fabricDetails") as string || null
 
@@ -49,6 +50,7 @@ export async function updateProduct(formData: FormData) {
         isBestseller,
         isFeatured,
         isOnSale,
+        isReturnable,
         fabric,
         fabricDetails
       }
@@ -89,6 +91,7 @@ export async function createProduct(formData: FormData) {
     const isBestseller = formData.get("isBestseller") === "true"
     const isFeatured = formData.get("isFeatured") === "true"
     const isOnSale = formData.get("isOnSale") === "true"
+    const isReturnable = formData.get("isReturnable") !== "false"
 
     if (!name || !category || isNaN(basePrice)) {
       return { success: false, error: "Invalid input" }
@@ -114,6 +117,7 @@ export async function createProduct(formData: FormData) {
         isBestseller,
         isFeatured,
         isOnSale,
+        isReturnable,
         fabric,
         fabricDetails,
         occasion: [],

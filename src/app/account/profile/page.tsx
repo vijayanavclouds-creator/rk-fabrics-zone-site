@@ -19,7 +19,7 @@ export default async function AccountProfilePage() {
           Account Information
         </h2>
         <div className="bg-white rounded-3xl border border-charcoal/10 p-6 md:p-8 shadow-sm">
-          <ProfileForm user={{ name: session.user.name || "", email: session.user.email || "", phone: session.user.phone || "", dob: session.user.dob || "", image: session.user.image || "" }} />
+          <ProfileForm user={{ name: session.user.name || "", email: session.user.email || "", phone: session.user.phone || "", dob: session.user.dob || "", image: session.user.image || "", receiveOrderEmails: session.user.receiveOrderEmails ?? true }} />
         </div>
       </div>
 

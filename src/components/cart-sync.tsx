@@ -3,37 +3,56 @@
 import { useEffect, useRef } from "react";
 import { useSession } from "next-auth/react";
 import { useCartStore } from "@/store";
-import { syncCartToDb } from "@/actions/cart";
+import { syncCartToDb, fetchUserCart } from "@/actions/cart";
 
 export function CartSync() {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const items = useCartStore((state) => state.items);
+  const setItems = useCartStore((state) => state.setItems);
+  const clearCart = useCartStore((state) => state.clearCart);
   const isFirstRender = useRef(true);
-  const previousItemsLength = useRef(items.length);
+  const previousSession = useRef<string | null>(null);
 
   useEffect(() => {
-    // Only sync for logged in customers
-    if (session?.user && session.user.role !== "ADMIN") {
-      // Avoid syncing on initial render if nothing changed, 
-      // but if the cart was empty on server and local has items, we should sync.
-      // To keep it simple, let's sync whenever items change after first render, 
-      // or if items length > 0 on first render.
-      
-      const shouldSync = isFirstRender.current || items !== useCartStore.getState().items || previousItemsLength.current !== items.length;
+    if (status === "authenticated" && session?.user && session.user.role !== "ADMIN") {
+      const userEmail = session.user.email || "";
 
+      // If user just logged in or session mounted
+      if (previousSession.current !== userEmail) {
+        previousSession.current = userEmail;
+        
+        // Fetch cart from DB
+        fetchUserCart().then((res) => {
+          if (res.success && res.items.length > 0) {
+            // Simple logic: if local cart is empty, restore DB cart.
+            // If local cart has items, we assume they added them while logged out 
+            // and want to keep them (they will sync to DB shortly).
+            if (useCartStore.getState().items.length === 0) {
+              setItems(res.items);
+            }
+          }
+        });
+      }
+
+      // Sync logic
+      const shouldSync = !isFirstRender.current; 
       if (shouldSync) {
-        // debounce slightly
         const timer = setTimeout(() => {
           syncCartToDb(items);
         }, 2000);
-        
-        isFirstRender.current = false;
-        previousItemsLength.current = items.length;
-        
         return () => clearTimeout(timer);
       }
+      isFirstRender.current = false;
+      
+    } else if (status === "unauthenticated") {
+      // If user just logged out
+      if (previousSession.current !== null) {
+        previousSession.current = null;
+        clearCart();
+        isFirstRender.current = true;
+      }
     }
-  }, [items, session]);
+  }, [items, session, status]);
 
   return null; // This is a silent functional component
 }

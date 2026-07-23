@@ -61,6 +61,7 @@ export default async function OrderDetailsPage({ params }: { params: Promise<{ i
                 Placed on {new Date(order.createdAt).toLocaleString('en-IN', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
               </p>
             </div>
+            
             <div className="flex items-center gap-3 px-4 py-3 bg-slate-50 border border-charcoal/10 rounded-xl">
               <div className="text-teal-600">
                 {getStatusIcon(order.status)}
@@ -68,8 +69,50 @@ export default async function OrderDetailsPage({ params }: { params: Promise<{ i
               <div>
                 <p className="text-xs text-slate font-bold uppercase tracking-wider">Status</p>
                 <p className="font-bold text-charcoal">{order.status}</p>
+                {order.status === "SHIPPED" && order.shippedAt && (
+                  <p className="text-xs text-slate mt-1">On {new Date(order.shippedAt).toLocaleDateString()}</p>
+                )}
+                {order.status === "DELIVERED" && order.deliveredAt && (
+                  <p className="text-xs text-slate mt-1">On {new Date(order.deliveredAt).toLocaleDateString()}</p>
+                )}
+                {order.status === "CANCELLED" && order.cancelledAt && (
+                  <p className="text-xs text-slate mt-1">On {new Date(order.cancelledAt).toLocaleDateString()}</p>
+                )}
               </div>
             </div>
+          </div>
+          
+          <div className="mb-8 flex justify-end">
+            {(() => {
+              // Return Logic based on Delivered Date
+              if (order.status === "DELIVERED" && order.deliveredAt) {
+                const returnDaysLimit = 7;
+                const deliveryDate = new Date(order.deliveredAt);
+                const now = new Date();
+                const diffTime = Math.abs(now.getTime() - deliveryDate.getTime());
+                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                const isWithinReturnWindow = diffDays <= returnDaysLimit;
+                
+                const hasReturnableItems = order.items.some((item: any) => item.isReturnable);
+
+                if (isWithinReturnWindow && hasReturnableItems) {
+                  return (
+                    <Link href={`/contact?subject=Return+%26+Exchange&orderId=${order.id}`} className="inline-flex items-center gap-2 px-6 py-3 text-sm font-bold text-charcoal bg-white border-2 border-charcoal/20 rounded-xl hover:bg-charcoal/5 transition-colors">
+                      Return Order
+                    </Link>
+                  );
+                }
+              }
+              
+              if (order.status !== "CANCELLED") {
+                return (
+                  <Link href={`/contact?orderId=${order.id}`} className="inline-flex items-center gap-2 px-6 py-3 text-sm font-bold text-slate bg-slate-50 border border-slate-200 rounded-xl hover:bg-slate-100 transition-colors">
+                    Contact Us
+                  </Link>
+                );
+              }
+              return null;
+            })()}
           </div>
 
           <div className="grid md:grid-cols-2 gap-8 mb-8">

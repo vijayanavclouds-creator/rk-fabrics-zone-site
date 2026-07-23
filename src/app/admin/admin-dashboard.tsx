@@ -555,6 +555,10 @@ function ProductEditor({ product = {}, products, storeCategories, storeFabrics, 
               <input type="checkbox" name="isOnSale" value="true" defaultChecked={product.isOnSale} id="isOnSaleEdit" className="w-5 h-5 rounded border-gray-300 text-teal-600 focus:ring-teal-600 accent-teal-600" />
               <label htmlFor="isOnSaleEdit" className="text-sm font-bold text-charcoal cursor-pointer">On Sale</label>
             </div>
+            <div className="flex items-center gap-2">
+              <input type="checkbox" name="isReturnable" value="true" defaultChecked={product.id ? product.isReturnable : true} id="isReturnableEdit" className="w-5 h-5 rounded border-gray-300 text-teal-600 focus:ring-teal-600 accent-teal-600" />
+              <label htmlFor="isReturnableEdit" className="text-sm font-bold text-charcoal cursor-pointer">Return Available</label>
+            </div>
           </div>
           <div className="mt-4 pt-4 border-t border-charcoal/10">
             <h3 className="text-lg font-semibold text-charcoal mb-2">Fabric Details</h3>

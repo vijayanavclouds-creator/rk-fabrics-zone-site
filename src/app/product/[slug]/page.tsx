@@ -500,11 +500,21 @@ function ProductDetail({ product }: { product: NonNullable<ReturnType<typeof get
  <span className="text-[10px] md:text-xs font-medium text-charcoal ">{product.isFreeDelivery ? "Free Delivery" : "Delivery Fee Applies"}</span>
  <span className="text-[9px] text-slate ">{product.isFreeDelivery ? "Available everywhere" : "Calculated at checkout"}</span>
  </div>
- <div className="flex flex-col items-center gap-1 text-center">
- <RefreshCw size={18} className="text-teal-600 " />
- <span className="text-[10px] md:text-xs font-medium text-charcoal ">Easy Returns</span>
- <span className="text-[9px] text-slate ">7 Days</span>
- </div>
+  <div className="flex flex-col items-center gap-1 text-center">
+  {product.isReturnable ? (
+    <>
+      <RefreshCw size={18} className="text-teal-600 " />
+      <span className="text-[10px] md:text-xs font-medium text-charcoal ">7 Day Easy Returns</span>
+      <span className="text-[9px] text-slate ">Available</span>
+    </>
+  ) : (
+    <>
+      <RefreshCw size={18} className="text-slate-400 " />
+      <span className="text-[10px] md:text-xs font-medium text-slate-500 ">No Return Available</span>
+      <span className="text-[9px] text-slate ">For this product</span>
+    </>
+  )}
+  </div>
  <div className="flex flex-col items-center gap-1 text-center">
  <Shield size={18} className="text-teal-600 " />
  <span className="text-[10px] md:text-xs font-medium text-charcoal ">100% Genuine</span>

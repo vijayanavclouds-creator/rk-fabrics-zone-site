@@ -121,6 +121,15 @@ export default async function AdminQueryThreadPage({ params }: { params: Promise
                         Name: {query.name}<br/>
                         Email: {query.email}<br/>
                         Phone: {query.phone || "N/A"}
+                        {query.orderId && query.userId && (
+                          <>
+                            <br/>
+                            <strong className="text-charcoal font-semibold mt-2 block">Related Order:</strong>
+                            <Link href={`/admin/orders/user/${query.userId}#${query.orderId}`} className="text-teal-600 hover:underline inline-flex items-center gap-1 font-medium mt-1">
+                              #{query.orderId.slice(-8).toUpperCase()}
+                            </Link>
+                          </>
+                        )}
                       </div>
                       {msg.message}
                     </div>

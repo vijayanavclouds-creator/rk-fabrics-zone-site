@@ -19,7 +19,7 @@ export default async function AccountOrdersPage() {
     <div className="bg-white rounded-3xl border border-charcoal/10 p-6 md:p-8 shadow-sm">
       <h2 className="text-2xl font-[family-name:var(--font-playfair)] font-bold text-charcoal mb-6 flex items-center gap-3">
         <ShoppingBag size={24} className="text-teal-600" />
-        Order History
+        My Orders
       </h2>
       
       {!orders || orders.length === 0 ? (
@@ -32,21 +32,40 @@ export default async function AccountOrdersPage() {
           </Link>
         </div>
       ) : (
-        <div className="space-y-6">
-          {orders.map((order: any) => (
-            <div key={order.id} className="bg-white border border-charcoal/10 rounded-2xl p-6 hover:shadow-md transition-shadow">
-              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 pb-6 border-b border-charcoal/10">
+        <div className="flex flex-col border border-charcoal/10 rounded-2xl overflow-hidden bg-white">
+          {orders.map((order: any, index: number) => (
+            <Link 
+              href={`/account/orders/${order.id}`}
+              key={order.id} 
+              className={`flex flex-col md:flex-row md:items-center justify-between p-5 hover:bg-slate-50 transition-colors group ${
+                index !== orders.length - 1 ? "border-b border-charcoal/10" : ""
+              }`}
+            >
+              <div className="flex-1 grid grid-cols-1 md:grid-cols-4 gap-4 md:gap-6 items-center">
+                {/* Order ID */}
                 <div>
-                  <p className="text-xs text-slate font-bold uppercase tracking-wider mb-1">Order Placed</p>
-                  <p className="text-charcoal font-bold">{new Date(order.createdAt).toLocaleDateString('en-IN', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
+                  <p className="text-xs text-slate font-medium mb-1">Order ID</p>
+                  <p className="font-bold text-charcoal truncate">#{order.id.slice(-8).toUpperCase()}</p>
                 </div>
+                
+                {/* Date */}
                 <div>
-                  <p className="text-xs text-slate font-bold uppercase tracking-wider mb-1">Total Amount</p>
-                  <p className="text-charcoal font-bold">₹{order.totalAmount.toLocaleString()}</p>
+                  <p className="text-xs text-slate font-medium mb-1">Placed On</p>
+                  <p className="text-sm text-charcoal font-medium">
+                    {new Date(order.createdAt).toLocaleDateString('en-IN', { year: 'numeric', month: 'short', day: 'numeric' })}
+                  </p>
                 </div>
+
+                {/* Amount */}
                 <div>
-                  <p className="text-xs text-slate font-bold uppercase tracking-wider mb-1">Status</p>
-                  <span className={`inline-block px-3 py-1 rounded-full text-xs font-bold ${
+                  <p className="text-xs text-slate font-medium mb-1">Total Amount</p>
+                  <p className="text-sm font-bold text-charcoal">₹{order.totalAmount.toLocaleString()}</p>
+                </div>
+
+                {/* Status */}
+                <div>
+                  <p className="text-xs text-slate font-medium mb-1">Status</p>
+                  <span className={`inline-block px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${
                     order.status === 'DELIVERED' ? 'bg-green-100 text-green-700' :
                     order.status === 'CANCELLED' ? 'bg-error/10 text-error' :
                     order.status === 'SHIPPED' ? 'bg-blue-100 text-blue-700' :
@@ -55,33 +74,13 @@ export default async function AccountOrdersPage() {
                     {order.status}
                   </span>
                 </div>
-                <div>
-                  <Link href={`/account/orders/${order.id}`} className="inline-flex items-center gap-2 px-4 py-2 text-sm font-bold text-teal-600 bg-teal-50 rounded-xl hover:bg-teal-100 transition-colors">
-                    View Details <ArrowRight size={16} />
-                  </Link>
-                </div>
               </div>
               
-              <div className="flex gap-4 overflow-x-auto pb-2 custom-scrollbar">
-                {order.items.map((item: any) => (
-                  <div key={item.id} className="flex-shrink-0 flex items-center gap-3 bg-slate-50 pr-4 rounded-xl border border-charcoal/5">
-                    <div className="w-16 h-16 bg-slate-200 rounded-l-xl overflow-hidden relative">
-                      {item.image ? (
-                        <Image src={item.image} alt={item.productName} fill className="object-cover object-top" />
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center text-slate">
-                          <Package size={20} />
-                        </div>
-                      )}
-                    </div>
-                    <div>
-                      <p className="text-sm font-bold text-charcoal line-clamp-1 max-w-[180px]">{item.productName}</p>
-                      <p className="text-xs text-slate">Qty: {item.quantity}</p>
-                    </div>
-                  </div>
-                ))}
+              {/* Chevron */}
+              <div className="hidden md:flex flex-shrink-0 ml-4 text-charcoal/30 group-hover:text-teal-600 transition-colors">
+                <ArrowRight size={20} />
               </div>
-            </div>
+            </Link>
           ))}
         </div>
       )}

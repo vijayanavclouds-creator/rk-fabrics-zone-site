@@ -32,6 +32,7 @@ model Product {
   isNewArrival     Boolean  @default(false)
   isBestseller     Boolean  @default(false)
   isActive         Boolean  @default(true)
+  isReturnable     Boolean  @default(true)
   createdAt        DateTime @default(now())
 
   variants         ProductVariant[]
@@ -127,6 +128,7 @@ model User {
   role          String    @default("CUSTOMER") // "CUSTOMER" or "ADMIN"
   isActive      Boolean   @default(true)
   createdAt     DateTime  @default(now())
+  receiveOrderEmails Boolean  @default(true)
   
   accounts      Account[]
   sessions      Session[]
@@ -226,6 +228,9 @@ model Order {
   isReadByAdmin   Boolean     @default(false)
   createdAt       DateTime    @default(now())
   updatedAt       DateTime    @updatedAt
+  shippedAt       DateTime?
+  deliveredAt     DateTime?
+  cancelledAt     DateTime?
   
   items           OrderItem[]
 }
@@ -241,6 +246,7 @@ model OrderItem {
   quantity    Int
   price       Float
   image       String?
+  isReturnable Boolean @default(true)
 }
 
 model SystemSetting {
@@ -274,6 +280,7 @@ model ContactQuery {
   email     String
   phone     String?
   subject   String
+  orderId   String?  // Optional relation to an order for returns
   status    String   @default("OPEN") // OPEN, RESOLVED
   isRead    Boolean  @default(false)
   createdAt DateTime @default(now())

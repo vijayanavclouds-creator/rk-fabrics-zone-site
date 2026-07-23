@@ -39,7 +39,7 @@ export function AccountDropdown() {
   }
 
   const customerLinks = [
-    { href: "/account/orders", label: "Your Orders", icon: ShoppingBag },
+    { href: "/account/orders", label: "My Orders", icon: ShoppingBag },
     { href: "/account/profile", label: "Account Information", icon: User },
     { href: "/account/addresses", label: "Saved Addresses", icon: User },
     { href: "/account/wishlist", label: "Wishlist", icon: Heart },

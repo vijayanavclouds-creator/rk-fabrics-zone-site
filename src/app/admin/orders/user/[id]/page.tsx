@@ -146,7 +146,7 @@ export default function UserOrdersPage() {
           </div>
         ) : (
           orders.map((order: any) => (
-            <div key={order.id} className={`rounded-3xl border border-charcoal/10 shadow-sm p-6 transition-colors ${getOrderCardBg(order.status)}`}>
+            <div key={order.id} id={order.id} className={`rounded-3xl border border-charcoal/10 shadow-sm p-6 transition-colors ${getOrderCardBg(order.status)}`}>
               <div className="flex flex-col xl:flex-row gap-6 justify-between">
                 
                 {/* Order Details */}

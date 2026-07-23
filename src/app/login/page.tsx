@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, Suspense } from "react"
-import { signIn } from "next-auth/react"
+import { signIn, getSession } from "next-auth/react"
 import { useRouter, useSearchParams } from "next/navigation"
 import Link from "next/link"
 import { toast } from "sonner"
@@ -11,12 +11,14 @@ function LoginContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
   
   const callbackUrl = searchParams.get("from") || "/shop"
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setLoading(true)
+    setError(null)
     
     const formData = new FormData(e.currentTarget)
     const email = formData.get("email") as string
@@ -32,19 +34,19 @@ function LoginContent() {
 
       if (res?.error) {
         if (res.error === "AccountDeactivated") {
-          toast.error("Account is deactivated. Redirecting to reactivation...")
           router.push(`/reactivate?email=${encodeURIComponent(email)}`)
         } else {
-          toast.error("Invalid email or password")
+          setError("Invalid email or password")
+          setLoading(false)
         }
       } else {
-        toast.success("Successfully logged in!")
-        router.push(callbackUrl)
+        const session = await getSession()
+        const url = session?.user?.role === "ADMIN" ? "/admin" : callbackUrl
+        router.push(url)
         router.refresh()
       }
-    } catch (error) {
-      toast.error("Something went wrong")
-    } finally {
+    } catch (err) {
+      setError("Something went wrong")
       setLoading(false)
     }
   }
@@ -105,6 +107,9 @@ function LoginContent() {
               {loading ? "Signing in..." : "Sign In"}
               {!loading && <ArrowRight size={18} />}
             </button>
+            {error && (
+              <p className="text-error text-sm font-bold text-center mt-2">{error}</p>
+            )}
           </form>
 
           <div className="mt-6 flex items-center justify-between">

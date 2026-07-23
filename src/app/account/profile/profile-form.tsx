@@ -9,10 +9,11 @@ import { uploadProfileImage } from "@/actions/upload"
 import Image from "next/image"
 import { Camera } from "lucide-react"
 
-export default function ProfileForm({ user }: { user: { name: string, email: string, phone: string, dob?: string, image?: string } }) {
+export default function ProfileForm({ user }: { user: { name: string, email: string, phone: string, dob?: string, image?: string, receiveOrderEmails?: boolean } }) {
   const [name, setName] = useState(user.name || "")
   const [phone, setPhone] = useState(user.phone || "")
   const [dob, setDob] = useState(user.dob || "")
+  const [receiveOrderEmails, setReceiveOrderEmails] = useState(user.receiveOrderEmails ?? true)
   const [loading, setLoading] = useState(false)
   const [uploadingImage, setUploadingImage] = useState(false)
   const router = useRouter()
@@ -56,11 +57,11 @@ export default function ProfileForm({ user }: { user: { name: string, email: str
     }
 
     setLoading(true)
-    const result = await updateProfile({ name, phone, dob })
+    const result = await updateProfile({ name, phone, dob, receiveOrderEmails })
     setLoading(false)
 
     if (result.success) {
-      await update({ name, phone, dob })
+      await update({ name, phone, dob, receiveOrderEmails })
       toast.success("Profile updated successfully!")
       router.refresh()
     } else {
@@ -111,6 +112,20 @@ export default function ProfileForm({ user }: { user: { name: string, email: str
         <label className="block text-sm font-bold text-charcoal mb-2">Date of Birth</label>
         <input type="date" value={dob} onChange={(e) => setDob(e.target.value)} className="w-full px-4 py-3 rounded-xl border border-charcoal/20 bg-transparent focus:outline-none focus:border-teal-600 focus:ring-1 focus:ring-teal-600 text-charcoal transition-all text-slate-800" />
       </div>
+
+      <div className="flex items-center gap-3 py-2">
+        <input 
+          type="checkbox" 
+          id="receiveOrderEmails"
+          checked={receiveOrderEmails} 
+          onChange={(e) => setReceiveOrderEmails(e.target.checked)} 
+          className="w-5 h-5 rounded border-charcoal/20 text-teal-600 focus:ring-teal-600"
+        />
+        <label htmlFor="receiveOrderEmails" className="text-sm font-medium text-charcoal cursor-pointer select-none">
+          Receive order status updates via email
+        </label>
+      </div>
+
       <div className="pt-2">
         <button type="submit" disabled={loading} className="px-6 py-3 bg-teal-600 text-white font-bold rounded-xl hover:bg-teal-700 transition-colors disabled:opacity-50">
           {loading ? "Saving..." : "Save Changes"}

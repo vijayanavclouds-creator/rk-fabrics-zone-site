@@ -1,20 +1,28 @@
 "use client";
 
-import { useEffect, useState, Suspense } from "react";
+import { useEffect, useState, Suspense, useRef } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
 
 function NavigationLoaderInner() {
   const [isNavigating, setIsNavigating] = useState(false);
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     // Hide loader whenever the route or search params change (navigation complete)
     setIsNavigating(false);
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+      timeoutRef.current = null;
+    }
   }, [pathname, searchParams]);
 
   useEffect(() => {
     const handleClick = (e: MouseEvent) => {
+      // Ignore if the click was already prevented by a child component (like an Add to Cart button inside a Link)
+      if (e.defaultPrevented) return;
+
       // Find the closest anchor tag
       const target = (e.target as HTMLElement).closest("a");
       if (!target) return;
@@ -50,12 +58,23 @@ function NavigationLoaderInner() {
         // Fallback if URL parsing fails
       }
 
-      // If it's a valid internal link, show the loader
-      setIsNavigating(true);
+      // If it's a valid internal link, wait 3 seconds before showing the loader
+      // The Next.js skeleton will show immediately if the page uses loading.tsx
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+      timeoutRef.current = setTimeout(() => {
+        setIsNavigating(true);
+      }, 3000);
     };
 
     document.addEventListener("click", handleClick);
-    return () => document.removeEventListener("click", handleClick);
+    return () => {
+      document.removeEventListener("click", handleClick);
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
   }, []);
 
   if (!isNavigating) return null;

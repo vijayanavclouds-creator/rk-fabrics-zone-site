@@ -21,6 +21,7 @@ interface CartStore {
  discountAmount: number;
  applyCoupon: (code: string, discount: number) => void;
  removeCoupon: () => void;
+ setItems: (items: CartItem[]) => void;
 }
 
 export const useCartStore = create<CartStore>()(
@@ -72,6 +73,7 @@ export const useCartStore = create<CartStore>()(
  },
 
  clearCart: () => set({ items: [], couponCode: null, discountAmount: 0 }),
+ setItems: (items) => set({ items }),
  toggleCart: () => set((state) => ({ isOpen: !state.isOpen })),
  openCart: () => set({ isOpen: true }),
  closeCart: () => set({ isOpen: false }),

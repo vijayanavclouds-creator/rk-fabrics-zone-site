@@ -11,7 +11,7 @@ function generateOTP() {
   return Math.floor(100000 + Math.random() * 900000).toString();
 }
 
-export async function updateProfile(data: { name?: string, phone?: string, dob?: string }) {
+export async function updateProfile(data: { name?: string, phone?: string, dob?: string, receiveOrderEmails?: boolean }) {
   try {
     const session = await getServerSession(authOptions)
     if (!session?.user?.email) {
@@ -36,6 +36,7 @@ export async function updateProfile(data: { name?: string, phone?: string, dob?:
         ...(data.name && { name: data.name }),
         ...(data.phone && { phone: data.phone }),
         ...(data.dob && { dob: data.dob }),
+        ...(data.receiveOrderEmails !== undefined && { receiveOrderEmails: data.receiveOrderEmails }),
       }
     })
 

@@ -20,7 +20,7 @@ export default async function AccountLayout({
 
   const sidebarLinks = [
     { href: "/account", label: "Dashboard", icon: LayoutDashboard, exact: true },
-    { href: "/account/orders", label: "Order History", icon: ShoppingBag },
+    { href: "/account/orders", label: "My Orders", icon: ShoppingBag },
     { href: "/account/profile", label: "Account Information", icon: User },
     { href: "/account/addresses", label: "Saved Addresses", icon: User },
     { href: "/account/wishlist", label: "Wishlist", icon: Heart },

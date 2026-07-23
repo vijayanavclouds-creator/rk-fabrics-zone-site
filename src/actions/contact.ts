@@ -13,6 +13,7 @@ export async function submitContactMessage(formData: FormData) {
     const phone = formData.get("phone") as string;
     const subject = formData.get("subject") as string;
     const message = formData.get("message") as string;
+    const orderId = formData.get("orderId") as string | null;
 
     if (!name || !email || !message) {
       return { success: false, error: "Name, email, and message are required." };
@@ -36,6 +37,7 @@ export async function submitContactMessage(formData: FormData) {
         email,
         phone,
         subject,
+        orderId: subject === "Returns & Exchange" ? orderId : null,
         userId,
         messages: {
           create: {

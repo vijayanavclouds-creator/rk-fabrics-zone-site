@@ -200,7 +200,7 @@ export function CartDrawer() {
  </div>
 
  <Link
- href="/checkout"
+ href="/checkout/payment"
  onClick={closeCart}
  className="btn-primary w-full flex items-center justify-center gap-2 text-center"
  >

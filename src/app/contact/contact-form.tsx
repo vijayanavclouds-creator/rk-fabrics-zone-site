@@ -64,7 +64,7 @@ const SubjectSelect = ({ value, onChange, name }: { value: string, onChange: (v:
   );
 };
 
-export function ContactForm() {
+export function ContactForm({ deliveredOrders = [] }: { deliveredOrders?: any[] }) {
   const searchParams = useSearchParams();
   const [subject, setSubject] = useState(
     searchParams.get("subject") === "wholesale" ? "Wholesale Inquiry" : "General Inquiry"
@@ -90,6 +90,8 @@ export function ContactForm() {
     const subjectParam = searchParams.get("subject");
     if (subjectParam === "wholesale") {
       setSubject("Wholesale Inquiry");
+    } else if (subjectParam === "Return & Exchange" || subjectParam === "Returns & Exchange") {
+      setSubject("Returns & Exchange");
     } else {
       setSubject("General Inquiry");
     }
@@ -161,6 +163,36 @@ export function ContactForm() {
           onChange={setSubject}
         />
       </div>
+
+      {subject === "Returns & Exchange" && (
+        <div>
+          <label className="block text-xs font-medium text-slate mb-1.5">Select Delivered Order *</label>
+          {deliveredOrders.length > 0 ? (
+            <select 
+              name="orderId" 
+              required 
+              defaultValue={searchParams.get("orderId") || ""}
+              className="w-full px-4 py-3 bg-cream border border-charcoal/10 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-teal-500 text-charcoal" 
+            >
+              <option value="" disabled>Select an order...</option>
+              {deliveredOrders.map((order) => {
+                const itemNames = order.items.map((i: any) => i.productName).join(", ");
+                const truncatedNames = itemNames.length > 40 ? itemNames.substring(0, 40) + "..." : itemNames;
+                return (
+                  <option key={order.id} value={order.id}>
+                    {`#${order.id.slice(-8).toUpperCase()} - ${new Date(order.createdAt).toLocaleDateString('en-IN', { month: 'short', day: 'numeric' })} (${truncatedNames})`}
+                  </option>
+                );
+              })}
+            </select>
+          ) : (
+            <div className="w-full px-4 py-3 bg-cream border border-charcoal/10 rounded-xl text-sm text-slate">
+              You have no delivered orders available for return. Please log in or check your account.
+              <input type="hidden" name="orderId" value="" />
+            </div>
+          )}
+        </div>
+      )}
 
       <div>
         <label className="block text-xs font-medium text-slate mb-1.5">Message *</label>

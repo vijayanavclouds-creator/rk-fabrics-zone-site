@@ -3,9 +3,36 @@ import { MapPin, Phone, Mail, Clock, Send, MessageCircle } from "lucide-react";
 import { getCompanyProfile } from "@/actions/system";
 import { ContactForm } from "./contact-form";
 import { Suspense } from "react";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
+import prisma from "@/lib/prisma";
 
 export default async function ContactPage() {
- const companyProfile = await getCompanyProfile();
+  const companyProfile = await getCompanyProfile();
+  const session = await getServerSession(authOptions);
+  
+  let deliveredOrders: any[] = [];
+  if (session?.user?.id) {
+    deliveredOrders = await prisma.order.findMany({
+      where: { 
+        userId: session.user.id,
+        status: "DELIVERED"
+      },
+      select: {
+        id: true,
+        createdAt: true,
+        items: {
+          select: {
+            productName: true,
+            isReturnable: true
+          }
+        }
+      },
+      orderBy: {
+        createdAt: 'desc'
+      }
+    });
+  }
 
  return (
  <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 py-12 md:py-16">
@@ -55,7 +82,7 @@ export default async function ContactPage() {
 
         {/* Contact Form */}
         <Suspense fallback={<div className="bg-white rounded-2xl border border-charcoal/5 p-6 space-y-4 animate-pulse h-96 flex items-center justify-center text-slate">Loading Form...</div>}>
-          <ContactForm />
+          <ContactForm deliveredOrders={deliveredOrders} />
         </Suspense>
       </div>
  </div>

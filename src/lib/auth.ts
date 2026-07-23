@@ -53,6 +53,7 @@ export const authOptions: NextAuthOptions = {
           phone: user.phone,
           dob: user.dob,
           image: user.image,
+          receiveOrderEmails: user.receiveOrderEmails,
         };
       }
     })
@@ -76,12 +77,14 @@ export const authOptions: NextAuthOptions = {
         token.phone = user.phone;
         token.dob = user.dob;
         token.image = user.image;
+        token.receiveOrderEmails = user.receiveOrderEmails;
       }
       if (trigger === "update" && session) {
         if (session.name) token.name = session.name;
         if (session.phone !== undefined) token.phone = session.phone;
         if (session.dob !== undefined) token.dob = session.dob;
         if (session.image !== undefined) token.image = session.image;
+        if (session.receiveOrderEmails !== undefined) token.receiveOrderEmails = session.receiveOrderEmails;
       }
       return token;
     },
@@ -92,6 +95,7 @@ export const authOptions: NextAuthOptions = {
         session.user.phone = token.phone as string | null | undefined;
         session.user.dob = token.dob as string | null | undefined;
         session.user.image = token.image as string | null | undefined;
+        session.user.receiveOrderEmails = token.receiveOrderEmails as boolean | undefined;
       }
       return session;
     }
