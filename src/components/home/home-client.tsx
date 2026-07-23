@@ -135,12 +135,14 @@ function HeroSection({ banners }: { banners: any[] }) {
                         transition: { duration: 0.3 }
                       }}
                       transition={{ duration, repeat: Infinity, ease: "easeInOut", delay }}
-                      className="relative rounded-2xl overflow-hidden shadow-md hover:shadow-2xl border border-slate-200/50 transition-shadow duration-300 bg-white"
+                      className="relative w-full aspect-[3/4] rounded-2xl overflow-hidden shadow-md hover:shadow-2xl border border-slate-200/50 transition-shadow duration-300 bg-white"
                     >
-                      <img
+                      <Image
                         src={imgSrc}
                         alt={`Hero Banner ${i + 1}`}
-                        className="w-full h-auto"
+                        fill
+                        className="object-cover"
+                        sizes="(max-width: 768px) 50vw, 33vw"
                       />
                     </motion.div>
                   </div>
@@ -241,10 +243,12 @@ function CustomCategories({ banners }: { banners: any[] }) {
                 style={{ transformStyle: "preserve-3d" }}
               >
                 {/* Image */}
-                <img 
+                <Image 
                   src={banner.imageUrl} 
                   alt={banner.title || `Category`} 
-                  className="w-full h-full object-contain bg-white group-hover:scale-110 transition-transform duration-700" 
+                  fill
+                  sizes="(max-width: 768px) 280px, 350px"
+                  className="object-contain bg-white group-hover:scale-110 transition-transform duration-700" 
                 />
                 
                 {/* 3D Glass & Shadow Overlay */}
