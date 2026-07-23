@@ -25,6 +25,7 @@ export interface Product {
  isFeatured: boolean;
  isNewArrival: boolean;
  isBestseller: boolean;
+ isReturnable?: boolean;
  isActive?: boolean;
  createdAt: string;
  reviews?: { id?: string; userName: string; rating: number; comment: string; productId?: string; createdAt?: any; }[];

@@ -6,6 +6,7 @@ declare module "next-auth" {
     phone?: string | null
     dob?: string | null
     image?: string | null
+    receiveOrderEmails?: boolean
   }
   
   interface Session {
@@ -15,6 +16,7 @@ declare module "next-auth" {
       phone?: string | null
       dob?: string | null
       image?: string | null
+      receiveOrderEmails?: boolean
     }
   }
 }
@@ -26,5 +28,6 @@ declare module "next-auth/jwt" {
     phone?: string | null
     dob?: string | null
     image?: string | null
+    receiveOrderEmails?: boolean
   }
 }
