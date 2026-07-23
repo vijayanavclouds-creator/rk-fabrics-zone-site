@@ -50,7 +50,7 @@ function NavigationLoaderInner() {
   if (!isNavigating) return null;
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-white/70 backdrop-blur-[2px]">
+    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-white/5">
       <div className="loader-container">
         <div className="multi-shape-loader">
           <div className="shape shape-1"></div>
