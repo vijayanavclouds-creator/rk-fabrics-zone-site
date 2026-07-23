@@ -14,6 +14,7 @@ function LoginContent() {
   const [error, setError] = useState<string | null>(null)
   
   const callbackUrl = searchParams.get("from") || "/shop"
+  const googleCallbackUrl = `/auth-success?to=${encodeURIComponent(callbackUrl)}`
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -119,7 +120,7 @@ function LoginContent() {
           </div>
 
           <button
-            onClick={() => signIn("google", { callbackUrl })}
+            onClick={() => signIn("google", { callbackUrl: googleCallbackUrl })}
             className="w-full mt-6 py-3 px-4 bg-white border border-charcoal/20 text-charcoal font-bold rounded-xl shadow-sm hover:bg-slate-50 transition-all flex items-center justify-center gap-3"
           >
             <svg viewBox="0 0 24 24" width="20" height="20" xmlns="http://www.w3.org/2000/svg">
