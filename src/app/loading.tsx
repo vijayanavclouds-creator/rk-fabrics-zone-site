@@ -1,16 +1,15 @@
-import { Loader2 } from "lucide-react";
-
 export default function GlobalLoading() {
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-white/80 backdrop-blur-sm">
-      <div className="flex flex-col items-center gap-4">
-        <div className="relative flex items-center justify-center w-16 h-16">
-          <div className="absolute inset-0 border-4 border-teal-100 rounded-full"></div>
-          <div className="absolute inset-0 border-4 border-teal-600 rounded-full border-t-transparent animate-spin"></div>
+    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-white/70 backdrop-blur-[2px]">
+      <div className="loader-container">
+        <div className="multi-shape-loader">
+          <div className="shape shape-1"></div>
+          <div className="shape shape-2"></div>
+          <div className="shape shape-3"></div>
+          <div className="shape shape-4"></div>
+          <div className="shape shape-5"></div>
+          <div className="shape shape-6"></div>
         </div>
-        <p className="text-charcoal font-[family-name:var(--font-playfair)] text-lg font-medium animate-pulse">
-          Loading amazing fabrics...
-        </p>
       </div>
     </div>
   );
