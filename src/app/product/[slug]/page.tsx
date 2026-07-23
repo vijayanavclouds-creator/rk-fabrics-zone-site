@@ -180,6 +180,10 @@ function ProductDetail({ product }: { product: NonNullable<ReturnType<typeof get
   };
   const fabricEmoji = fabricMap[currentProductCats[0]] || "🧵";
 
+  const selectedColorName = uniqueColors.find(c => c.hex === selectedColor)?.color || selectedColor;
+  const currentUrl = typeof window !== 'undefined' ? window.location.href : `https://rkfabricszone.com/product/${product.slug}`;
+  const whatsappMessage = `Hi! I'm interested in the following fabric:\n\n*Product:* ${product.name}\n*Price:* ${formatPrice(price)}\n*Color:* ${selectedColorName}\n*Size:* ${selectedSize}\n\n*Link:* ${currentUrl}\n\nCould you please provide more details?`;
+
  return (
  <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 py-6 md:py-10">
  {/* Breadcrumb */}
@@ -523,14 +527,16 @@ function ProductDetail({ product }: { product: NonNullable<ReturnType<typeof get
  </div>
 
  {/* WhatsApp CTA */}
+ {session && (
  <a
-  href={`https://wa.me/${(companyProfile?.contactNumber || '+919876543210').replace(/[^0-9]/g, '')}?text=Hi!%20I'm%20interested%20in%20${encodeURIComponent(product.name)}%20(${formatPrice(price)})`}
+  href={`https://wa.me/${(companyProfile?.contactNumber || '+919876543210').replace(/[^0-9]/g, '')}?text=${encodeURIComponent(whatsappMessage)}`}
   target="_blank"
  rel="noopener noreferrer"
  className="flex items-center justify-center gap-2 mt-4 py-3 rounded-full border-2 border-green-500 text-green-600 font-semibold text-sm hover:bg-green-50 :bg-green-900/10 transition-colors"
  >
  <MessageCircle size={18} /> Chat About This Fabric
  </a>
+ )}
  </div>
  </div>
 

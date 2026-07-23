@@ -153,7 +153,8 @@ export async function sendResetPasswordOtp(email: string) {
 
     return { success: true };
   } catch (error: any) {
-    return { success: false, error: "Failed to send reset OTP" };
+    console.error("sendResetPasswordOtp error:", error);
+    return { success: false, error: error.message || "Failed to send reset OTP" };
   }
 }
 
