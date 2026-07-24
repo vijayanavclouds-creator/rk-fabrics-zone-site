@@ -1,0 +1,107 @@
+[2026-07-24T12:24:44.498Z] bulkUpdateImagesAndVariants called
+Payload: {"updatedVariants":[{"id":"cmrteydt10003cyygmiugpmrf","sku":"VAR-371108","size":"M","color":"Beige","colorHex":"#F5F4F0","price":399,"salePrice":null,"stock":0,"productId":"cmrtex4wp0000cyygm2lwgihs"}]}
+Logging activity: changes length = 1
+[2026-07-24T12:29:51.643Z] bulkUpdateImagesAndVariants called
+Payload: {"updatedVariants":[{"id":"cmrteydt10003cyygmiugpmrf","sku":"VAR-371108","size":"M","color":"Beige","colorHex":"#F5F4F0","price":399,"salePrice":null,"stock":8,"productId":"cmrtex4wp0000cyygm2lwgihs"}]}
+Logging activity: changes length = 1
+[logAdminActivity] called with action: bulk updated images & variants for: Solid Ivory Long Sleeve Ruffled Maxi Dress
+[logAdminActivity] adminName resolved to: Vijay jangir
+[logAdminActivity] ERROR: 
+Invalid `__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$prisma$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["default"].adminActivity.create()` invocation in
+/Users/vijayjangir/rk fabrics zone site/.next/dev/server/chunks/ssr/[root-of-the-server]__1e68mt9._.js:1795:172
+
+  1792 const session = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2d$auth$2f$index$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["getServerSession"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$auth$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["authOptions"]);
+  1793 const adminName = session?.user?.name || session?.user?.email || "System";
+  1794 fs.appendFileSync('./debug.log', `[logAdminActivity] adminName resolved to: ${adminName}\n`);
+→ 1795 const newAct = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$prisma$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["default"].adminActivity.create({
+         data: {
+           adminName: "Vijay jangir",
+           action: "bulk updated images & variants for: Solid Ivory Long Sleeve Ruffled Maxi Dress",
+           details: "Variant [M / Beige]: Stock: 0 -> 8",
+           ~~~~~~~
+       ?   id?: String,
+       ?   createdAt?: DateTime
+         }
+       })
+
+Unknown argument `details`. Available options are marked with ?.
+PrismaClientValidationError: 
+Invalid `__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$prisma$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["default"].adminActivity.create()` invocation in
+/Users/vijayjangir/rk fabrics zone site/.next/dev/server/chunks/ssr/[root-of-the-server]__1e68mt9._.js:1795:172
+
+  1792 const session = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2d$auth$2f$index$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["getServerSession"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$auth$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["authOptions"]);
+  1793 const adminName = session?.user?.name || session?.user?.email || "System";
+  1794 fs.appendFileSync('./debug.log', `[logAdminActivity] adminName resolved to: ${adminName}\n`);
+→ 1795 const newAct = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$prisma$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["default"].adminActivity.create({
+         data: {
+           adminName: "Vijay jangir",
+           action: "bulk updated images & variants for: Solid Ivory Long Sleeve Ruffled Maxi Dress",
+           details: "Variant [M / Beige]: Stock: 0 -> 8",
+           ~~~~~~~
+       ?   id?: String,
+       ?   createdAt?: DateTime
+         }
+       })
+
+Unknown argument `details`. Available options are marked with ?.
+    at wn (/Users/vijayjangir/rk fabrics zone site/node_modules/@prisma/client/runtime/library.js:29:1363)
+    at $n.handleRequestError (/Users/vijayjangir/rk fabrics zone site/node_modules/@prisma/client/runtime/library.js:121:6958)
+    at $n.handleAndLogRequestError (/Users/vijayjangir/rk fabrics zone site/node_modules/@prisma/client/runtime/library.js:121:6623)
+    at $n.request (/Users/vijayjangir/rk fabrics zone site/node_modules/@prisma/client/runtime/library.js:121:6307)
+    at async l (/Users/vijayjangir/rk fabrics zone site/node_modules/@prisma/client/runtime/library.js:130:9633)
+    at async logAdminActivity (/Users/vijayjangir/rk fabrics zone site/.next/dev/server/chunks/ssr/[root-of-the-server]__1e68mt9._.js:1795:24)
+    at async bulkUpdateImagesAndVariants (/Users/vijayjangir/rk fabrics zone site/.next/dev/server/chunks/ssr/[root-of-the-server]__1e68mt9._.js:2623:13)
+    at async executeActionAndPrepareForRender (/Users/vijayjangir/rk fabrics zone site/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:64:5248)
+    at async /Users/vijayjangir/rk fabrics zone site/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:64:1986
+    at async handleAction (/Users/vijayjangir/rk fabrics zone site/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:62:25687)
+    at async renderToHTMLOrFlightImpl (/Users/vijayjangir/rk fabrics zone site/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:69:55695)
+    at async doRender (/Users/vijayjangir/rk fabrics zone site/.next/dev/server/chunks/ssr/node_modules_next_dist_1_9u_ru._.js:4610:28)
+    at async AppPageRouteModule.handleResponse (/Users/vijayjangir/rk fabrics zone site/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:71:66429)
+    at async handleResponse (/Users/vijayjangir/rk fabrics zone site/.next/dev/server/chunks/ssr/node_modules_next_dist_1_9u_ru._.js:4921:32)
+    at async Module.handler (/Users/vijayjangir/rk fabrics zone site/.next/dev/server/chunks/ssr/node_modules_next_dist_1_9u_ru._.js:5327:20)
+    at async DevServer.renderToResponseWithComponentsImpl (/Users/vijayjangir/rk fabrics zone site/node_modules/next/dist/server/base-server.js:1462:9)
+    at async DevServer.renderPageComponent (/Users/vijayjangir/rk fabrics zone site/node_modules/next/dist/server/base-server.js:1514:24)
+    at async DevServer.renderToResponseImpl (/Users/vijayjangir/rk fabrics zone site/node_modules/next/dist/server/base-server.js:1564:32)
+    at async DevServer.pipeImpl (/Users/vijayjangir/rk fabrics zone site/node_modules/next/dist/server/base-server.js:1044:25)
+    at async NextNodeServer.handleCatchallRenderRequest (/Users/vijayjangir/rk fabrics zone site/node_modules/next/dist/server/next-server.js:338:17)
+    at async DevServer.handleRequestImpl (/Users/vijayjangir/rk fabrics zone site/node_modules/next/dist/server/base-server.js:935:17)
+    at async /Users/vijayjangir/rk fabrics zone site/node_modules/next/dist/server/dev/next-dev-server.js:394:20
+    at async Span.traceAsyncFn (/Users/vijayjangir/rk fabrics zone site/node_modules/next/dist/trace/trace.js:164:20)
+    at async DevServer.handleRequest (/Users/vijayjangir/rk fabrics zone site/node_modules/next/dist/server/dev/next-dev-server.js:390:24)
+    at async invokeRender (/Users/vijayjangir/rk fabrics zone site/node_modules/next/dist/server/lib/router-server.js:266:21)
+    at async handleRequest (/Users/vijayjangir/rk fabrics zone site/node_modules/next/dist/server/lib/router-server.js:465:24)
+    at async requestHandlerImpl (/Users/vijayjangir/rk fabrics zone site/node_modules/next/dist/server/lib/router-server.js:514:13)
+    at async Server.requestListener (/Users/vijayjangir/rk fabrics zone site/node_modules/next/dist/server/lib/start-server.js:225:13)
+[2026-07-24T12:33:10.186Z] bulkUpdateImagesAndVariants called
+Payload: {"updatedVariants":[{"id":"cmrteydt10003cyygmiugpmrf","sku":"VAR-371108","size":"M","color":"Beige","colorHex":"#F5F4F0","price":399,"salePrice":null,"stock":0,"productId":"cmrtex4wp0000cyygm2lwgihs"}]}
+Logging activity: changes length = 1
+[logAdminActivity] called with action: bulk updated images & variants for: Solid Ivory Long Sleeve Ruffled Maxi Dress
+[logAdminActivity] adminName resolved to: Vijay jangir
+[logAdminActivity] success! inserted id: cmryx86wf0001vw6qo3iu5he1
+[2026-07-24T12:47:46.620Z] bulkUpdateImagesAndVariants called
+Payload: {"updatedVariants":[{"id":"cmrteydt10003cyygmiugpmrf","sku":"VAR-371108","size":"M","color":"Beige","colorHex":"#F5F4F0","price":399,"salePrice":null,"stock":9,"productId":"cmrtex4wp0000cyygm2lwgihs"}]}
+[logAdminActivity] called with action: updated <b>Stock</b> for variant <b>M / Beige</b> in <b>Solid Ivory Long Sleeve Ruffled Maxi Dress</b> from <b>0</b> to <b>9</b>
+[logAdminActivity] adminName resolved to: Vijay jangir
+[logAdminActivity] success! inserted id: cmryxqxmb0002vw6qczrf6tkf
+[2026-07-24T12:49:00.551Z] bulkUpdateImagesAndVariants called
+Payload: {"updatedVariants":[{"id":"cmrteydt20005cyygqqx3vvev","sku":"VAR-371110","size":"XL","color":"Beige","colorHex":"#F5F4F0","price":399,"salePrice":null,"stock":0,"productId":"cmrtex4wp0000cyygm2lwgihs"},{"id":"cmrtf1c4n000lcyygmgprjcsm","sku":"VAR-508902","size":"L","color":"Beige","colorHex":"#F5F4F0","price":399,"salePrice":null,"stock":0,"productId":"cmrtex4wp0000cyygm2lwgihs"},{"id":"cmrtex4wp0001cyygi2cg840o","sku":"SOLID-IVORY-LONG-SLEEVE-RUFFLED-MAXI-DRESS-2920-01","size":"S","color":"Beige","colorHex":"#F5F4F0","price":349,"salePrice":null,"stock":0,"productId":"cmrtex4wp0000cyygm2lwgihs"},{"id":"cmrteydt10003cyygmiugpmrf","sku":"VAR-371108","size":"M","color":"White","colorHex":"#F5F4F9","price":399,"salePrice":null,"stock":9,"productId":"cmrtex4wp0000cyygm2lwgihs"}]}
+[logAdminActivity] called with action: updated <b>Size</b> for variant <b>L / Beige</b> in <b>Solid Ivory Long Sleeve Ruffled Maxi Dress</b> from <b>"L"</b> to <b>"XL"</b>
+[logAdminActivity] adminName resolved to: Vijay jangir
+[logAdminActivity] success! inserted id: cmryxsikj0004vw6qygkdosa7
+[logAdminActivity] called with action: updated <b>Size</b> for variant <b>XL / Beige</b> in <b>Solid Ivory Long Sleeve Ruffled Maxi Dress</b> from <b>"XL"</b> to <b>"L"</b>
+[logAdminActivity] adminName resolved to: Vijay jangir
+[logAdminActivity] success! inserted id: cmryxsiu50005vw6qu08xfoc4
+[logAdminActivity] called with action: updated <b>Price</b> for variant <b>S / Beige</b> in <b>Solid Ivory Long Sleeve Ruffled Maxi Dress</b> from <b>₹399</b> to <b>₹349</b>
+[logAdminActivity] adminName resolved to: Vijay jangir
+[logAdminActivity] success! inserted id: cmryxsj3g0006vw6qp9ge79jo
+[logAdminActivity] called with action: updated <b>Color</b> for variant <b>M / Beige</b> in <b>Solid Ivory Long Sleeve Ruffled Maxi Dress</b> from <b>"Beige"</b> to <b>"White"</b>
+[logAdminActivity] adminName resolved to: Vijay jangir
+[logAdminActivity] success! inserted id: cmryxsjck0007vw6qzxr920jk
+[2026-07-24T12:50:20.702Z] bulkUpdateImagesAndVariants called
+Payload: {"updatedVariants":[{"id":"cmrteydt10003cyygmiugpmrf","sku":"VAR-371108","size":"M","color":"Beige","colorHex":"#F5F4F0","price":399,"salePrice":null,"stock":9,"productId":"cmrtex4wp0000cyygm2lwgihs"}]}
+[logAdminActivity] called with action: updated <b>Color</b> for variant <b>M / White</b> in <b>Solid Ivory Long Sleeve Ruffled Maxi Dress</b> from <b>"White"</b> to <b>"Beige"</b>
+[logAdminActivity] adminName resolved to: Vijay jangir
+[logAdminActivity] success! inserted id: cmryxu8m40009vw6qr71aa3aw
+[logAdminActivity] called with action: uploaded <b>1 new image(s)</b> to <b>Solid Ivory Long Sleeve Ruffled Maxi Dress</b>
+[logAdminActivity] adminName resolved to: Vijay jangir
+[logAdminActivity] success! inserted id: cmryxu9e7000avw6qykx9ixcp

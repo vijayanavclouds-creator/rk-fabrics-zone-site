@@ -9,6 +9,7 @@ import { AuthHydration } from "@/components/layout/auth-hydration";
 import { CartSync } from "@/components/cart-sync";
 import { NavigationLoader } from "@/components/layout/navigation-loader";
 import { Toaster } from "sonner";
+import { getAnnouncementBanner } from "@/actions/system";
 import { getNavigationLinksData } from "@/lib/data/system";
 import "./globals.css";
 
@@ -86,13 +87,14 @@ export default async function RootLayout({
  children: React.ReactNode;
 }>) {
  const navLinks = await getNavigationLinksData();
+ const announcementBanner = await getAnnouncementBanner();
  return (
  <html
  lang="en"
  className={`${playfair.variable} ${inter.variable} ${cinzel.variable}`}
  suppressHydrationWarning
  >
- <body className="min-h-screen flex flex-col antialiased">
+ <body className="min-h-screen flex flex-col antialiased bg-gradient-to-br from-teal-50 via-[#fdfaf6] to-blue-50/50">
  <ThemeProvider
  attribute="class"
  defaultTheme="light"
@@ -100,7 +102,7 @@ export default async function RootLayout({
  enableSystem={false}
  disableTransitionOnChange={false}
  >
- <Header initialNavLinks={navLinks} />
+ <Header initialNavLinks={navLinks} announcementBanner={announcementBanner} />
  <NavigationLoader />
  <AuthHydration />
  <CartSync />

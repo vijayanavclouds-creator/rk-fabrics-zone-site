@@ -17,7 +17,7 @@ export default function CheckoutLayout({ children }: { children: React.ReactNode
 
   return (
     <div className="min-h-screen pt-24 pb-20">
-      <div className="max-w-7xl mx-auto px-4 md:px-8">
+      <div className="w-full mx-auto px-4 md:px-8">
         
         {/* Stepper */}
         <div className="flex items-center justify-center mb-12">

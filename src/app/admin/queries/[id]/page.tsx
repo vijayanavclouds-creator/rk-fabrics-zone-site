@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import prisma from "@/lib/prisma";
 import Link from "next/link";
 import { ChevronLeft, Send, User, Building2 } from "lucide-react";
+import { logAdminActivity } from "@/actions/admin-activity";
 import { format } from "date-fns";
 import { revalidatePath } from "next/cache";
 
@@ -12,7 +13,7 @@ export default async function AdminQueryThreadPage({ params }: { params: Promise
   const session = await getServerSession(authOptions);
 
   if (!session || session.user.role !== "ADMIN") {
-    redirect("/account");
+    redirect("/login");
   }
 
   const query = await prisma.contactQuery.findUnique({
@@ -26,7 +27,7 @@ export default async function AdminQueryThreadPage({ params }: { params: Promise
   });
 
   if (!query) {
-    redirect("/account/admin?tab=queries");
+    redirect("/admin?tab=queries");
   }
 
   // Mark as read if opened by admin
@@ -63,7 +64,8 @@ export default async function AdminQueryThreadPage({ params }: { params: Promise
       });
     }
 
-    revalidatePath(`/account/admin/queries/${query!.id}`);
+    await logAdminActivity(`replied to query <b>${query!.subject}</b> from <b>${query!.name || query!.user?.name || "Customer"}</b>`);
+    revalidatePath(`/admin/queries/${query!.id}`);
   }
 
   async function resolveQuery() {
@@ -72,7 +74,8 @@ export default async function AdminQueryThreadPage({ params }: { params: Promise
       where: { id: query!.id },
       data: { status: "RESOLVED" }
     });
-    revalidatePath(`/account/admin/queries/${query!.id}`);
+    await logAdminActivity(`resolved query <b>${query!.subject}</b> from <b>${query!.name || query!.user?.name || "Customer"}</b>`);
+    revalidatePath(`/admin/queries/${query!.id}`);
   }
 
   return (
@@ -80,7 +83,7 @@ export default async function AdminQueryThreadPage({ params }: { params: Promise
       {/* Header */}
       <div className="flex items-center justify-between border-b border-charcoal/10 pb-4 mb-6 shrink-0">
         <div className="flex items-center gap-4">
-          <Link href="/account/admin?tab=queries" className="w-10 h-10 rounded-full border border-charcoal/10 flex items-center justify-center text-charcoal hover:bg-slate-50 transition-colors">
+          <Link href="/admin?tab=queries" className="w-10 h-10 rounded-full border border-charcoal/10 flex items-center justify-center text-charcoal hover:bg-slate-50 transition-colors">
             <ChevronLeft size={20} />
           </Link>
           <div>

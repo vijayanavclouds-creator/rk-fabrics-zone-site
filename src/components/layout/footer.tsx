@@ -41,9 +41,9 @@ export async function Footer() {
   ];
   
   return (
-  <footer className="bg-gradient-to-br from-charcoal to-slate text-white pb-20 md:pb-0">
+  <footer className="relative z-40 bg-gradient-to-br from-charcoal to-slate text-white pb-20 md:pb-0">
    {/* Newsletter Strip */}
-   <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 pt-8 pb-4">
+   <div className="w-full mx-auto px-4 md:px-6 lg:px-8 pt-8 pb-4">
        <div className="bg-transparent rounded-3xl p-6 md:p-8 flex flex-col md:flex-row items-center justify-between gap-6 shadow-[8px_8px_20px_rgba(0,0,0,0.4),-8px_-8px_20px_rgba(255,255,255,0.05)] border border-white/5">
          <div className="flex items-center gap-4">
            <div className="w-12 h-12 rounded-full bg-gradient-to-br from-gold to-yellow-600 flex items-center justify-center shadow-lg hidden sm:flex">
@@ -62,7 +62,7 @@ export async function Footer() {
        </div>
      </div>
  {/* Main Footer */}
- <div className="max-w-7xl mx-auto px-6 lg:px-8 py-12">
+ <div className="w-full mx-auto px-6 lg:px-8 py-12">
  <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
  {/* Brand Column */}
  <div className="col-span-2 md:col-span-1">

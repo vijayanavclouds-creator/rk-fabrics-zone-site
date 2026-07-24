@@ -38,7 +38,7 @@ export default function DeactivateAccount() {
 
   return (
     <div className="max-w-lg">
-      <p className="text-error font-medium mb-4">
+      <p className="text-error font-medium text-sm mb-4">
         Once you deactivate your account, there is no going back. Please be certain. All your order history and saved addresses will be permanently removed.
       </p>
       
@@ -49,14 +49,14 @@ export default function DeactivateAccount() {
             <button 
               onClick={handleDeactivate} 
               disabled={loading}
-              className="px-6 py-3 bg-error text-white font-bold rounded-xl hover:bg-red-700 transition-colors disabled:opacity-50"
+              className="btn-primary !py-2 !px-4 text-sm w-fit disabled:opacity-50"
             >
-              {loading ? "Deactivating..." : "Yes, Deactivate My Account"}
+              {loading ? "Deactivating..." : "Yes, Deactivate"}
             </button>
             <button 
-              onClick={() => setConfirm(false)}
-              disabled={loading} 
-              className="px-6 py-3 bg-white border border-charcoal/20 text-charcoal font-bold rounded-xl hover:bg-slate-50 transition-colors"
+              onClick={() => setConfirm(false)} 
+              disabled={loading}
+              className="px-4 py-2 text-sm border border-charcoal/20 text-charcoal font-bold rounded-full hover:bg-charcoal/5 transition-colors disabled:opacity-50"
             >
               Cancel
             </button>
@@ -64,8 +64,8 @@ export default function DeactivateAccount() {
         </div>
       ) : (
         <button 
-          onClick={handleDeactivate}
-          className="px-6 py-3 border-2 border-error text-error font-bold rounded-xl hover:bg-error hover:text-white transition-colors"
+          onClick={() => setConfirm(true)}
+          className="btn-primary !py-2 !px-4 text-sm w-fit"
         >
           Deactivate Account
         </button>

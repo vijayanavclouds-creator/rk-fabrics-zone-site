@@ -105,11 +105,10 @@ export function NavigationManager() {
           <p className="text-sm text-slate mt-1">Manage the main menu tabs and dropdown links shown on the website header.</p>
         </div>
         <button 
-          onClick={handleSave} 
-          disabled={isPending}
-          className="flex items-center gap-2 bg-teal-600 text-white px-6 py-2.5 rounded-xl font-bold hover:bg-teal-700 transition-colors disabled:opacity-50"
+          onClick={addMainTab}
+          className="btn-primary flex items-center justify-center gap-2 text-center py-4 px-8"
         >
-          {isPending ? <span className="animate-pulse">Saving...</span> : <><Save size={18} /> Save Changes</>}
+          <Plus size={18} /> Add Tab
         </button>
       </div>
       <div className="bg-white rounded-3xl border border-charcoal/10 p-8 shadow-[0_8px_30px_rgb(0,0,0,0.08)]">
@@ -209,12 +208,13 @@ export function NavigationManager() {
         ))}
       </div>
       
-      <div className="mt-6 flex justify-center">
+      <div className="mt-6 flex justify-end">
         <button 
-          onClick={addMainTab}
-          className="flex items-center gap-2 bg-charcoal text-white px-6 py-3 rounded-2xl font-bold hover:bg-black transition-all shadow-neo-btn hover:-translate-y-1"
+          onClick={handleSave} 
+          disabled={isPending}
+          className="btn-primary flex items-center justify-center gap-2 text-center py-4 px-10 disabled:opacity-50"
         >
-          <Plus size={20} /> Add Main Menu Tab
+          {isPending ? <span className="animate-pulse">Saving...</span> : <><Save size={20} /> Save Changes</>}
         </button>
       </div>
       </div>

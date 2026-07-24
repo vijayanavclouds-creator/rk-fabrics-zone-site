@@ -11,7 +11,7 @@ export default async function AccountDashboard() {
   }
 
   if (session.user.role === "ADMIN") {
-    redirect("/account/admin?tab=overview")
+    redirect("/admin?tab=overview")
   } else {
     redirect("/account/orders")
   }

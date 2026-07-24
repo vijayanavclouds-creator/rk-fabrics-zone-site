@@ -127,7 +127,7 @@ export default function ProfileForm({ user }: { user: { name: string, email: str
       </div>
 
       <div className="pt-2">
-        <button type="submit" disabled={loading} className="px-6 py-3 bg-teal-600 text-white font-bold rounded-xl hover:bg-teal-700 transition-colors disabled:opacity-50">
+        <button type="submit" disabled={loading} className="btn-primary !py-2 !px-4 text-sm w-fit disabled:opacity-50">
           {loading ? "Saving..." : "Save Changes"}
         </button>
       </div>

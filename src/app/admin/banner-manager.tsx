@@ -2,10 +2,12 @@
 
 import { useState, useTransition, useRef, useEffect } from "react"
 import { createBanner, deleteBanner, updateBannerOrder, getFileSize, updateBannerTitle, getCloudinarySignature } from "@/actions/admin"
+import { getAnnouncementBanner, saveAnnouncementBanner } from "@/actions/system"
 import imageCompression from 'browser-image-compression';
 import { toast } from "sonner"
 import { Upload, X, GripVertical, Image as ImageIcon, Loader2 } from "lucide-react"
 import Image from "next/image"
+import { useRouter } from "next/navigation"
 
 function FileSizeDisplay({ url }: { url: string }) {
   const [size, setSize] = useState<string | null>(null)
@@ -56,9 +58,31 @@ function BannerTitleInput({ banner }: { banner: any }) {
 }
 
 export function BannerManager({ banners }: { banners: any[] }) {
+  const router = useRouter()
   const [isPending, startTransition] = useTransition()
   const [uploadingType, setUploadingType] = useState<"hero" | "carousel" | null>(null)
   
+  const [announcement, setAnnouncement] = useState({ text: "", isActive: false });
+  const [isLoadingAnnouncement, setIsLoadingAnnouncement] = useState(true);
+
+  useEffect(() => {
+    getAnnouncementBanner().then((data) => {
+      if (data) setAnnouncement(data);
+      setIsLoadingAnnouncement(false);
+    });
+  }, []);
+
+  const handleSaveAnnouncement = async () => {
+    setIsLoadingAnnouncement(true);
+    const res = await saveAnnouncementBanner(announcement);
+    setIsLoadingAnnouncement(false);
+    if (res.success) {
+      toast.success("Announcement banner updated");
+      router.refresh();
+    }
+    else toast.error("Failed to update banner");
+  };
+
   const heroBanners = banners.filter(b => b.type === "hero").sort((a, b) => a.order - b.order)
   const carouselBanners = banners.filter(b => b.type === "carousel").sort((a, b) => a.order - b.order)
 
@@ -241,6 +265,66 @@ export function BannerManager({ banners }: { banners: any[] }) {
           <p className="text-slate mt-1 text-sm">Manage your store's hero and carousel images.</p>
         </div>
       </div>
+      
+      <div className="bg-white rounded-3xl border border-charcoal/10 p-8 shadow-sm mb-8">
+        <h3 className="text-xl font-bold text-charcoal mb-4">Announcement Banner (Top Header)</h3>
+        {isLoadingAnnouncement && !announcement.text ? (
+          <p className="text-sm text-slate animate-pulse">Loading...</p>
+        ) : (
+          <div className="space-y-6 w-full">
+            
+            <div className="grid md:grid-cols-2 gap-6 items-start">
+              <div className="w-full">
+                <label className="block text-sm font-bold text-charcoal mb-2">Banner Content (HTML supported)</label>
+                <textarea 
+                  value={announcement.text}
+                  onChange={(e) => setAnnouncement({...announcement, text: e.target.value})}
+                  rows={4}
+                  className="w-full px-4 py-3 rounded-xl border border-charcoal/20 bg-transparent focus:outline-none focus:border-teal-600 focus:ring-1 focus:ring-teal-600 transition-all text-sm font-mono h-32"
+                  placeholder="🎉 <strong>FREE SHIPPING</strong> on orders above ₹999... ✨"
+                />
+              </div>
+              
+              <div className="w-full h-full flex flex-col">
+                <label className="block text-sm font-bold text-charcoal mb-2">Live Preview</label>
+                <div className="flex-1 border border-charcoal/10 rounded-xl overflow-hidden bg-cream flex flex-col justify-center min-h-[8rem]">
+                  <div className="w-full bg-charcoal text-white text-xs py-2 font-medium relative z-10 marquee-container">
+                    <div className="marquee-content">
+                      <span dangerouslySetInnerHTML={{ __html: announcement.text || "Your text here..." }} />
+                      <span className="mx-16 opacity-50">✦</span>
+                    </div>
+                    <div className="marquee-content" aria-hidden="true">
+                      <span dangerouslySetInnerHTML={{ __html: announcement.text || "Your text here..." }} />
+                      <span className="mx-16 opacity-50">✦</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div className="flex items-center justify-between pt-2 border-t border-charcoal/10">
+              <label className="flex items-center gap-2 text-sm font-bold text-charcoal cursor-pointer">
+                <input 
+                  type="checkbox" 
+                  checked={announcement.isActive} 
+                  onChange={(e) => setAnnouncement({...announcement, isActive: e.target.checked})}
+                  className="w-4 h-4 rounded text-teal-600 focus:ring-teal-500"
+                />
+                Show Announcement Banner
+              </label>
+              
+              <button 
+                onClick={handleSaveAnnouncement}
+                disabled={isLoadingAnnouncement}
+                className="btn-primary text-sm"
+              >
+                {isLoadingAnnouncement ? "Saving..." : "Save Announcement"}
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+
       <div className="grid lg:grid-cols-2 gap-8">
         <BannerList title="Hero Images" items={heroBanners} type="hero" />
         <BannerList title="Carousel Images" items={carouselBanners} type="carousel" />

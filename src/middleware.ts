@@ -7,6 +7,7 @@ export default withAuth(
     const isAuth = !!token
     const isAuthPage = req.nextUrl.pathname.startsWith('/login') || req.nextUrl.pathname.startsWith('/register')
     const isAdminPage = req.nextUrl.pathname.startsWith('/admin')
+    const isSupportPage = req.nextUrl.pathname.startsWith('/support')
 
     if (isAuthPage) {
       if (isAuth) {
@@ -15,11 +16,16 @@ export default withAuth(
       return null
     }
 
-    if (req.nextUrl.pathname === '/' && token?.role === 'ADMIN') {
-      return NextResponse.redirect(new URL('/account/admin?tab=overview', req.url))
+    if (req.nextUrl.pathname === '/') {
+      if (token?.role === 'ADMIN') {
+        return NextResponse.redirect(new URL('/admin?tab=overview', req.url))
+      }
+      if (token?.role === 'SUPPORT') {
+        return NextResponse.redirect(new URL('/support?tab=overview', req.url))
+      }
     }
 
-    const isProtectedRoute = req.nextUrl.pathname.startsWith('/account') || req.nextUrl.pathname.startsWith('/admin') || req.nextUrl.pathname.startsWith('/contact')
+    const isProtectedRoute = req.nextUrl.pathname.startsWith('/account') || req.nextUrl.pathname.startsWith('/admin') || req.nextUrl.pathname.startsWith('/contact') || req.nextUrl.pathname.startsWith('/support')
 
     if (isProtectedRoute && !isAuth) {
       let from = req.nextUrl.pathname;
@@ -30,6 +36,10 @@ export default withAuth(
     }
 
     if (isAdminPage && token?.role !== 'ADMIN') {
+      return NextResponse.redirect(new URL('/account', req.url))
+    }
+
+    if (isSupportPage && token?.role !== 'SUPPORT' && token?.role !== 'ADMIN') {
       return NextResponse.redirect(new URL('/account', req.url))
     }
   },

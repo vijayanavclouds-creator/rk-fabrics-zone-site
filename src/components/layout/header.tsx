@@ -76,8 +76,9 @@ export const defaultNavLinks = [
  { label: "Blog", href: "/blog" },
 ];
 
-export function Header({ initialNavLinks }: { initialNavLinks?: any }) {
+export function Header({ initialNavLinks, announcementBanner }: { initialNavLinks?: any, announcementBanner?: any }) {
  const navLinks = initialNavLinks && initialNavLinks.length > 0 ? initialNavLinks : defaultNavLinks;
+  const banner = announcementBanner || { text: "🎉 <strong>FREE SHIPPING</strong> on orders above ₹999 | ✨ <span className=\"text-gold-light font-semibold\">FLAT 30% OFF</span> — Use code <span className=\"font-bold bg-white/20 px-1.5 py-0.5 rounded\">RK30</span> <span className=\"mx-16 opacity-50\">✦</span> 🎊 <strong>PREMIUM PERKS</strong> on orders above ₹1999 | 💫 <span className=\"text-gold-light font-semibold\">FLAT 40% OFF</span> — Use code <span className=\"font-bold bg-white/20 px-1.5 py-0.5 rounded\">RK40</span> 🛍️", isActive: true };
  const pathname = usePathname();
  const { data: session } = useSession();
  const [scrolled, setScrolled] = useState(false);
@@ -99,16 +100,18 @@ export function Header({ initialNavLinks }: { initialNavLinks?: any }) {
  return (
  <>
  {/* Announcement Bar */}
- <div className="w-full bg-charcoal text-white text-center text-xs md:text-sm py-2 px-4 font-medium relative z-50">
- <div className="flex items-center justify-center gap-2">
- <span className="hidden md:inline">🎉</span>
- <span>
- <strong>FREE SHIPPING</strong> on orders above ₹999 |{" "}
- <span className="text-gold-light font-semibold">FLAT 30% OFF</span> — Use code{" "}
- <span className="font-bold bg-white/20 px-1.5 py-0.5 rounded">RK30</span>
- </span>
- </div>
- </div>
+  {banner?.isActive && (
+   <div className="w-full bg-charcoal text-white text-xs md:text-sm py-2 font-medium relative z-50 marquee-container">
+   <div className="marquee-content">
+     <span dangerouslySetInnerHTML={{ __html: banner.text }} />
+     <span className="mx-16 opacity-50">✦</span>
+   </div>
+   <div className="marquee-content" aria-hidden="true">
+     <span dangerouslySetInnerHTML={{ __html: banner.text }} />
+     <span className="mx-16 opacity-50">✦</span>
+   </div>
+   </div>
+  )}
 
  {/* Main Header */}
  <header
@@ -119,7 +122,7 @@ export function Header({ initialNavLinks }: { initialNavLinks?: any }) {
  : "bg-cream/80 backdrop-blur-sm"
  )}
  >
- <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
+ <div className="w-full mx-auto px-4 md:px-6 lg:px-8">
  <div className="flex items-center justify-between h-14 md:h-16">
  {/* Logo */}
  <Link href="/" className="flex items-center gap-2 group" onClick={closeMobileMenu}>

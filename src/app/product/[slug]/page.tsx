@@ -182,7 +182,7 @@ function ProductDetail({ product }: { product: NonNullable<ReturnType<typeof get
   const whatsappMessage = `Hi! I'm interested in the following fabric:\n\n*Product:* ${product.name}\n*Price:* ${formatPrice(price)}\n*Color:* ${selectedColorName}\n*Size:* ${selectedSize}\n\n*Link:* ${currentUrl}\n\nCould you please provide more details?`;
 
  return (
- <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 py-6 md:py-10">
+ <div className="w-full mx-auto px-4 md:px-6 lg:px-8 py-6 md:py-10">
  {/* Breadcrumb */}
  <nav className="flex items-center gap-2 text-xs text-slate mb-6">
  <Link href="/" className="hover:text-teal-600 transition-colors">Home</Link>

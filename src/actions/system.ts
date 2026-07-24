@@ -10,6 +10,40 @@ export async function getNavigationLinks() {
   return getNavigationLinksData();
 }
 
+// Get Announcement Banner
+export async function getAnnouncementBanner() {
+  try {
+    const setting = await prisma.systemSetting.findUnique({
+      where: { key: "announcement_banner" }
+    });
+    if (setting && setting.value) {
+      return JSON.parse(setting.value);
+    }
+    return {
+      text: "<strong>FREE SHIPPING</strong> on orders above ₹999 | <span className=\"text-gold-light font-semibold\">FLAT 30% OFF</span> — Use code <span className=\"font-bold bg-white/20 px-1.5 py-0.5 rounded\">RK30</span>",
+      isActive: true
+    };
+  } catch (error) {
+    console.error("Error fetching announcement banner:", error);
+    return null;
+  }
+}
+
+// Save Announcement Banner
+export async function saveAnnouncementBanner(data: { text: string; isActive: boolean }) {
+  try {
+    await prisma.systemSetting.upsert({
+      where: { key: "announcement_banner" },
+      update: { value: JSON.stringify(data) },
+      create: { key: "announcement_banner", value: JSON.stringify(data) }
+    });
+    revalidatePath("/", "layout");
+    return { success: true };
+  } catch (error: any) {
+    return { success: false, error: error.message };
+  }
+}
+
 // Save Navigation Links
 export async function saveNavigationLinks(links: any) {
   try {

@@ -14,7 +14,7 @@ export default function PasswordForm() {
       <div className="pt-2">
         <button 
           onClick={() => router.push("/account/profile/verify-update")}
-          className="px-6 py-3 bg-charcoal text-white font-bold rounded-xl hover:bg-black transition-colors flex items-center gap-2"
+          className="btn-primary !py-2 !px-4 text-sm flex items-center gap-2 w-fit"
         >
           <Lock size={16} />
           Update Password

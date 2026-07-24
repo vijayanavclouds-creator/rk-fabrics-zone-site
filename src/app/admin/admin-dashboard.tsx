@@ -21,6 +21,7 @@ import { CompanyProfileManager } from "./company-profile-manager"
 import { FinanceManager } from "./finance-manager"
 import { QueriesManager } from "./queries-manager"
 import { NewsletterManager } from "./newsletter-manager"
+import { ActivitiesManager } from "./activities-manager"
 import { PortalHeader } from "@/components/layout/portal-header"
 
 export function AdminDashboard({ 
@@ -28,19 +29,21 @@ export function AdminDashboard({
   initialBanners = [],
   storeCategories = [],
   storeFabrics = [],
-  queries = []
+  queries = [],
+  analyticsData = null
 }: { 
   products: any[], 
   initialBanners?: any[],
   storeCategories?: { value: string, label: string }[],
   storeFabrics?: { value: string, label: string }[],
-  queries?: any[]
+  queries?: any[],
+  analyticsData?: any
 }) {
   const searchParams = useSearchParams()
   const tabParam = searchParams.get("tab") as any
-  const initialView = ["overview", "list", "new", "edit", "banners", "system", "users", "orders", "navigation", "taxonomy", "company_profile", "finance", "queries", "newsletters"].includes(tabParam) ? tabParam : "overview"
+  const initialView = ["overview", "list", "new", "edit", "banners", "system", "users", "orders", "navigation", "taxonomy", "company_profile", "finance", "queries", "newsletters", "activities"].includes(tabParam) ? tabParam : "overview"
   
-  const [activeView, setActiveView] = useState<"overview" | "list" | "new" | "edit" | "banners" | "system" | "users" | "orders" | "navigation" | "taxonomy" | "company_profile" | "finance" | "queries" | "newsletters">(initialView)
+  const [activeView, setActiveView] = useState<"overview" | "list" | "new" | "edit" | "banners" | "system" | "users" | "orders" | "navigation" | "taxonomy" | "company_profile" | "finance" | "queries" | "newsletters" | "activities">(initialView)
   const [editingProduct, setEditingProduct] = useState<any>(null)
   const [isPending, startTransition] = useTransition()
   
@@ -50,8 +53,10 @@ export function AdminDashboard({
 
   // Sync state with URL when URL changes
   useEffect(() => {
-    if (tabParam && ["overview", "list", "new", "edit", "banners", "system", "users", "orders", "navigation", "taxonomy", "company_profile", "finance", "queries", "newsletters"].includes(tabParam)) {
+    if (tabParam && ["overview", "list", "new", "edit", "banners", "system", "users", "orders", "navigation", "taxonomy", "company_profile", "finance", "queries", "newsletters", "activities"].includes(tabParam)) {
       setActiveView(tabParam)
+    } else if (!tabParam) {
+      setActiveView("overview")
     }
   }, [tabParam])
 
@@ -113,8 +118,8 @@ export function AdminDashboard({
 
   // LIST VIEW
   return (
-    <div className="space-y-6 animate-in fade-in duration-300">
-      {activeView === "overview" && <DashboardOverview />}
+    <div className={cn("animate-in fade-in duration-300 min-h-screen", activeView !== "overview" ? "p-6 md:p-8 bg-transparent space-y-6" : "")}>
+      {activeView === "overview" && <DashboardOverview initialData={analyticsData} />}
       
       {activeView === "company_profile" && <CompanyProfileManager />}
       {activeView === "finance" && <FinanceManager />}
@@ -154,6 +159,7 @@ export function AdminDashboard({
 
       {activeView === "users" && <UsersManager />}
       {activeView === "orders" && <OrdersManager />}
+      {activeView === "activities" && <ActivitiesManager />}
 
       {activeView === "list" && (
         <>
@@ -166,24 +172,29 @@ export function AdminDashboard({
             </div>
           </div>
           <div className="bg-white rounded-3xl border border-charcoal/10 overflow-hidden shadow-[0_8px_30px_rgb(0,0,0,0.08)] bg-gradient-to-br from-white to-cream/20">
-          <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse table-fixed min-w-[800px]">
+          <div className="w-full">
+            <table className="w-full text-left border-collapse table-fixed">
             <thead>
               <tr className="bg-cream-dark/30 border-b border-charcoal/10">
-              <th className="py-2 px-4 font-bold text-charcoal w-auto">Product Name</th>
-              <th className="py-2 px-4 font-bold text-charcoal w-32 whitespace-nowrap">Category</th>
-              <th className="py-2 px-4 font-bold text-charcoal w-24 whitespace-nowrap">MRP (₹)</th>
-              <th className="py-2 px-4 font-bold text-charcoal w-20 whitespace-nowrap">Disc.</th>
-              <th className="py-2 px-4 font-bold text-charcoal w-20">Images</th>
-              <th className="py-2 px-4 font-bold text-charcoal w-20">Variants</th>
-              <th className="py-2 px-4 font-bold text-charcoal w-20 whitespace-nowrap">Status</th>
-              <th className="py-2 px-4 font-bold text-charcoal w-32 text-center">Action</th>
+              <th className="py-2 px-4 font-bold text-charcoal w-[30%]">Product Name</th>
+              <th className="py-2 px-4 font-bold text-charcoal w-[10%] whitespace-nowrap overflow-hidden text-ellipsis text-left">Category</th>
+              <th className="py-2 px-4 font-bold text-charcoal w-[10%] whitespace-nowrap overflow-hidden text-ellipsis text-left">MRP (₹)</th>
+              <th className="py-2 px-4 font-bold text-charcoal w-[10%] whitespace-nowrap overflow-hidden text-ellipsis text-left">Disc.</th>
+              <th className="py-2 px-4 font-bold text-charcoal w-[10%] text-left">Images</th>
+              <th className="py-2 px-4 font-bold text-charcoal w-[10%] text-left">Variants</th>
+              <th className="py-2 px-4 font-bold text-charcoal w-[10%] whitespace-nowrap overflow-hidden text-ellipsis text-left">Status</th>
+              <th className="py-2 px-4 font-bold text-charcoal w-[10%] text-left">Action</th>
             </tr>
           </thead>
           <tbody>
-            {products.map((product) => (
-              <tr key={product.id} className="border-b border-charcoal/5 hover:bg-cream/40 transition-colors group">
-                <td className="py-2 px-4">
+            {products.map((product) => {
+              const isNew = new Date(product.createdAt).getTime() >= Date.now() - 16 * 24 * 60 * 60 * 1000;
+              const isOutOfStock = product.variants?.length > 0 && product.variants.every((v:any) => v.stock <= 0);
+
+              return (
+              <tr key={product.id} className="border-b border-charcoal/5 hover:bg-cream/40 transition-colors group relative">
+
+                <td className="py-2 px-4 relative">
                   <div className="flex items-center gap-3">
                     <div className="w-12 h-12 rounded-lg overflow-hidden bg-cream border border-charcoal/10 shrink-0 relative">
                       {product.images && product.images.length > 0 ? (
@@ -219,7 +230,7 @@ export function AdminDashboard({
                   </div>
                 </td>
                 <td className="py-2 px-4 text-slate font-medium">{product.variants?.length || 0}</td>
-                <td className="py-2 px-4 text-center">
+                <td className="py-2 px-4 text-left">
                   <input
                     type="checkbox"
                     checked={product.isActive !== false}
@@ -229,8 +240,23 @@ export function AdminDashboard({
                     title={product.isActive !== false ? "Active" : "Inactive"}
                   />
                 </td>
-                <td className="py-2 px-4">
-                  <div className="flex justify-center gap-2">
+                <td className="py-2 px-4 relative">
+                  {/* TAGS */}
+                  {isOutOfStock && (
+                    <div className="absolute bottom-4 -right-1 flex flex-col gap-1 z-20 rotate-[30deg] origin-bottom-right opacity-90 pointer-events-none shadow-xl">
+                      <span className="bg-rose-600 text-white text-[7px] font-black uppercase px-1.5 py-0.5 rounded shadow-sm border border-rose-700 whitespace-nowrap">
+                        Out of Stock
+                      </span>
+                    </div>
+                  )}
+                  {isNew && !isOutOfStock && (
+                    <div className="absolute top-4 -right-1 flex flex-col gap-1 z-20 rotate-[30deg] origin-bottom-right opacity-90 pointer-events-none shadow-xl">
+                      <span className="bg-amber-400 text-charcoal text-[7px] font-black uppercase px-1.5 py-0.5 rounded shadow-sm border border-amber-500 whitespace-nowrap">
+                        New
+                      </span>
+                    </div>
+                  )}
+                  <div className="flex justify-start gap-2">
                     <button 
                       onClick={() => { setEditingProduct(product); setActiveView("edit") }}
                       className="btn-primary w-9 h-9 flex items-center justify-center p-0 !px-0 rounded-lg flex-shrink-0"
@@ -248,7 +274,7 @@ export function AdminDashboard({
                   </div>
                 </td>
               </tr>
-            ))}
+            )})}
             </tbody>
             </table>
           </div>

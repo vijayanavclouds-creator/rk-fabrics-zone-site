@@ -40,7 +40,7 @@ const getSubjectColor = (subject: string) => {
   return "bg-slate-100 text-slate-700 border-slate-200";
 };
 
-export function QueriesManager({ initialQueries }: { initialQueries: Query[] }) {
+export function QueriesManager({ initialQueries, basePath = "/admin" }: { initialQueries: Query[]; basePath?: string }) {
   // Group queries by registered user's email (or fallback to query email)
   const groupedQueries = initialQueries.reduce((acc, query) => {
     const emailToGroup = query.user?.email || query.email;
@@ -84,7 +84,7 @@ export function QueriesManager({ initialQueries }: { initialQueries: Query[] }) 
             {userQueries.map((query) => (
               <Link 
                 key={query.id} 
-                href={`/account/admin/queries/${query.id}`}
+                href={`${basePath}/queries/${query.id}`}
                 className="flex items-center justify-between px-6 py-4 hover:bg-slate-50/50 transition-colors w-full text-left"
               >
                 <div className="grid grid-cols-12 gap-4 w-full items-center">

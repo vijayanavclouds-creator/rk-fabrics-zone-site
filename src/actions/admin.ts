@@ -1,11 +1,14 @@
 "use server"
 
 import prisma from "@/lib/prisma"
-import { revalidatePath, unstable_cache } from "next/cache";
+import { revalidatePath, unstable_cache, unstable_noStore } from "next/cache";
 import fs from "fs"
 import path from "path"
 import { v2 as cloudinary } from "cloudinary"
 import { getBannersData } from "@/lib/data/banners"
+import { logAdminActivity } from "./admin-activity"
+import { getServerSession } from "next-auth"
+import { authOptions } from "@/lib/auth"
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -71,6 +74,8 @@ export async function updateProduct(formData: FormData) {
     revalidatePath("/shop")
     revalidatePath(`/product/[slug]`, "page")
     
+    await logAdminActivity(`updated product <b>${name}</b>`);
+    
     return { success: true }
   } catch (error: any) {
     console.error("Error updating product:", error)
@@ -131,6 +136,8 @@ export async function createProduct(formData: FormData) {
     revalidatePath("/admin")
     revalidatePath("/shop")
     
+    await logAdminActivity(`created product <b>${name}</b>`);
+
     return { success: true, product: newProduct }
   } catch (error: any) {
     console.error("Error creating product:", error)
@@ -140,6 +147,7 @@ export async function createProduct(formData: FormData) {
 
 export async function deleteProduct(id: string) {
   try {
+    const product = await prisma.product.findUnique({ where: { id } });
     await prisma.product.delete({
       where: { id }
     })
@@ -147,6 +155,10 @@ export async function deleteProduct(id: string) {
     syncDatabaseToStatic()
     revalidatePath("/admin")
     revalidatePath("/shop")
+    
+    if (product) {
+      await logAdminActivity(`deleted product <b>${product.name}</b>`);
+    }
     
     return { success: true }
   } catch (error) {
@@ -190,6 +202,11 @@ export async function createProductVariant(formData: FormData) {
     syncDatabaseToStatic()
     revalidatePath("/admin")
     revalidatePath(`/product/[slug]`, "page")
+    
+    if (product) {
+      await logAdminActivity(`added variant to product <b>${product.name}</b>`);
+    }
+    
     return { success: true }
   } catch (error: any) {
     console.error("Error creating variant:", error)
@@ -222,6 +239,11 @@ export async function updateProductVariant(formData: FormData) {
     syncDatabaseToStatic()
     revalidatePath("/admin")
     revalidatePath(`/product/[slug]`, "page")
+    
+    if (variant?.product) {
+      await logAdminActivity(`updated variant in product <b>${variant.product.name}</b>`);
+    }
+    
     return { success: true }
   } catch (error: any) {
     console.error("Error updating variant:", error)
@@ -231,10 +253,16 @@ export async function updateProductVariant(formData: FormData) {
 
 export async function deleteProductVariant(id: string) {
   try {
+    const variant = await prisma.productVariant.findUnique({ where: { id }, include: { product: true } });
     await prisma.productVariant.delete({ where: { id } })
     syncDatabaseToStatic()
     revalidatePath("/admin")
     revalidatePath(`/product/[slug]`, "page")
+    
+    if (variant?.product) {
+      await logAdminActivity(`deleted variant from product <b>${variant.product.name}</b>`);
+    }
+    
     return { success: true }
   } catch (error) {
     return { success: false, error: "Failed to delete variant" }
@@ -269,10 +297,15 @@ async function syncDatabaseToStatic() {
 
 export async function bulkUpdateImagesAndVariants(formData: FormData) {
   try {
+    const fs = require('fs')
+    fs.appendFileSync('./debug.log', `[${new Date().toISOString()}] bulkUpdateImagesAndVariants called\n`)
+
     const payloadStr = formData.get("payload") as string
     if (!payloadStr) return { success: false, error: "Missing payload" }
     const payload = JSON.parse(payloadStr)
     const { productId, newVariants, updatedVariants, deletedVariantIds, deletedImageIds, primaryImageId, newPrimaryIndex, uploadedImagesUrls } = payload
+    
+    fs.appendFileSync('./debug.log', `Payload: ${JSON.stringify({updatedVariants})}\n`)
 
     if (!productId) return { success: false, error: "Missing product ID" }
     
@@ -280,10 +313,28 @@ export async function bulkUpdateImagesAndVariants(formData: FormData) {
 
     if (deletedVariantIds?.length) {
       await prisma.productVariant.deleteMany({ where: { id: { in: deletedVariantIds } } })
+      await logAdminActivity(`deleted <b>${deletedVariantIds.length} variant(s)</b> from <b>${product?.name}</b>`);
     }
 
     if (updatedVariants?.length) {
       for (const v of updatedVariants) {
+        const oldVariant = await prisma.productVariant.findUnique({ where: { id: v.id } })
+        if (oldVariant) {
+          const variantName = [oldVariant.size, oldVariant.color].filter(Boolean).join(' / ') || 'Default'
+          if (oldVariant.stock !== v.stock) {
+            await logAdminActivity(`updated <b>Stock</b> for variant <b>${variantName}</b> in <b>${product?.name}</b> from <b>${oldVariant.stock}</b> to <b>${v.stock}</b>`);
+          }
+          if (oldVariant.price !== v.price) {
+            await logAdminActivity(`updated <b>Price</b> for variant <b>${variantName}</b> in <b>${product?.name}</b> from <b>₹${oldVariant.price}</b> to <b>₹${v.price}</b>`);
+          }
+          if (oldVariant.size !== v.size) {
+            await logAdminActivity(`updated <b>Size</b> for variant <b>${variantName}</b> in <b>${product?.name}</b> from <b>"${oldVariant.size}"</b> to <b>"${v.size}"</b>`);
+          }
+          if (oldVariant.color !== v.color) {
+            await logAdminActivity(`updated <b>Color</b> for variant <b>${variantName}</b> in <b>${product?.name}</b> from <b>"${oldVariant.color}"</b> to <b>"${v.color}"</b>`);
+          }
+        }
+
         const salePrice = product && product.discountPercent > 0 
           ? v.price * (1 - product.discountPercent / 100) 
           : null;
@@ -295,6 +346,7 @@ export async function bulkUpdateImagesAndVariants(formData: FormData) {
     }
 
     if (newVariants?.length) {
+      await logAdminActivity(`added <b>${newVariants.length} new variant(s)</b> to <b>${product?.name}</b>`);
       for (const v of newVariants) {
         const salePrice = product && product.discountPercent > 0 
           ? v.price * (1 - product.discountPercent / 100) 
@@ -316,6 +368,7 @@ export async function bulkUpdateImagesAndVariants(formData: FormData) {
 
     if (deletedImageIds && deletedImageIds.length > 0) {
       await prisma.productImage.deleteMany({ where: { id: { in: deletedImageIds } } })
+      await logAdminActivity(`deleted <b>${deletedImageIds.length} image(s)</b> from <b>${product?.name}</b>`);
     }
 
     // Clear out existing primary flags if a new one is selected
@@ -325,6 +378,7 @@ export async function bulkUpdateImagesAndVariants(formData: FormData) {
 
     const imagesToUpload = uploadedImagesUrls || []
     if (imagesToUpload && imagesToUpload.length > 0) {
+      await logAdminActivity(`uploaded <b>${imagesToUpload.length} new image(s)</b> to <b>${product?.name}</b>`);
       for (let i = 0; i < imagesToUpload.length; i++) {
         const imgData = imagesToUpload[i]
         
@@ -354,6 +408,11 @@ export async function bulkUpdateImagesAndVariants(formData: FormData) {
               fabricDetails
             }
           })
+          if (product) {
+            if (category && product.category !== category) await logAdminActivity(`updated <b>Category</b> in <b>${product.name}</b> from <b>${product.category}</b> to <b>${category}</b>`)
+            if (fabric && product.fabric !== fabric) await logAdminActivity(`updated <b>Fabric</b> in <b>${product.name}</b> from <b>${product.fabric || 'none'}</b> to <b>${fabric}</b>`)
+            if (fabricDetails && product.fabricDetails !== fabricDetails) await logAdminActivity(`updated <b>Fabric Details</b> in <b>${product.name}</b>`)
+          }
         }
       }
     })
@@ -374,6 +433,8 @@ export async function bulkUpdateImagesAndVariants(formData: FormData) {
     
     return { success: true, product: updatedProduct }
   } catch (error: any) {
+    const fs = require('fs')
+    fs.appendFileSync('./debug.log', `ERROR: ${error.message}\n${error.stack}\n`)
     console.error("Bulk save error:", error)
     return { success: false, error: error.message || "Failed to save images and variants" }
   }
@@ -443,6 +504,9 @@ export async function createBanner(formData: FormData) {
 
     revalidatePath("/");
     revalidatePath("/admin");
+    
+    await logAdminActivity(`uploaded new ${type} banner`);
+    
     return { success: true, banner }
   } catch (error: any) {
     console.error("Error creating banner:", error)
@@ -456,6 +520,9 @@ export async function deleteBanner(id: string) {
 
     revalidatePath("/");
     revalidatePath("/admin");
+    
+    await logAdminActivity(`deleted banner`);
+    
     return { success: true }
   } catch (error: any) {
     console.error("Error deleting banner:", error)
@@ -482,6 +549,7 @@ export async function updateBannerOrder(orderedIds: string[]) {
 }
 
 export async function getSystemUsage() {
+  unstable_noStore();
   try {
     if (!process.env.CLOUDINARY_CLOUD_NAME || !process.env.CLOUDINARY_API_KEY) {
       throw new Error("Cloudinary credentials not configured in .env file")
@@ -493,21 +561,29 @@ export async function getSystemUsage() {
     const vercelToken = process.env.API_VERCEL_ACCESS_TOKEN;
     
     if (vercelToken) {
+      console.log("Found Vercel Token:", vercelToken.substring(0, 5) + "...");
       try {
         const vRes = await fetch("https://api.vercel.com/v2/user", {
-          headers: { Authorization: `Bearer ${vercelToken}` }
+          headers: { Authorization: `Bearer ${vercelToken}` },
+          cache: "no-store"
         });
+        console.log("Vercel API Status:", vRes.status);
         if (vRes.ok) {
           const vData = await vRes.json();
+          console.log("Vercel API Data:", JSON.stringify(vData).substring(0, 50));
           vercelData = {
             username: vData.user.username,
             email: vData.user.email,
             plan: vData.user.billing?.plan || "hobby"
           };
+        } else {
+          console.error("Vercel API Error:", await vRes.text());
         }
       } catch (e) {
         console.error("Failed to fetch Vercel data", e);
       }
+    } else {
+      console.log("No Vercel token found in process.env");
     }
 
     return {
@@ -569,5 +645,46 @@ export async function toggleProductStatus(productId: string, isActive: boolean) 
   } catch (error: any) {
     console.error("Failed to toggle product status:", error);
     return { success: false, error: error.message };
+  }
+}
+
+export async function updateUserRole(userId: string, newRole: "CUSTOMER" | "ADMIN" | "SUPPORT") {
+  try {
+    const session = await getServerSession(authOptions)
+    if (!session || session.user.role !== "ADMIN") {
+      return { success: false, error: "Unauthorized" }
+    }
+
+    if (userId === session.user.id) {
+      return { success: false, error: "You cannot change your own role" }
+    }
+
+    if (newRole === "ADMIN") {
+      const adminCount = await prisma.user.count({ where: { role: "ADMIN" } })
+      if (adminCount >= 5) {
+        return { success: false, error: "Maximum limit of 5 admin accounts reached." }
+      }
+    }
+
+    const currentUser = await prisma.user.findUnique({ where: { id: userId } })
+    if (currentUser?.role === "ADMIN" && newRole !== "ADMIN") {
+      const adminCount = await prisma.user.count({ where: { role: "ADMIN" } })
+      if (adminCount <= 1) {
+        return { success: false, error: "Cannot demote the last admin account." }
+      }
+    }
+
+    await prisma.user.update({
+      where: { id: userId },
+      data: { role: newRole }
+    })
+
+    revalidatePath("/admin")
+    await logAdminActivity(`changed role of user ${userId} to ${newRole}`)
+
+    return { success: true }
+  } catch (error: any) {
+    console.error("Error updating user role:", error)
+    return { success: false, error: "Failed to update user role" }
   }
 }

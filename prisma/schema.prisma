@@ -203,6 +203,14 @@ model AdminNotification {
   createdAt DateTime @default(now())
 }
 
+model AdminActivity {
+  id        String   @id @default(cuid())
+  adminName String   @default("System")
+  action    String
+  details   String?  @db.Text
+  createdAt DateTime @default(now())
+}
+
 model AdminSettings {
   id                         String   @id @default("singleton")
   lateShippingThresholdHours Int      @default(6)

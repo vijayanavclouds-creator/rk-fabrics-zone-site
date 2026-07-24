@@ -5,6 +5,7 @@ import { getServerSession } from "next-auth/next"
 import { authOptions } from "@/lib/auth"
 import { revalidatePath } from "next/cache"
 import { sendOrderConfirmationEmail, sendOrderShippedEmail, sendOrderDeliveredEmail, sendOrderCancelledEmail } from "@/lib/email"
+import { logAdminActivity } from "./admin-activity"
 
 export async function createOrder(data: any) {
   try {
@@ -179,7 +180,7 @@ export async function getUserOrders() {
 export async function getAllOrders() {
   try {
     const session = await getServerSession(authOptions)
-    if (!session || session.user.role !== "ADMIN") {
+    if (!session || (session.user.role !== "ADMIN" && session.user.role !== "SUPPORT")) {
       return { success: false, error: "Unauthorized" }
     }
 
@@ -200,7 +201,7 @@ export async function getAllOrders() {
 export async function getAdminUserOrders(userIdOrEmail: string) {
   try {
     const session = await getServerSession(authOptions)
-    if (!session || session.user.role !== "ADMIN") {
+    if (!session || (session.user.role !== "ADMIN" && session.user.role !== "SUPPORT")) {
       return { success: false, error: "Unauthorized" }
     }
 
@@ -273,6 +274,8 @@ export async function updateOrderStatus(orderId: string, status: string) {
 
     revalidatePath("/admin")
     revalidatePath("/account")
+    
+    await logAdminActivity(`marked Order <b>#${updatedOrder.id.slice(-6).toUpperCase()}</b> as <b>${status}</b>`);
     
     return { success: true }
   } catch (error: any) {

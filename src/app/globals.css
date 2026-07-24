@@ -433,3 +433,22 @@ body {
     transform: rotate(360deg);
   }
 }
+
+/* Marquee Animation */
+.marquee-container {
+  overflow: hidden;
+  display: flex;
+  white-space: nowrap;
+  width: 100%;
+}
+
+.marquee-content {
+  display: flex;
+  flex-shrink: 0;
+  animation: marquee-scroll 25s linear infinite;
+}
+
+@keyframes marquee-scroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-100%); }
+}

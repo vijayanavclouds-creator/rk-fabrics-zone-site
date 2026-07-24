@@ -1,9 +1,12 @@
 "use client"
 
 import { useState, useEffect, useTransition } from "react"
-import { getUsers, promoteToAdmin, demoteAdmin } from "@/actions/auth"
+import { getUsers } from "@/actions/auth"
+import { updateUserRole } from "@/actions/admin"
 import { toast } from "sonner"
-import { Shield, User, ShieldAlert, Loader2, ChevronDown, ChevronUp } from "lucide-react"
+import { Shield, User, Loader2, ChevronDown, ChevronUp, Headset, Check } from "lucide-react"
+import { useRef } from "react"
+import { cn } from "@/lib/utils"
 
 export function UsersManager() {
   const [users, setUsers] = useState<any[]>([])
@@ -12,6 +15,7 @@ export function UsersManager() {
   
   // Accordion state
   const [showAdmins, setShowAdmins] = useState(true)
+  const [showSupport, setShowSupport] = useState(true)
   const [showCustomers, setShowCustomers] = useState(false)
 
   const fetchUsers = async () => {
@@ -33,27 +37,11 @@ export function UsersManager() {
     fetchUsers()
   }, [])
 
-  const handlePromote = (userId: string) => {
-    if (!confirm("Are you sure you want to make this user an Admin?")) return
-    
+  const handleRoleChange = (userId: string, newRole: "CUSTOMER" | "ADMIN" | "SUPPORT") => {
     startTransition(async () => {
-      const res = await promoteToAdmin(userId)
+      const res = await updateUserRole(userId, newRole)
       if (res.success) {
-        toast.success("User promoted to Admin!")
-        fetchUsers()
-      } else {
-        toast.error(res.error)
-      }
-    })
-  }
-
-  const handleDemote = (userId: string) => {
-    if (!confirm("Are you sure you want to demote this Admin to a Customer?")) return
-    
-    startTransition(async () => {
-      const res = await demoteAdmin(userId)
-      if (res.success) {
-        toast.success("Admin demoted to Customer.")
+        toast.success(`User role updated to ${newRole}!`)
         fetchUsers()
       } else {
         toast.error(res.error)
@@ -66,23 +54,53 @@ export function UsersManager() {
   }
 
   const adminUsers = users.filter(u => u.role === "ADMIN")
+  const supportUsers = users.filter(u => u.role === "SUPPORT")
   const customerUsers = users.filter(u => u.role === "CUSTOMER")
+
+  const UserRow = ({ user, icon: Icon, iconColor, iconBg }: any) => (
+    <div className="flex items-center justify-between p-4 rounded-xl border border-slate-100 hover:bg-slate-50 transition-colors">
+      <div className="flex items-center gap-4">
+        <div className={`p-3 rounded-xl ${iconBg} ${iconColor}`}>
+          <Icon size={20} />
+        </div>
+        <div>
+          <h3 className="font-bold text-charcoal">{user.name}</h3>
+          <p className="text-sm text-slate">{user.email}</p>
+        </div>
+      </div>
+      <div className="flex items-center gap-4">
+        <RoleSelect
+          value={user.role}
+          onChange={(newRole) => handleRoleChange(user.id, newRole as any)}
+          disabled={isPending}
+          options={[
+            { value: "ADMIN", label: "ADMIN" },
+            { value: "SUPPORT", label: "SUPPORT" },
+            { value: "CUSTOMER", label: "CUSTOMER" }
+          ]}
+        />
+      </div>
+    </div>
+  )
 
   return (
     <div className="space-y-6 animate-in fade-in duration-300">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 border-b border-charcoal/10 pb-4 mb-6">
         <h2 className="font-[family-name:var(--font-playfair)] text-2xl font-bold text-charcoal">Account Management</h2>
-        <div className="px-4 py-2 bg-slate-50 border border-slate-100 rounded-xl text-sm font-bold text-slate">
-          Admin Accounts: <span className={adminUsers.length >= 5 ? "text-rose-600" : "text-teal-600"}>{adminUsers.length}/5</span>
+        <div className="flex gap-2">
+          <div className="px-4 py-2 bg-slate-50 border border-slate-100 rounded-xl text-sm font-bold text-slate">
+            Admin Accounts: <span className={adminUsers.length >= 5 ? "text-rose-600" : "text-teal-600"}>{adminUsers.length}/5</span>
+          </div>
         </div>
       </div>
       <div className="bg-white rounded-3xl border border-charcoal/10 p-8 shadow-sm">
         <div className="space-y-4">
+          
           {/* Admins Accordion */}
-          <div className="border border-charcoal/10 rounded-2xl overflow-hidden">
+          <div className="border border-charcoal/10 rounded-2xl">
             <button 
               onClick={() => setShowAdmins(!showAdmins)}
-              className="w-full flex items-center justify-between p-4 bg-slate-50 hover:bg-slate-100 transition-colors"
+              className={cn("w-full flex items-center justify-between p-4 bg-slate-50 hover:bg-slate-100 transition-colors", showAdmins ? "rounded-t-2xl" : "rounded-2xl")}
             >
               <div className="flex items-center gap-3">
                 <Shield size={20} className="text-teal-600" />
@@ -92,31 +110,38 @@ export function UsersManager() {
             </button>
             
             {showAdmins && (
-              <div className="p-4 space-y-3 bg-white">
+              <div className="p-4 space-y-3 bg-white rounded-b-2xl">
                 {adminUsers.length === 0 ? (
                   <p className="text-sm text-slate text-center py-4">No admin users found.</p>
                 ) : (
                   adminUsers.map((user) => (
-                    <div key={user.id} className="flex items-center justify-between p-4 rounded-xl border border-slate-100 hover:bg-slate-50 transition-colors">
-                      <div className="flex items-center gap-4">
-                        <div className="p-3 rounded-xl bg-teal-100 text-teal-600">
-                          <Shield size={20} />
-                        </div>
-                        <div>
-                          <h3 className="font-bold text-charcoal">{user.name}</h3>
-                          <p className="text-sm text-slate">{user.email}</p>
-                        </div>
-                      </div>
-                      <div>
-                        <button
-                          onClick={() => handleDemote(user.id)}
-                          disabled={isPending || adminUsers.length <= 1}
-                          className="px-4 py-2 bg-rose-50 text-rose-600 border border-rose-100 text-sm font-bold rounded-xl hover:bg-rose-100 transition-colors disabled:opacity-50"
-                        >
-                          Demote
-                        </button>
-                      </div>
-                    </div>
+                    <UserRow key={user.id} user={user} icon={Shield} iconColor="text-teal-600" iconBg="bg-teal-100" />
+                  ))
+                )}
+              </div>
+            )}
+          </div>
+
+          {/* Support Accordion */}
+          <div className="border border-charcoal/10 rounded-2xl">
+            <button 
+              onClick={() => setShowSupport(!showSupport)}
+              className={cn("w-full flex items-center justify-between p-4 bg-slate-50 hover:bg-slate-100 transition-colors", showSupport ? "rounded-t-2xl" : "rounded-2xl")}
+            >
+              <div className="flex items-center gap-3">
+                <Headset size={20} className="text-blue-600" />
+                <h3 className="font-bold text-charcoal">Support Staff ({supportUsers.length})</h3>
+              </div>
+              {showSupport ? <ChevronUp size={20} className="text-slate" /> : <ChevronDown size={20} className="text-slate" />}
+            </button>
+            
+            {showSupport && (
+              <div className="p-4 space-y-3 bg-white rounded-b-2xl">
+                {supportUsers.length === 0 ? (
+                  <p className="text-sm text-slate text-center py-4">No support users found.</p>
+                ) : (
+                  supportUsers.map((user) => (
+                    <UserRow key={user.id} user={user} icon={Headset} iconColor="text-blue-600" iconBg="bg-blue-100" />
                   ))
                 )}
               </div>
@@ -124,10 +149,10 @@ export function UsersManager() {
           </div>
 
           {/* Customers Accordion */}
-          <div className="border border-charcoal/10 rounded-2xl overflow-hidden">
+          <div className="border border-charcoal/10 rounded-2xl">
             <button 
               onClick={() => setShowCustomers(!showCustomers)}
-              className="w-full flex items-center justify-between p-4 bg-slate-50 hover:bg-slate-100 transition-colors"
+              className={cn("w-full flex items-center justify-between p-4 bg-slate-50 hover:bg-slate-100 transition-colors", showCustomers ? "rounded-t-2xl" : "rounded-2xl")}
             >
               <div className="flex items-center gap-3">
                 <User size={20} className="text-slate-500" />
@@ -137,31 +162,12 @@ export function UsersManager() {
             </button>
             
             {showCustomers && (
-              <div className="p-4 space-y-3 bg-white">
+              <div className="p-4 space-y-3 bg-white rounded-b-2xl">
                 {customerUsers.length === 0 ? (
                   <p className="text-sm text-slate text-center py-4">No customers found.</p>
                 ) : (
                   customerUsers.map((user) => (
-                    <div key={user.id} className="flex items-center justify-between p-4 rounded-xl border border-slate-100 hover:bg-slate-50 transition-colors">
-                      <div className="flex items-center gap-4">
-                        <div className="p-3 rounded-xl bg-slate-200 text-slate-500">
-                          <User size={20} />
-                        </div>
-                        <div>
-                          <h3 className="font-bold text-charcoal">{user.name}</h3>
-                          <p className="text-sm text-slate">{user.email}</p>
-                        </div>
-                      </div>
-                      <div>
-                        <button
-                          onClick={() => handlePromote(user.id)}
-                          disabled={isPending || adminUsers.length >= 5}
-                          className="px-4 py-2 bg-charcoal text-white text-sm font-bold rounded-xl hover:bg-black transition-colors disabled:opacity-50 flex items-center gap-2"
-                        >
-                          <ShieldAlert size={16} /> Promote to Admin
-                        </button>
-                      </div>
-                    </div>
+                    <UserRow key={user.id} user={user} icon={User} iconColor="text-slate-500" iconBg="bg-slate-200" />
                   ))
                 )}
               </div>
@@ -169,6 +175,57 @@ export function UsersManager() {
           </div>
         </div>
       </div>
+    </div>
+  )
+}
+
+const RoleSelect = ({ value, onChange, options, disabled }: { value: string, onChange: (v: string) => void, options: {value: string, label: string}[], disabled?: boolean }) => {
+  const [isOpen, setIsOpen] = useState(false)
+  const dropdownRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [])
+
+  const selectedLabel = options.find(o => o.value === value)?.label || "Select role"
+
+  return (
+    <div className="relative w-[150px]" ref={dropdownRef}>
+      <button 
+        type="button" 
+        onClick={() => !disabled && setIsOpen(!isOpen)} 
+        disabled={disabled}
+        className={cn(
+          "w-full bg-white border border-charcoal/10 rounded-xl px-4 py-2 hover:bg-slate-50 transition-colors outline-none text-sm flex justify-between items-center shadow-sm text-charcoal font-bold",
+          disabled && "opacity-50 cursor-not-allowed hover:bg-white"
+        )}
+      >
+        <span>{selectedLabel}</span>
+        <ChevronDown size={16} className={cn("text-slate transition-transform ml-2 shrink-0", isOpen && "rotate-180")} />
+      </button>
+      {isOpen && (
+        <div className="absolute top-full left-0 w-full mt-1 bg-white border border-charcoal/10 rounded-xl shadow-xl z-50 p-2 max-h-64 overflow-y-auto no-scrollbar">
+          {options.map(opt => (
+            <button 
+              key={opt.value} 
+              type="button" 
+              onClick={() => { onChange(opt.value); setIsOpen(false) }} 
+              className="w-full text-left flex items-center gap-2.5 px-3 py-2 hover:bg-slate/5 rounded-lg cursor-pointer group transition-colors"
+            >
+              <div className={cn("w-4 h-4 rounded-full border-2 flex items-center justify-center transition-colors shrink-0", value === opt.value ? "border-teal-600" : "border-charcoal/20 group-hover:border-teal-600")}>
+                {value === opt.value && <div className="w-2 h-2 rounded-full bg-teal-600" /> }
+              </div>
+              <span className={cn("text-sm transition-colors text-charcoal", value === opt.value ? "font-bold" : "font-medium")}>{opt.label}</span>
+            </button>
+          ))}
+        </div>
+      )}
     </div>
   )
 }

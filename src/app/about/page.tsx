@@ -14,7 +14,7 @@ export default async function AboutPage() {
         <div className="absolute -top-40 -right-40 w-96 h-96 bg-teal-600/20 rounded-full blur-3xl pointer-events-none"></div>
         <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-gold/20 rounded-full blur-3xl pointer-events-none"></div>
         
-        <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 relative z-10 text-center">
+        <div className="w-full mx-auto px-4 md:px-6 lg:px-8 relative z-10 text-center">
           <span className="font-[family-name:var(--font-cinzel)] text-sm tracking-[0.3em] text-gold uppercase mb-4 block">
             Our Heritage
           </span>
@@ -28,7 +28,7 @@ export default async function AboutPage() {
       </section>
 
       {/* Story & Philosophy Section */}
-      <section id="story" className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 py-20">
+      <section id="story" className="w-full mx-auto px-4 md:px-6 lg:px-8 py-20">
         <div className="grid md:grid-cols-2 gap-12 items-center">
           <div className="relative aspect-square md:aspect-auto md:h-full min-h-[400px] rounded-3xl overflow-hidden shadow-2xl border-4 border-white">
             <Image 
@@ -89,7 +89,7 @@ export default async function AboutPage() {
 
       {/* Stats/Highlight Banner */}
       <section className="bg-charcoal py-16 text-white border-y border-white/10">
-        <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
+        <div className="w-full mx-auto px-4 md:px-6 lg:px-8">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center divide-x divide-white/10">
             <div className="px-4">
               <Sparkles className="w-8 h-8 text-gold mx-auto mb-3" />
@@ -116,7 +116,7 @@ export default async function AboutPage() {
       </section>
 
       {/* Company Information Details */}
-      <section className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 py-20">
+      <section className="w-full mx-auto px-4 md:px-6 lg:px-8 py-20">
         <div className="max-w-3xl mx-auto text-center mb-12">
           <h2 className="font-[family-name:var(--font-playfair)] text-3xl font-bold text-charcoal mb-4">
             Company Information

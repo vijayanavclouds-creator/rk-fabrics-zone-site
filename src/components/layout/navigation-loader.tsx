@@ -20,8 +20,7 @@ function NavigationLoaderInner() {
 
   useEffect(() => {
     const handleClick = (e: MouseEvent) => {
-      // Ignore if the click was already prevented by a child component (like an Add to Cart button inside a Link)
-      if (e.defaultPrevented) return;
+      // Remove e.defaultPrevented check because Next.js Link ALWAYS prevents default for soft routing
 
       // Find the closest anchor tag
       const target = (e.target as HTMLElement).closest("a");
@@ -58,14 +57,15 @@ function NavigationLoaderInner() {
         // Fallback if URL parsing fails
       }
 
-      // If it's a valid internal link, wait 3 seconds before showing the loader
-      // The Next.js skeleton will show immediately if the page uses loading.tsx
+      setIsNavigating(true);
+
+      // Safety timeout: if navigation doesn't complete within 10 seconds, hide the loader
       if (timeoutRef.current) {
         clearTimeout(timeoutRef.current);
       }
       timeoutRef.current = setTimeout(() => {
-        setIsNavigating(true);
-      }, 3000);
+        setIsNavigating(false);
+      }, 10000);
     };
 
     document.addEventListener("click", handleClick);
@@ -80,16 +80,8 @@ function NavigationLoaderInner() {
   if (!isNavigating) return null;
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-white/[0.19]">
-      <div className="loader-container">
-        <div className="multi-shape-loader">
-          <div className="shape shape-1"></div>
-          <div className="shape shape-2"></div>
-          <div className="shape shape-3"></div>
-          <div className="shape shape-4"></div>
-          <div className="shape shape-5"></div>
-        </div>
-      </div>
+    <div className="fixed top-0 bottom-0 left-0 right-0 z-30 flex items-center justify-center bg-white/80 backdrop-blur-sm">
+      <div className="w-12 h-12 border-4 border-teal-200 border-t-teal-600 rounded-full animate-spin"></div>
     </div>
   );
 }

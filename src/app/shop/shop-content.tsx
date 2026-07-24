@@ -212,7 +212,7 @@ export function ShopContent({
  const hasActiveFilters = selectedCategories.length > 0 || selectedFabrics.length > 0 || selectedFeatures.length > 0 || selectedDiscount > 0 || priceRange[0] > 0 || priceRange[1] < 25000;
 
  return (
- <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 py-8 md:py-12">
+ <div className="w-full mx-auto px-4 md:px-6 lg:px-8 py-8 md:py-12">
  {/* Page Header */}
  <motion.div
  initial={{ opacity: 0, y: 20 }}

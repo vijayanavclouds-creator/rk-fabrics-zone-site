@@ -35,7 +35,7 @@ export default async function ContactPage() {
   }
 
  return (
- <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 py-12 md:py-16">
+ <div className="w-full mx-auto px-4 md:px-6 lg:px-8 py-12 md:py-16">
  <div className="text-center mb-12">
  <span className="font-[family-name:var(--font-cinzel)] text-xs tracking-[0.3em] text-gold-dark uppercase">
  Get In Touch
@@ -74,14 +74,14 @@ export default async function ContactPage() {
  href={`https://wa.me/${(companyProfile?.contactNumber || '+919876543210').replace(/[^0-9]/g, '')}`}
  target="_blank"
  rel="noopener noreferrer"
- className="flex items-center justify-center gap-3 py-4 bg-green-500 hover:bg-green-600 text-white rounded-2xl font-semibold transition-colors"
+ className="btn-primary !bg-green-500 hover:!bg-green-600 !text-white flex items-center justify-center gap-2 w-1/2 mx-auto mt-6 shadow-neo-btn"
  >
  <MessageCircle size={20} /> Chat on WhatsApp
  </a>
  </div>
 
         {/* Contact Form */}
-        <Suspense fallback={<div className="bg-white rounded-2xl border border-charcoal/5 p-6 space-y-4 animate-pulse h-96 flex items-center justify-center text-slate">Loading Form...</div>}>
+        <Suspense fallback={null}>
           <ContactForm deliveredOrders={deliveredOrders} />
         </Suspense>
       </div>

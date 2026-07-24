@@ -112,11 +112,11 @@ export const products: Product[] = [
     "type": "readymade",
     "basePrice": 1299,
     "salePrice": 909.3,
-    "discountPercent": 30,
-    "isOnSale": true,
-    "isFreeDelivery": false,
+    "discountPercent": 0,
+    "isOnSale": false,
+    "isFreeDelivery": true,
     "fabric": "Cotton",
-    "fabricDetails": "100% Pure Cotton",
+    "fabricDetails": null,
     "occasion": [
       "Daily Wear",
       "Casual",
@@ -136,7 +136,8 @@ export const products: Product[] = [
     "isNewArrival": true,
     "isBestseller": false,
     "isActive": true,
-    "createdAt": "2026-07-19T09:34:38.973Z",
+    "isReturnable": true,
+    "createdAt": "2026-07-22T20:12:26.019Z",
     "variants": [
       {
         "id": "12-v1",
@@ -242,16 +243,7 @@ export const products: Product[] = [
         "productId": "12"
       }
     ],
-    "reviews": [
-      {
-        "id": "cmrruw0z100097qenw8guq0lf",
-        "userName": "john doe",
-        "rating": 4,
-        "comment": "good product",
-        "createdAt": "2026-07-19T13:53:22.669Z",
-        "productId": "12"
-      }
-    ]
+    "reviews": []
   },
   {
     "id": "1",
@@ -265,8 +257,8 @@ export const products: Product[] = [
     "type": "readymade",
     "basePrice": 1299,
     "salePrice": 909.3,
-    "discountPercent": 30,
-    "isOnSale": true,
+    "discountPercent": 0,
+    "isOnSale": false,
     "isFreeDelivery": true,
     "fabric": "silk",
     "fabricDetails": null,
@@ -289,7 +281,8 @@ export const products: Product[] = [
     "isNewArrival": true,
     "isBestseller": false,
     "isActive": true,
-    "createdAt": "2026-07-19T09:34:38.978Z",
+    "isReturnable": true,
+    "createdAt": "2026-07-22T20:12:27.353Z",
     "variants": [
       {
         "id": "1-v1",
@@ -384,8 +377,8 @@ export const products: Product[] = [
     "type": "readymade",
     "basePrice": 999,
     "salePrice": 699.3,
-    "discountPercent": 30,
-    "isOnSale": true,
+    "discountPercent": 0,
+    "isOnSale": false,
     "isFreeDelivery": true,
     "fabric": "chanderi",
     "fabricDetails": null,
@@ -407,7 +400,8 @@ export const products: Product[] = [
     "isNewArrival": true,
     "isBestseller": false,
     "isActive": true,
-    "createdAt": "2026-07-19T09:34:38.980Z",
+    "isReturnable": true,
+    "createdAt": "2026-07-22T20:12:28.344Z",
     "variants": [
       {
         "id": "3-v1",
@@ -509,7 +503,7 @@ export const products: Product[] = [
     "type": "readymade",
     "basePrice": 249,
     "salePrice": 224.1,
-    "discountPercent": 10,
+    "discountPercent": 0,
     "isOnSale": false,
     "isFreeDelivery": true,
     "fabric": "organza",
@@ -533,7 +527,8 @@ export const products: Product[] = [
     "isNewArrival": true,
     "isBestseller": false,
     "isActive": true,
-    "createdAt": "2026-07-19T09:34:38.982Z",
+    "isReturnable": true,
+    "createdAt": "2026-07-22T20:12:29.304Z",
     "variants": [
       {
         "id": "10-v1",
@@ -619,13 +614,13 @@ export const products: Product[] = [
     "description": "New product description",
     "shortDescription": "Short description",
     "category": "[\"dresses\"]",
-    "subcategory": "",
+    "subcategory": null,
     "gender": "women",
     "type": "readymade",
     "basePrice": 399,
     "salePrice": 319.2,
-    "discountPercent": 20,
-    "isOnSale": true,
+    "discountPercent": 0,
+    "isOnSale": false,
     "isFreeDelivery": true,
     "fabric": "cotton",
     "fabricDetails": null,
@@ -637,17 +632,40 @@ export const products: Product[] = [
     "isNewArrival": true,
     "isBestseller": false,
     "isActive": true,
-    "createdAt": "2026-07-20T16:01:52.921Z",
+    "isReturnable": true,
+    "createdAt": "2026-07-22T20:12:30.300Z",
     "variants": [
+      {
+        "id": "cmrteydt20005cyygqqx3vvev",
+        "sku": "VAR-371110",
+        "size": "XL",
+        "color": "Beige",
+        "colorHex": "#F5F4F0",
+        "price": 399,
+        "salePrice": null,
+        "stock": 0,
+        "productId": "cmrtex4wp0000cyygm2lwgihs"
+      },
+      {
+        "id": "cmrtf1c4n000lcyygmgprjcsm",
+        "sku": "VAR-508902",
+        "size": "L",
+        "color": "Beige",
+        "colorHex": "#F5F4F0",
+        "price": 399,
+        "salePrice": null,
+        "stock": 0,
+        "productId": "cmrtex4wp0000cyygm2lwgihs"
+      },
       {
         "id": "cmrtex4wp0001cyygi2cg840o",
         "sku": "SOLID-IVORY-LONG-SLEEVE-RUFFLED-MAXI-DRESS-2920-01",
         "size": "S",
         "color": "Beige",
         "colorHex": "#F5F4F0",
-        "price": 399,
-        "salePrice": 319.2,
-        "stock": 3,
+        "price": 349,
+        "salePrice": null,
+        "stock": 0,
         "productId": "cmrtex4wp0000cyygm2lwgihs"
       },
       {
@@ -657,41 +675,12 @@ export const products: Product[] = [
         "color": "Beige",
         "colorHex": "#F5F4F0",
         "price": 399,
-        "salePrice": 319.2,
-        "stock": 7,
-        "productId": "cmrtex4wp0000cyygm2lwgihs"
-      },
-      {
-        "id": "cmrteydt20005cyygqqx3vvev",
-        "sku": "VAR-371110",
-        "size": "L",
-        "color": "Beige",
-        "colorHex": "#F5F4F0",
-        "price": 399,
-        "salePrice": 319.2,
-        "stock": 7,
-        "productId": "cmrtex4wp0000cyygm2lwgihs"
-      },
-      {
-        "id": "cmrtf1c4n000lcyygmgprjcsm",
-        "sku": "VAR-508902",
-        "size": "XL",
-        "color": "Beige",
-        "colorHex": "#F5F4F0",
-        "price": 399,
-        "salePrice": 319.2,
-        "stock": 7,
+        "salePrice": null,
+        "stock": 9,
         "productId": "cmrtex4wp0000cyygm2lwgihs"
       }
     ],
     "images": [
-      {
-        "id": "cmrtfwtst00012o7ljlk1fu4i",
-        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1784564973/rk-fabrics/products/we47etmugcph6nicty4l.jpg",
-        "alt": "Gemini_Generated_Image_3gdwad3gdwad3gdw.png",
-        "isPrimary": true,
-        "productId": "cmrtex4wp0000cyygm2lwgihs"
-      },
       {
         "id": "cmrtfwtsv00032o7lnjklzsgl",
         "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1784564975/rk-fabrics/products/if6mv9l6lli0m6xi9j3z.jpg",
@@ -711,6 +700,20 @@ export const products: Product[] = [
         "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1784610263/rk-fabrics/products/jk0kp6dhbgrjr1sk72z4.jpg",
         "alt": "Gemini_Generated_Image_ck2ks1ck2ks1ck2k.png",
         "isPrimary": false,
+        "productId": "cmrtex4wp0000cyygm2lwgihs"
+      },
+      {
+        "id": "cmryxu9hb000cvw6qfa5qi6ia",
+        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1784897419/rk-fabrics/products/xrjfowldspzj0atlfxtn.jpg",
+        "alt": "Gemini_Generated_Image_4okpdd4okpdd4okp.png",
+        "isPrimary": false,
+        "productId": "cmrtex4wp0000cyygm2lwgihs"
+      },
+      {
+        "id": "cmrtfwtst00012o7ljlk1fu4i",
+        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1784564973/rk-fabrics/products/we47etmugcph6nicty4l.jpg",
+        "alt": "Gemini_Generated_Image_3gdwad3gdwad3gdw.png",
+        "isPrimary": true,
         "productId": "cmrtex4wp0000cyygm2lwgihs"
       }
     ],

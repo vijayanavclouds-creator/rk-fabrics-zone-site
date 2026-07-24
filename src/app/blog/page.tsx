@@ -18,7 +18,7 @@ export default function BlogPage() {
   ];
 
   return (
-  <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 py-12 md:py-16">
+  <div className="w-full mx-auto px-4 md:px-6 lg:px-8 py-12 md:py-16">
   <div className="text-center mb-12">
   <span className="font-[family-name:var(--font-cinzel)] text-xs tracking-[0.3em] text-gold-dark uppercase flex items-center justify-center gap-2">
   <BookOpen size={14} /> From Our Looms

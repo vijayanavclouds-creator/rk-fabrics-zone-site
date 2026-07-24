@@ -118,7 +118,7 @@ export default function UserOrdersPage() {
   const userName = orders.length > 0 ? (orders[0].user?.name || "Guest") : "Unknown User"
 
   return (
-    <div className="space-y-6 animate-in fade-in duration-300 p-8 max-w-7xl mx-auto min-h-screen bg-[#fdfaf6]">
+    <div className="space-y-6 animate-in fade-in duration-300 p-8 w-full mx-auto min-h-screen bg-[#fdfaf6]">
       <button 
         onClick={() => router.back()}
         className="flex items-center gap-2 text-sm font-bold text-slate hover:text-charcoal transition-colors mb-4"

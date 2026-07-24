@@ -7,16 +7,23 @@ import { getAbandonedCarts, sendAbandonedCartReminder } from "@/actions/cart"
 import { toast } from "sonner"
 import { Package, Search, ChevronRight, CheckCircle, Clock, Truck, XCircle, User, Bell } from "lucide-react"
 
-export function OrdersManager() {
+export function OrdersManager({ readOnly = false, basePath = "/admin" }: { readOnly?: boolean; basePath?: string }) {
   const router = useRouter()
   const [orders, setOrders] = useState<any[]>([])
   const [abandonedCarts, setAbandonedCarts] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState("")
   const [activeTab, setActiveTab] = useState<"orders" | "abandoned">("orders")
+  const [sentReminders, setSentReminders] = useState<string[]>([])
 
   useEffect(() => {
     fetchOrders()
+    const storedReminders = localStorage.getItem("sentReminders")
+    if (storedReminders) {
+      try {
+        setSentReminders(JSON.parse(storedReminders))
+      } catch (e) {}
+    }
   }, [])
 
   const fetchOrders = async () => {
@@ -46,6 +53,11 @@ export function OrdersManager() {
     
     if (res.success) {
       toast.success("Reminder sent successfully!")
+      setSentReminders(prev => {
+        const next = [...prev, userId]
+        localStorage.setItem("sentReminders", JSON.stringify(next))
+        return next
+      })
     } else {
       toast.error(res.error || "Failed to send reminder")
     }
@@ -167,32 +179,39 @@ export function OrdersManager() {
       <div className="flex items-center gap-4 border-b border-charcoal/10 pb-4 mt-2">
         <button
           onClick={() => setActiveTab("orders")}
-          className={`px-4 py-2 rounded-lg font-bold text-sm transition-colors ${
-            activeTab === "orders" ? "bg-teal-600 text-white" : "bg-white text-slate hover:bg-slate-50 border border-charcoal/10"
+          className={`btn-primary !py-2 !px-4 text-sm transition-all ${
+            activeTab === "orders" ? "opacity-100" : "opacity-60 hover:opacity-80"
           }`}
         >
           All Orders
         </button>
-        <button
-          onClick={() => setActiveTab("abandoned")}
-          className={`px-4 py-2 rounded-lg font-bold text-sm transition-colors flex items-center gap-2 ${
-            activeTab === "abandoned" ? "bg-red-600 text-white" : "bg-white text-slate hover:bg-slate-50 border border-charcoal/10"
-          }`}
-        >
-          Abandoned Checkouts
-          {abandonedCarts.length > 0 && (
-            <span className="bg-white/20 text-current px-2 py-0.5 rounded-full text-xs">
-              {abandonedCarts.length}
-            </span>
-          )}
-        </button>
+        {!readOnly && (
+          <button
+            onClick={() => setActiveTab("abandoned")}
+            className={`btn-primary !py-2 !px-4 text-sm flex items-center gap-2 transition-all ${
+              activeTab === "abandoned" ? "opacity-100" : "opacity-60 hover:opacity-80"
+            }`}
+          >
+            Abandoned Checkouts
+            {abandonedCarts.length > 0 && (
+              <span className={`px-2 py-0.5 rounded-full text-xs font-bold ${
+                activeTab === "abandoned" ? "bg-charcoal text-white" : "bg-charcoal/10 text-charcoal"
+              }`}>
+                {abandonedCarts.length}
+              </span>
+            )}
+          </button>
+        )}
       </div>
 
       <div className="bg-white rounded-3xl border border-charcoal/10 shadow-sm overflow-hidden">
 
 
         {loading ? (
-          <div className="p-12 text-center text-slate">Loading orders...</div>
+          <div className="flex flex-col items-center justify-center min-h-[calc(100vh-280px)] text-slate">
+            <div className="w-10 h-10 border-4 border-teal-200 border-t-teal-600 rounded-full animate-spin mb-4"></div>
+            <p className="font-medium">Loading orders...</p>
+          </div>
         ) : activeTab === "orders" ? (
           usersList.length === 0 ? (
             <div className="p-12 text-center text-slate">
@@ -219,7 +238,7 @@ export function OrdersManager() {
                     <tr 
                       key={user.id} 
                       className={`border-b border-charcoal/5 hover:bg-slate-50 transition-colors cursor-pointer group ${user.hasUnreadOrders ? 'bg-amber-50/30' : ''}`}
-                      onClick={() => router.push(`/admin/orders/user/${encodeURIComponent(user.id)}`)}
+                      onClick={() => router.push(`${basePath}/orders/user/${encodeURIComponent(user.id)}`)}
                     >
                       <td className="p-5 align-middle">
                         <div className="flex items-center gap-3">
@@ -248,12 +267,16 @@ export function OrdersManager() {
                       </td>
                       <td className="p-5 align-middle" onClick={(e) => e.stopPropagation()}>
                         {user.hasUnreadOrders ? (
-                          <button
-                            onClick={(e) => handleToggleReadStatus(e, user.id, false)}
-                            className="text-xs font-bold px-3 py-1.5 rounded-lg bg-teal-50 text-teal-700 hover:bg-teal-100 transition-colors whitespace-nowrap border border-teal-200 shadow-sm"
-                          >
-                            Mark Read
-                          </button>
+                          !readOnly ? (
+                            <button
+                              onClick={(e) => handleToggleReadStatus(e, user.id, false)}
+                              className="text-xs font-bold px-3 py-1.5 rounded-lg bg-teal-50 text-teal-700 hover:bg-teal-100 transition-colors whitespace-nowrap border border-teal-200 shadow-sm"
+                            >
+                              Mark Read
+                            </button>
+                          ) : (
+                            <span className="text-xs font-medium text-amber-600 whitespace-nowrap">Unread</span>
+                          )
                         ) : (
                           <span className="text-xs font-medium text-slate-500 whitespace-nowrap flex items-center gap-1">
                             <CheckCircle size={14} className="text-slate-400" /> Read
@@ -321,10 +344,17 @@ export function OrdersManager() {
                       </td>
                       <td className="p-5 align-middle text-right">
                         <button
-                          onClick={() => handleSendReminder(user.id)}
-                          className="text-sm font-bold px-4 py-2 rounded-lg bg-teal-600 text-white hover:bg-teal-700 transition-colors shadow-sm flex items-center justify-center gap-2 ml-auto"
+                          type="button"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            handleSendReminder(user.id);
+                          }}
+                          className={`text-sm font-bold px-4 py-2 rounded-lg text-white transition-colors shadow-sm flex items-center justify-center gap-2 ml-auto ${
+                            sentReminders.includes(user.id) ? "bg-amber-500 hover:bg-amber-600" : "bg-teal-600 hover:bg-teal-700"
+                          }`}
                         >
-                          <Bell size={16} /> Send Reminder
+                          <Bell size={16} /> {sentReminders.includes(user.id) ? "Send again" : "Send Reminder"}
                         </button>
                       </td>
                     </tr>

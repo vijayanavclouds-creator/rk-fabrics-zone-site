@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { getSystemUsage } from "@/actions/admin"
-import { HardDrive, Cloud, Server, Activity, AlertCircle, RefreshCw } from "lucide-react"
+import { HardDrive, Cloud, Server, Activity, AlertCircle, RefreshCw, ArrowRight } from "lucide-react"
 
 export function SystemStatus() {
   const [loading, setLoading] = useState(true)
@@ -112,14 +112,24 @@ export function SystemStatus() {
 
         {/* Vercel Card */}
         <div className="bg-white rounded-3xl border border-charcoal/10 p-8 shadow-sm flex flex-col h-full">
-          <div className="flex items-center gap-3 mb-6">
-            <div className="p-3 bg-slate-900 text-white rounded-xl">
-              <Server size={24} />
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+            <div className="flex items-center gap-3">
+              <div className="p-3 bg-slate-900 text-white rounded-xl">
+                <Server size={24} />
+              </div>
+              <div>
+                <h3 className="text-xl font-bold text-charcoal">Vercel Hosting</h3>
+                <p className="text-sm text-slate">Compute & Edge Networking</p>
+              </div>
             </div>
-            <div>
-              <h3 className="text-xl font-bold text-charcoal">Vercel Hosting</h3>
-              <p className="text-sm text-slate">Compute & Edge Networking</p>
-            </div>
+            <a 
+              href="https://vercel.com/dashboard/usage" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="btn-primary flex items-center justify-center gap-2 text-center py-3 px-6"
+            >
+              Open Vercel <ArrowRight size={16} />
+            </a>
           </div>
 
           {loading ? (
@@ -148,9 +158,6 @@ export function SystemStatus() {
                   <li><strong>100 Hours</strong> of Serverless Compute</li>
                   <li><strong>1,000,000</strong> Edge Middleware invocations</li>
                 </ul>
-                <p className="mt-4 text-xs italic">
-                  Note: The Vercel API does not expose real-time metric numbers for free tier accounts. Please check your Vercel Dashboard directly for live numbers.
-                </p>
               </div>
             </div>
           ) : (

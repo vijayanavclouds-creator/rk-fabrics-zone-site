@@ -13,7 +13,7 @@ const lookbookItems = [
 export default function LookbookPage() {
   return (
     <div className="bg-cream min-h-screen pt-24 pb-20">
-      <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
+      <div className="w-full mx-auto px-4 md:px-6 lg:px-8">
         
         <div className="text-center mb-16">
           <span className="font-[family-name:var(--font-cinzel)] text-sm tracking-[0.3em] text-teal-600 uppercase mb-4 block">

@@ -15,7 +15,7 @@ function AuthSuccessContent() {
       const role = session?.user?.role;
       
       // If a specific custom redirect was requested (like checkout), honor it
-      if (to && to !== "/shop" && to !== "/account") {
+      if (to && !to.endsWith("/shop") && !to.endsWith("/account") && to !== "/") {
         router.push(to);
         return;
       }

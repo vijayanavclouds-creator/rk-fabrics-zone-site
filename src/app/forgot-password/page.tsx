@@ -6,6 +6,7 @@ import Link from "next/link"
 import { toast } from "sonner"
 import { ArrowRight, Mail, KeyRound, Lock } from "lucide-react"
 import { sendResetPasswordOtp, resetPassword } from "@/actions/auth"
+import { signIn } from "next-auth/react"
 
 export default function ForgotPassword() {
   const router = useRouter()
@@ -57,8 +58,17 @@ export default function ForgotPassword() {
     setLoading(false)
 
     if (res.success) {
-      toast.success("Password reset successfully! Please log in.")
-      router.push("/login")
+      toast.success("Password reset successfully!")
+      const signInRes = await signIn("credentials", {
+        redirect: false,
+        email,
+        password,
+      })
+      if (signInRes?.error) {
+         router.push("/login")
+      } else {
+         router.push("/auth-success?to=/shop")
+      }
     } else {
       toast.error(res.error || "Invalid or expired code")
     }

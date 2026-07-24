@@ -167,7 +167,7 @@ function USPBar() {
 
   return (
     <section className="bg-white border-y border-charcoal/5 py-4 md:py-5">
-      <div className="max-w-7xl mx-auto px-4 md:px-6">
+      <div className="w-full mx-auto px-4 md:px-6">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
           {usps.map((usp) => (
             <div key={usp.text} className="flex items-center justify-center gap-2.5 group">
@@ -293,7 +293,7 @@ function WhyChooseUs() {
   ];
   return (
     <section className="py-16 md:py-24 bg-cream">
-      <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
+      <div className="w-full mx-auto px-4 md:px-6 lg:px-8">
         <div className="text-center max-w-3xl mx-auto mb-16">
           <h2 className="font-[family-name:var(--font-playfair)] text-3xl md:text-5xl font-bold text-charcoal mb-4">
             The RK Promise
