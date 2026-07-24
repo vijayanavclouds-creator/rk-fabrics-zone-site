@@ -614,7 +614,7 @@ export const products: Product[] = [
     "description": "New product description",
     "shortDescription": "Short description",
     "category": "[\"dresses\"]",
-    "subcategory": null,
+    "subcategory": undefined,
     "gender": "women",
     "type": "readymade",
     "basePrice": 399,

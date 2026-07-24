@@ -7,6 +7,8 @@ interface PortalHeaderProps {
   title: string
   description?: string
   rightElement?: React.ReactNode
+  onMenuClick?: () => void
+  basePath?: string
 }
 
 export function PortalHeader({ title, description, rightElement }: PortalHeaderProps) {

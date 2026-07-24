@@ -138,7 +138,7 @@ export async function getAdminNewsletters() {
       orderBy: { createdAt: 'desc' },
       include: {
         _count: {
-          select: { userNewsletters: true }
+          select: { recipients: true }
         }
       }
     })
@@ -147,7 +147,7 @@ export async function getAdminNewsletters() {
     const formattedNewsletters = newsletters.map(n => ({
       ...n,
       _count: {
-        users: n._count.userNewsletters
+        users: n._count.recipients
       }
     }))
 
