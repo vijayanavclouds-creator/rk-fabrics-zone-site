@@ -18,19 +18,17 @@ export function SupportDashboard({
 }) {
   const searchParams = useSearchParams()
   const tabParam = searchParams.get("tab") as any
-  const initialView = ["overview", "orders", "queries"].includes(tabParam) ? tabParam : "overview"
+  const targetView = ["overview", "orders", "queries"].includes(tabParam) ? tabParam : "overview"
   
-  const [activeView, setActiveView] = useState<"overview" | "orders" | "queries">(initialView)
+  const [activeView, setActiveView] = useState<any>(targetView)
+  const [prevTabParam, setPrevTabParam] = useState(tabParam)
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
-  // Sync state with URL when URL changes
-  useEffect(() => {
-    if (tabParam && ["overview", "orders", "queries"].includes(tabParam)) {
-      setActiveView(tabParam)
-    } else if (!tabParam) {
-      setActiveView("overview")
-    }
-  }, [tabParam])
+  // Sync state synchronously during render when URL changes to prevent flashing old tab
+  if (tabParam !== prevTabParam) {
+    setPrevTabParam(tabParam)
+    setActiveView(targetView)
+  }
 
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col pt-[85px] md:pt-[105px]">

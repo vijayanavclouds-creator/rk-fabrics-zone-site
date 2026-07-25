@@ -6,83 +6,61 @@ import { getRecentAdminActivity } from "./admin-activity";
 
 export async function getDashboardAnalytics() {
   try {
-    const totalUsers = await prisma.user.count({
-      where: { role: { not: "ADMIN" } }
-    });
-
     const sevenDaysAgo = new Date();
     sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
-    const newUsersLast7Days = await prisma.user.count({
-      where: { role: { not: "ADMIN" }, createdAt: { gte: sevenDaysAgo } }
-    });
-
-    const recentUnsolvedQueries = await prisma.contactQuery.findMany({
-      where: { status: "OPEN" },
-      orderBy: { createdAt: "desc" },
-      take: 5
-    });
-
-    const totalOrders = await prisma.order.count();
-
-    const orderStatuses = await prisma.order.groupBy({
-      by: ['status'],
-      _count: {
-        id: true
-      }
-    });
-    
-    const orderStatusCounts = orderStatuses.reduce((acc, curr) => {
-      acc[curr.status.toLowerCase()] = curr._count.id;
-      return acc;
-    }, {} as Record<string, number>);
-
-    const totalProducts = await prisma.product.count();
-    const outOfStockProducts = await prisma.product.count({
-      where: {
-        variants: {
-          every: {
-            stock: { lte: 0 }
-          }
-        }
-      }
-    });
-
     const sixteenDaysAgo = new Date();
     sixteenDaysAgo.setDate(sixteenDaysAgo.getDate() - 16);
-    
-    const recentProducts = await prisma.product.count({
-      where: {
-        createdAt: { gte: sixteenDaysAgo }
-      }
-    });
-
-    const orders = await prisma.order.findMany({
-      where: { status: { not: "CANCELLED" } },
-      select: { totalAmount: true, createdAt: true, status: true, discountAmount: true }
-    });
-
-    const totalSales = orders.reduce((sum, order) => sum + order.totalAmount, 0);
-    const totalDiscounts = orders.reduce((sum, order) => sum + (order.discountAmount || 0), 0);
-    const platformFees = totalSales * 0.02;
-
-    const taxonomy = await getStoreTaxonomy();
-    const totalCategories = taxonomy.categories.length;
-
-    // Generate last 30 days time series data
     const thirtyDaysAgo = new Date();
     thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
     thirtyDaysAgo.setHours(0, 0, 0, 0);
 
-    const recentOrders = await prisma.order.findMany({
-      where: {
-        createdAt: { gte: thirtyDaysAgo }
-      },
-      select: {
-        totalAmount: true,
-        createdAt: true,
-        status: true
-      }
-    });
+    // Batch 1: Orders, Users, and Open Queries (limited concurrency to prevent connection limit issues)
+    const [allOrders, allUsers, recentUnsolvedQueries] = await Promise.all([
+      prisma.order.findMany({
+        select: { totalAmount: true, createdAt: true, status: true, discountAmount: true }
+      }),
+      prisma.user.findMany({
+        where: { role: { not: "ADMIN" } },
+        select: { createdAt: true }
+      }),
+      prisma.contactQuery.findMany({
+        where: { status: "OPEN" },
+        orderBy: { createdAt: "desc" },
+        take: 5
+      })
+    ]);
+
+    // Batch 2: Products, Taxonomy, and Activity logs
+    const [allProducts, taxonomy, activitiesRes] = await Promise.all([
+      prisma.product.findMany({
+        select: { createdAt: true, variants: { select: { stock: true } } }
+      }),
+      getStoreTaxonomy(),
+      getRecentAdminActivity(15)
+    ]);
+
+    // Derive aggregations in-memory to eliminate 6 redundant database connections!
+    const totalUsers = allUsers.length;
+    const newUsersLast7Days = allUsers.filter(u => new Date(u.createdAt) >= sevenDaysAgo).length;
+
+    const totalOrders = allOrders.length;
+    const orderStatusCounts = allOrders.reduce((acc, curr) => {
+      const status = curr.status.toLowerCase();
+      acc[status] = (acc[status] || 0) + 1;
+      return acc;
+    }, {} as Record<string, number>);
+
+    const validOrders = allOrders.filter(o => o.status !== "CANCELLED");
+    const totalSales = validOrders.reduce((sum, order) => sum + order.totalAmount, 0);
+    const totalDiscounts = validOrders.reduce((sum, order) => sum + (order.discountAmount || 0), 0);
+    const platformFees = totalSales * 0.02;
+
+    const totalProducts = allProducts.length;
+    const recentProducts = allProducts.filter(p => new Date(p.createdAt) >= sixteenDaysAgo).length;
+    const outOfStockProducts = allProducts.filter(p => p.variants && p.variants.every((v: any) => v.stock <= 0)).length;
+
+    const totalCategories = taxonomy.categories.length;
+    const recentOrders = allOrders.filter(o => new Date(o.createdAt) >= thirtyDaysAgo);
 
     // Group by date
     const dateMap = new Map();
@@ -116,7 +94,6 @@ export async function getDashboardAnalytics() {
     });
 
     const chartData = Array.from(dateMap.values());
-    const activitiesRes = await getRecentAdminActivity(15);
 
     return {
       success: true,

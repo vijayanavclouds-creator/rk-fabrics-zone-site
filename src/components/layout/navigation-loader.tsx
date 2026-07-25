@@ -80,7 +80,7 @@ function NavigationLoaderInner() {
   if (!isNavigating) return null;
 
   return (
-    <div className="fixed top-0 bottom-0 left-0 right-0 z-30 flex items-center justify-center bg-white/80 backdrop-blur-sm">
+    <div className="fixed top-0 bottom-0 left-0 right-0 z-30 flex items-center justify-center bg-white">
       <div className="w-12 h-12 border-4 border-teal-200 border-t-teal-600 rounded-full animate-spin"></div>
     </div>
   );

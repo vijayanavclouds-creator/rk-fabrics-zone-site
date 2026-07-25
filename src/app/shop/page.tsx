@@ -12,7 +12,6 @@ export default async function ShopPage() {
     include: { variants: true, images: true, reviews: true },
     orderBy: { createdAt: 'desc' }
   });
-
   const { categories: storeCats, fabrics: storeFabs } = await getStoreTaxonomyData();
 
   // Format categories for the UI using the exact predefined options from the database

@@ -41,9 +41,10 @@ export function AdminDashboard({
 }) {
   const searchParams = useSearchParams()
   const tabParam = searchParams.get("tab") as any
-  const initialView = ["overview", "list", "new", "edit", "banners", "system", "users", "orders", "navigation", "taxonomy", "company_profile", "finance", "queries", "newsletters", "activities"].includes(tabParam) ? tabParam : "overview"
+  const targetView = ["overview", "list", "new", "edit", "banners", "system", "users", "orders", "navigation", "taxonomy", "company_profile", "finance", "queries", "newsletters", "activities"].includes(tabParam) ? tabParam : "overview"
   
-  const [activeView, setActiveView] = useState<"overview" | "list" | "new" | "edit" | "banners" | "system" | "users" | "orders" | "navigation" | "taxonomy" | "company_profile" | "finance" | "queries" | "newsletters" | "activities">(initialView)
+  const [activeView, setActiveView] = useState<any>(targetView)
+  const [prevTabParam, setPrevTabParam] = useState(tabParam)
   const [editingProduct, setEditingProduct] = useState<any>(null)
   const [isPending, startTransition] = useTransition()
   
@@ -51,14 +52,11 @@ export function AdminDashboard({
   const [newCategory, setNewCategory] = useState<string[]>([])
   const [newFabric, setNewFabric] = useState<string>("")
 
-  // Sync state with URL when URL changes
-  useEffect(() => {
-    if (tabParam && ["overview", "list", "new", "edit", "banners", "system", "users", "orders", "navigation", "taxonomy", "company_profile", "finance", "queries", "newsletters", "activities"].includes(tabParam)) {
-      setActiveView(tabParam)
-    } else if (!tabParam) {
-      setActiveView("overview")
-    }
-  }, [tabParam])
+  // Sync state synchronously during render when URL changes to prevent flashing old tab
+  if (tabParam !== prevTabParam) {
+    setPrevTabParam(tabParam)
+    setActiveView(targetView)
+  }
 
   useEffect(() => {
     if (editingProduct) {

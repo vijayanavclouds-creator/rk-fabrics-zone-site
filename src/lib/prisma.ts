@@ -1,7 +1,13 @@
 import { PrismaClient } from '@prisma/client';
 
 const prismaClientSingleton = () => {
-  return new PrismaClient();
+  let url = process.env.DATABASE_URL;
+  if (url && !url.includes("connection_limit") && !url.includes("pgbouncer")) {
+    url += (url.includes("?") ? "&" : "?") + "connection_limit=3";
+  }
+  return new PrismaClient({
+    datasources: url ? { db: { url } } : undefined,
+  });
 };
 
 declare global {

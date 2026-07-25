@@ -1,9 +1,9 @@
 "use server";
 
 import prisma from "@/lib/prisma";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { PRODUCT_CATEGORIES, FABRIC_OPTIONS } from "@/lib/constants";
-import { getNavigationLinksData, getStoreTaxonomyData } from "@/lib/data/system";
+import { getNavigationLinksData, getStoreTaxonomyData, getAnnouncementBannerData, getCompanyProfileData } from "@/lib/data/system";
 
 // Get Navigation Links
 export async function getNavigationLinks() {
@@ -12,21 +12,7 @@ export async function getNavigationLinks() {
 
 // Get Announcement Banner
 export async function getAnnouncementBanner() {
-  try {
-    const setting = await prisma.systemSetting.findUnique({
-      where: { key: "announcement_banner" }
-    });
-    if (setting && setting.value) {
-      return JSON.parse(setting.value);
-    }
-    return {
-      text: "<strong>FREE SHIPPING</strong> on orders above ₹999 | <span className=\"text-gold-light font-semibold\">FLAT 30% OFF</span> — Use code <span className=\"font-bold bg-white/20 px-1.5 py-0.5 rounded\">RK30</span>",
-      isActive: true
-    };
-  } catch (error) {
-    console.error("Error fetching announcement banner:", error);
-    return null;
-  }
+  return getAnnouncementBannerData();
 }
 
 // Save Announcement Banner
@@ -37,6 +23,7 @@ export async function saveAnnouncementBanner(data: { text: string; isActive: boo
       update: { value: JSON.stringify(data) },
       create: { key: "announcement_banner", value: JSON.stringify(data) }
     });
+    revalidateTag("announcement_banner", "max");
     revalidatePath("/", "layout");
     return { success: true };
   } catch (error: any) {
@@ -54,6 +41,7 @@ export async function saveNavigationLinks(links: any) {
     });
     
     // Revalidate the entire app so the header updates instantly everywhere
+    revalidateTag("navigation_links", "max");
     revalidatePath("/", "layout");
     
     return { success: true };
@@ -85,6 +73,8 @@ export async function saveStoreTaxonomy(categories: any[], fabrics: any[]) {
     ]);
     
     // Revalidate paths that use these filters
+    revalidateTag("store_taxonomy", "max");
+    revalidateTag("navigation_links", "max");
     revalidatePath("/shop");
     revalidatePath("/admin");
     
@@ -97,32 +87,7 @@ export async function saveStoreTaxonomy(categories: any[], fabrics: any[]) {
 
 // Get Company Profile Settings
 export async function getCompanyProfile() {
-  try {
-    const setting = await prisma.systemSetting.findUnique({
-      where: { key: "company_profile" }
-    });
-    
-    if (setting) {
-      return JSON.parse(setting.value);
-    }
-    
-    // Default empty profile
-    return {
-      instagramUrl: "",
-      facebookUrl: "",
-      contactNumber: "",
-      helpCenterNumber: "",
-      supportEmail: "",
-      ownerName: "",
-      websiteUrl: "",
-      address: "",
-      companyDescription: "",
-      gstNumber: ""
-    };
-  } catch (error) {
-    console.error("Error fetching company profile:", error);
-    return null;
-  }
+  return getCompanyProfileData();
 }
 
 // Save Company Profile Settings
@@ -134,6 +99,7 @@ export async function saveCompanyProfile(profileData: any) {
       create: { key: "company_profile", value: JSON.stringify(profileData) }
     });
     
+    revalidateTag("company_profile", "max");
     revalidatePath("/", "layout"); // Revalidate all pages in case footer/header uses this
     return { success: true };
   } catch (error: any) {

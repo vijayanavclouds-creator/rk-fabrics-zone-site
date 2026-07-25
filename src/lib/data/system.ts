@@ -6,10 +6,8 @@ import { PRODUCT_CATEGORIES, FABRIC_OPTIONS } from "@/lib/constants";
 export async function getStoreTaxonomyData() {
   const fetchTaxonomy = unstable_cache(async () => {
     try {
-      const [categoriesSetting, fabricsSetting] = await Promise.all([
-        prisma.systemSetting.findUnique({ where: { key: "store_categories" } }),
-        prisma.systemSetting.findUnique({ where: { key: "store_fabrics" } })
-      ]);
+      const categoriesSetting = await prisma.systemSetting.findUnique({ where: { key: "store_categories" } });
+      const fabricsSetting = await prisma.systemSetting.findUnique({ where: { key: "store_fabrics" } });
       
       return {
         categories: categoriesSetting ? JSON.parse(categoriesSetting.value) : PRODUCT_CATEGORIES,
@@ -60,4 +58,60 @@ export async function getNavigationLinksData() {
   }, ['navigation_links'], { tags: ['navigation_links'], revalidate: 3600 });
   
   return fetchLinks();
+}
+
+// Get Announcement Banner
+export async function getAnnouncementBannerData() {
+  const fetchBanner = unstable_cache(async () => {
+    try {
+      const setting = await prisma.systemSetting.findUnique({
+        where: { key: "announcement_banner" }
+      });
+      if (setting && setting.value) {
+        return JSON.parse(setting.value);
+      }
+      return {
+        text: "<strong>FREE SHIPPING</strong> on orders above ₹999 | <span className=\"text-gold-light font-semibold\">FLAT 30% OFF</span> — Use code <span className=\"font-bold bg-white/20 px-1.5 py-0.5 rounded\">RK30</span>",
+        isActive: true
+      };
+    } catch (error) {
+      console.error("Error fetching announcement banner:", error);
+      return null;
+    }
+  }, ['announcement_banner'], { tags: ['announcement_banner'], revalidate: 3600 });
+
+  return fetchBanner();
+}
+
+// Get Company Profile Settings
+export async function getCompanyProfileData() {
+  const fetchProfile = unstable_cache(async () => {
+    try {
+      const setting = await prisma.systemSetting.findUnique({
+        where: { key: "company_profile" }
+      });
+      
+      if (setting) {
+        return JSON.parse(setting.value);
+      }
+      
+      return {
+        instagramUrl: "",
+        facebookUrl: "",
+        contactNumber: "",
+        helpCenterNumber: "",
+        supportEmail: "",
+        ownerName: "",
+        websiteUrl: "",
+        address: "",
+        companyDescription: "",
+        gstNumber: ""
+      };
+    } catch (error) {
+      console.error("Error fetching company profile:", error);
+      return null;
+    }
+  }, ['company_profile'], { tags: ['company_profile'], revalidate: 3600 });
+
+  return fetchProfile();
 }

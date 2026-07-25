@@ -15,15 +15,19 @@ export default async function AdminPage() {
     redirect("/account")
   }
 
-  const products = await prisma.product.findMany({
-    include: { variants: true, images: true }
-  })
-  const banners = await prisma.banner.findMany({
-    orderBy: { order: 'asc' }
-  })
-  const { categories, fabrics } = await getStoreTaxonomy()
-  const queries = await getContactQueries()
-  const analyticsRes = await getDashboardAnalytics()
+  const [products, banners] = await Promise.all([
+    prisma.product.findMany({
+      include: { variants: true, images: true }
+    }),
+    prisma.banner.findMany({
+      orderBy: { order: 'asc' }
+    })
+  ]);
+  const [{ categories, fabrics }, queries, analyticsRes] = await Promise.all([
+    getStoreTaxonomy(),
+    getContactQueries(),
+    getDashboardAnalytics()
+  ]);
   const analyticsData = analyticsRes.success ? analyticsRes.data : null
 
   return (
