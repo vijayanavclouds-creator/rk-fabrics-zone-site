@@ -3,11 +3,12 @@
 import { useState } from "react"
 import { toast } from "sonner"
 import { deactivateAccount } from "@/actions/user"
-import { signOut } from "next-auth/react"
+import { signOut, useSession } from "next-auth/react"
 import { useCartStore, useWishlistStore } from "@/store"
 import { useCheckoutStore } from "@/store/checkout"
 
 export default function DeactivateAccount() {
+  const { data: session } = useSession()
   const [loading, setLoading] = useState(false)
   const [confirm, setConfirm] = useState(false)
   const clearCart = useCartStore((state) => state.clearCart)
@@ -28,7 +29,12 @@ export default function DeactivateAccount() {
       clearCart()
       clearWishlist()
       clearCheckout()
-      signOut({ callbackUrl: "/" })
+      const targetUrl = session?.user?.role === "ADMIN" 
+        ? "/portal/rk-exec-gateway" 
+        : session?.user?.role === "SUPPORT" 
+        ? "/portal/rk-service-desk" 
+        : "/";
+      signOut({ callbackUrl: targetUrl })
     } else {
       toast.error(result.error || "Failed to deactivate account")
       setLoading(false)

@@ -1,11 +1,12 @@
 "use client"
 
-import { signOut } from "next-auth/react"
+import { signOut, useSession } from "next-auth/react"
 import { LogOut } from "lucide-react"
 import { useCartStore, useWishlistStore } from "@/store"
 import { useCheckoutStore } from "@/store/checkout"
 
 export default function LogoutButton({ className }: { className?: string }) {
+  const { data: session } = useSession()
   const clearCart = useCartStore((state) => state.clearCart)
   const clearWishlist = useWishlistStore((state) => state.clearWishlist)
   const clearCheckout = useCheckoutStore((state) => state.clearCheckout)
@@ -14,7 +15,12 @@ export default function LogoutButton({ className }: { className?: string }) {
     clearCart()
     clearWishlist()
     clearCheckout()
-    await signOut({ callbackUrl: "/login" })
+    const targetUrl = session?.user?.role === "ADMIN" 
+      ? "/portal/rk-exec-gateway" 
+      : session?.user?.role === "SUPPORT" 
+      ? "/portal/rk-service-desk" 
+      : "/login";
+    await signOut({ callbackUrl: targetUrl })
   }
 
   return (

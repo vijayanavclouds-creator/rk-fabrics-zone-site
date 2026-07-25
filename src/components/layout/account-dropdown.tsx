@@ -126,7 +126,12 @@ export function AccountDropdown() {
                   clearCart()
                   clearWishlist()
                   clearCheckout()
-                  signOut({ callbackUrl: "/" })
+                  const targetUrl = session?.user?.role === "ADMIN" 
+                    ? "/portal/rk-exec-gateway" 
+                    : session?.user?.role === "SUPPORT" 
+                    ? "/portal/rk-service-desk" 
+                    : "/";
+                  signOut({ callbackUrl: targetUrl })
                 }}
                 className="flex w-full items-center gap-3 px-3 py-2 rounded-xl text-rose-600 hover:bg-rose-50 transition-colors font-medium text-sm"
               >

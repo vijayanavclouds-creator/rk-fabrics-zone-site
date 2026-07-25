@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from "react"
 import { useSearchParams } from "next/navigation"
-import { Menu } from "lucide-react"
+import { Menu, LogOut } from "lucide-react"
+import { signOut } from "next-auth/react"
 
 import { DashboardOverview } from "@/app/admin/dashboard-overview"
 import { OrdersManager } from "@/app/admin/orders-manager"
@@ -87,6 +88,16 @@ export function SupportDashboard({
                     {queries.filter(q => q.status !== 'RESOLVED').length}
                   </span>
                 )}
+              </button>
+            </div>
+
+            <div className="pt-4 mt-4 border-t border-charcoal/10">
+              <button
+                onClick={() => signOut({ callbackUrl: "/portal/rk-service-desk" })}
+                className="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-rose-600 hover:bg-rose-50 transition-all"
+              >
+                <LogOut size={18} />
+                <span>Log Out of Desk</span>
               </button>
             </div>
           </div>
