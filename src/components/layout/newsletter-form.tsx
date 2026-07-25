@@ -32,7 +32,7 @@ export function NewsletterForm() {
         value={email}
         onChange={(e) => setEmail(e.target.value)}
         required
-        className="flex-1 md:w-80 pl-6 pr-32 py-3.5 rounded-full bg-charcoal/50 shadow-[inset_4px_4px_8px_rgba(0,0,0,0.4),inset_-4px_-4px_8px_rgba(255,255,255,0.02)] !border-none !outline-none focus:!border-none focus:!ring-0 focus:!outline-none text-white placeholder:text-white/40 text-sm transition-shadow disabled:opacity-50"
+        className="flex-1 md:w-[400px] pl-6 pr-32 py-2 rounded-full bg-charcoal/50 shadow-[inset_4px_4px_8px_rgba(0,0,0,0.4),inset_-4px_-4px_8px_rgba(255,255,255,0.02)] !border-none !outline-none focus:!border-none focus:!ring-0 focus:!outline-none text-white placeholder:text-white/40 text-sm transition-shadow disabled:opacity-50"
         disabled={loading}
       />
       <button

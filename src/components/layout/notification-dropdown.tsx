@@ -79,10 +79,10 @@ export function NotificationDropdown() {
     <div className="relative" ref={dropdownRef}>
       <button 
         onClick={() => setIsOpen(!isOpen)}
-        className="w-10 h-10 rounded-full flex items-center justify-center hover:bg-black/5 transition-colors relative text-charcoal group"
+        className="btn-icon"
         aria-label="Notifications"
       >
-        <Bell size={20} className="group-hover:scale-110 transition-transform" />
+        <Bell size={18} className="text-slate-500 stroke-[1.5]" />
         {unreadCount > 0 && (
           <span className="absolute top-2 right-2 w-2.5 h-2.5 bg-rose rounded-full border-2 border-white"></span>
         )}

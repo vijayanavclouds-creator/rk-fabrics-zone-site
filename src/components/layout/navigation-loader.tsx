@@ -26,6 +26,10 @@ function NavigationLoaderInner() {
       const target = (e.target as HTMLElement).closest("a");
       if (!target) return;
 
+      // Ignore if the click originated from a button (e.g., Add to Cart, Wishlist)
+      // because these buttons intercept the click and prevent navigation.
+      if ((e.target as HTMLElement).closest("button")) return;
+
       const href = target.getAttribute("href");
       if (!href) return;
 

@@ -11,7 +11,6 @@ import { useCartStore, useWishlistStore } from "@/store";
 import { toast } from "sonner";
 import type { Product } from "@/types";
 import { useSession } from "next-auth/react";
-import { toggleWishlistDb } from "@/actions/wishlist";
 
 interface ProductCardProps {
  product: Product;
@@ -24,8 +23,8 @@ interface ProductCardProps {
   const router = useRouter();
   const addItem = useCartStore((s) => s.addItem);
   const [isMounted, setIsMounted] = useState(false);
-  const { toggleItem, isInWishlist } = useWishlistStore();
-  const wishlisted = isInWishlist(product.id);
+  const toggleItem = useWishlistStore(state => state.toggleItem);
+  const wishlisted = useWishlistStore(state => state.items.includes(product.id));
   const { data: session } = useSession();
 
   useEffect(() => setIsMounted(true), []);
@@ -57,7 +56,15 @@ interface ProductCardProps {
     });
 
     if (session?.user) {
-      await toggleWishlistDb(product.id);
+      try {
+        await fetch("/api/wishlist/toggle", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ productId: product.id })
+        });
+      } catch (e) {
+        console.error("Failed to sync wishlist with DB", e);
+      }
     }
   };
 

@@ -43,8 +43,8 @@ export async function Footer() {
   return (
   <footer className="relative z-40 bg-gradient-to-br from-charcoal to-slate text-white pb-20 md:pb-0">
    {/* Newsletter Strip */}
-   <div className="w-full mx-auto px-4 md:px-6 lg:px-8 pt-8 pb-4">
-       <div className="bg-transparent rounded-3xl p-6 md:p-8 flex flex-col md:flex-row items-center justify-between gap-6 shadow-[8px_8px_20px_rgba(0,0,0,0.4),-8px_-8px_20px_rgba(255,255,255,0.05)] border border-white/5">
+   <div className="w-full mx-auto px-4 md:px-6 lg:px-8 pt-4 pb-2">
+       <div className="bg-transparent rounded-3xl p-4 md:p-5 flex flex-col md:flex-row items-center justify-between gap-4 shadow-[8px_8px_20px_rgba(0,0,0,0.4),-8px_-8px_20px_rgba(255,255,255,0.05)] border border-white/5">
          <div className="flex items-center gap-4">
            <div className="w-12 h-12 rounded-full bg-gradient-to-br from-gold to-yellow-600 flex items-center justify-center shadow-lg hidden sm:flex">
              <span className="text-xl">✉️</span>
@@ -62,11 +62,11 @@ export async function Footer() {
        </div>
      </div>
  {/* Main Footer */}
- <div className="w-full mx-auto px-6 lg:px-8 py-12">
- <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+ <div className="w-full mx-auto px-6 lg:px-8 py-4">
+ <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
  {/* Brand Column */}
  <div className="col-span-2 md:col-span-1">
- <Link href="/" className="flex items-center gap-2 mb-4">
+ <Link href="/" className="flex items-center gap-2 mb-1.5">
  <div className="relative w-12 h-12 rounded-full overflow-hidden ring-2 ring-white/20">
  <Image
  src="/logo.png?v=3"
@@ -85,10 +85,10 @@ export async function Footer() {
  </span>
  </div>
  </Link>
- <p className="text-sm text-white/60 mb-4 leading-relaxed whitespace-pre-line">
+ <p className="text-sm text-white/60 mb-1.5 leading-relaxed whitespace-pre-line">
  {companyProfile?.companyDescription || <>Premium Fabrics | Stylish You<br />Manufacturer & direct seller from Jaipur, India.</>}
  </p>
- <div className="space-y-2 text-sm text-white/50">
+ <div className="space-y-0.5 text-sm text-white/50">
  <div className="flex items-center gap-2">
  <MapPin size={14} className="text-white shrink-0" />
  <span>Jaipur, Rajasthan, India</span>
@@ -106,15 +106,15 @@ export async function Footer() {
 
  {/* Shop Links */}
  <div>
-  <h4 className="font-[family-name:var(--font-cinzel)] text-sm font-semibold text-white tracking-wider uppercase mb-4">
+  <h4 className="font-[family-name:var(--font-cinzel)] text-sm font-semibold text-white tracking-wider uppercase mb-1.5">
   Shop By Category
   </h4>
-  <ul className="space-y-2">
+  <ul className="space-y-0.5">
   {shopLinks.map((link) => (
   <li key={link.label}>
   <Link
   href={link.href}
-  className="text-sm text-white/70 hover:text-white transition-colors"
+  className="text-[13px] text-white/70 hover:text-white transition-colors"
   >
   {link.label}
   </Link>
@@ -125,14 +125,14 @@ export async function Footer() {
 
  {/* Company Links */}
  <div>
- <h4 className="font-[family-name:var(--font-cinzel)] text-sm font-semibold text-white tracking-wider uppercase mb-4">
+ <h4 className="font-[family-name:var(--font-cinzel)] text-sm font-semibold text-white tracking-wider uppercase mb-1.5">
  Company
  </h4>
-            <ul className="space-y-4">
+            <ul className="space-y-0.5">
               {footerLinks.company.map((link, i) => {
                 return (
                   <li key={i}>
-                    <Link href={link.href} className="text-sm text-white/70 hover:text-white transition-colors">
+                    <Link href={link.href} className="text-[13px] text-white/70 hover:text-white transition-colors">
                       {link.label}
                     </Link>
                   </li>
@@ -143,15 +143,15 @@ export async function Footer() {
 
  {/* Help Links */}
  <div>
- <h4 className="font-[family-name:var(--font-cinzel)] text-sm font-semibold text-white tracking-wider uppercase mb-4">
+ <h4 className="font-[family-name:var(--font-cinzel)] text-sm font-semibold text-white tracking-wider uppercase mb-1.5">
  Help
  </h4>
- <ul className="space-y-2">
+ <ul className="space-y-0.5">
  {footerLinks.help.map((link) => (
  <li key={link.label}>
  <Link
  href={link.href}
- className="text-sm text-white/70 hover:text-white transition-colors"
+ className="text-[13px] text-white/70 hover:text-white transition-colors"
  >
  {link.label}
  </Link>
@@ -162,7 +162,7 @@ export async function Footer() {
  </div>
 
  {/* Social & Bottom */}
- <div className="mt-12 pt-8 border-t border-white/20 flex flex-col md:flex-row items-center justify-between gap-4">
+ <div className="mt-4 pt-4 border-t border-white/20 flex flex-col md:flex-row items-center justify-between gap-4">
  <div className="flex flex-wrap items-center gap-4">
   {companyProfile?.facebookUrl ? (
     <a href={companyProfile.facebookUrl} target="_blank" rel="noopener noreferrer" className="hover:scale-110 transition-transform" aria-label="Facebook">

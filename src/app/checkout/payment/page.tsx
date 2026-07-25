@@ -133,21 +133,26 @@ export default function CheckoutPaymentPage() {
       if (paymentMethod === "PHONEPE") {
         const paymentRes = await initiatePhonePePayment(res.orderId)
         if (paymentRes.success && paymentRes.redirectUrl) {
-          clearCart()
-          clearCheckout()
           toast.dismiss()
           // Redirect the user to PhonePe checkout page
           window.location.href = paymentRes.redirectUrl
+          setTimeout(() => {
+            clearCart()
+            clearCheckout()
+          }, 1000)
         } else {
           toast.dismiss()
           toast.error(paymentRes.error || "Failed to initiate payment gateway")
           setLoading(false)
         }
       } else {
-        clearCart()
-        clearCheckout()
         toast.dismiss()
         router.push(`/checkout/success?orderId=${res.orderId}`)
+        // Delay clearing state to ensure navigation completes first without unmounting the view
+        setTimeout(() => {
+          clearCart()
+          clearCheckout()
+        }, 1000)
       }
     } else {
       toast.dismiss()
@@ -242,7 +247,7 @@ export default function CheckoutPaymentPage() {
           </div>
 
           {/* Right Column - Order Summary (Second on Mobile, Right Column on Desktop) */}
-          <div className="order-2 lg:order-none w-full lg:w-[400px]">
+          <div className="order-2 lg:order-none w-full lg:flex-1">
             <div className="bg-white rounded-3xl p-6 md:p-8 border border-charcoal/10 shadow-sm sticky top-32">
               <h2 className="text-2xl font-[family-name:var(--font-playfair)] font-bold text-charcoal mb-6">Order Summary</h2>
               

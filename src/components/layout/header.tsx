@@ -27,6 +27,8 @@ import { NotificationDropdown } from "@/components/layout/notification-dropdown"
 import { AdminHeaderActions } from "@/components/admin/admin-header-actions";
 import { AccountDropdown } from "@/components/layout/account-dropdown";
 import { PwaNotifier } from "@/components/pwa-notifier";
+import { AdminSearchOverlay } from "@/components/admin/admin-search-overlay";
+import { InlineDesktopSearch } from "@/components/layout/inline-desktop-search";
 
 const getInitials = (name: string) => {
   const parts = name.trim().split(" ");
@@ -85,7 +87,7 @@ export function Header({ initialNavLinks, announcementBanner }: { initialNavLink
  const [activeMenu, setActiveMenu] = useState<string | null>(null);
  const { theme, setTheme } = useTheme();
  const [mounted, setMounted] = useState(false);
- const { isSearchOpen, toggleSearch } = useUIStore();
+ const { isSearchOpen, toggleSearch, toggleAdminSearch } = useUIStore();
  const cartItemCount = useCartStore((s) => s.getItemCount());
  const wishlistCount = useWishlistStore((s) => s.items.length);
  const { isMobileMenuOpen, toggleMobileMenu, closeMobileMenu } = useUIStore();
@@ -114,14 +116,14 @@ export function Header({ initialNavLinks, announcementBanner }: { initialNavLink
   )}
 
  {/* Main Header */}
- <header
- className={cn(
- "sticky top-0 z-40 transition-all duration-500",
- scrolled
- ? "bg-cream shadow-neo-card"
- : "bg-cream/80 backdrop-blur-sm"
- )}
- >
+  <header
+    className={cn(
+      "sticky top-0 z-40 transition-all duration-500 shadow-neo-card",
+      scrolled
+        ? "bg-transparent backdrop-blur-md"
+        : "bg-transparent"
+    )}
+  >
  <div className="w-full mx-auto px-4 md:px-6 lg:px-8">
  <div className="flex items-center justify-between h-14 md:h-16">
  {/* Logo */}
@@ -222,15 +224,16 @@ export function Header({ initialNavLinks, announcementBanner }: { initialNavLink
  {/* Right Actions */}
  <div className="flex items-center gap-1 md:gap-2">
  {/* Search */}
+ <div className="hidden md:block">
+   <InlineDesktopSearch />
+ </div>
  <button
- onClick={toggleSearch}
- className="p-2 text-charcoal/70 hover:text-teal-600 :text-teal-400 transition-colors"
+ onClick={session?.user?.role === 'ADMIN' ? toggleAdminSearch : toggleSearch}
+ className="md:hidden p-2 text-charcoal/70 hover:text-teal-600 :text-teal-400 transition-colors"
  aria-label="Search"
  >
  <Search size={20} />
  </button>
-
-
 
           {/* Admin Icons */}
           {session?.user?.role === 'ADMIN' && (
@@ -243,12 +246,12 @@ export function Header({ initialNavLinks, announcementBanner }: { initialNavLink
           {(pathname !== '/login' && pathname !== '/register') && session?.user?.role !== 'ADMIN' && (
             <Link
               href="/wishlist"
-              className="hidden md:flex relative p-2 text-charcoal/70 hover:text-teal-600 :text-teal-400 transition-colors"
+              className="hidden md:flex btn-icon"
               aria-label="Wishlist"
             >
-              <Heart size={20} />
+              <Heart size={18} className="text-slate-500 stroke-[1.5]" />
               {mounted && wishlistCount > 0 && (
-                <span className="absolute -top-0.5 -right-0.5 w-4 h-4 bg-rose text-white text-[10px] font-bold flex items-center justify-center rounded-full">
+                <span className="absolute -top-1 -right-1 w-4 h-4 bg-rose text-white text-[10px] font-bold flex items-center justify-center rounded-full">
                   {wishlistCount}
                 </span>
               )}
@@ -266,16 +269,16 @@ export function Header({ initialNavLinks, announcementBanner }: { initialNavLink
           {(pathname !== '/login' && pathname !== '/register') && session?.user?.role !== 'ADMIN' && (
             <button
               onClick={() => useCartStore.getState().toggleCart()}
-              className="hidden md:flex relative p-2 text-charcoal/70 hover:text-teal-600 :text-teal-400 transition-colors"
+              className="hidden md:flex btn-icon"
               aria-label="Cart"
             >
-              <ShoppingBag size={20} />
+              <ShoppingBag size={18} className="text-slate-500 stroke-[1.5]" />
               {mounted && cartItemCount > 0 && (
                 <motion.span
                   key={cartItemCount}
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
-                  className="absolute -top-0.5 -right-0.5 w-5 h-5 bg-teal-600 text-white text-[10px] font-bold flex items-center justify-center rounded-full"
+                  className="absolute -top-1 -right-1 w-5 h-5 bg-teal-600 text-white text-[10px] font-bold flex items-center justify-center rounded-full"
                 >
                   {cartItemCount}
                 </motion.span>
@@ -289,14 +292,16 @@ export function Header({ initialNavLinks, announcementBanner }: { initialNavLink
               {session?.user ? (
                 <AccountDropdown />
               ) : (
-                <Link
-                  href="/login"
-                  className="hidden md:flex items-center gap-1.5 p-2 text-sm font-semibold text-charcoal/70 hover:text-teal-600 transition-colors"
-                >
-                  <User size={20} />
-                  Login
-                </Link>
-              )}
+                  <Link
+                    href="/login"
+                    className="hidden md:flex items-center gap-2 group"
+                  >
+                    <div className="btn-icon">
+                      <User size={18} className="text-slate-500 stroke-[1.5] group-hover:text-teal-600 transition-colors" />
+                    </div>
+                    <span className="text-sm font-semibold text-charcoal/70 group-hover:text-teal-600 transition-colors">Login</span>
+                  </Link>
+                )}
               <PwaNotifier />
             </div>
           )}
@@ -380,6 +385,7 @@ export function Header({ initialNavLinks, announcementBanner }: { initialNavLink
 
  {/* Search Overlay */}
  <SearchOverlay />
+ <AdminSearchOverlay />
  </>
  );
 }

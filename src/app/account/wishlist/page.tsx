@@ -1,12 +1,15 @@
 "use client"
 
-import { Heart, PackageSearch, Trash2 } from "lucide-react"
+import { useState } from "react"
+import { Heart, PackageSearch, LayoutGrid, Grid3X3 } from "lucide-react"
 import Link from "next/link"
 import { useWishlistStore } from "@/store"
 import { products } from "@/lib/data"
 import { ProductCard } from "@/components/product/product-card"
+import { cn } from "@/lib/utils"
 
 export default function WishlistPage() {
+  const [gridCols, setGridCols] = useState<3 | 5 | 7>(3);
   const { items } = useWishlistStore();
   const wishlistProducts = products.filter((p) => items.includes(p.id));
 
@@ -17,11 +20,33 @@ export default function WishlistPage() {
           <Heart size={24} className="text-teal-600" />
           Your Wishlist
         </h2>
-        {wishlistProducts.length > 0 && (
-          <span className="text-sm font-medium text-slate">
-            {wishlistProducts.length} {wishlistProducts.length === 1 ? 'item' : 'items'}
-          </span>
-        )}
+        
+        <div className="flex items-center gap-4">
+          {wishlistProducts.length > 0 && (
+            <span className="text-sm font-medium text-slate">
+              {wishlistProducts.length} {wishlistProducts.length === 1 ? 'item' : 'items'}
+            </span>
+          )}
+
+          {wishlistProducts.length > 0 && (
+            <div className="flex items-center gap-1 border border-charcoal/10 rounded-lg p-0.5 ml-4">
+              {([3, 5, 7] as const).map((cols) => (
+                <button
+                  key={cols}
+                  onClick={() => setGridCols(cols)}
+                  className={cn(
+                    "p-2 rounded-md transition-colors",
+                    gridCols === cols
+                      ? "bg-teal-600 text-white"
+                      : "text-slate hover:text-charcoal"
+                  )}
+                >
+                  {cols === 3 ? <LayoutGrid size={16} /> : <Grid3X3 size={16} />}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
       
       {wishlistProducts.length === 0 ? (
@@ -34,7 +59,12 @@ export default function WishlistPage() {
           </Link>
         </div>
       ) : (
-        <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className={cn(
+          "grid gap-4 md:gap-6 grid-cols-2",
+          gridCols === 3 && "md:grid-cols-3",
+          gridCols === 5 && "md:grid-cols-5",
+          gridCols === 7 && "md:grid-cols-7"
+        )}>
           {wishlistProducts.map((product, i) => (
             <ProductCard key={product.id} product={product} index={i} />
           ))}

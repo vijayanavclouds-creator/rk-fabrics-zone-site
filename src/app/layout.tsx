@@ -11,6 +11,7 @@ import { NavigationLoader } from "@/components/layout/navigation-loader";
 import { Toaster } from "sonner";
 import { getAnnouncementBanner } from "@/actions/system";
 import { getNavigationLinksData } from "@/lib/data/system";
+import { HideOnMobilePortal, HideOnAllPortal, PortalMainWrapper } from "@/components/layout/global-layout-wrapper";
 import "./globals.css";
 
 const playfair = Playfair_Display({
@@ -102,14 +103,24 @@ export default async function RootLayout({
  enableSystem={false}
  disableTransitionOnChange={false}
  >
- <Header initialNavLinks={navLinks} announcementBanner={announcementBanner} />
- <NavigationLoader />
- <AuthHydration />
- <CartSync />
- <main className="flex-1 pb-20 md:pb-0">{children}</main>
- <Footer />
- <MobileNav />
- <CartDrawer />
+  <HideOnMobilePortal>
+    <Header initialNavLinks={navLinks} announcementBanner={announcementBanner} />
+  </HideOnMobilePortal>
+  
+  <NavigationLoader />
+  <AuthHydration />
+  <CartSync />
+  
+  <PortalMainWrapper>
+    {children}
+  </PortalMainWrapper>
+  
+  <Footer />
+  
+  <HideOnAllPortal>
+    <MobileNav />
+    <CartDrawer />
+  </HideOnAllPortal>
  <Toaster
  position="top-center"
  richColors

@@ -4,6 +4,7 @@ import { getStoreTaxonomy } from "@/actions/system"
 import { getContactQueries } from "@/actions/contact"
 import { getDashboardAnalytics } from "@/actions/analytics"
 import { Suspense } from "react"
+import { AdminMobileHeader } from "@/components/layout/admin-mobile-header"
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
 import { redirect } from "next/navigation"
@@ -35,15 +36,18 @@ export default async function AdminPage() {
   const analyticsData = analyticsRes.success ? analyticsRes.data : null
 
   return (
-    <Suspense fallback={null}>
-      <AdminDashboard 
-        products={products} 
-        initialBanners={banners} 
-        storeCategories={categories}
-        storeFabrics={fabrics}
-        queries={queries}
-        analyticsData={analyticsData}
-      />
-    </Suspense>
+    <>
+      <AdminMobileHeader />
+      <Suspense fallback={null}>
+        <AdminDashboard 
+          products={products} 
+          initialBanners={banners} 
+          storeCategories={categories}
+          storeFabrics={fabrics}
+          queries={queries}
+          analyticsData={analyticsData}
+        />
+      </Suspense>
+    </>
   )
 }

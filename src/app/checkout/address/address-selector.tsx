@@ -1,15 +1,17 @@
 "use client"
 
-import { useState } from "react"
-import { useRouter } from "next/navigation"
+import { useState, useEffect } from "react"
+import { useRouter, useSearchParams, usePathname } from "next/navigation"
 import { useCheckoutStore, CheckoutAddress } from "@/store/checkout"
 import { saveAddress, deleteAddress } from "@/actions/address"
 import { toast } from "sonner"
 import Link from "next/link"
-import { MapPin, Plus, Edit2, Trash2, ArrowRight, ArrowLeft } from "lucide-react"
+import { MapPin, Plus, Edit2, Trash2, ArrowRight, ArrowLeft, ShieldCheck } from "lucide-react"
 
-export default function AddressSelector({ initialAddresses }: { initialAddresses: any[] }) {
+export default function AddressSelector({ initialAddresses, isCheckout = true }: { initialAddresses: any[], isCheckout?: boolean }) {
   const router = useRouter()
+  const searchParams = useSearchParams()
+  const pathname = usePathname()
   const { selectedAddress, setAddress } = useCheckoutStore()
   
   const [addresses, setAddresses] = useState(initialAddresses)
@@ -18,6 +20,14 @@ export default function AddressSelector({ initialAddresses }: { initialAddresses
   )
   
   const [showForm, setShowForm] = useState(initialAddresses.length === 0)
+  
+  useEffect(() => {
+    if (!isCheckout) {
+      const isFormOpen = searchParams.get("form") === "true"
+      setShowForm(isFormOpen || addresses.length === 0)
+    }
+  }, [searchParams, isCheckout, addresses.length])
+
   const [editingAddress, setEditingAddress] = useState<any | null>(null)
   
   const [formData, setFormData] = useState({
@@ -53,7 +63,11 @@ export default function AddressSelector({ initialAddresses }: { initialAddresses
       pincode: addr.pincode,
       isDefault: addr.isDefault
     })
-    setShowForm(true)
+    if (!isCheckout) {
+      router.push(`${pathname}?form=true`)
+    } else {
+      setShowForm(true)
+    }
   }
 
   const handleDelete = async (id: string) => {
@@ -89,7 +103,11 @@ export default function AddressSelector({ initialAddresses }: { initialAddresses
       }
       
       setActiveAddressId(res.address.id)
-      setShowForm(false)
+      if (!isCheckout) {
+        router.push(pathname)
+      } else {
+        setShowForm(false)
+      }
       setEditingAddress(null)
       // Reset form
       setFormData({
@@ -115,10 +133,10 @@ export default function AddressSelector({ initialAddresses }: { initialAddresses
   }
 
   if (showForm) {
-    return (
-      <div className="bg-white rounded-3xl p-6 md:p-8 border border-charcoal/10 shadow-sm">
+    const formContent = (
+      <div className="bg-white rounded-3xl p-6 md:p-8 border border-charcoal/10 shadow-sm h-full w-full">
         <h2 className="text-2xl font-[family-name:var(--font-playfair)] font-bold text-charcoal mb-6">
-          {editingAddress ? "Edit Address" : "Add New Address"}
+          {!isCheckout ? (editingAddress ? "Edit Address Details" : "Add New Address Details") : (editingAddress ? "Edit Address" : "Add New Address")}
         </h2>
         
         <form onSubmit={handleSubmitForm} className="space-y-4">
@@ -163,16 +181,20 @@ export default function AddressSelector({ initialAddresses }: { initialAddresses
             <label htmlFor="isDefault" className="text-sm text-slate">Set as default shipping address</label>
           </div>
 
-          <div className="flex gap-4 pt-4">
+          <div className="flex justify-end gap-4 pt-4 mt-6">
             {addresses.length > 0 && (
               <button 
                 type="button" 
                 onClick={() => {
-                  setShowForm(false)
+                  if (!isCheckout) {
+                    router.push(pathname)
+                  } else {
+                    setShowForm(false)
+                  }
                   setEditingAddress(null)
                   setFormData({ firstName: "", lastName: "", phone: "", address: "", city: "", state: "", pincode: "", isDefault: false })
                 }}
-                className="px-6 py-3 bg-white border border-charcoal/20 text-charcoal font-bold rounded-xl hover:bg-slate-50 transition-all"
+                className="btn-primary px-8 py-3.5 flex items-center justify-center text-center min-w-[160px]"
               >
                 Cancel
               </button>
@@ -180,19 +202,59 @@ export default function AddressSelector({ initialAddresses }: { initialAddresses
             <button 
               type="submit" 
               disabled={loading}
-              className="flex-1 py-3 bg-teal-600 text-white font-bold rounded-xl shadow-neo-btn hover:bg-teal-700 transition-all disabled:opacity-70"
+              className="btn-primary px-8 py-3.5 flex items-center justify-center text-center disabled:opacity-70 min-w-[160px]"
             >
               {loading ? "Saving..." : "Save Address"}
             </button>
           </div>
         </form>
       </div>
-    )
+    );
+
+    if (isCheckout) {
+      return formContent;
+    }
+
+    return (
+      <div className="bg-white rounded-3xl border border-charcoal/10 p-6 md:p-8 shadow-sm w-full">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8 items-stretch">
+          <div className="lg:col-span-2">
+            {formContent}
+          </div>
+          <div className="bg-teal-50/30 rounded-3xl p-6 md:p-8 border border-teal-100 shadow-sm space-y-6 h-full">
+          <div className="w-12 h-12 bg-teal-100 rounded-full flex items-center justify-center text-teal-600 mb-2">
+            <ShieldCheck size={24} />
+          </div>
+          <h3 className="text-xl font-[family-name:var(--font-playfair)] font-bold text-charcoal">Secure Address Saving</h3>
+          <p className="text-slate text-sm leading-relaxed">
+            Your address details are securely stored and encrypted. We only use this information to ensure accurate and timely delivery of your orders.
+          </p>
+          <ul className="space-y-3 text-sm text-charcoal font-medium mt-6">
+            <li className="flex items-center gap-2">
+              <span className="w-1.5 h-1.5 rounded-full bg-teal-600"></span> 100% Secure & Encrypted
+            </li>
+            <li className="flex items-center gap-2">
+              <span className="w-1.5 h-1.5 rounded-full bg-teal-600"></span> Fast 1-Click Checkout
+            </li>
+            <li className="flex items-center gap-2">
+              <span className="w-1.5 h-1.5 rounded-full bg-teal-600"></span> Easy Returns & Pickup
+            </li>
+          </ul>
+        </div>
+      </div>
+      </div>
+    );
   }
 
   return (
-    <div className="space-y-6">
-      <div className="grid gap-4 md:grid-cols-2">
+    <div className={!isCheckout ? "bg-white rounded-3xl border border-charcoal/10 p-6 md:p-8 shadow-sm w-full" : ""}>
+      {!isCheckout && (
+        <h2 className="text-2xl font-[family-name:var(--font-playfair)] font-bold text-charcoal mb-6">
+          Your Saved Addresses
+        </h2>
+      )}
+      <div className={!isCheckout ? "space-y-6 w-full" : "space-y-6"}>
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {addresses.map((addr) => (
           <label 
             key={addr.id} 
@@ -236,7 +298,13 @@ export default function AddressSelector({ initialAddresses }: { initialAddresses
         ))}
 
         <button 
-          onClick={() => setShowForm(true)}
+          onClick={() => {
+            if (!isCheckout) {
+              router.push(`${pathname}?form=true`)
+            } else {
+              setShowForm(true)
+            }
+          }}
           className="h-full min-h-[200px] border-2 border-dashed border-charcoal/20 rounded-2xl flex flex-col items-center justify-center text-slate hover:text-teal-600 hover:border-teal-600 hover:bg-teal-50/30 transition-all"
         >
           <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center mb-3 shadow-sm border border-charcoal/5">
@@ -246,24 +314,27 @@ export default function AddressSelector({ initialAddresses }: { initialAddresses
         </button>
       </div>
 
-      <div className="flex justify-between items-center pt-6 border-t border-charcoal/10 mt-8">
-        <Link 
-          href="/cart" 
-          className="btn-primary hidden sm:inline-flex items-center justify-center !px-4"
-          aria-label="Back to Cart"
-        >
-          <ArrowLeft size={18} />
-        </Link>
-        
-        <div className="flex w-full sm:w-auto justify-end gap-4">
-          
-          <button
-            onClick={handleContinue}
-            className="btn-teal flex-1 sm:flex-none flex items-center justify-center gap-2"
+      {isCheckout && (
+        <div className="flex justify-between items-center pt-6 border-t border-charcoal/10 mt-8">
+          <Link 
+            href="/cart" 
+            className="btn-primary hidden sm:inline-flex items-center justify-center !px-4"
+            aria-label="Back to Cart"
           >
-            Continue to Payment <ArrowRight size={18} />
-          </button>
+            <ArrowLeft size={18} />
+          </Link>
+          
+          <div className="flex w-full sm:w-auto justify-end gap-4">
+            
+            <button
+              onClick={handleContinue}
+              className="btn-teal flex-1 sm:flex-none flex items-center justify-center gap-2"
+            >
+              Continue to Payment <ArrowRight size={18} />
+            </button>
+          </div>
         </div>
+      )}
       </div>
     </div>
   )

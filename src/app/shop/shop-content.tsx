@@ -39,7 +39,7 @@ export function ShopContent({
  const [selectedDiscount, setSelectedDiscount] = useState<number>(0);
  const [priceRange, setPriceRange] = useState<[number, number]>([0, 25000]);
  const [showFilters, setShowFilters] = useState(false);
- const [gridCols, setGridCols] = useState<2 | 3 | 4>(3);
+ const [gridCols, setGridCols] = useState<3 | 5 | 7>(3);
  const [isSortOpen, setIsSortOpen] = useState(false);
 
   const featuresParam = searchParams.get("features");
@@ -263,7 +263,7 @@ export function ShopContent({
  <div className="flex items-center gap-3">
  {/* Grid Toggle */}
  <div className="hidden md:flex items-center gap-1 border border-charcoal/10 rounded-lg p-0.5">
- {([2, 3, 4] as const).map((cols) => (
+ {([3, 5, 7] as const).map((cols) => (
  <button
  key={cols}
  onClick={() => setGridCols(cols)}
@@ -274,7 +274,7 @@ export function ShopContent({
  : "text-slate hover:text-charcoal :text-dark-text"
  )}
  >
- {cols === 2 ? <LayoutGrid size={16} /> : <Grid3X3 size={16} />}
+ {cols === 3 ? <LayoutGrid size={16} /> : <Grid3X3 size={16} />}
  </button>
  ))}
  </div>
@@ -458,9 +458,9 @@ export function ShopContent({
  className={cn(
  "grid gap-4 md:gap-6",
  `grid-cols-2`,
- gridCols === 2 && "md:grid-cols-2",
  gridCols === 3 && "md:grid-cols-3",
- gridCols === 4 && "md:grid-cols-4"
+ gridCols === 5 && "md:grid-cols-5",
+ gridCols === 7 && "md:grid-cols-7"
  )}
  >
  {filteredProducts.map((product, i) => (

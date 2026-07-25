@@ -105,3 +105,8 @@ Payload: {"updatedVariants":[{"id":"cmrteydt10003cyygmiugpmrf","sku":"VAR-371108
 [logAdminActivity] called with action: uploaded <b>1 new image(s)</b> to <b>Solid Ivory Long Sleeve Ruffled Maxi Dress</b>
 [logAdminActivity] adminName resolved to: Vijay jangir
 [logAdminActivity] success! inserted id: cmryxu9e7000avw6qykx9ixcp
+[2026-07-25T13:49:58.066Z] bulkUpdateImagesAndVariants called
+Payload: {"updatedVariants":[{"id":"cmrteydt10003cyygmiugpmrf","sku":"VAR-371108","size":"M","color":"Beige","colorHex":"#F5F4F0","price":399,"salePrice":null,"stock":0,"productId":"cmrtex4wp0000cyygm2lwgihs"}]}
+[logAdminActivity] called with action: updated <b>Stock</b> for variant <b>M / Beige</b> in <b>Solid Ivory Long Sleeve Ruffled Maxi Dress</b> from <b>9</b> to <b>0</b>
+[logAdminActivity] adminName resolved to: Vijay jangir
+[logAdminActivity] success! inserted id: cms0ferkr0000ye5lbefj7o01

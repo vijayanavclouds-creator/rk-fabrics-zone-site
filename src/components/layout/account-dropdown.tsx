@@ -89,7 +89,7 @@ export function AccountDropdown() {
     <div className="relative hidden md:block" ref={dropdownRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex p-2 text-charcoal/70 hover:text-teal-600 transition-colors items-center justify-center focus:outline-none"
+        className="btn-icon"
         aria-label="Account Menu"
       >
         {session.user.image ? (
@@ -98,11 +98,11 @@ export function AccountDropdown() {
             alt={session.user.name || "User"} 
             width={28} 
             height={28} 
-            className="rounded-full object-cover w-7 h-7 border border-charcoal/10"
+            className="rounded-full object-cover w-7 h-7 shadow-sm border border-charcoal/5"
           />
         ) : (
-          <div className="w-7 h-7 rounded-full bg-teal-100 text-teal-700 flex items-center justify-center text-[11px] font-bold border border-teal-200">
-            {session.user.name ? getInitials(session.user.name) : <User size={20} />}
+          <div className="w-7 h-7 rounded-full bg-cream shadow-neo-input flex items-center justify-center text-[10px] font-[family-name:var(--font-playfair)] text-slate-500 border border-white/50 tracking-wider">
+            {session.user.name ? getInitials(session.user.name) : <User size={14} />}
           </div>
         )}
       </button>

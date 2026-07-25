@@ -5,6 +5,7 @@ import prisma from "@/lib/prisma"
 import Link from "next/link"
 import { ArrowLeft, Package, Clock, Truck, CheckCircle, XCircle } from "lucide-react"
 import Image from "next/image"
+import CancelOrderButton from "./cancel-order-button"
 
 export default async function OrderDetailsPage({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = await params
@@ -43,8 +44,8 @@ export default async function OrderDetailsPage({ params }: { params: Promise<{ i
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#fdfaf6] pb-20 pt-10">
-      <main className="flex-grow p-4 md:p-8 max-w-4xl mx-auto w-full">
+    <div className="min-h-screen flex flex-col bg-[#fdfaf6] pb-20 pt-10 -mx-4 md:-mx-8">
+      <main className="flex-grow p-4 md:p-8 w-full">
         
         <Link href="/account" className="inline-flex items-center gap-2 text-teal-600 font-bold hover:text-teal-800 transition-colors mb-8">
           <ArrowLeft size={18} />
@@ -82,7 +83,10 @@ export default async function OrderDetailsPage({ params }: { params: Promise<{ i
             </div>
           </div>
           
-          <div className="mb-8 flex justify-end">
+          <div className="mb-8 flex justify-end gap-3">
+            {(order.status === "PENDING" || order.status === "PROCESSING") && (
+              <CancelOrderButton orderId={order.id} />
+            )}
             {(() => {
               // Return Logic based on Delivered Date
               if (order.status === "DELIVERED" && order.deliveredAt) {

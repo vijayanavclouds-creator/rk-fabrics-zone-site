@@ -47,7 +47,7 @@ export default async function ReviewsAndQueriesPage({ searchParams }: { searchPa
         {currentTab === 'queries' && (
           <Link 
             href="/contact"
-            className="bg-charcoal text-white px-6 py-2.5 rounded-xl text-sm font-semibold hover:bg-black transition-colors"
+            className="btn-primary px-8 py-3.5 flex items-center justify-center text-center font-bold min-w-[160px]"
           >
             New Inquiry
           </Link>

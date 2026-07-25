@@ -152,19 +152,26 @@ export const useWishlistStore = create<WishlistStore>()(
 interface UIStore {
  isMobileMenuOpen: boolean;
  isSearchOpen: boolean;
+ isAdminSearchOpen: boolean;
  toggleMobileMenu: () => void;
  toggleSearch: () => void;
+ toggleAdminSearch: () => void;
  closeMobileMenu: () => void;
  closeSearch: () => void;
+ closeAdminSearch: () => void;
 }
 
 export const useUIStore = create<UIStore>()((set) => ({
  isMobileMenuOpen: false,
  isSearchOpen: false,
+ isAdminSearchOpen: false,
  toggleMobileMenu: () =>
  set((state) => ({ isMobileMenuOpen: !state.isMobileMenuOpen })),
  toggleSearch: () =>
  set((state) => ({ isSearchOpen: !state.isSearchOpen })),
+ toggleAdminSearch: () =>
+ set((state) => ({ isAdminSearchOpen: !state.isAdminSearchOpen })),
  closeMobileMenu: () => set({ isMobileMenuOpen: false }),
  closeSearch: () => set({ isSearchOpen: false }),
+ closeAdminSearch: () => set({ isAdminSearchOpen: false }),
 }));

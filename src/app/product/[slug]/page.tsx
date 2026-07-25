@@ -34,7 +34,7 @@ import { useCartStore, useWishlistStore } from "@/store";
 import { ProductCard } from "@/components/product/product-card";
 import { toast } from "sonner";
 import { useSession } from "next-auth/react";
-import { toggleWishlistDb } from "@/actions/wishlist";
+
 import { getCompanyProfile } from "@/actions/system";
 
 export default function ProductPage() {
@@ -458,7 +458,15 @@ function ProductDetail({ product }: { product: NonNullable<ReturnType<typeof get
               toggleItem(product.id);
               toast(wishlisted ? "Removed from wishlist" : "Saved to wishlist ❤️");
               if (session?.user) {
-                await toggleWishlistDb(product.id);
+                try {
+                  await fetch("/api/wishlist/toggle", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ productId: product.id })
+                  });
+                } catch (e) {
+                  console.error("Failed to sync wishlist with DB", e);
+                }
               }
             }}
             className={cn(
@@ -636,10 +644,7 @@ function ProductDetail({ product }: { product: NonNullable<ReturnType<typeof get
             }}
             className="p-6 bg-cream-dark/30 rounded-2xl border border-charcoal/5 flex flex-col gap-4"
           >
-            <div>
-              <label className="block text-sm font-semibold text-charcoal mb-2">Your Name</label>
-              <input required name="userName" type="text" className="w-full p-3 rounded-xl border border-charcoal/10 focus:outline-none focus:border-teal-600" placeholder="John Doe" />
-            </div>
+
             <div>
               <label className="block text-sm font-semibold text-charcoal mb-2">Rating (1-5)</label>
               <input required name="rating" type="number" min="1" max="5" defaultValue="5" className="w-full p-3 rounded-xl border border-charcoal/10 focus:outline-none focus:border-teal-600" />

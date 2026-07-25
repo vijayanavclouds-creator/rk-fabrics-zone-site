@@ -688,3 +688,68 @@ export async function updateUserRole(userId: string, newRole: "CUSTOMER" | "ADMI
     return { success: false, error: "Failed to update user role" }
   }
 }
+
+export async function globalAdminSearch(query: string) {
+  try {
+    const session = await getServerSession(authOptions)
+    if (!session || session.user.role !== "ADMIN") {
+      return { success: false, error: "Unauthorized" }
+    }
+
+    if (!query || query.length < 2) {
+      return { success: true, results: { products: [], users: [], orders: [], newsletters: [] } }
+    }
+
+    const isRecentOrderQuery = query.toLowerCase() === 'recent order' || query.toLowerCase() === 'recent orders';
+
+    const [products, users, orders, newsletters] = await Promise.all([
+      isRecentOrderQuery ? Promise.resolve([]) : prisma.product.findMany({
+        where: {
+          OR: [
+            { name: { contains: query, mode: 'insensitive' } },
+            { slug: { contains: query, mode: 'insensitive' } }
+          ]
+        },
+        take: 5,
+        select: { id: true, name: true, slug: true, category: true, images: { take: 1, select: { url: true } } }
+      }),
+      isRecentOrderQuery ? Promise.resolve([]) : prisma.user.findMany({
+        where: {
+          OR: [
+            { name: { contains: query, mode: 'insensitive' } },
+            { email: { contains: query, mode: 'insensitive' } }
+          ]
+        },
+        take: 5,
+        select: { id: true, name: true, email: true, image: true, role: true }
+      }),
+      prisma.order.findMany({
+        where: isRecentOrderQuery ? undefined : {
+          OR: [
+            { id: { contains: query, mode: 'insensitive' } },
+            { email: { contains: query, mode: 'insensitive' } },
+            { user: { name: { contains: query, mode: 'insensitive' } } }
+          ]
+        },
+        orderBy: { createdAt: 'desc' },
+        take: 5,
+        select: { id: true, status: true, totalAmount: true, createdAt: true, email: true, userId: true, user: { select: { name: true } } }
+      }),
+      isRecentOrderQuery ? Promise.resolve([]) : prisma.newsletterSubscriber.findMany({
+        where: {
+          email: { contains: query, mode: 'insensitive' }
+        },
+        take: 5,
+        select: { id: true, email: true }
+      })
+    ]);
+
+    return {
+      success: true,
+      results: { products, users, orders, newsletters }
+    }
+  } catch (error: any) {
+    console.error("Global admin search error:", error)
+    return { success: false, error: error.message }
+  }
+}

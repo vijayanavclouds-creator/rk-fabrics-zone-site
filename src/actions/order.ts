@@ -128,8 +128,8 @@ export async function createOrder(data: any) {
         include: { items: true }
       });
       if (orderWithItems) {
-        // We don't await this so it doesn't block the UI response
-        sendOrderConfirmationEmail(orderWithItems).catch(console.error);
+        // Await this to ensure the Node event loop handles it properly before returning
+        await sendOrderConfirmationEmail(orderWithItems).catch(console.error);
       }
     }
 
@@ -280,6 +280,61 @@ export async function updateOrderStatus(orderId: string, status: string) {
     return { success: true }
   } catch (error: any) {
     return { success: false, error: "Failed to update order status" }
+  }
+}
+
+export async function cancelCustomerOrder(orderId: string) {
+  try {
+    const session = await getServerSession(authOptions)
+    if (!session) {
+      return { success: false, error: "Unauthorized" }
+    }
+
+    const existingOrder = await prisma.order.findUnique({
+      where: { id: orderId, userId: session.user.id }
+    })
+
+    if (!existingOrder) {
+      return { success: false, error: "Order not found" }
+    }
+
+    if (existingOrder.status !== "PENDING" && existingOrder.status !== "PROCESSING") {
+      return { success: false, error: "This order cannot be cancelled anymore" }
+    }
+
+    const updatedOrder = await prisma.order.update({
+      where: { id: orderId },
+      data: { 
+        status: "CANCELLED",
+        cancelledAt: new Date()
+      },
+      include: { 
+        items: true,
+        user: { select: { receiveOrderEmails: true } } 
+      }
+    })
+
+    if (updatedOrder.user.receiveOrderEmails) {
+      sendOrderCancelledEmail(updatedOrder).catch(console.error);
+    }
+
+    // Increment stock since order is cancelled
+    await prisma.$transaction(
+      updatedOrder.items.map(item => 
+        prisma.productVariant.update({
+          where: { id: item.variantId },
+          data: { stock: { increment: item.quantity } }
+        })
+      )
+    );
+
+    revalidatePath("/admin")
+    revalidatePath("/account")
+    
+    return { success: true }
+  } catch (error: any) {
+    console.error("Error cancelling order:", error)
+    return { success: false, error: "Failed to cancel order" }
   }
 }
 

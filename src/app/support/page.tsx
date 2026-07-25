@@ -2,6 +2,7 @@ import { SupportDashboard } from "@/app/support/support-dashboard"
 import { getContactQueries } from "@/actions/contact"
 import { getDashboardAnalytics } from "@/actions/analytics"
 import { Suspense } from "react"
+import { AdminMobileHeader } from "@/components/layout/admin-mobile-header"
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
 import { redirect } from "next/navigation"
@@ -18,11 +19,14 @@ export default async function SupportPage() {
   const analyticsData = analyticsRes.success ? analyticsRes.data : null
 
   return (
-    <Suspense fallback={null}>
-      <SupportDashboard 
-        queries={queries}
-        analyticsData={analyticsData}
-      />
-    </Suspense>
+    <>
+      <AdminMobileHeader />
+      <Suspense fallback={null}>
+        <SupportDashboard 
+          queries={queries}
+          analyticsData={analyticsData}
+        />
+      </Suspense>
+    </>
   )
 }

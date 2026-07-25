@@ -5,14 +5,22 @@ import { revalidatePath } from "next/cache"
 import fs from "fs"
 import path from "path"
 
+import { getServerSession } from "next-auth"
+import { authOptions } from "@/lib/auth"
+
 export async function addReview(formData: FormData) {
   try {
+    const session = await getServerSession(authOptions)
+    if (!session?.user) {
+      return { success: false, error: "Unauthorized" }
+    }
+
     const productId = formData.get("productId") as string
-    const userName = formData.get("userName") as string
+    const userName = session.user.name || "Verified Buyer"
     const rating = parseInt(formData.get("rating") as string)
     const comment = formData.get("comment") as string
 
-    if (!productId || !userName || isNaN(rating) || !comment) {
+    if (!productId || isNaN(rating) || !comment) {
       return { success: false, error: "Missing required fields" }
     }
 

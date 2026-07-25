@@ -404,17 +404,6 @@ export const products: Product[] = [
     "createdAt": "2026-07-22T20:12:28.344Z",
     "variants": [
       {
-        "id": "3-v1",
-        "sku": "RKF-CCS-003-PNK-S",
-        "size": "XS",
-        "color": "Blue",
-        "colorHex": "#4f2fee",
-        "price": 499,
-        "salePrice": 349.3,
-        "stock": 4,
-        "productId": "3"
-      },
-      {
         "id": "3-v2",
         "sku": "RKF-CCS-003-PNK-M",
         "size": "S",
@@ -437,6 +426,17 @@ export const products: Product[] = [
         "productId": "3"
       },
       {
+        "id": "3-v5",
+        "sku": "RKF-CCS-003-MNT-L",
+        "size": "XL",
+        "color": "Blue",
+        "colorHex": "#4f2fee",
+        "price": 499,
+        "salePrice": 349.3,
+        "stock": 3,
+        "productId": "3"
+      },
+      {
         "id": "3-v4",
         "sku": "RKF-CCS-003-MNT-M",
         "size": "L",
@@ -444,13 +444,13 @@ export const products: Product[] = [
         "colorHex": "#4f2fee",
         "price": 499,
         "salePrice": 349.3,
-        "stock": 5,
+        "stock": 4,
         "productId": "3"
       },
       {
-        "id": "3-v5",
-        "sku": "RKF-CCS-003-MNT-L",
-        "size": "XL",
+        "id": "3-v1",
+        "sku": "RKF-CCS-003-PNK-S",
+        "size": "XS",
         "color": "Blue",
         "colorHex": "#4f2fee",
         "price": 499,
@@ -492,129 +492,13 @@ export const products: Product[] = [
     "reviews": []
   },
   {
-    "id": "10",
-    "name": "Ochre & Blue Mixed Stripe Button-Down Shirt",
-    "slug": "ochre-blue-mixed-stripe-button-down-shirt-6956",
-    "description": "Breathtaking designer lehenga in dusty rose with heavy hand-embroidered florals using zardozi, sequins, and pearl work. The flared cancan lehenga paired with a fitted blouse and sheer net dupatta creates a bridal-worthy ensemble. Handcrafted by our master artisans.",
-    "shortDescription": "Zardozi hand-embroidered designer lehenga set",
-    "category": "[\"tops\"]",
-    "subcategory": "lehengas",
-    "gender": "women",
-    "type": "readymade",
-    "basePrice": 249,
-    "salePrice": 224.1,
-    "discountPercent": 0,
-    "isOnSale": false,
-    "isFreeDelivery": true,
-    "fabric": "organza",
-    "fabricDetails": null,
-    "occasion": [
-      "Wedding",
-      "Engagement",
-      "Reception"
-    ],
-    "tags": [
-      "lehenga",
-      "designer",
-      "bridal",
-      "zardozi",
-      "handcrafted",
-      "premium"
-    ],
-    "rating": 4.3,
-    "reviewCount": 36,
-    "isFeatured": true,
-    "isNewArrival": true,
-    "isBestseller": false,
-    "isActive": true,
-    "isReturnable": true,
-    "createdAt": "2026-07-22T20:12:29.304Z",
-    "variants": [
-      {
-        "id": "10-v1",
-        "sku": "RKF-DLH-010-RSE-S",
-        "size": "S",
-        "color": "Coral",
-        "colorHex": "#C49A52",
-        "price": 249,
-        "salePrice": 224.1,
-        "stock": 2,
-        "productId": "10"
-      },
-      {
-        "id": "10-v2",
-        "sku": "RKF-DLH-010-RSE-M",
-        "size": "M",
-        "color": "Coral",
-        "colorHex": "#C49A52",
-        "price": 249,
-        "salePrice": 224.1,
-        "stock": 7,
-        "productId": "10"
-      },
-      {
-        "id": "10-v3",
-        "sku": "RKF-DLH-010-RSE-L",
-        "size": "L",
-        "color": "Coral",
-        "colorHex": "#C49A52",
-        "price": 249,
-        "salePrice": 224.1,
-        "stock": 6,
-        "productId": "10"
-      },
-      {
-        "id": "10-v4",
-        "sku": "RKF-DLH-010-SAG-M",
-        "size": "XL",
-        "color": "Coral",
-        "colorHex": "#C49A52",
-        "price": 249,
-        "salePrice": 224.1,
-        "stock": 7,
-        "productId": "10"
-      }
-    ],
-    "images": [
-      {
-        "id": "cmrtdn731000va0ng76mi34tb",
-        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1784561168/rk-fabrics/products/yyhgc4bdwy3xvbmqxvja.jpg",
-        "alt": "blob",
-        "isPrimary": false,
-        "productId": "10"
-      },
-      {
-        "id": "cmrtdp876000xa0ng6xpo4thl",
-        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1784561263/rk-fabrics/products/kfdwxmmknzeuaawktexq.jpg",
-        "alt": "blob",
-        "isPrimary": false,
-        "productId": "10"
-      },
-      {
-        "id": "cmrtdqn06000za0ng4h91qct0",
-        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1784561329/rk-fabrics/products/id4ipaerd99abix7kjfe.jpg",
-        "alt": "blob",
-        "isPrimary": false,
-        "productId": "10"
-      },
-      {
-        "id": "cmrtdsrbw0011a0ng56a8hvhv",
-        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1784561427/rk-fabrics/products/jztpjifob52wilurdkbr.jpg",
-        "alt": "blob",
-        "isPrimary": true,
-        "productId": "10"
-      }
-    ],
-    "reviews": []
-  },
-  {
     "id": "cmrtex4wp0000cyygm2lwgihs",
     "name": "Solid Ivory Long Sleeve Ruffled Maxi Dress",
     "slug": "solid-ivory-long-sleeve-ruffled-maxi-dress-1764",
     "description": "New product description",
     "shortDescription": "Short description",
     "category": "[\"dresses\"]",
-    "subcategory": undefined,
+    "subcategory": null,
     "gender": "women",
     "type": "readymade",
     "basePrice": 399,
@@ -676,7 +560,7 @@ export const products: Product[] = [
         "colorHex": "#F5F4F0",
         "price": 399,
         "salePrice": null,
-        "stock": 9,
+        "stock": 0,
         "productId": "cmrtex4wp0000cyygm2lwgihs"
       }
     ],
@@ -718,6 +602,131 @@ export const products: Product[] = [
       }
     ],
     "reviews": []
+  },
+  {
+    "id": "10",
+    "name": "Ochre & Blue Mixed Stripe Button-Down Shirt",
+    "slug": "ochre-blue-mixed-stripe-button-down-shirt-6956",
+    "description": "Breathtaking designer lehenga in dusty rose with heavy hand-embroidered florals using zardozi, sequins, and pearl work. The flared cancan lehenga paired with a fitted blouse and sheer net dupatta creates a bridal-worthy ensemble. Handcrafted by our master artisans.",
+    "shortDescription": "Zardozi hand-embroidered designer lehenga set",
+    "category": "[\"tops\"]",
+    "subcategory": "lehengas",
+    "gender": "women",
+    "type": "readymade",
+    "basePrice": 249,
+    "salePrice": 224.1,
+    "discountPercent": 0,
+    "isOnSale": false,
+    "isFreeDelivery": true,
+    "fabric": "organza",
+    "fabricDetails": null,
+    "occasion": [
+      "Wedding",
+      "Engagement",
+      "Reception"
+    ],
+    "tags": [
+      "lehenga",
+      "designer",
+      "bridal",
+      "zardozi",
+      "handcrafted",
+      "premium"
+    ],
+    "rating": 5,
+    "reviewCount": 1,
+    "isFeatured": true,
+    "isNewArrival": true,
+    "isBestseller": false,
+    "isActive": true,
+    "isReturnable": true,
+    "createdAt": "2026-07-22T20:12:29.304Z",
+    "variants": [
+      {
+        "id": "10-v2",
+        "sku": "RKF-DLH-010-RSE-M",
+        "size": "M",
+        "color": "Coral",
+        "colorHex": "#C49A52",
+        "price": 249,
+        "salePrice": 224.1,
+        "stock": 7,
+        "productId": "10"
+      },
+      {
+        "id": "10-v3",
+        "sku": "RKF-DLH-010-RSE-L",
+        "size": "L",
+        "color": "Coral",
+        "colorHex": "#C49A52",
+        "price": 249,
+        "salePrice": 224.1,
+        "stock": 6,
+        "productId": "10"
+      },
+      {
+        "id": "10-v4",
+        "sku": "RKF-DLH-010-SAG-M",
+        "size": "XL",
+        "color": "Coral",
+        "colorHex": "#C49A52",
+        "price": 249,
+        "salePrice": 224.1,
+        "stock": 7,
+        "productId": "10"
+      },
+      {
+        "id": "10-v1",
+        "sku": "RKF-DLH-010-RSE-S",
+        "size": "S",
+        "color": "Coral",
+        "colorHex": "#C49A52",
+        "price": 249,
+        "salePrice": 224.1,
+        "stock": 0,
+        "productId": "10"
+      }
+    ],
+    "images": [
+      {
+        "id": "cmrtdn731000va0ng76mi34tb",
+        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1784561168/rk-fabrics/products/yyhgc4bdwy3xvbmqxvja.jpg",
+        "alt": "blob",
+        "isPrimary": false,
+        "productId": "10"
+      },
+      {
+        "id": "cmrtdp876000xa0ng6xpo4thl",
+        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1784561263/rk-fabrics/products/kfdwxmmknzeuaawktexq.jpg",
+        "alt": "blob",
+        "isPrimary": false,
+        "productId": "10"
+      },
+      {
+        "id": "cmrtdqn06000za0ng4h91qct0",
+        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1784561329/rk-fabrics/products/id4ipaerd99abix7kjfe.jpg",
+        "alt": "blob",
+        "isPrimary": false,
+        "productId": "10"
+      },
+      {
+        "id": "cmrtdsrbw0011a0ng56a8hvhv",
+        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1784561427/rk-fabrics/products/jztpjifob52wilurdkbr.jpg",
+        "alt": "blob",
+        "isPrimary": true,
+        "productId": "10"
+      }
+    ],
+    "reviews": [
+      {
+        "id": "cms0q71uy000styfhd6gwi9tw",
+        "userName": "vijay jangir",
+        "rating": 5,
+        "comment": "this product is having a very good fabric quality",
+        "createdAt": "2026-07-25T18:51:54.292Z",
+        "productId": "10"
+      }
+    ]
   }
 ];
 

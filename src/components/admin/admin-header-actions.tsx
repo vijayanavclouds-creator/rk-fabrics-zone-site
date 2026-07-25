@@ -84,17 +84,17 @@ export function AdminHeaderActions() {
   }
 
   return (
-    <div className="flex items-center gap-3">
+    <div className="flex items-center gap-2">
       {/* ALERTS */}
       <div className="relative" ref={alertRef}>
         <button 
           onClick={() => { setShowAlerts(!showAlerts); setShowNotifications(false); }}
-          className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors relative ${totalAlerts > 0 ? 'bg-rose-50 text-rose-600' : 'hover:bg-black/5 text-slate'}`}
+          className="btn-icon"
           aria-label="Alerts"
         >
-          <AlertTriangle size={20} className={totalAlerts > 0 ? 'animate-pulse' : ''} />
+          <AlertTriangle size={18} className={`stroke-[1.5] text-slate-500 ${totalAlerts > 0 ? 'animate-pulse text-rose-500' : ''}`} />
           {totalAlerts > 0 && (
-            <span className="absolute -top-1 -right-1 w-5 h-5 bg-rose text-white text-[10px] font-bold flex items-center justify-center rounded-full border-2 border-white">
+            <span className="absolute -top-1 -right-1 w-[18px] h-[18px] bg-[#1e3a5f] text-white text-[10px] font-bold flex items-center justify-center rounded-full shadow-sm">
               {totalAlerts}
             </span>
           )}
@@ -102,7 +102,7 @@ export function AdminHeaderActions() {
 
         {showAlerts && (
           <div className="absolute right-0 mt-2 w-80 sm:w-96 bg-white rounded-2xl shadow-neo-card border border-charcoal/10 overflow-hidden z-50">
-            <div className="p-4 border-b border-charcoal/5 flex items-center justify-between bg-slate-50">
+            <div className="p-4 flex items-center justify-between bg-white">
               <h3 className="font-bold text-charcoal flex items-center gap-2">
                 <AlertTriangle size={16} className="text-rose" /> 
                 Alerts ({totalAlerts})
@@ -180,20 +180,20 @@ export function AdminHeaderActions() {
       <div className="relative" ref={notifRef}>
         <button 
           onClick={() => { setShowNotifications(!showNotifications); setShowAlerts(false); }}
-          className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors relative ${unreadNotifs > 0 ? 'bg-teal-50 text-teal-700' : 'hover:bg-black/5 text-slate'}`}
-          aria-label="Admin Notifications"
+          className="btn-icon"
+          aria-label="Notifications"
         >
-          <Bell size={20} />
+          <Bell size={18} className={`stroke-[1.5] text-slate-500 ${unreadNotifs > 0 ? 'text-teal-600' : ''}`} />
           {unreadNotifs > 0 && (
-            <span className="absolute -top-1 -right-1 w-5 h-5 bg-teal-600 text-white text-[10px] font-bold flex items-center justify-center rounded-full border-2 border-white">
-              {unreadNotifs}
+            <span className="absolute -top-1 -right-1 w-[18px] h-[18px] bg-[#1e3a5f] text-white text-[10px] font-bold flex items-center justify-center rounded-full shadow-sm">
+              {unreadNotifs > 99 ? '99+' : unreadNotifs}
             </span>
           )}
         </button>
 
         {showNotifications && (
           <div className="absolute right-0 mt-2 w-80 sm:w-96 bg-white rounded-2xl shadow-neo-card border border-charcoal/10 overflow-hidden z-50">
-            <div className="p-4 border-b border-charcoal/5 flex items-center justify-between bg-cream/50">
+            <div className="p-4 flex items-center justify-between bg-white">
               <h3 className="font-bold text-charcoal">System Activity</h3>
               <div className="flex gap-3">
                 {unreadNotifs > 0 && (
@@ -257,7 +257,7 @@ export function AdminHeaderActions() {
               )}
             </div>
 
-            <div className="p-3 border-t border-charcoal/5 bg-slate-50 text-center">
+            <div className="p-3 bg-white text-center">
               <Link href="/account/admin/notifications" onClick={() => setShowNotifications(false)} className="text-sm font-semibold text-teal-600 hover:text-teal-800 transition-colors inline-block w-full">
                 View All Activity
               </Link>
