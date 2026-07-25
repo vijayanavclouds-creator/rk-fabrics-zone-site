@@ -2,7 +2,7 @@ import { PrismaClient } from '@prisma/client';
 
 const prismaClientSingleton = () => {
   let url = process.env.DATABASE_URL;
-  if (url && !url.includes("connection_limit") && !url.includes("pgbouncer")) {
+  if (url && !url.startsWith("prisma://") && !url.includes("accelerate") && !url.includes("connection_limit") && !url.includes("pgbouncer")) {
     url += (url.includes("?") ? "&" : "?") + "connection_limit=1&pool_timeout=20";
   }
   return new PrismaClient({
