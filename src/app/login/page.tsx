@@ -5,12 +5,12 @@ import { signIn, getSession } from "next-auth/react"
 import { useRouter, useSearchParams } from "next/navigation"
 import Link from "next/link"
 import { toast } from "sonner"
-import { ArrowRight, Lock, Mail } from "lucide-react"
+import { ArrowRight, Lock, Mail, Loader2, CheckCircle2, Sparkles } from "lucide-react"
 
 function LoginContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const [loading, setLoading] = useState(false)
+  const [status, setStatus] = useState<"idle" | "verifying" | "success" | "google">("idle")
   const [error, setError] = useState<string | null>(null)
   
   const callbackUrl = searchParams.get("from") || "/shop"
@@ -18,7 +18,7 @@ function LoginContent() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    setLoading(true)
+    setStatus("verifying")
     setError(null)
     
     const formData = new FormData(e.currentTarget)
@@ -38,25 +38,64 @@ function LoginContent() {
           router.push(`/reactivate?email=${encodeURIComponent(email)}`)
         } else {
           setError("Invalid email or password")
-          setLoading(false)
+          setStatus("idle")
         }
       } else {
+        setStatus("success")
         const session = await getSession()
-        const url = session?.user?.role === "ADMIN" ? "/admin" : callbackUrl
-        router.push(url)
-        router.refresh()
+        const url = session?.user?.role === "ADMIN" ? "/admin?tab=overview" : callbackUrl
+        window.location.href = url
       }
     } catch (err) {
       setError("Something went wrong")
-      setLoading(false)
+      setStatus("idle")
     }
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#fdfaf6]">
+    <div className="min-h-screen flex flex-col bg-gradient-to-br from-teal-50 via-[#fdfaf6] to-blue-50/50 animate-in fade-in duration-700 relative overflow-hidden">
+      {status === "success" && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-white/85 backdrop-blur-md animate-in fade-in duration-300">
+          <div className="bg-white rounded-3xl border border-teal-500/20 p-8 shadow-2xl max-w-sm w-full mx-4 text-center space-y-6 animate-in zoom-in-95 duration-300">
+            <div className="relative w-20 h-20 mx-auto flex items-center justify-center">
+              <div className="absolute inset-0 rounded-full bg-teal-500/10 animate-ping duration-1000" />
+              <div className="w-16 h-16 rounded-full bg-teal-600 flex items-center justify-center text-white shadow-lg shadow-teal-600/30">
+                <CheckCircle2 size={36} className="animate-in zoom-in duration-500" />
+              </div>
+            </div>
+            <div>
+              <h3 className="text-2xl font-[family-name:var(--font-playfair)] font-bold text-charcoal mb-2 flex items-center justify-center gap-2">
+                <span>Welcome Back!</span>
+                <Sparkles size={20} className="text-teal-600 animate-pulse" />
+              </h3>
+              <p className="text-slate text-sm font-medium">
+                Credentials verified. Preparing your workspace and loading your dashboard...
+              </p>
+            </div>
+            <div className="flex items-center justify-center gap-2 text-xs font-bold text-teal-600 uppercase tracking-widest">
+              <Loader2 size={14} className="animate-spin" />
+              <span>Redirecting...</span>
+            </div>
+          </div>
+        </div>
+      )}
 
-      <main className="flex-grow flex items-center justify-center p-4 py-20">
-        <div className="w-full max-w-md bg-white rounded-3xl border border-charcoal/10 p-8 shadow-sm">
+      {status === "google" && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-white/85 backdrop-blur-md animate-in fade-in duration-300">
+          <div className="bg-white rounded-3xl border border-teal-500/20 p-8 shadow-2xl max-w-sm w-full mx-4 text-center space-y-6 animate-in zoom-in-95 duration-300">
+            <div className="w-16 h-16 rounded-full bg-slate-50 border border-charcoal/10 mx-auto flex items-center justify-center shadow-inner">
+              <Loader2 size={32} className="animate-spin text-teal-600" />
+            </div>
+            <div>
+              <h3 className="text-xl font-bold text-charcoal mb-2">Connecting to Google</h3>
+              <p className="text-slate text-sm font-medium">Please follow the secure authentication prompt in your browser window...</p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <main className="flex-grow flex items-center justify-center p-4 py-20 relative z-10">
+        <div className="w-full max-w-md bg-white/90 backdrop-blur-md rounded-3xl border border-charcoal/10 p-8 shadow-xl">
           <div className="text-center mb-8">
             <h1 className="text-3xl font-[family-name:var(--font-playfair)] font-bold text-charcoal mb-2">Welcome Back</h1>
             <p className="text-slate">Sign in to your account</p>
@@ -73,7 +112,8 @@ function LoginContent() {
                   type="email"
                   name="email"
                   required
-                  className="w-full pl-11 pr-4 py-3 rounded-xl border border-charcoal/20 bg-transparent focus:outline-none focus:border-teal-600 focus:ring-1 focus:ring-teal-600 transition-all text-charcoal"
+                  disabled={status !== "idle"}
+                  className="w-full pl-11 pr-4 py-3 rounded-xl border border-charcoal/20 bg-transparent focus:outline-none focus:border-teal-600 focus:ring-1 focus:ring-teal-600 transition-all text-charcoal disabled:opacity-50"
                   placeholder="you@example.com"
                 />
               </div>
@@ -89,7 +129,8 @@ function LoginContent() {
                   type="password"
                   name="password"
                   required
-                  className="w-full pl-11 pr-4 py-3 rounded-xl border border-charcoal/20 bg-transparent focus:outline-none focus:border-teal-600 focus:ring-1 focus:ring-teal-600 transition-all text-charcoal"
+                  disabled={status !== "idle"}
+                  className="w-full pl-11 pr-4 py-3 rounded-xl border border-charcoal/20 bg-transparent focus:outline-none focus:border-teal-600 focus:ring-1 focus:ring-teal-600 transition-all text-charcoal disabled:opacity-50"
                   placeholder="••••••••"
                 />
               </div>
@@ -102,14 +143,28 @@ function LoginContent() {
 
             <button
               type="submit"
-              disabled={loading}
-              className="w-full py-4 bg-charcoal text-white font-bold rounded-xl shadow-neo-btn hover:bg-black hover:shadow-neo-pressed transition-all flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed mt-2"
+              disabled={status !== "idle"}
+              className="w-full py-4 bg-charcoal text-white font-bold rounded-xl shadow-neo-btn hover:bg-black hover:shadow-neo-pressed transition-all flex items-center justify-center gap-2 disabled:opacity-80 disabled:cursor-not-allowed mt-2"
             >
-              {loading ? "Signing in..." : "Sign In"}
-              {!loading && <ArrowRight size={18} />}
+              {status === "verifying" ? (
+                <>
+                  <Loader2 size={18} className="animate-spin text-teal-400" />
+                  <span>Verifying credentials...</span>
+                </>
+              ) : status === "success" ? (
+                <>
+                  <CheckCircle2 size={18} className="text-teal-400 animate-in zoom-in" />
+                  <span>Authenticated! Redirecting...</span>
+                </>
+              ) : (
+                <>
+                  <span>Sign In</span>
+                  <ArrowRight size={18} />
+                </>
+              )}
             </button>
             {error && (
-              <p className="text-error text-sm font-bold text-center mt-2">{error}</p>
+              <p className="text-error text-sm font-bold text-center mt-2 animate-in fade-in">{error}</p>
             )}
           </form>
 
@@ -120,16 +175,30 @@ function LoginContent() {
           </div>
 
           <button
-            onClick={() => signIn("google", { callbackUrl: googleCallbackUrl })}
-            className="w-full mt-6 py-3 px-4 bg-white border border-charcoal/20 text-charcoal font-bold rounded-xl shadow-sm hover:bg-slate-50 transition-all flex items-center justify-center gap-3"
+            type="button"
+            onClick={() => {
+              setStatus("google")
+              signIn("google", { callbackUrl: googleCallbackUrl })
+            }}
+            disabled={status !== "idle"}
+            className="w-full mt-6 py-3 px-4 bg-white border border-charcoal/20 text-charcoal font-bold rounded-xl shadow-sm hover:bg-slate-50 transition-all flex items-center justify-center gap-3 disabled:opacity-70 disabled:cursor-not-allowed"
           >
-            <svg viewBox="0 0 24 24" width="20" height="20" xmlns="http://www.w3.org/2000/svg">
-              <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
-              <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853" />
-              <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05" />
-              <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
-            </svg>
-            Continue with Google
+            {status === "google" ? (
+              <>
+                <Loader2 size={18} className="animate-spin text-teal-600" />
+                <span>Connecting to Google...</span>
+              </>
+            ) : (
+              <>
+                <svg viewBox="0 0 24 24" width="20" height="20" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
+                  <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853" />
+                  <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05" />
+                  <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
+                </svg>
+                <span>Continue with Google</span>
+              </>
+            )}
           </button>
 
           <p className="text-center mt-6 text-slate text-sm">
