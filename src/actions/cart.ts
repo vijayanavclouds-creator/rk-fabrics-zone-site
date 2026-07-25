@@ -98,6 +98,34 @@ export async function getAbandonedCarts() {
   }
 }
 
+export async function validateCartStock(items: any[]) {
+  try {
+    const variantIds = items.map(i => i.variant.id);
+    const variantsInDb = await prisma.productVariant.findMany({
+      where: { id: { in: variantIds } },
+      select: { id: true, stock: true }
+    });
+
+    const stockMap = variantsInDb.reduce((acc, v) => {
+      acc[v.id] = v.stock;
+      return acc;
+    }, {} as Record<string, number>);
+    
+    const outOfStockItems = items.filter(item => {
+      const available = stockMap[item.variant.id] || 0;
+      return item.quantity > available;
+    }).map(item => ({
+      variantId: item.variant.id,
+      available: stockMap[item.variant.id] || 0
+    }));
+
+    return { success: true, outOfStockItems };
+  } catch (error) {
+    console.error("Error validating cart stock:", error);
+    return { success: false, outOfStockItems: [] };
+  }
+}
+
 export async function sendAbandonedCartReminder(userId: string) {
   try {
     const session = await getServerSession(authOptions);

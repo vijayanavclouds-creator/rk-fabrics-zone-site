@@ -7,11 +7,12 @@ import { useCartStore } from "@/store";
 import { formatPrice } from "@/lib/utils";
 import { ProductCard } from "@/components/product/product-card";
 import { products } from "@/lib/data";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import Image from "next/image";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { validateCartStock } from "@/actions/cart";
 
 export default function CartPage() {
   const { items, updateQuantity, removeItem, getSubtotal, getShipping, getTotal, getItemCount } = useCartStore();
@@ -24,6 +25,29 @@ export default function CartPage() {
   const shipping = getShipping();
   const discount = couponApplied ? Math.round(subtotal * 0.1) : 0;
   const total = subtotal + shipping - discount;
+
+  const [outOfStockMap, setOutOfStockMap] = useState<Record<string, number>>({});
+  
+  useEffect(() => {
+    if (items.length === 0) {
+      setOutOfStockMap({});
+      return;
+    }
+    
+    const checkStock = async () => {
+      const res = await validateCartStock(items);
+      if (res.success && res.outOfStockItems) {
+        const map = res.outOfStockItems.reduce((acc: Record<string, number>, curr: any) => {
+          acc[curr.variantId] = curr.available;
+          return acc;
+        }, {});
+        setOutOfStockMap(map);
+      }
+    };
+    checkStock();
+  }, [items]);
+
+  const hasOutOfStockItems = Object.keys(outOfStockMap).length > 0;
 
   const handleApplyCoupon = () => {
     if (couponCode.toUpperCase() === "RK30" || couponCode.toUpperCase() === "WELCOME10") {
@@ -101,6 +125,9 @@ export default function CartPage() {
  <div className="md:col-span-2 space-y-4">
  {items.map((item) => {
  const price = item.variant.salePrice || item.variant.price;
+ const isOutOfStock = outOfStockMap[item.variant.id] !== undefined;
+ const availableStock = outOfStockMap[item.variant.id];
+  
  return (
  <motion.div
  key={item.variant.id}
@@ -137,6 +164,11 @@ export default function CartPage() {
  <p className="text-xs text-slate mt-1">
  {item.variant.color} • {item.variant.size} • {item.product.fabric}
  </p>
+ {isOutOfStock && (
+    <div className="mt-2 text-[11px] font-bold text-rose-600 bg-rose-50 px-2 py-1 rounded-md inline-block uppercase tracking-wider">
+      {availableStock === 0 ? "Out of Stock" : `Only ${availableStock} left - Please reduce quantity`}
+    </div>
+  )}
  </div>
  <button
  onClick={() => {
@@ -252,10 +284,17 @@ export default function CartPage() {
 
   <button
   onClick={handleCheckout}
-  className="btn-primary w-full flex items-center justify-center gap-2 text-center py-4"
+  disabled={hasOutOfStockItems}
+  className={`btn-primary w-full flex items-center justify-center gap-2 text-center py-4 ${hasOutOfStockItems ? 'opacity-50 cursor-not-allowed' : ''}`}
   >
   Proceed to Checkout <ArrowRight size={16} />
   </button>
+  
+  {hasOutOfStockItems && (
+    <p className="text-xs text-rose-600 text-center mt-3 font-medium">
+      Please remove or reduce the quantity of out-of-stock items to proceed.
+    </p>
+  )}
 
   {/* Payment Icons */}
  <div className="flex items-center justify-center gap-3 text-xs text-slate pt-2">
