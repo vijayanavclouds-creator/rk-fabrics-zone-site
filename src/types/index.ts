@@ -6,7 +6,7 @@ export interface Product {
  description: string;
  shortDescription: string;
  category: Category;
- subcategory?: string;
+ subcategory?: string | null;
  gender: "women" | "men" | "unisex";
  type: "readymade" | "fabric" | "unstitched";
  basePrice: number;
