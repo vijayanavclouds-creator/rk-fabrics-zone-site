@@ -165,7 +165,7 @@ export async function sendOrderShippedEmail(order: any) {
   }
 }
 
-export async function sendOTPEmail(email: string, otp: string, type: 'SIGNUP' | 'REACTIVATE' | 'RESET_PASSWORD') {
+export async function sendOTPEmail(email: string, otp: string, type: 'SIGNUP' | 'REACTIVATE' | 'RESET_PASSWORD' | 'EXECUTIVE_LOGIN' | 'SUPPORT_LOGIN') {
   const from = process.env.SMTP_FROM || '"RK Fabrics Zone" <noreply@rkfabricszone.com>'
   const to = email
 
@@ -185,6 +185,10 @@ export async function sendOTPEmail(email: string, otp: string, type: 'SIGNUP' | 
     subject = "Reset your password"
     title = "Reset Password"
     message = "You have requested to reset your password. Please use the following OTP to proceed."
+  } else if (type === 'EXECUTIVE_LOGIN' || type === 'SUPPORT_LOGIN') {
+    subject = "Executive Security OTP — RK Fabrics Zone"
+    title = "Staff Verification Code"
+    message = "An authentication request was initiated for your executive account. Use the following security code to complete 2FA verification."
   }
 
   const html = `

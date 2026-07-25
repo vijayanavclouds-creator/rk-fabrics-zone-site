@@ -24,27 +24,29 @@ function LoginContent() {
     const formData = new FormData(e.currentTarget)
     const email = formData.get("email") as string
     const password = formData.get("password") as string
-
     try {
       const res = await signIn("credentials", {
         redirect: false,
         email,
         password,
+        portalType: "customer",
         callbackUrl,
       })
 
       if (res?.error) {
         if (res.error === "AccountDeactivated") {
           router.push(`/reactivate?email=${encodeURIComponent(email)}`)
+        } else if (res.error.includes("Executive accounts") || res.error.includes("staff portal")) {
+          setError("Executive accounts must log in via their authorized staff gateway.")
+          toast.error("Executive accounts must log in via their authorized staff gateway.")
+          setStatus("idle")
         } else {
           setError("Invalid email or password")
           setStatus("idle")
         }
       } else {
         setStatus("success")
-        const session = await getSession()
-        const url = session?.user?.role === "ADMIN" ? "/admin?tab=overview" : callbackUrl
-        window.location.href = url
+        window.location.href = callbackUrl || "/shop"
       }
     } catch (err) {
       setError("Something went wrong")

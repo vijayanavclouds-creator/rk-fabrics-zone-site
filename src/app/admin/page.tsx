@@ -12,18 +12,22 @@ export default async function AdminPage() {
   const session = await getServerSession(authOptions)
 
   if (!session || session.user.role !== "ADMIN") {
-    redirect("/account")
+    redirect("/")
   }
 
-  const [products, banners] = await Promise.all([
+  const [
+    products,
+    banners,
+    { categories, fabrics },
+    queries,
+    analyticsRes
+  ] = await Promise.all([
     prisma.product.findMany({
       include: { variants: true, images: true }
     }),
     prisma.banner.findMany({
       orderBy: { order: 'asc' }
-    })
-  ]);
-  const [{ categories, fabrics }, queries, analyticsRes] = await Promise.all([
+    }),
     getStoreTaxonomy(),
     getContactQueries(),
     getDashboardAnalytics()

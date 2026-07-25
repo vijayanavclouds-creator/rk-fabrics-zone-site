@@ -299,3 +299,51 @@ export async function getUsers() {
     return { success: false, error: "Failed to fetch users" }
   }
 }
+
+export async function sendStaffLoginOtp(email: string, requiredRole: "ADMIN" | "SUPPORT") {
+  try {
+    if (!email) return { success: false, error: "Email is required" };
+
+    const user = await prisma.user.findUnique({ where: { email } });
+    if (!user) {
+      return { success: false, error: "Account not found or unauthorized for this portal" };
+    }
+
+    if (requiredRole === "ADMIN" && user.role !== "ADMIN") {
+      return { success: false, error: "Unauthorized: Administrator privileges required" };
+    }
+    if (requiredRole === "SUPPORT" && user.role !== "SUPPORT" && user.role !== "ADMIN") {
+      return { success: false, error: "Unauthorized: Staff privileges required" };
+    }
+    if (user.isActive === false) {
+      return { success: false, error: "Account is deactivated" };
+    }
+
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    const expiresAt = new Date(Date.now() + 15 * 60 * 1000); // 15 mins
+    const otpType = requiredRole === "ADMIN" ? "EXECUTIVE_LOGIN" : "SUPPORT_LOGIN";
+
+    await prisma.otp.deleteMany({
+      where: { email, type: otpType }
+    });
+
+    await prisma.otp.create({
+      data: {
+        email,
+        otp,
+        type: otpType,
+        expiresAt
+      }
+    });
+
+    const emailRes = await sendOTPEmail(email, otp, otpType as any);
+    if (!emailRes.success) {
+      return { success: false, error: "Failed to send verification code email" };
+    }
+
+    return { success: true };
+  } catch (error: any) {
+    return { success: false, error: error.message || "Failed to generate security code" };
+  }
+}
+

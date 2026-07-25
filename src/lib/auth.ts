@@ -20,7 +20,9 @@ export const authOptions: NextAuthOptions = {
       name: "Credentials",
       credentials: {
         email: { label: "Email", type: "email" },
-        password: { label: "Password", type: "password" }
+        password: { label: "Password", type: "password" },
+        portalType: { label: "Portal Type", type: "text" },
+        otp: { label: "OTP Code", type: "text" }
       },
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) {
@@ -43,6 +45,45 @@ export const authOptions: NextAuthOptions = {
         
         if (user.isActive === false) {
           throw new Error("AccountDeactivated");
+        }
+
+        // Portal Isolation Logic
+        if (credentials.portalType === "customer") {
+          if (user.role === "ADMIN" || user.role === "SUPPORT") {
+            throw new Error("Executive accounts must log in through their authorized staff portal.");
+          }
+        }
+
+        // Executive / Support OTP 2FA Verification
+        if (credentials.portalType === "admin" || credentials.portalType === "support") {
+          const requiredRole = credentials.portalType === "admin" ? "ADMIN" : "SUPPORT";
+          if (requiredRole === "ADMIN" && user.role !== "ADMIN") {
+            throw new Error("Unauthorized: Administrator privileges required.");
+          }
+          if (requiredRole === "SUPPORT" && user.role !== "SUPPORT" && user.role !== "ADMIN") {
+            throw new Error("Unauthorized: Staff privileges required.");
+          }
+
+          if (!credentials.otp) {
+            throw new Error("Verification code (OTP) is required.");
+          }
+
+          const otpType = requiredRole === "ADMIN" ? "EXECUTIVE_LOGIN" : "SUPPORT_LOGIN";
+          const validOtp = await prisma.otp.findFirst({
+            where: {
+              email: credentials.email,
+              type: otpType,
+              otp: credentials.otp,
+              expiresAt: { gt: new Date() }
+            }
+          });
+
+          if (!validOtp) {
+            throw new Error("Invalid or expired verification code.");
+          }
+
+          // Delete OTP once verified
+          await prisma.otp.delete({ where: { id: validOtp.id } });
         }
 
         return {
