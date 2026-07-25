@@ -254,11 +254,11 @@ export default function AddressSelector({ initialAddresses, isCheckout = true }:
         </h2>
       )}
       <div className={!isCheckout ? "space-y-6 w-full" : "space-y-6"}>
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+      <div className="flex flex-wrap justify-center gap-4 md:gap-6">
         {addresses.map((addr) => (
           <label 
             key={addr.id} 
-            className={`block p-5 rounded-2xl border-2 cursor-pointer transition-all relative ${
+            className={`w-full sm:w-[340px] block p-5 rounded-2xl border-2 cursor-pointer transition-all relative ${
               activeAddressId === addr.id ? "border-teal-600 bg-teal-50/30" : "border-charcoal/10 bg-white hover:border-charcoal/20"
             }`}
           >
@@ -305,7 +305,7 @@ export default function AddressSelector({ initialAddresses, isCheckout = true }:
               setShowForm(true)
             }
           }}
-          className="h-full min-h-[200px] border-2 border-dashed border-charcoal/20 rounded-2xl flex flex-col items-center justify-center text-slate hover:text-teal-600 hover:border-teal-600 hover:bg-teal-50/30 transition-all"
+          className="w-full sm:w-[340px] h-full min-h-[200px] border-2 border-dashed border-charcoal/20 rounded-2xl flex flex-col items-center justify-center text-slate hover:text-teal-600 hover:border-teal-600 hover:bg-teal-50/30 transition-all"
         >
           <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center mb-3 shadow-sm border border-charcoal/5">
             <Plus size={24} />
@@ -315,24 +315,13 @@ export default function AddressSelector({ initialAddresses, isCheckout = true }:
       </div>
 
       {isCheckout && (
-        <div className="flex justify-between items-center pt-6 border-t border-charcoal/10 mt-8">
-          <Link 
-            href="/cart" 
-            className="btn-primary hidden sm:inline-flex items-center justify-center !px-4"
-            aria-label="Back to Cart"
+        <div className="flex justify-center items-center pt-6 border-t border-charcoal/10 mt-8">
+          <button
+            onClick={handleContinue}
+            className="btn-teal w-full sm:w-auto flex items-center justify-center gap-2 px-8"
           >
-            <ArrowLeft size={18} />
-          </Link>
-          
-          <div className="flex w-full sm:w-auto justify-end gap-4">
-            
-            <button
-              onClick={handleContinue}
-              className="btn-teal flex-1 sm:flex-none flex items-center justify-center gap-2"
-            >
-              Continue to Payment <ArrowRight size={18} />
-            </button>
-          </div>
+            Continue to Payment <ArrowRight size={18} />
+          </button>
         </div>
       )}
       </div>
