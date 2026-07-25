@@ -18,7 +18,7 @@ export function NotificationDropdown() {
   useEffect(() => {
     if (session?.user) {
       fetchNotifications()
-      const interval = setInterval(fetchNotifications, 10000) // fetch every 10 seconds for real-time updates
+      const interval = setInterval(fetchNotifications, 60000) // fetch every 60 seconds for updates
       return () => clearInterval(interval)
     }
   }, [session])

@@ -20,7 +20,7 @@ export function AdminHeaderActions() {
 
   useEffect(() => {
     fetchData()
-    const interval = setInterval(fetchData, 10000) // refresh every 10 seconds for near real-time updates
+    const interval = setInterval(fetchData, 60000) // refresh every 60 seconds for updates
     
     const handleStatusUpdate = () => fetchData()
     window.addEventListener('orderStatusUpdated', handleStatusUpdate)
@@ -45,10 +45,8 @@ export function AdminHeaderActions() {
   }, [])
 
   const fetchData = async () => {
-    const [notifRes, alertRes] = await Promise.all([
-      getAdminNotifications(),
-      getLateShippingAlerts()
-    ])
+    const notifRes = await getAdminNotifications();
+    const alertRes = await getLateShippingAlerts();
     
     if (notifRes.success) setNotifications(notifRes.notifications || [])
     if (alertRes.success) {
