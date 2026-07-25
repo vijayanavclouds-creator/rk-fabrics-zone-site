@@ -15,7 +15,7 @@ export async function getDashboardAnalytics() {
     thirtyDaysAgo.setHours(0, 0, 0, 0);
 
     // Batch 1: Orders, Users, and Open Queries (limited concurrency to prevent connection limit issues)
-    const [allOrders, allUsers, recentUnsolvedQueries] = await Promise.all([
+    const [allOrders, allUsers, recentUnsolvedQueries, totalSubscribers] = await Promise.all([
       prisma.order.findMany({
         select: { totalAmount: true, createdAt: true, status: true, discountAmount: true }
       }),
@@ -27,7 +27,8 @@ export async function getDashboardAnalytics() {
         where: { status: "OPEN" },
         orderBy: { createdAt: "desc" },
         take: 5
-      })
+      }),
+      prisma.newsletterSubscriber.count()
     ]);
 
     // Batch 2: Products, Taxonomy, and Activity logs
@@ -107,6 +108,7 @@ export async function getDashboardAnalytics() {
         totalSales,
         totalDiscounts,
         platformFees,
+        totalSubscribers,
         newUsersLast7Days,
         recentUnsolvedQueries,
         chartData,

@@ -52,22 +52,38 @@ export function AccountDropdown() {
 
   const adminLinks = [
     { href: "/admin?tab=overview", label: "Dashboard Overview", icon: LayoutDashboard },
+    
+    // Catalog
     { href: "/admin?tab=list", label: "Product Settings", icon: Package },
+    { href: "/admin?tab=taxonomy", label: "Taxonomy Settings", icon: Scissors },
+    
+    // Sales
     { href: "/admin?tab=orders", label: "Orders Management", icon: ShoppingBag },
+    { href: "/admin?tab=finance", label: "Finance Management", icon: DollarSign },
+    
+    // Engagement
     { href: "/admin?tab=queries", label: "Queries Management", icon: MessageSquare },
     { href: "/admin?tab=newsletters", label: "Newsletter Studio", icon: Mail },
-    { href: "/admin?tab=finance", label: "Finance Management", icon: DollarSign },
-    { href: "/admin?tab=banners", label: "Banner Settings", icon: ImageIcon },
     { href: "/admin?tab=users", label: "User Management", icon: Users },
-    { href: "/admin?tab=system", label: "System Status", icon: Settings },
-    { href: "/admin?tab=navigation", label: "Navigation Settings", icon: Menu },
-    { href: "/admin?tab=taxonomy", label: "Taxonomy Settings", icon: Scissors },
+    
+    // Site Settings
     { href: "/admin?tab=company_profile", label: "Company Profile", icon: Building2 },
-    { href: "/account/profile", label: "My Profile", icon: User },
-    { href: "/account/admin-settings", label: "General Settings", icon: AlertTriangle },
+    { href: "/admin?tab=navigation", label: "Navigation Settings", icon: Menu },
+    { href: "/admin?tab=banners", label: "Banner Settings", icon: ImageIcon },
+    { href: "/admin?tab=system", label: "System Status", icon: Settings },
+    
+    // Account
+    { href: "/admin?tab=profile", label: "My Profile", icon: User },
   ]
 
-  const activeLinks = session.user.role === "ADMIN" ? adminLinks : customerLinks
+  const supportLinks = [
+    { href: "/support?tab=overview", label: "Dashboard Overview", icon: LayoutDashboard },
+    { href: "/support?tab=orders", label: "Orders Management", icon: ShoppingBag },
+    { href: "/support?tab=queries", label: "Queries Management", icon: MessageSquare },
+    { href: "/support?tab=profile", label: "My Profile", icon: User },
+  ]
+
+  const activeLinks = session.user.role === "ADMIN" ? adminLinks : session.user.role === "SUPPORT" ? supportLinks : customerLinks
 
   return (
     <div className="relative hidden md:block" ref={dropdownRef}>

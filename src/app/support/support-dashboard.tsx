@@ -8,6 +8,7 @@ import { signOut } from "next-auth/react"
 import { DashboardOverview } from "@/app/admin/dashboard-overview"
 import { OrdersManager } from "@/app/admin/orders-manager"
 import { QueriesManager } from "@/app/admin/queries-manager"
+import { AdminProfile } from "@/app/admin/admin-profile"
 import { PortalHeader } from "@/components/layout/portal-header"
 
 export function SupportDashboard({ 
@@ -19,7 +20,7 @@ export function SupportDashboard({
 }) {
   const searchParams = useSearchParams()
   const tabParam = searchParams.get("tab") as any
-  const targetView = ["overview", "orders", "queries"].includes(tabParam) ? tabParam : "overview"
+  const targetView = ["overview", "orders", "queries", "profile"].includes(tabParam) ? tabParam : "overview"
   
   const [activeView, setActiveView] = useState<any>(targetView)
   const [prevTabParam, setPrevTabParam] = useState(tabParam)
@@ -126,6 +127,8 @@ export function SupportDashboard({
                 <QueriesManager initialQueries={queries} basePath="/support" />
               </div>
             )}
+
+            {activeView === "profile" && <AdminProfile />}
           </div>
         </main>
       </div>

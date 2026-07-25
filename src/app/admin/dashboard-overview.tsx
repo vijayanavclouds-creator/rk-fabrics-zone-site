@@ -190,45 +190,53 @@ export function DashboardOverview({ initialData, isSupport = false }: { initialD
           <div className={cn("space-y-6", isSupport ? "xl:col-span-12" : "xl:col-span-6")}>
             {/* 4 Stat Cards Row */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <GlassCard className="bg-gradient-to-br from-blue-50/50 to-transparent border-blue-100/50 p-4">
-                <div className="flex items-center gap-2 mb-2">
-                  <div className="p-1.5 bg-blue-100 text-blue-600 rounded-lg">
-                    <BarChart3 size={16} />
+              <Link href="/admin?tab=orders" className="block cursor-pointer">
+                <GlassCard className="bg-gradient-to-br from-blue-50/50 to-transparent border-blue-100/50 p-4 h-full hover:shadow-md hover:scale-[1.02] transition-all">
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className="p-1.5 bg-blue-100 text-blue-600 rounded-lg">
+                      <BarChart3 size={16} />
+                    </div>
+                    <span className="text-xs font-bold text-slate uppercase">Total Sales</span>
                   </div>
-                  <span className="text-xs font-bold text-slate uppercase">Total Sales</span>
-                </div>
-                <h3 className="text-xl lg:text-2xl font-black text-charcoal tracking-tight">₹{data.totalSales.toLocaleString()}</h3>
-              </GlassCard>
+                  <h3 className="text-xl lg:text-2xl font-black text-charcoal tracking-tight">₹{data.totalSales?.toLocaleString()}</h3>
+                </GlassCard>
+              </Link>
               
-              <GlassCard className="bg-gradient-to-br from-emerald-50/50 to-transparent border-emerald-100/50 p-4">
-                <div className="flex items-center gap-2 mb-2">
-                  <div className="p-1.5 bg-emerald-100 text-emerald-600 rounded-lg">
-                    <Coins size={16} />
+              <Link href="/admin?tab=newsletters" className="block cursor-pointer">
+                <GlassCard className="bg-gradient-to-br from-emerald-50/50 to-transparent border-emerald-100/50 p-4 h-full hover:shadow-md hover:scale-[1.02] transition-all">
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className="p-1.5 bg-emerald-100 text-emerald-600 rounded-lg">
+                      <Users size={16} />
+                    </div>
+                    <span className="text-xs font-bold text-slate uppercase">Subscribers</span>
                   </div>
-                  <span className="text-xs font-bold text-slate uppercase">Platform Fees</span>
-                </div>
-                <h3 className="text-xl lg:text-2xl font-black text-charcoal tracking-tight">₹{(data.platformFees || 0).toLocaleString()}</h3>
-              </GlassCard>
+                  <h3 className="text-xl lg:text-2xl font-black text-charcoal tracking-tight">{data.totalSubscribers || 0}</h3>
+                </GlassCard>
+              </Link>
 
-              <GlassCard className="bg-gradient-to-br from-amber-50/50 to-transparent border-amber-100/50 p-4">
-                <div className="flex items-center gap-2 mb-2">
-                  <div className="p-1.5 bg-amber-100 text-amber-600 rounded-lg">
-                    <Ticket size={16} />
+              <Link href="/admin?tab=finance" className="block cursor-pointer">
+                <GlassCard className="bg-gradient-to-br from-amber-50/50 to-transparent border-amber-100/50 p-4 h-full hover:shadow-md hover:scale-[1.02] transition-all">
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className="p-1.5 bg-amber-100 text-amber-600 rounded-lg">
+                      <Ticket size={16} />
+                    </div>
+                    <span className="text-xs font-bold text-slate uppercase">Discount Given</span>
                   </div>
-                  <span className="text-xs font-bold text-slate uppercase">Discount Given</span>
-                </div>
-                <h3 className="text-xl lg:text-2xl font-black text-charcoal tracking-tight">₹{(data.totalDiscounts || 0).toLocaleString()}</h3>
-              </GlassCard>
+                  <h3 className="text-xl lg:text-2xl font-black text-charcoal tracking-tight">₹{(data.totalDiscounts || 0).toLocaleString()}</h3>
+                </GlassCard>
+              </Link>
 
-              <GlassCard className="bg-gradient-to-br from-purple-50/50 to-transparent border-purple-100/50 p-4">
-                <div className="flex items-center gap-2 mb-2">
-                  <div className="p-1.5 bg-purple-100 text-purple-600 rounded-lg">
-                    <Tags size={16} />
+              <Link href="/admin?tab=taxonomy" className="block cursor-pointer">
+                <GlassCard className="bg-gradient-to-br from-purple-50/50 to-transparent border-purple-100/50 p-4 h-full hover:shadow-md hover:scale-[1.02] transition-all">
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className="p-1.5 bg-purple-100 text-purple-600 rounded-lg">
+                      <Tags size={16} />
+                    </div>
+                    <span className="text-xs font-bold text-slate uppercase">Categories</span>
                   </div>
-                  <span className="text-xs font-bold text-slate uppercase">Categories</span>
-                </div>
-                <h3 className="text-xl lg:text-2xl font-black text-charcoal tracking-tight">{data.totalCategories}</h3>
-              </GlassCard>
+                  <h3 className="text-xl lg:text-2xl font-black text-charcoal tracking-tight">{data.totalCategories}</h3>
+                </GlassCard>
+              </Link>
             </div>
 
             {/* Main Graph */}

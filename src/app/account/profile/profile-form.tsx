@@ -9,7 +9,7 @@ import { uploadProfileImage } from "@/actions/upload"
 import Image from "next/image"
 import { Camera } from "lucide-react"
 
-export default function ProfileForm({ user }: { user: { name: string, email: string, phone: string, dob?: string, image?: string, receiveOrderEmails?: boolean } }) {
+export default function ProfileForm({ user, isStaff = false }: { user: { name: string, email: string, phone: string, dob?: string, image?: string, receiveOrderEmails?: boolean }, isStaff?: boolean }) {
   const [name, setName] = useState(user.name || "")
   const [phone, setPhone] = useState(user.phone || "")
   const [dob, setDob] = useState(user.dob || "")
@@ -113,18 +113,20 @@ export default function ProfileForm({ user }: { user: { name: string, email: str
         <input type="date" value={dob} onChange={(e) => setDob(e.target.value)} className="w-full px-4 py-3 rounded-xl border border-charcoal/20 bg-transparent focus:outline-none focus:border-teal-600 focus:ring-1 focus:ring-teal-600 text-charcoal transition-all text-slate-800" />
       </div>
 
-      <div className="flex items-center gap-3 py-2">
-        <input 
-          type="checkbox" 
-          id="receiveOrderEmails"
-          checked={receiveOrderEmails} 
-          onChange={(e) => setReceiveOrderEmails(e.target.checked)} 
-          className="w-5 h-5 rounded border-charcoal/20 text-teal-600 focus:ring-teal-600"
-        />
-        <label htmlFor="receiveOrderEmails" className="text-sm font-medium text-charcoal cursor-pointer select-none">
-          Receive order status updates via email
-        </label>
-      </div>
+      {!isStaff && (
+        <div className="flex items-center gap-3 py-2">
+          <input 
+            type="checkbox" 
+            id="receiveOrderEmails"
+            checked={receiveOrderEmails} 
+            onChange={(e) => setReceiveOrderEmails(e.target.checked)} 
+            className="w-5 h-5 rounded border-charcoal/20 text-teal-600 focus:ring-teal-600"
+          />
+          <label htmlFor="receiveOrderEmails" className="text-sm font-medium text-charcoal cursor-pointer select-none">
+            Receive order status updates via email
+          </label>
+        </div>
+      )}
 
       <div className="pt-2">
         <button type="submit" disabled={loading} className="btn-primary !py-2 !px-4 text-sm w-fit disabled:opacity-50">

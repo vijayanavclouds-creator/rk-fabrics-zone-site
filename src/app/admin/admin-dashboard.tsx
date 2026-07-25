@@ -22,6 +22,7 @@ import { FinanceManager } from "./finance-manager"
 import { QueriesManager } from "./queries-manager"
 import { NewsletterManager } from "./newsletter-manager"
 import { ActivitiesManager } from "./activities-manager"
+import { AdminProfile } from "./admin-profile"
 import { PortalHeader } from "@/components/layout/portal-header"
 
 export function AdminDashboard({ 
@@ -41,7 +42,7 @@ export function AdminDashboard({
 }) {
   const searchParams = useSearchParams()
   const tabParam = searchParams.get("tab") as any
-  const targetView = ["overview", "list", "new", "edit", "banners", "system", "users", "orders", "navigation", "taxonomy", "company_profile", "finance", "queries", "newsletters", "activities"].includes(tabParam) ? tabParam : "overview"
+  const targetView = ["overview", "list", "new", "edit", "banners", "system", "users", "orders", "navigation", "taxonomy", "company_profile", "finance", "queries", "newsletters", "activities", "profile"].includes(tabParam) ? tabParam : "overview"
   
   const [activeView, setActiveView] = useState<any>(targetView)
   const [prevTabParam, setPrevTabParam] = useState(tabParam)
@@ -158,6 +159,7 @@ export function AdminDashboard({
       {activeView === "users" && <UsersManager />}
       {activeView === "orders" && <OrdersManager />}
       {activeView === "activities" && <ActivitiesManager />}
+      {activeView === "profile" && <AdminProfile />}
 
       {activeView === "list" && (
         <>

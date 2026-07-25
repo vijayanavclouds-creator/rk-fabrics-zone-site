@@ -11,6 +11,11 @@ export function CompanyProfileManager() {
   const [profile, setProfile] = useState({
     instagramUrl: "",
     facebookUrl: "",
+    xUrl: "",
+    threadsUrl: "",
+    pinterestUrl: "",
+    linkedinUrl: "",
+    whatsappUrl: "",
     contactNumber: "",
     helpCenterNumber: "",
     supportEmail: "",
@@ -62,7 +67,7 @@ export function CompanyProfileManager() {
   }
 
   return (
-    <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 max-w-4xl">
+    <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 w-full">
       <div className="mb-6 border-b border-charcoal/10 pb-4">
         <h2 className="font-[family-name:var(--font-playfair)] text-2xl font-bold text-charcoal flex items-center gap-2">
           <Building2 className="text-teal-600" size={28} />
@@ -88,7 +93,7 @@ export function CompanyProfileManager() {
               <input
                 type="url"
                 name="instagramUrl"
-                value={profile.instagramUrl}
+                value={profile.instagramUrl || ""}
                 onChange={handleChange}
                 placeholder="https://instagram.com/yourstore"
                 className="w-full px-4 py-3 bg-white border border-charcoal/20 rounded-xl focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-all"
@@ -101,20 +106,85 @@ export function CompanyProfileManager() {
               <input
                 type="url"
                 name="facebookUrl"
-                value={profile.facebookUrl}
+                value={profile.facebookUrl || ""}
                 onChange={handleChange}
                 placeholder="https://facebook.com/yourstore"
                 className="w-full px-4 py-3 bg-white border border-charcoal/20 rounded-xl focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-all"
               />
             </div>
-            <div className="md:col-span-2">
+            <div>
+              <label className="block text-sm font-bold text-charcoal mb-2 flex items-center gap-2">
+                <LinkIcon size={16} /> X (Twitter) URL
+              </label>
+              <input
+                type="url"
+                name="xUrl"
+                value={profile.xUrl || ""}
+                onChange={handleChange}
+                placeholder="https://x.com/yourstore"
+                className="w-full px-4 py-3 bg-white border border-charcoal/20 rounded-xl focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-all"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-bold text-charcoal mb-2 flex items-center gap-2">
+                <LinkIcon size={16} /> Threads URL
+              </label>
+              <input
+                type="url"
+                name="threadsUrl"
+                value={profile.threadsUrl || ""}
+                onChange={handleChange}
+                placeholder="https://threads.net/@yourstore"
+                className="w-full px-4 py-3 bg-white border border-charcoal/20 rounded-xl focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-all"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-bold text-charcoal mb-2 flex items-center gap-2">
+                <LinkIcon size={16} /> Pinterest URL
+              </label>
+              <input
+                type="url"
+                name="pinterestUrl"
+                value={profile.pinterestUrl || ""}
+                onChange={handleChange}
+                placeholder="https://pinterest.com/yourstore"
+                className="w-full px-4 py-3 bg-white border border-charcoal/20 rounded-xl focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-all"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-bold text-charcoal mb-2 flex items-center gap-2">
+                <LinkIcon size={16} /> LinkedIn URL
+              </label>
+              <input
+                type="url"
+                name="linkedinUrl"
+                value={profile.linkedinUrl || ""}
+                onChange={handleChange}
+                placeholder="https://linkedin.com/company/yourstore"
+                className="w-full px-4 py-3 bg-white border border-charcoal/20 rounded-xl focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-all"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-bold text-charcoal mb-2 flex items-center gap-2">
+                <LinkIcon size={16} /> WhatsApp URL
+              </label>
+              <input
+                type="url"
+                name="whatsappUrl"
+                value={profile.whatsappUrl || ""}
+                onChange={handleChange}
+                placeholder="https://wa.me/1234567890"
+                className="w-full px-4 py-3 bg-white border border-charcoal/20 rounded-xl focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-all"
+              />
+            </div>
+            <div>
               <label className="block text-sm font-bold text-charcoal mb-2 flex items-center gap-2">
                 <Globe size={16} /> Website URL (Main/Blog)
               </label>
               <input
                 type="url"
                 name="websiteUrl"
-                value={profile.websiteUrl}
+                value={profile.websiteUrl || ""}
                 onChange={handleChange}
                 placeholder="https://rkfabricszone.com"
                 className="w-full px-4 py-3 bg-white border border-charcoal/20 rounded-xl focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-all"
@@ -227,7 +297,7 @@ export function CompanyProfileManager() {
           <button
             type="submit"
             disabled={saving}
-            className="flex items-center gap-2 bg-charcoal text-white px-8 py-3 rounded-xl font-bold hover:bg-charcoal/90 transition-all shadow-md hover:shadow-lg disabled:opacity-70 disabled:cursor-not-allowed"
+            className="btn-primary flex items-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
           >
             <Save size={18} />
             {saving ? "Saving..." : "Save Company Profile"}

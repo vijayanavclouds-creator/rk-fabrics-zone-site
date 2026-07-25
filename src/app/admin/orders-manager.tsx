@@ -4,8 +4,10 @@ import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { getAllOrders, updateOrderStatus, toggleUserOrdersReadStatus } from "@/actions/order"
 import { getAbandonedCarts, sendAbandonedCartReminder } from "@/actions/cart"
+import { getAdminSettings } from "@/actions/admin-notifications"
+import AdminSettingsForm from "./order-settings-form"
 import { toast } from "sonner"
-import { Package, Search, ChevronRight, CheckCircle, Clock, Truck, XCircle, User, Bell } from "lucide-react"
+import { Package, Search, ChevronRight, CheckCircle, Clock, Truck, XCircle, User, Bell, Settings } from "lucide-react"
 
 export function OrdersManager({ readOnly = false, basePath = "/admin" }: { readOnly?: boolean; basePath?: string }) {
   const router = useRouter()
@@ -13,8 +15,9 @@ export function OrdersManager({ readOnly = false, basePath = "/admin" }: { readO
   const [abandonedCarts, setAbandonedCarts] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState("")
-  const [activeTab, setActiveTab] = useState<"orders" | "abandoned">("orders")
+  const [activeTab, setActiveTab] = useState<"orders" | "abandoned" | "settings">("orders")
   const [sentReminders, setSentReminders] = useState<string[]>([])
+  const [threshold, setThreshold] = useState<number>(6)
 
   useEffect(() => {
     fetchOrders()
@@ -28,9 +31,10 @@ export function OrdersManager({ readOnly = false, basePath = "/admin" }: { readO
 
   const fetchOrders = async () => {
     setLoading(true)
-    const [ordersRes, cartsRes] = await Promise.all([
+    const [ordersRes, cartsRes, settingsRes] = await Promise.all([
       getAllOrders(),
-      getAbandonedCarts()
+      getAbandonedCarts(),
+      getAdminSettings()
     ])
     
     if (ordersRes.success) {
@@ -41,6 +45,10 @@ export function OrdersManager({ readOnly = false, basePath = "/admin" }: { readO
 
     if (cartsRes.success) {
       setAbandonedCarts(cartsRes.data || [])
+    }
+
+    if (settingsRes.success && settingsRes.settings) {
+      setThreshold(settingsRes.settings.lateShippingThresholdHours || 6)
     }
     
     setLoading(false)
@@ -202,6 +210,16 @@ export function OrdersManager({ readOnly = false, basePath = "/admin" }: { readO
             )}
           </button>
         )}
+        {!readOnly && (
+          <button
+            onClick={() => setActiveTab("settings")}
+            className={`btn-primary !py-2 !px-4 text-sm flex items-center gap-2 transition-all ${
+              activeTab === "settings" ? "opacity-100" : "opacity-60 hover:opacity-80"
+            }`}
+          >
+            Order Settings
+          </button>
+        )}
       </div>
 
       <div className="bg-white rounded-3xl border border-charcoal/10 shadow-sm overflow-hidden">
@@ -211,6 +229,13 @@ export function OrdersManager({ readOnly = false, basePath = "/admin" }: { readO
           <div className="flex flex-col items-center justify-center min-h-[calc(100vh-280px)] text-slate">
             <div className="w-10 h-10 border-4 border-teal-200 border-t-teal-600 rounded-full animate-spin mb-4"></div>
             <p className="font-medium">Loading orders...</p>
+          </div>
+        ) : activeTab === "settings" ? (
+          <div className="p-6 md:p-8">
+            <h2 className="text-xl font-[family-name:var(--font-playfair)] font-bold text-charcoal mb-6 border-b border-charcoal/10 pb-4">
+              Order & Alert Settings
+            </h2>
+            <AdminSettingsForm initialThreshold={threshold} />
           </div>
         ) : activeTab === "orders" ? (
           usersList.length === 0 ? (
