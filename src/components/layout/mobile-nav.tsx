@@ -3,11 +3,12 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
-import { Home, LayoutGrid, Heart, ShoppingBag, User } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Home, LayoutGrid, Heart, ShoppingBag, User, LogOut, Ticket, MessageSquare, Mail, Bell, HelpCircle, LayoutDashboard, Package, Scissors, DollarSign, Users, Building2, Menu, Image as ImageIcon, Settings } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useCartStore, useWishlistStore, useUIStore } from "@/store";
-import { useSession } from "next-auth/react";
+import { useCheckoutStore } from "@/store/checkout";
+import { useSession, signOut } from "next-auth/react";
 import Image from "next/image";
 
 const getInitials = (name: string) => {
@@ -32,8 +33,49 @@ export function MobileNav() {
   const cartItemCount = useCartStore((s) => s.getItemCount());
   const wishlistCount = useWishlistStore((s) => s.items.length);
   const { data: session } = useSession();
+  const [isAccountMenuOpen, setIsAccountMenuOpen] = useState(false);
 
   const { closeSearch, closeMobileMenu } = useUIStore();
+  const clearCart = useCartStore((state) => state.clearCart);
+  const clearWishlist = useWishlistStore((state) => state.clearWishlist);
+  const clearCheckout = useCheckoutStore((state) => state.clearCheckout);
+
+  const customerLinks = [
+    { href: "/account/orders", label: "My Orders", icon: ShoppingBag },
+    { href: "/account/profile", label: "Account Information", icon: User },
+    { href: "/account/addresses", label: "Saved Addresses", icon: User },
+    { href: "/account/wishlist", label: "Wishlist", icon: Heart },
+    { href: "/account/coupons", label: "Coupons & Offers", icon: Ticket },
+    { href: "/account/reviews", label: "My Reviews & Queries", icon: MessageSquare },
+    { href: "/account/newsletters", label: "Newsletters", icon: Mail },
+    { href: "/account/notifications", label: "Notifications", icon: Bell },
+    { href: "/account/help", label: "Help Center & FAQs", icon: HelpCircle },
+  ];
+
+  const adminLinks = [
+    { href: "/admin?tab=overview", label: "Dashboard Overview", icon: LayoutDashboard },
+    { href: "/admin?tab=list", label: "Product Settings", icon: Package },
+    { href: "/admin?tab=taxonomy", label: "Taxonomy Settings", icon: Scissors },
+    { href: "/admin?tab=orders", label: "Orders Management", icon: ShoppingBag },
+    { href: "/admin?tab=finance", label: "Finance Management", icon: DollarSign },
+    { href: "/admin?tab=queries", label: "Queries Management", icon: MessageSquare },
+    { href: "/admin?tab=newsletters", label: "Newsletter Studio", icon: Mail },
+    { href: "/admin?tab=users", label: "User Management", icon: Users },
+    { href: "/admin?tab=company_profile", label: "Company Profile", icon: Building2 },
+    { href: "/admin?tab=navigation", label: "Navigation Settings", icon: Menu },
+    { href: "/admin?tab=banners", label: "Banner Settings", icon: ImageIcon },
+    { href: "/admin?tab=system", label: "System Status", icon: Settings },
+    { href: "/admin?tab=profile", label: "My Profile", icon: User },
+  ];
+
+  const supportLinks = [
+    { href: "/support?tab=overview", label: "Dashboard Overview", icon: LayoutDashboard },
+    { href: "/support?tab=orders", label: "Orders Management", icon: ShoppingBag },
+    { href: "/support?tab=queries", label: "Queries Management", icon: MessageSquare },
+    { href: "/support?tab=profile", label: "My Profile", icon: User },
+  ];
+
+  const activeLinks = session?.user?.role === "ADMIN" ? adminLinks : session?.user?.role === "SUPPORT" ? supportLinks : customerLinks;
 
   useEffect(() => {
     setMounted(true);
@@ -50,14 +92,20 @@ export function MobileNav() {
  return (
  <Link
  key={item.label}
- href={item.href}
- onClick={() => {
-   closeSearch();
-   closeMobileMenu();
+ href={item.label === "Account" && session?.user ? "#" : item.href}
+ onClick={(e) => {
+   if (item.label === "Account" && session?.user) {
+     e.preventDefault();
+     setIsAccountMenuOpen(!isAccountMenuOpen);
+   } else {
+     setIsAccountMenuOpen(false);
+     closeSearch();
+     closeMobileMenu();
+   }
  }}
  className={cn(
  "relative flex flex-col items-center gap-0.5 py-1 px-3 rounded-xl transition-colors",
- isActive
+ isActive || (item.label === "Account" && isAccountMenuOpen)
  ? "text-teal-600 "
  : "text-slate "
  )}
@@ -108,6 +156,69 @@ export function MobileNav() {
  );
  })}
  </div>
+
+  {/* Account Menu Bottom Sheet */}
+  <AnimatePresence>
+    {isAccountMenuOpen && session?.user && (
+      <>
+        <motion.div 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="fixed inset-0 bg-charcoal/20 z-40"
+          onClick={() => setIsAccountMenuOpen(false)}
+        />
+        <motion.div
+          initial={{ y: "100%", opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          exit={{ y: "100%", opacity: 0 }}
+          transition={{ type: "spring", bounce: 0, duration: 0.3 }}
+          className="absolute bottom-[72px] right-2 w-64 bg-white rounded-2xl shadow-xl z-50 overflow-hidden border border-slate-100"
+        >
+          <div className="p-4 border-b border-slate-100 flex items-center gap-3 bg-slate-50">
+            {session.user.image ? (
+              <div className="w-10 h-10 rounded-full overflow-hidden border border-charcoal/20 shrink-0">
+                <Image src={session.user.image} alt={session.user.name || "User"} width={40} height={40} className="object-cover w-full h-full" />
+              </div>
+            ) : (
+              <div className="w-10 h-10 rounded-full bg-teal-100 text-teal-700 flex items-center justify-center font-bold shrink-0">
+                {getInitials(session.user.name || "User")}
+              </div>
+            )}
+            <div className="min-w-0">
+              <p className="font-bold text-charcoal truncate">{session.user.name}</p>
+              <p className="text-[10px] text-slate truncate">{session.user.email}</p>
+            </div>
+          </div>
+          <div className="p-2 flex flex-col gap-1 max-h-[60vh] overflow-y-auto">
+            {activeLinks.map((link) => (
+              <Link key={link.href} href={link.href} onClick={() => setIsAccountMenuOpen(false)} className="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-50 transition-colors text-charcoal font-medium text-sm">
+                <link.icon size={18} className="text-slate" /> {link.label}
+              </Link>
+            ))}
+            <div className="h-px bg-slate-100 my-1 mx-2 shrink-0" />
+            <button 
+              onClick={() => { 
+                setIsAccountMenuOpen(false); 
+                clearCart();
+                clearWishlist();
+                clearCheckout();
+                const targetUrl = session?.user?.role === "ADMIN" 
+                  ? "/portal/rk-exec-gateway" 
+                  : session?.user?.role === "SUPPORT" 
+                  ? "/portal/rk-service-desk" 
+                  : "/";
+                signOut({ callbackUrl: targetUrl }); 
+              }} 
+              className="flex items-center gap-3 p-3 rounded-xl hover:bg-rose/10 transition-colors text-rose font-medium w-full text-left text-sm shrink-0"
+            >
+              <LogOut size={18} /> Sign Out
+            </button>
+          </div>
+        </motion.div>
+      </>
+    )}
+  </AnimatePresence>
  </nav>
  );
 }
