@@ -29,7 +29,7 @@ export default function WishlistPage() {
           )}
 
           {wishlistProducts.length > 0 && (
-            <div className="flex items-center gap-1 border border-charcoal/10 rounded-lg p-0.5 ml-4">
+            <div className="hidden md:flex items-center gap-1 border border-charcoal/10 rounded-lg p-0.5 ml-4">
               {([3, 5, 7] as const).map((cols) => (
                 <button
                   key={cols}

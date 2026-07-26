@@ -23,8 +23,14 @@ export default function Register() {
     const phone = formData.get("phone") as string
     const dob = formData.get("dob") as string
 
-    if (!/^[0-9]{10}$/.test(phone)) {
-      toast.error("Please enter a valid 10-digit phone number")
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      toast.error("Please enter a valid email address")
+      setStatus("idle")
+      return
+    }
+
+    if (!/^[6-9]\d{9}$/.test(phone)) {
+      toast.error("Please enter a valid 10-digit phone number starting with 6-9")
       setStatus("idle")
       return
     }

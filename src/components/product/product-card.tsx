@@ -102,166 +102,170 @@ interface ProductCardProps {
  viewport={{ once: true, margin: "-50px" }}
  transition={{ duration: 0.5, delay: index * 0.08 }}
  >
- <Link
- href={productUrl}
- className="product-card block group relative bg-cream rounded-[2rem] p-3 shadow-neo-card transition-all duration-300 hover:shadow-neo-pressed"
- onMouseEnter={() => setIsHovered(true)}
- onMouseLeave={() => setIsHovered(false)}
- >
- {/* Image Area */}
- <div className="relative aspect-[3/4] bg-cream shadow-neo-pressed rounded-[1.5rem] overflow-hidden">
- {/* Real Product Image or Fabric Pattern Background */}
- {product.images && product.images.length > 0 ? (
- <Image
- src={product.images.find(img => img.isPrimary)?.url || product.images[0].url}
- alt={product.name}
- fill
- className="object-cover group-hover:scale-110 transition-transform duration-500"
- />
- ) : (
- <div className="absolute inset-0 flex items-center justify-center">
- <span className="text-7xl opacity-30 group-hover:scale-110 transition-transform duration-500">
- {fabricEmoji}
- </span>
- </div>
- )}
+  <Link
+  href={productUrl}
+  className="product-card block group relative bg-cream rounded-[1.5rem] p-[7px] shadow-neo-card transition-all duration-300 hover:shadow-neo-pressed flex flex-col h-full"
+  onMouseEnter={() => setIsHovered(true)}
+  onMouseLeave={() => setIsHovered(false)}
+  >
+  {/* Image Area */}
+  <div className="relative aspect-[4/5] bg-cream shadow-neo-pressed rounded-[1.2rem] overflow-hidden shrink-0">
+  {/* Real Product Image or Fabric Pattern Background */}
+  {product.images && product.images.length > 0 ? (
+  <Image
+  src={product.images.find(img => img.isPrimary)?.url || product.images[0].url}
+  alt={product.name}
+  fill
+  className="object-cover group-hover:scale-110 transition-transform duration-500"
+  />
+  ) : (
+  <div className="absolute inset-0 flex items-center justify-center">
+  <span className="text-7xl opacity-30 group-hover:scale-110 transition-transform duration-500">
+  {fabricEmoji}
+  </span>
+  </div>
+  )}
 
- {/* Badges */}
- <div className="absolute top-3 left-3 flex flex-col gap-1.5 z-10">
- {hasDiscount && (
- <span className="px-2.5 py-1 text-xs font-bold bg-rose text-white rounded-full shadow-sm">
- {discount}% OFF
- </span>
- )}
- {product.isNewArrival && (
- <span className="px-2.5 py-1 text-xs font-bold bg-teal-600 text-white rounded-full shadow-sm flex items-center gap-1">
- <Sparkles size={10} /> NEW
- </span>
- )}
- {product.isBestseller && (
- <span className="px-2.5 py-1 text-xs font-bold bg-gold text-white rounded-full shadow-sm">
- BESTSELLER
- </span>
- )}
- </div>
+  {/* Badges */}
+  <div className="absolute top-2 left-2 flex flex-col gap-1 z-10">
+  {hasDiscount && (
+  <span className="px-2 py-0.5 text-[10px] font-bold bg-rose text-white rounded-full shadow-sm">
+  {discount}% OFF
+  </span>
+  )}
+  {product.isNewArrival && (
+  <span className="px-2 py-0.5 text-[10px] font-bold bg-teal-600 text-white rounded-full shadow-sm flex items-center gap-1">
+  <Sparkles size={8} /> NEW
+  </span>
+  )}
+  {product.isBestseller && (
+  <span className="px-2 py-0.5 text-[10px] font-bold bg-gold text-white rounded-full shadow-sm">
+  BESTSELLER
+  </span>
+  )}
+  </div>
 
- {/* Wishlist Button */}
- <button
- onClick={handleWishlist}
- className="absolute top-3 right-3 z-10 w-9 h-9 rounded-full bg-white/80 backdrop-blur-sm flex items-center justify-center shadow-sm hover:scale-110 transition-transform"
- >
- <Heart
- size={16}
- className={cn(
- "transition-colors",
- isMounted && wishlisted ? "fill-rose text-rose" : "text-charcoal/50 "
- )}
- />
- </button>
+  {/* Wishlist Button */}
+  <button
+  onClick={handleWishlist}
+  className="absolute top-2 right-2 z-10 w-8 h-8 rounded-full bg-white/80 backdrop-blur-sm flex items-center justify-center shadow-sm hover:scale-110 transition-transform"
+  >
+  <Heart
+  size={14}
+  className={cn(
+  "transition-colors",
+  isMounted && wishlisted ? "fill-rose text-rose" : "text-charcoal/50 "
+  )}
+  />
+  </button>
 
- {/* Quick Actions (on hover) */}
- <motion.div
- initial={{ opacity: 0, y: 20 }}
- animate={{ opacity: isHovered ? 1 : 0, y: isHovered ? 0 : 20 }}
- transition={{ duration: 0.2 }}
- className="absolute bottom-3 left-3 right-3 z-10 flex gap-2"
- >
- <button
- onClick={handleAddToCart}
- className="flex-1 flex items-center justify-center gap-2 py-2.5 bg-teal-600 hover:bg-teal-700 text-white text-sm font-semibold rounded-xl shadow-lg transition-colors"
- >
- <ShoppingBag size={14} /> Add to Cart
- </button>
- <button
- onClick={handleQuickView}
- className="w-10 h-10 bg-white text-charcoal rounded-xl shadow-lg flex items-center justify-center hover:bg-teal-50 :bg-teal-900/20 transition-colors"
- >
- <Eye size={16} />
- </button>
- </motion.div>
+  {/* Quick Actions (on hover) */}
+  <motion.div
+  initial={{ opacity: 0, y: 20 }}
+  animate={{ opacity: isHovered ? 1 : 0, y: isHovered ? 0 : 20 }}
+  transition={{ duration: 0.2 }}
+  className="absolute bottom-2 left-2 right-2 z-10 flex gap-1.5"
+  >
+  <button
+  onClick={handleAddToCart}
+  className="flex-1 flex items-center justify-center gap-1.5 py-2 bg-teal-600 hover:bg-teal-700 text-white text-xs font-semibold rounded-lg shadow-lg transition-colors"
+  >
+  <ShoppingBag size={12} /> Add
+  </button>
+  <button
+  onClick={handleQuickView}
+  className="w-8 h-8 bg-white text-charcoal rounded-lg shadow-lg flex items-center justify-center hover:bg-teal-50 transition-colors"
+  >
+  <Eye size={14} />
+  </button>
+  </motion.div>
 
- {/* Urgency */}
- {lowStock && (
- <div className="absolute bottom-3 left-3 right-3 z-[5]">
- <div className="urgency-pill">
- <span className="w-1.5 h-1.5 bg-gold rounded-full animate-pulse" />
- Only {primaryVariant.stock} left in stock
- </div>
- </div>
- )}
- </div>
+  {/* Urgency */}
+  {lowStock && (
+  <div className="absolute bottom-2 left-2 right-2 z-[5]">
+  <div className="urgency-pill text-[9px] py-0.5">
+  <span className="w-1.5 h-1.5 bg-gold rounded-full animate-pulse" />
+  Only {primaryVariant.stock} left
+  </div>
+  </div>
+  )}
+  </div>
 
- {/* Info */}
- <div className="p-4">
- {/* Color Swatches */}
- {product.variants.length > 1 && (
- <div className="flex items-center gap-1.5 mb-2">
- {[...new Map(product.variants.map((v) => [v.colorHex, v])).values()]
- .slice(0, 5)
- .map((v) => (
- <span
- key={v.id}
- className="w-4 h-4 rounded-full border-2 border-white shadow-sm"
- style={{ backgroundColor: v.colorHex }}
- title={v.color}
- />
- ))}
- {new Map(product.variants.map((v) => [v.colorHex, v])).size > 5 && (
- <span className="text-[10px] text-slate font-medium">
- +{new Map(product.variants.map((v) => [v.colorHex, v])).size - 5}
- </span>
- )}
- </div>
- )}
+  {/* Info */}
+  <div className="pt-2 px-1.5 pb-1 flex flex-col flex-1">
+  <div className="flex items-center justify-between mb-0.5">
+    {/* Category */}
+    <p className="text-[9px] font-medium text-teal-600 uppercase tracking-wider truncate mr-2">
+    {product.fabric}
+    </p>
 
- {/* Category */}
- <p className="text-[10px] font-medium text-teal-600 uppercase tracking-wider mb-1">
- {product.fabric}
- </p>
+    {/* Color Swatches */}
+    {product.variants.length > 1 && (
+    <div className="flex items-center gap-1 shrink-0">
+    {[...new Map(product.variants.map((v) => [v.colorHex, v])).values()]
+    .slice(0, 3)
+    .map((v) => (
+    <span
+    key={v.id}
+    className="w-3 h-3 rounded-full border border-white shadow-sm"
+    style={{ backgroundColor: v.colorHex }}
+    title={v.color}
+    />
+    ))}
+    {new Map(product.variants.map((v) => [v.colorHex, v])).size > 3 && (
+    <span className="text-[8px] text-slate font-medium">
+    +{new Map(product.variants.map((v) => [v.colorHex, v])).size - 3}
+    </span>
+    )}
+    </div>
+    )}
+  </div>
 
- {/* Name */}
- <h3 className="font-[family-name:var(--font-playfair)] text-sm md:text-base font-semibold text-charcoal leading-snug mb-1.5 line-clamp-2 group-hover:text-teal-600 :text-teal-400 transition-colors">
- {product.name}
- </h3>
+  {/* Name */}
+  <h3 className="font-[family-name:var(--font-playfair)] text-[12px] md:text-[13px] font-semibold text-charcoal leading-tight mb-1 truncate group-hover:text-teal-600 transition-colors">
+  {product.name}
+  </h3>
 
- {/* Rating */}
- <div className="flex items-center gap-1.5 mb-2">
- <div className="flex items-center gap-0.5">
- {[1, 2, 3, 4, 5].map((star) => (
- <Star
- key={star}
- size={12}
- className={cn(
- star <= Math.floor(product.rating)
- ? "fill-gold text-gold"
- : "fill-charcoal/10 text-charcoal/10 "
- )}
- />
- ))}
- </div>
- <span className="text-[11px] text-slate ">
- ({product.reviewCount})
- </span>
- </div>
-
- {/* Price */}
- <div className="flex items-baseline gap-2">
- <span className="text-lg font-bold text-charcoal ">
- {formatPrice(price)}
- </span>
- {hasDiscount && (
- <>
- <span className="text-sm text-slate line-through">
- {formatPrice(originalPrice)}
- </span>
- <span className="text-xs font-semibold text-success">
- Save {formatPrice(originalPrice - price)}
- </span>
- </>
- )}
- </div>
- </div>
- </Link>
+  {/* Price & Rating Row */}
+  <div className="flex items-end justify-between mt-auto">
+    <div className="flex flex-col">
+      <div className="flex items-baseline gap-1">
+        <span className="text-[15px] font-bold text-charcoal leading-none">
+        {formatPrice(price)}
+        </span>
+        {hasDiscount && (
+        <span className="text-[10px] text-slate line-through leading-none">
+        {formatPrice(originalPrice)}
+        </span>
+        )}
+      </div>
+      {hasDiscount && (
+        <span className="text-[9px] font-semibold text-success leading-tight mt-0.5">
+        Save {formatPrice(originalPrice - price)}
+        </span>
+      )}
+    </div>
+    
+    {/* Rating */}
+    <div className="flex items-center gap-0.5 shrink-0 mb-0.5">
+      {[1, 2, 3, 4, 5].map((star) => (
+        <Star 
+          key={star} 
+          size={10} 
+          className={cn(
+            star <= Math.round(product.rating) 
+              ? "fill-teal-600 text-teal-600" 
+              : "fill-charcoal/10 text-charcoal/10"
+          )} 
+        />
+      ))}
+      <span className="text-[10px] text-slate font-medium leading-none ml-0.5">
+        ({product.reviewCount})
+      </span>
+    </div>
+  </div>
+  </div>
+  </Link>
  </motion.div>
  );
 }

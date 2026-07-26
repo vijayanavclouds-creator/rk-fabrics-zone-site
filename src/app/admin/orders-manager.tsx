@@ -87,7 +87,7 @@ export function OrdersManager({ readOnly = false, basePath = "/admin" }: { readO
 
   const getStatusIcon = (status: string) => {
     switch (status) {
-      case "PENDING": return <Clock size={16} />
+      case "CONFIRMED": return <Clock size={16} />
       case "PROCESSING": return <Package size={16} />
       case "SHIPPED": return <Truck size={16} />
       case "DELIVERED": return <CheckCircle size={16} />
@@ -98,7 +98,7 @@ export function OrdersManager({ readOnly = false, basePath = "/admin" }: { readO
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case "PENDING": return "bg-amber-100 text-amber-800 border-amber-200"
+      case "CONFIRMED": return "bg-amber-100 text-amber-800 border-amber-200"
       case "PROCESSING": return "bg-blue-100 text-blue-800 border-blue-200"
       case "SHIPPED": return "bg-indigo-100 text-indigo-800 border-indigo-200"
       case "DELIVERED": return "bg-emerald-100 text-emerald-800 border-emerald-200"

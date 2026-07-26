@@ -18,8 +18,8 @@ export async function updateProfile(data: { name?: string, phone?: string, dob?:
       return { success: false, error: "Unauthorized" }
     }
 
-    if (data.phone && !/^[0-9]{10}$/.test(data.phone)) {
-      return { success: false, error: "Please enter a valid 10-digit phone number" }
+    if (data.phone && !/^[6-9]\d{9}$/.test(data.phone)) {
+      return { success: false, error: "Please enter a valid 10-digit phone number starting with 6-9" }
     }
 
     if (data.dob) {

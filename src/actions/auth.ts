@@ -14,6 +14,9 @@ function generateOTP() {
 export async function sendSignupOtp(email: string) {
   try {
     if (!email) return { success: false, error: "Email is required" };
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      return { success: false, error: "Please enter a valid email address" };
+    }
 
     const existingUser = await prisma.user.findUnique({ where: { email } });
     if (existingUser) {
@@ -61,8 +64,12 @@ export async function registerUser(formData: FormData) {
       return { success: false, error: "All fields are required" }
     }
 
-    if (!/^[0-9]{10}$/.test(phone)) {
-      return { success: false, error: "Please enter a valid 10-digit phone number" }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      return { success: false, error: "Please enter a valid email address" }
+    }
+
+    if (!/^[6-9]\d{9}$/.test(phone)) {
+      return { success: false, error: "Please enter a valid 10-digit phone number starting with 6-9" }
     }
 
     const dobDate = new Date(dob)

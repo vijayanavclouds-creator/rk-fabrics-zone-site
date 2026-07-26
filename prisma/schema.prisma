@@ -71,8 +71,14 @@ model Review {
   comment   String
   createdAt DateTime @default(now())
 
-  productId String
-  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId   String
+  product     Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  
+  userId      String?
+  user        User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  
+  orderItemId String?  @unique
+  orderItem   OrderItem? @relation(fields: [orderItemId], references: [id], onDelete: SetNull)
 }
 
 model Banner {
@@ -139,6 +145,7 @@ model User {
   notifications Notification[]
   queries       ContactQuery[]
   newsletters   UserNewsletter[]
+  reviews       Review[]
   cartData      String?   // JSON string of the cart
   cartUpdatedAt DateTime?
 }
@@ -221,7 +228,7 @@ model Order {
   id              String      @id @default(cuid())
   userId          String
   user            User        @relation(fields: [userId], references: [id], onDelete: Cascade)
-  status          String      @default("PENDING") // PENDING, PROCESSING, SHIPPED, DELIVERED, CANCELLED
+  status          String      @default("CONFIRMED") // CONFIRMED, PROCESSING, SHIPPED, DELIVERED, CANCELLED
   totalAmount       Float
   shippingAmount    Float
   platformFeeAmount Float       @default(0)
@@ -255,6 +262,7 @@ model OrderItem {
   price       Float
   image       String?
   isReturnable Boolean @default(true)
+  review      Review?
 }
 
 model SystemSetting {

@@ -107,3 +107,86 @@ async function syncDatabaseToStatic() {
     console.error("Sync failed:", err)
   }
 }
+
+export async function submitOrderReview({
+  productId,
+  orderItemId,
+  rating,
+  comment,
+}: {
+  productId: string
+  orderItemId: string
+  rating: number
+  comment: string
+}) {
+  try {
+    const session = await getServerSession(authOptions)
+    if (!session?.user) {
+      return { success: false, error: "Unauthorized" }
+    }
+
+    // Check if review already exists for this order item
+    const existingReview = await prisma.review.findUnique({
+      where: { orderItemId }
+    })
+
+    if (existingReview) {
+      return { success: false, error: "You have already reviewed this item." }
+    }
+
+    // Create review
+    await prisma.review.create({
+      data: {
+        userId: session.user.id,
+        userName: session.user.name || "Verified Buyer",
+        rating,
+        comment,
+        productId,
+        orderItemId,
+      }
+    })
+    
+    // Create an Admin Notification
+    try {
+      const productForNotification = await prisma.product.findUnique({
+        where: { id: productId },
+        select: { name: true, slug: true }
+      });
+      if (productForNotification) {
+        await prisma.adminNotification.create({
+          data: {
+            type: "REVIEW",
+            message: `New ${rating}-star review from ${session.user.name || "Verified Buyer"} on ${productForNotification.name}`,
+            link: `/product/${productForNotification.slug}`
+          }
+        });
+      }
+    } catch (e) {
+      console.error("Failed to create admin notification:", e);
+    }
+
+    // Update product average rating
+    const productReviews = await prisma.review.findMany({
+      where: { productId }
+    })
+    
+    const avgRating = productReviews.reduce((acc, rev) => acc + rev.rating, 0) / productReviews.length
+    
+    await prisma.product.update({
+      where: { id: productId },
+      data: { 
+        rating: avgRating,
+        reviewCount: productReviews.length
+      }
+    })
+
+    syncDatabaseToStatic()
+    revalidatePath(`/account/orders/[id]`, "page")
+    revalidatePath(`/product/[slug]`, "page")
+    
+    return { success: true }
+  } catch (error) {
+    console.error("Error submitting review:", error)
+    return { success: false, error: "Failed to submit review" }
+  }
+}

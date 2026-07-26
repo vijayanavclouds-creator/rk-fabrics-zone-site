@@ -60,7 +60,7 @@ export function DashboardOverview({ initialData, isSupport = false }: { initialD
   const outOfStock = data.outOfStockProducts || 0;
   
   const counts = data.orderStatusCounts || {};
-  const pendingOrders = counts.pending || 0;
+  const confirmedOrders = counts.confirmed || 0;
   const shippedOrders = counts.shipped || 0;
   const deliveredOrders = counts.delivered || 0;
   const returnedOrders = counts.returned || 0;
@@ -362,9 +362,9 @@ export function DashboardOverview({ initialData, isSupport = false }: { initialD
         <Link href="/admin?tab=list" className="bg-charcoal/5 rounded-lg p-2 hover:bg-charcoal/10 transition-colors flex flex-col items-center justify-center">
           <div className="flex items-center gap-1.5 mb-1">
             <Clock size={14} className="text-amber-500/70" />
-            <p className="text-[9px] text-slate font-bold uppercase whitespace-nowrap overflow-hidden text-ellipsis">Pending</p>
+            <p className="text-[9px] text-slate font-bold uppercase whitespace-nowrap overflow-hidden text-ellipsis">Confirmed</p>
           </div>
-          <p className="text-sm font-black text-charcoal">{pendingOrders}</p>
+          <p className="text-sm font-black text-charcoal">{confirmedOrders}</p>
         </Link>
         <Link href="/admin?tab=list" className="bg-charcoal/5 rounded-lg p-2 hover:bg-charcoal/10 transition-colors flex flex-col items-center justify-center">
           <div className="flex items-center gap-1.5 mb-1">
@@ -415,9 +415,9 @@ export function DashboardOverview({ initialData, isSupport = false }: { initialD
           <div className="bg-[#f1f5f9] rounded-lg p-1.5 md:p-2.5 flex flex-col items-center">
             <div className="flex items-center gap-0.5 md:gap-1 mb-0.5 md:mb-1">
               <Clock size={8} className="text-amber-500 stroke-[3]" />
-              <p className="text-[7px] md:text-[8px] text-slate-500 font-bold uppercase tracking-wider">Pending</p>
+              <p className="text-[7px] md:text-[8px] text-slate-500 font-bold uppercase tracking-wider">Confirmed</p>
             </div>
-            <p className="text-xs md:text-sm font-black text-charcoal">{pendingOrders}</p>
+            <p className="text-xs md:text-sm font-black text-charcoal">{confirmedOrders}</p>
           </div>
           <div className="bg-[#f1f5f9] rounded-lg p-1.5 md:p-2.5 flex flex-col items-center">
             <div className="flex items-center gap-0.5 md:gap-1 mb-0.5 md:mb-1">

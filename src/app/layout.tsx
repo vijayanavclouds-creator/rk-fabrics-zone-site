@@ -4,7 +4,7 @@ import { ThemeProvider } from "@/components/providers/theme-provider";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { MobileNav } from "@/components/layout/mobile-nav";
-import { CartDrawer } from "@/components/cart/cart-drawer";
+
 import { AuthHydration } from "@/components/layout/auth-hydration";
 import { CartSync } from "@/components/cart-sync";
 import { NavigationLoader } from "@/components/layout/navigation-loader";
@@ -119,7 +119,7 @@ export default async function RootLayout({
   
   <HideOnAllPortal>
     <MobileNav />
-    <CartDrawer />
+
   </HideOnAllPortal>
  <Toaster
  position="top-center"

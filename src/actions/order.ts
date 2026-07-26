@@ -10,8 +10,8 @@ import { logAdminActivity } from "./admin-activity"
 export async function createOrder(data: any) {
   try {
     const session = await getServerSession(authOptions)
-    if (!session) {
-      return { success: false, error: "You must be logged in to place an order." }
+    if (!session || (session.user.role !== "CUSTOMER" && session.user.role !== "ADMIN")) {
+      return { success: false, error: "You must be logged in as a customer to place an order." }
     }
 
     const {
@@ -21,12 +21,31 @@ export async function createOrder(data: any) {
       platformFeeAmount,
       subtotalAmount,
       shippingAddress,
+      addressDetails, // Accept this for strict validation
       phone,
       email,
       paymentMethod,
       couponCode,
       discountAmount,
     } = data
+
+    // Required payment methods validation
+    if (paymentMethod !== "COD" && paymentMethod !== "PHONEPE") {
+      return { success: false, error: "Invalid payment method selected." }
+    }
+
+    // Required address fields validation
+    if (
+      !addressDetails ||
+      !addressDetails.firstName ||
+      !addressDetails.address ||
+      !addressDetails.city ||
+      !addressDetails.state ||
+      !addressDetails.pincode ||
+      !phone
+    ) {
+      return { success: false, error: "Delivery address is missing required fields (name, phone, address, city, state, or pincode)." }
+    }
 
     // Server-side validation of the coupon to prevent tampering
     let validatedDiscount = 0
@@ -298,7 +317,7 @@ export async function cancelCustomerOrder(orderId: string) {
       return { success: false, error: "Order not found" }
     }
 
-    if (existingOrder.status !== "PENDING" && existingOrder.status !== "PROCESSING") {
+    if (existingOrder.status !== "CONFIRMED" && existingOrder.status !== "PROCESSING") {
       return { success: false, error: "This order cannot be cancelled anymore" }
     }
 

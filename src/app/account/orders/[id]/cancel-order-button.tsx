@@ -30,7 +30,7 @@ export default function CancelOrderButton({ orderId }: { orderId: string }) {
     <button 
       onClick={handleCancel} 
       disabled={loading}
-      className="inline-flex items-center gap-2 px-6 py-3 text-sm font-bold text-rose-600 bg-white border-2 border-rose-600/20 rounded-xl hover:bg-rose-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+      className="btn-primary flex items-center justify-center px-4 md:px-8 py-2.5 md:py-3.5 text-sm whitespace-nowrap disabled:opacity-50 disabled:cursor-not-allowed"
     >
       {loading ? "Cancelling..." : "Cancel Order"}
     </button>

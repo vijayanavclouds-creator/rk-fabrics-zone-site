@@ -24,13 +24,13 @@ function HeroSection({ banners }: { banners: any[] }) {
 
   const getImg = (idx: number) => heroImages[idx % heroImages.length];
   return (
-    <section className="relative min-h-[90vh] flex items-center pt-8 md:pt-24 overflow-hidden bg-white">
+    <section className="relative min-h-[90vh] flex items-center pt-2 md:pt-24 overflow-hidden bg-white">
       {/* Background patterns */}
       <div className="absolute inset-0 pattern-dots opacity-[0.03] dark:opacity-[0.05]" />
       <div className="absolute top-20 right-0 w-[500px] h-[500px] bg-gradient-to-br from-cream to-transparent rounded-full blur-[100px] -z-10" />
       <div className="absolute bottom-20 left-10 w-96 h-96 bg-teal-500/5 rounded-full blur-3xl -z-10" />
 
-      <div className="relative max-w-[1600px] mx-auto px-4 md:px-6 lg:px-8 py-8 md:py-0 w-full">
+      <div className="relative max-w-[1600px] mx-auto px-4 md:px-6 lg:px-8 py-2 md:py-0 w-full">
         <div className="grid lg:grid-cols-12 md:grid-cols-2 gap-[5px] md:gap-12 items-center">
           {/* Text */}
           <div className="text-center md:text-left z-10 order-2 md:order-1 lg:col-span-6">
@@ -114,13 +114,14 @@ function HeroSection({ banners }: { banners: any[] }) {
             {/* Decorative Background Glows */}
             <div className="absolute inset-10 rounded-full bg-gradient-to-br from-cream to-transparent shadow-2xl opacity-60 pointer-events-none" />
 
-            <div className="columns-2 md:columns-3 gap-4 md:gap-5 lg:gap-6 w-[85%] sm:w-full mx-auto relative z-10 overflow-visible pb-8">
+            {/* Desktop Visual - Masonry Grid */}
+            <div className="hidden md:block columns-3 gap-5 lg:gap-6 w-full mx-auto relative z-10 overflow-visible pb-8">
               {heroImages.slice(0, 10).map((imgSrc, i) => {
                 const duration = 4 + (i % 3);
                 const delay = i * 0.2;
 
                 return (
-                  <div key={i} className="break-inside-avoid mb-3 md:mb-5" style={{ perspective: 1200 }}>
+                  <div key={i} className="break-inside-avoid mb-5" style={{ perspective: 1200 }}>
                     <motion.div
                       animate={{ 
                         y: [-5, 5, -5],
@@ -142,10 +143,43 @@ function HeroSection({ banners }: { banners: any[] }) {
                         alt={`Hero Banner ${i + 1}`}
                         fill
                         className="object-cover"
-                        sizes="(max-width: 768px) 50vw, 33vw"
+                        sizes="33vw"
                       />
                     </motion.div>
                   </div>
+                );
+              })}
+            </div>
+
+            {/* Mobile Visual - Scattered Collage */}
+            <div className="block md:hidden relative w-full aspect-[3/4] sm:aspect-square mt-0 z-10">
+              {heroImages.slice(0, 5).map((imgSrc, i) => {
+                const positions = [
+                  "top-[0%] left-[8%] w-[40%] -rotate-3 z-10",
+                  "top-[15%] right-[5%] w-[42%] rotate-6 z-20",
+                  "top-[38%] left-[12%] w-[40%] rotate-2 z-30",
+                  "top-[48%] right-[10%] w-[38%] -rotate-3 z-40",
+                  "bottom-[0%] left-[25%] w-[45%] rotate-0 z-50",
+                ];
+
+                return (
+                  <motion.div
+                    key={i}
+                    className={cn("absolute rounded-xl overflow-hidden shadow-lg border-[4px] border-white bg-white", positions[i])}
+                    initial={{ opacity: 0, y: 20, rotate: 0 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.2 + i * 0.1, duration: 0.6, type: "spring" }}
+                  >
+                    <div className="relative w-full aspect-[3/4]">
+                      <Image
+                        src={imgSrc}
+                        alt={`Hero Banner ${i + 1}`}
+                        fill
+                        className="object-cover"
+                        sizes="50vw"
+                      />
+                    </div>
+                  </motion.div>
                 );
               })}
             </div>
@@ -202,8 +236,8 @@ function CustomCategories({ banners }: { banners: any[] }) {
   const extendedBanners = [...carouselBanners, ...carouselBanners, ...carouselBanners, ...carouselBanners];
   
   return (
-    <section className="py-24 bg-cream relative overflow-hidden flex flex-col items-center">
-      <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10 mb-12 text-center">
+    <section className="pt-8 pb-4 md:py-24 bg-cream relative overflow-hidden flex flex-col items-center">
+      <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10 mb-2 md:mb-12 text-center">
         <h2 className="font-[family-name:var(--font-playfair)] text-4xl md:text-5xl font-bold text-charcoal mb-4">
           From Our Looms <br className="md:hidden" /><span className="text-teal-600">To Your Wardrobe</span>
         </h2>
@@ -213,7 +247,7 @@ function CustomCategories({ banners }: { banners: any[] }) {
       </div>
       
       {/* 3D Coverflow Swiper Carousel */}
-      <div className="relative w-full pb-16 pt-8 max-w-[100vw] overflow-hidden">
+      <div className="relative w-full pb-8 pt-4 md:pb-16 md:pt-8 max-w-[100vw] overflow-hidden">
         <Swiper
           effect={'coverflow'}
           grabCursor={true}
@@ -274,7 +308,7 @@ function CustomCategories({ banners }: { banners: any[] }) {
         </Swiper>
       </div>
 
-      <div className="mt-8 relative z-10">
+      <div className="mt-2 md:mt-8 relative z-10">
         <Link href="/shop" className="btn-primary inline-flex items-center gap-2">
           View All Categories <ArrowRight size={18} />
         </Link>
@@ -292,9 +326,9 @@ function WhyChooseUs() {
     { title: "Global Shipping", desc: "We deliver our heritage fabrics worldwide securely.", icon: Truck },
   ];
   return (
-    <section className="py-16 md:py-24 bg-cream">
+    <section className="pt-6 pb-0 md:py-24 bg-cream">
       <div className="w-full mx-auto px-4 md:px-6 lg:px-8">
-        <div className="text-center max-w-3xl mx-auto mb-16">
+        <div className="text-center max-w-3xl mx-auto mb-8 md:mb-16">
           <h2 className="font-[family-name:var(--font-playfair)] text-3xl md:text-5xl font-bold text-charcoal mb-4">
             The RK Promise
           </h2>
@@ -303,7 +337,7 @@ function WhyChooseUs() {
           </p>
         </div>
         
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-8">
           {reasons.map((r, i) => (
             <motion.div
               key={r.title}
@@ -311,13 +345,13 @@ function WhyChooseUs() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.1 }}
-              className="bg-transparent rounded-3xl p-8 text-center shadow-neo-card hover:shadow-neo-card-pressed transition-all duration-300 group"
+              className="bg-transparent rounded-2xl md:rounded-3xl p-3 md:p-8 text-center shadow-neo-card hover:shadow-neo-card-pressed transition-all duration-300 group"
             >
-              <div className="w-16 h-16 mx-auto rounded-full bg-cream shadow-[inset_4px_4px_8px_rgba(0,0,0,0.1),inset_-4px_-4px_8px_rgba(255,255,255,0.7)] flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                <r.icon size={28} className="text-teal-600" />
+              <div className="w-10 h-10 md:w-16 md:h-16 mx-auto rounded-full bg-cream shadow-[inset_4px_4px_8px_rgba(0,0,0,0.1),inset_-4px_-4px_8px_rgba(255,255,255,0.7)] flex items-center justify-center mb-3 md:mb-6 group-hover:scale-110 transition-transform">
+                <r.icon className="text-teal-600 w-5 h-5 md:w-7 md:h-7" />
               </div>
-              <h3 className="text-xl font-bold text-charcoal mb-3">{r.title}</h3>
-              <p className="text-slate text-sm leading-relaxed">{r.desc}</p>
+              <h3 className="text-[11px] md:text-xl font-bold text-charcoal mb-1 md:mb-3">{r.title}</h3>
+              <p className="text-[9px] md:text-sm text-slate leading-snug md:leading-relaxed">{r.desc}</p>
             </motion.div>
           ))}
         </div>

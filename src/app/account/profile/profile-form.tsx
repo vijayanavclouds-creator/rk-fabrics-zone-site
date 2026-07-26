@@ -42,8 +42,8 @@ export default function ProfileForm({ user, isStaff = false }: { user: { name: s
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
-    if (phone && !/^[0-9]{10}$/.test(phone)) {
-      toast.error("Please enter a valid 10-digit phone number")
+    if (phone && !/^[6-9]\d{9}$/.test(phone)) {
+      toast.error("Please enter a valid 10-digit phone number starting with 6-9")
       return
     }
     
@@ -106,7 +106,7 @@ export default function ProfileForm({ user, isStaff = false }: { user: { name: s
       </div>
       <div>
         <label className="block text-sm font-bold text-charcoal mb-2">Mobile Number</label>
-        <input type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} className="w-full px-4 py-3 rounded-xl border border-charcoal/20 bg-transparent focus:outline-none focus:border-teal-600 focus:ring-1 focus:ring-teal-600 text-charcoal transition-all" />
+        <input type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} required maxLength={10} className="w-full px-4 py-3 rounded-xl border border-charcoal/20 bg-transparent focus:outline-none focus:border-teal-600 focus:ring-1 focus:ring-teal-600 text-charcoal transition-all" />
       </div>
       <div>
         <label className="block text-sm font-bold text-charcoal mb-2">Date of Birth</label>

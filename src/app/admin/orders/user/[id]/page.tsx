@@ -80,7 +80,7 @@ export default function UserOrdersPage() {
 
   const getStatusIcon = (status: string) => {
     switch (status) {
-      case "PENDING": return <Clock size={16} />
+      case "CONFIRMED": return <Clock size={16} />
       case "PROCESSING": return <Package size={16} />
       case "SHIPPED": return <Truck size={16} />
       case "DELIVERED": return <CheckCircle size={16} />
@@ -91,7 +91,7 @@ export default function UserOrdersPage() {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case "PENDING": return "bg-amber-100 text-amber-800 border-amber-200"
+      case "CONFIRMED": return "bg-amber-100 text-amber-800 border-amber-200"
       case "PROCESSING": return "bg-blue-100 text-blue-800 border-blue-200"
       case "SHIPPED": return "bg-indigo-100 text-indigo-800 border-indigo-200"
       case "DELIVERED": return "bg-emerald-100 text-emerald-800 border-emerald-200"
@@ -102,7 +102,7 @@ export default function UserOrdersPage() {
 
   const getOrderCardBg = (status: string) => {
     switch (status) {
-      case "PENDING": return "bg-emerald-50/50"
+      case "CONFIRMED": return "bg-emerald-50/50"
       case "PROCESSING": return "bg-blue-50/50"
       case "SHIPPED": return "bg-indigo-50/50"
       case "DELIVERED": return "bg-slate-50/50"
@@ -233,7 +233,7 @@ export default function UserOrdersPage() {
                       disabled={order.status === "DELIVERED" || order.status === "CANCELLED"}
                       className={`w-full p-2.5 rounded-xl border border-charcoal/20 bg-slate-50 focus:outline-none focus:border-teal-600 focus:ring-1 focus:ring-teal-600 transition-all text-sm font-bold text-charcoal ${order.status === "DELIVERED" || order.status === "CANCELLED" ? "opacity-60 cursor-not-allowed" : "cursor-pointer"}`}
                     >
-                      <option value="PENDING">PENDING</option>
+                      <option value="CONFIRMED">CONFIRMED</option>
                       <option value="PROCESSING">PROCESSING</option>
                       <option value="SHIPPED">SHIPPED</option>
                       <option value="DELIVERED">DELIVERED</option>

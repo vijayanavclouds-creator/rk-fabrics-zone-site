@@ -19,7 +19,10 @@ export default function AddressSelector({ initialAddresses, isCheckout = true }:
     selectedAddress?.id || (initialAddresses.find(a => a.isDefault)?.id) || (initialAddresses.length > 0 ? initialAddresses[0].id : null)
   )
   
-  const [showForm, setShowForm] = useState(initialAddresses.length === 0)
+  const [showForm, setShowForm] = useState(() => {
+    if (isCheckout && selectedAddress?.id?.startsWith("temp_")) return true;
+    return initialAddresses.length === 0;
+  })
   
   useEffect(() => {
     if (!isCheckout) {
@@ -30,15 +33,29 @@ export default function AddressSelector({ initialAddresses, isCheckout = true }:
 
   const [editingAddress, setEditingAddress] = useState<any | null>(null)
   
-  const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
-    phone: "",
-    address: "",
-    city: "",
-    state: "",
-    pincode: "",
-    isDefault: false
+  const [formData, setFormData] = useState(() => {
+    if (isCheckout && selectedAddress?.id?.startsWith("temp_")) {
+      return {
+        firstName: selectedAddress.firstName || "",
+        lastName: selectedAddress.lastName || "",
+        phone: selectedAddress.phone || "",
+        address: selectedAddress.address || "",
+        city: selectedAddress.city || "",
+        state: selectedAddress.state || "",
+        pincode: selectedAddress.pincode || "",
+        isDefault: false
+      }
+    }
+    return {
+      firstName: "",
+      lastName: "",
+      phone: "",
+      address: "",
+      city: "",
+      state: "",
+      pincode: "",
+      isDefault: false
+    }
   })
 
   const [loading, setLoading] = useState(false)
@@ -64,7 +81,7 @@ export default function AddressSelector({ initialAddresses, isCheckout = true }:
       isDefault: addr.isDefault
     })
     if (!isCheckout) {
-      router.push(`${pathname}?form=true`)
+      router.replace(`${pathname}?form=true`)
     } else {
       setShowForm(true)
     }
@@ -104,9 +121,16 @@ export default function AddressSelector({ initialAddresses, isCheckout = true }:
       
       setActiveAddressId(res.address.id)
       if (!isCheckout) {
-        router.push(pathname)
+        const returnUrl = searchParams.get("returnUrl")
+        if (returnUrl) {
+          setAddress(res.address)
+          router.replace(returnUrl)
+        } else {
+          router.replace(pathname)
+        }
       } else {
-        setShowForm(false)
+        setAddress(res.address)
+        router.push("/checkout/payment")
       }
       setEditingAddress(null)
       // Reset form
@@ -268,7 +292,19 @@ export default function AddressSelector({ initialAddresses, isCheckout = true }:
                 name="selectedAddress" 
                 value={addr.id}
                 checked={activeAddressId === addr.id}
-                onChange={() => setActiveAddressId(addr.id)}
+                onChange={() => {
+                  setActiveAddressId(addr.id)
+                  if (!isCheckout) {
+                    const returnUrl = searchParams.get("returnUrl")
+                    if (returnUrl) {
+                      setAddress(addr)
+                      router.replace(returnUrl)
+                    }
+                  } else {
+                    setAddress(addr)
+                    router.push("/checkout/payment")
+                  }
+                }}
                 className="w-5 h-5 text-teal-600 focus:ring-teal-600 border-gray-300"
               />
             </div>
@@ -287,10 +323,10 @@ export default function AddressSelector({ initialAddresses, isCheckout = true }:
             </div>
 
             <div className="flex items-center gap-4 mt-4 pt-4 border-t border-charcoal/5">
-              <button type="button" onClick={() => handleEdit(addr)} className="text-xs font-bold text-teal-600 flex items-center gap-1 hover:text-teal-800">
+              <button type="button" onClick={(e) => { e.preventDefault(); handleEdit(addr); }} className="text-xs font-bold text-teal-600 flex items-center gap-1 hover:text-teal-800">
                 <Edit2 size={12} /> Edit
               </button>
-              <button type="button" onClick={() => handleDelete(addr.id)} className="text-xs font-bold text-rose-600 flex items-center gap-1 hover:text-rose-800">
+              <button type="button" onClick={(e) => { e.preventDefault(); handleDelete(addr.id); }} className="text-xs font-bold text-rose-600 flex items-center gap-1 hover:text-rose-800">
                 <Trash2 size={12} /> Remove
               </button>
             </div>
@@ -299,22 +335,20 @@ export default function AddressSelector({ initialAddresses, isCheckout = true }:
 
         <button 
           onClick={() => {
-            if (!isCheckout) {
-              router.push(`${pathname}?form=true`)
-            } else {
-              setShowForm(true)
-            }
+            setFormData({ firstName: "", lastName: "", phone: "", address: "", city: "", state: "", pincode: "", isDefault: false });
+            setEditingAddress(null);
+            setShowForm(true);
           }}
-          className="w-full sm:w-[340px] h-full min-h-[200px] border-2 border-dashed border-charcoal/20 rounded-2xl flex flex-col items-center justify-center text-slate hover:text-teal-600 hover:border-teal-600 hover:bg-teal-50/30 transition-all"
+          className="w-full sm:w-[340px] min-h-[200px] border-2 border-dashed border-teal-600/30 text-teal-600 rounded-2xl font-bold flex flex-col items-center justify-center gap-3 hover:bg-teal-50 transition-all"
         >
           <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center mb-3 shadow-sm border border-charcoal/5">
             <Plus size={24} />
           </div>
-          <span className="font-bold">Add New Address</span>
+          Add New Address
         </button>
       </div>
 
-      {isCheckout && (
+      {isCheckout ? (
         <div className="flex justify-center items-center pt-6 border-t border-charcoal/10 mt-8">
           <button
             onClick={handleContinue}
@@ -323,7 +357,26 @@ export default function AddressSelector({ initialAddresses, isCheckout = true }:
             Continue to Payment <ArrowRight size={18} />
           </button>
         </div>
-      )}
+      ) : searchParams.get("returnUrl") ? (
+        <div className="flex justify-center items-center pt-6 border-t border-charcoal/10 mt-8">
+          <button
+            onClick={() => {
+              if (!activeAddressId) {
+                toast.error("Please select an address");
+                return;
+              }
+              const selected = addresses.find(a => a.id === activeAddressId);
+              if (selected) {
+                setAddress(selected);
+                router.replace(searchParams.get("returnUrl") as string);
+              }
+            }}
+            className="btn-teal w-full sm:w-auto flex items-center justify-center gap-2 px-8"
+          >
+            Use this address <ArrowRight size={18} />
+          </button>
+        </div>
+      ) : null}
       </div>
     </div>
   )

@@ -44,7 +44,7 @@ export default function WishlistPage() {
  </p>
  </div>
  
- <div className="flex items-center gap-1 border border-charcoal/10 rounded-lg p-0.5">
+ <div className="hidden md:flex items-center gap-1 border border-charcoal/10 rounded-lg p-0.5">
    {([3, 5, 7] as const).map((cols) => (
      <button
        key={cols}

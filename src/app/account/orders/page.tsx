@@ -16,7 +16,7 @@ export default async function AccountOrdersPage() {
   const { orders } = await getUserOrders()
 
   return (
-    <div className="bg-white rounded-3xl border border-charcoal/10 p-6 md:p-8 shadow-sm">
+    <div className="-mx-4 md:mx-0 bg-white md:rounded-3xl border-y md:border-x border-charcoal/10 p-4 sm:p-6 md:p-8 shadow-sm min-h-screen md:min-h-0">
       <h2 className="text-2xl font-[family-name:var(--font-playfair)] font-bold text-charcoal mb-6 flex items-center gap-3">
         <ShoppingBag size={24} className="text-teal-600" />
         My Orders
@@ -32,25 +32,23 @@ export default async function AccountOrdersPage() {
           </Link>
         </div>
       ) : (
-        <div className="flex flex-col border border-charcoal/10 rounded-2xl overflow-hidden bg-white">
-          {orders.map((order: any, index: number) => (
+        <div className="flex flex-col gap-4">
+          {orders.map((order: any) => (
             <Link 
               href={`/account/orders/${order.id}`}
               key={order.id} 
-              className={`flex flex-col md:flex-row md:items-center justify-between p-5 hover:bg-slate-50 transition-colors group ${
-                index !== orders.length - 1 ? "border-b border-charcoal/10" : ""
-              }`}
+              className="flex flex-col md:flex-row md:items-center justify-between p-5 bg-white border border-charcoal/10 rounded-2xl shadow-sm hover:shadow-md hover:border-teal-600/30 transition-all group"
             >
-              <div className="flex-1 grid grid-cols-1 md:grid-cols-4 gap-4 md:gap-6 items-center">
+              <div className="flex-1 grid grid-cols-2 md:grid-cols-4 gap-y-4 gap-x-4 md:gap-6 items-center">
                 {/* Order ID */}
                 <div>
-                  <p className="text-xs text-slate font-medium mb-1">Order ID</p>
-                  <p className="font-bold text-charcoal truncate">#{order.id.slice(-8).toUpperCase()}</p>
+                  <p className="text-[11px] text-slate font-medium mb-1 uppercase tracking-wider">Order ID</p>
+                  <p className="font-bold text-charcoal truncate text-sm">#{order.id.slice(-8).toUpperCase()}</p>
                 </div>
                 
                 {/* Date */}
                 <div>
-                  <p className="text-xs text-slate font-medium mb-1">Placed On</p>
+                  <p className="text-[11px] text-slate font-medium mb-1 uppercase tracking-wider">Placed On</p>
                   <p className="text-sm text-charcoal font-medium">
                     {new Date(order.createdAt).toLocaleDateString('en-IN', { year: 'numeric', month: 'short', day: 'numeric' })}
                   </p>
@@ -58,13 +56,13 @@ export default async function AccountOrdersPage() {
 
                 {/* Amount */}
                 <div>
-                  <p className="text-xs text-slate font-medium mb-1">Total Amount</p>
+                  <p className="text-[11px] text-slate font-medium mb-1 uppercase tracking-wider">Total Amount</p>
                   <p className="text-sm font-bold text-charcoal">₹{order.totalAmount.toLocaleString()}</p>
                 </div>
 
                 {/* Status */}
                 <div>
-                  <p className="text-xs text-slate font-medium mb-1">Status</p>
+                  <p className="text-[11px] text-slate font-medium mb-1 uppercase tracking-wider">Status</p>
                   <span className={`inline-block px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${
                     order.status === 'DELIVERED' ? 'bg-green-100 text-green-700' :
                     order.status === 'CANCELLED' ? 'bg-error/10 text-error' :

@@ -41,127 +41,131 @@ export async function Footer() {
   ];
   
   return (
-  <footer className="relative z-40 bg-gradient-to-br from-charcoal to-slate text-white pb-20 md:pb-0">
-   {/* Newsletter Strip */}
-   <div className="w-full mx-auto px-4 md:px-6 lg:px-8 pt-4 pb-2">
-       <div className="bg-transparent rounded-3xl p-4 md:p-5 flex flex-col md:flex-row items-center justify-between gap-4 shadow-[8px_8px_20px_rgba(0,0,0,0.4),-8px_-8px_20px_rgba(255,255,255,0.05)] border border-white/5">
-         <div className="flex items-center gap-4">
-           <div className="w-12 h-12 rounded-full bg-gradient-to-br from-gold to-yellow-600 flex items-center justify-center shadow-lg hidden sm:flex">
-             <span className="text-xl">✉️</span>
-           </div>
-           <div>
-             <h3 className="font-[family-name:var(--font-playfair)] text-lg md:text-xl font-bold text-white">
-               Stay Stylish — Join Our Newsletter
-             </h3>
-             <p className="text-white/70 text-xs md:text-sm mt-0.5">
-               Exclusive discounts & fabric care tips, straight to your inbox.
-             </p>
-           </div>
-         </div>
-         <NewsletterForm />
-       </div>
-     </div>
- {/* Main Footer */}
- <div className="w-full mx-auto px-6 lg:px-8 py-4">
- <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
- {/* Brand Column */}
- <div className="col-span-2 md:col-span-1">
- <Link href="/" className="flex items-center gap-2 mb-1.5">
- <div className="relative w-12 h-12 rounded-full overflow-hidden ring-2 ring-white/20">
- <Image
- src="/logo.png?v=3"
- alt="RK Fabrics Zone"
- fill
- className="object-cover"
- unoptimized
- />
- </div>
- <div>
- <span className="font-[family-name:var(--font-playfair)] text-lg font-bold text-white block leading-none">
- RK Fabrics
- </span>
- <span className="font-[family-name:var(--font-cinzel)] text-[10px] tracking-[0.2em] text-white/70 uppercase">
- Zone
- </span>
- </div>
- </Link>
- <p className="text-sm text-white/60 mb-1.5 leading-relaxed whitespace-pre-line">
- {companyProfile?.companyDescription || <>Premium Fabrics | Stylish You<br />Manufacturer & direct seller from Jaipur, India.</>}
- </p>
- <div className="space-y-0.5 text-sm text-white/50">
- <div className="flex items-center gap-2">
- <MapPin size={14} className="text-white shrink-0" />
- <span>Jaipur, Rajasthan, India</span>
- </div>
- <div className="flex items-center gap-2">
- <Phone size={14} className="text-white shrink-0" />
- <a href={`tel:${companyProfile?.contactNumber || '+91 98765 43210'}`} className="hover:text-white transition-colors">{companyProfile?.contactNumber || '+91 98765 43210'}</a>
- </div>
- <div className="flex items-center gap-2">
- <Mail size={14} className="text-white shrink-0" />
- <a href={`mailto:${companyProfile?.supportEmail || 'hello@rkfabricszone.com'}`} className="hover:text-white transition-colors">{companyProfile?.supportEmail || 'hello@rkfabricszone.com'}</a>
- </div>
- </div>
- </div>
+  <footer className="bg-charcoal border-t border-white/10 mt-auto pb-20 md:pb-0">
+    {/* Newsletter Section */}
+    <div className="relative overflow-hidden bg-gradient-to-br from-charcoal-light to-charcoal border-b border-white/10">
+      <div className="absolute inset-0 bg-noise opacity-5 pointer-events-none"></div>
+      <div className="max-w-7xl mx-auto px-6 lg:px-8 py-5 md:py-8">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-4 md:gap-12 relative z-10">
+          <div className="flex-1 text-center md:text-left flex items-start gap-3">
+            <div className="hidden md:flex w-12 h-12 rounded-full bg-white/10 items-center justify-center shrink-0">
+              <span className="text-xl">✉️</span>
+            </div>
+            <div>
+              <h3 className="font-[family-name:var(--font-playfair)] text-base md:text-xl font-bold text-white leading-tight">
+                Stay Stylish — Join Our Newsletter
+              </h3>
+              <p className="text-white/70 text-[11px] md:text-sm mt-0.5">
+                Exclusive discounts & fabric care tips, straight to your inbox.
+              </p>
+            </div>
+          </div>
+          <NewsletterForm />
+        </div>
+      </div>
+    </div>
 
- {/* Shop Links */}
- <div>
-  <h4 className="font-[family-name:var(--font-cinzel)] text-sm font-semibold text-white tracking-wider uppercase mb-1.5">
-  Shop By Category
-  </h4>
-  <ul className="space-y-0.5">
-  {shopLinks.map((link) => (
-  <li key={link.label}>
-  <Link
-  href={link.href}
-  className="text-[13px] text-white/70 hover:text-white transition-colors"
-  >
-  {link.label}
-  </Link>
-  </li>
-  ))}
-  </ul>
- </div>
+    {/* Main Footer */}
+    <div className="max-w-7xl mx-auto px-6 lg:px-8 py-5 md:py-8">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-x-4 gap-y-5 md:gap-6">
+        {/* Brand Column */}
+        <div className="col-span-1">
+          <Link href="/" className="flex items-center gap-2 mb-1.5">
+            <div className="relative w-10 h-10 md:w-12 md:h-12 rounded-full overflow-hidden ring-2 ring-white/20 shrink-0">
+              <Image
+                src="/logo.png?v=3"
+                alt="RK Fabrics Zone"
+                fill
+                className="object-cover"
+                unoptimized
+              />
+            </div>
+            <div>
+              <span className="font-[family-name:var(--font-playfair)] text-base md:text-lg font-bold text-white block leading-none">
+                RK Fabrics
+              </span>
+              <span className="font-[family-name:var(--font-cinzel)] text-[9px] md:text-[10px] tracking-[0.2em] text-white/70 uppercase">
+                Zone
+              </span>
+            </div>
+          </Link>
+          <p className="text-[11px] md:text-sm text-white/60 mb-1.5 leading-snug whitespace-pre-line">
+            {companyProfile?.companyDescription || <>Premium Fabrics | Stylish You<br />Manufacturer & direct seller from Jaipur, India.</>}
+          </p>
+          <div className="space-y-0.5 text-[11px] md:text-sm text-white/50">
+            <div className="flex items-center gap-1.5">
+              <MapPin size={12} className="text-white shrink-0" />
+              <span>Jaipur, Rajasthan, India</span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <Phone size={12} className="text-white shrink-0" />
+              <a href={`tel:${companyProfile?.contactNumber || '+91 98765 43210'}`} className="hover:text-white transition-colors">{companyProfile?.contactNumber || '+91 98765 43210'}</a>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <Mail size={12} className="text-white shrink-0" />
+              <a href={`mailto:${companyProfile?.supportEmail || 'hello@rkfabricszone.com'}`} className="hover:text-white transition-colors break-all">{companyProfile?.supportEmail || 'hello@rkfabricszone.com'}</a>
+            </div>
+          </div>
+        </div>
 
- {/* Company Links */}
- <div>
- <h4 className="font-[family-name:var(--font-cinzel)] text-sm font-semibold text-white tracking-wider uppercase mb-1.5">
- Company
- </h4>
-            <ul className="space-y-0.5">
-              {footerLinks.company.map((link, i) => {
-                return (
-                  <li key={i}>
-                    <Link href={link.href} className="text-[13px] text-white/70 hover:text-white transition-colors">
-                      {link.label}
-                    </Link>
-                  </li>
-                )
-              })}
-            </ul>
- </div>
+        {/* Shop Links */}
+        <div>
+          <h4 className="font-[family-name:var(--font-cinzel)] text-xs md:text-sm font-semibold text-white tracking-wider uppercase mb-1 md:mb-1.5">
+            Shop By Category
+          </h4>
+          <ul className="space-y-0">
+            {shopLinks.map((link) => (
+              <li key={link.label}>
+                <Link
+                  href={link.href}
+                  className="block py-0.5 text-[11px] md:text-[13px] text-white/70 hover:text-white transition-colors"
+                >
+                  {link.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
 
- {/* Help Links */}
- <div>
- <h4 className="font-[family-name:var(--font-cinzel)] text-sm font-semibold text-white tracking-wider uppercase mb-1.5">
- Help
- </h4>
- <ul className="space-y-0.5">
- {footerLinks.help.map((link) => (
- <li key={link.label}>
- <Link
- href={link.href}
- className="text-[13px] text-white/70 hover:text-white transition-colors"
- >
- {link.label}
- </Link>
- </li>
- ))}
- </ul>
- </div>
- </div>
+        {/* Company Links */}
+        <div>
+          <h4 className="font-[family-name:var(--font-cinzel)] text-xs md:text-sm font-semibold text-white tracking-wider uppercase mb-1 md:mb-1.5">
+            Company
+          </h4>
+          <ul className="space-y-0">
+            {footerLinks.company.map((link, i) => {
+              return (
+                <li key={i}>
+                  <Link href={link.href} className="block py-0.5 text-[11px] md:text-[13px] text-white/70 hover:text-white transition-colors">
+                    {link.label}
+                  </Link>
+                </li>
+              )
+            })}
+          </ul>
+        </div>
 
- {/* Social & Bottom */}
+        {/* Help Links */}
+        <div>
+          <h4 className="font-[family-name:var(--font-cinzel)] text-xs md:text-sm font-semibold text-white tracking-wider uppercase mb-1 md:mb-1.5">
+            Help
+          </h4>
+          <ul className="space-y-0">
+            {footerLinks.help.map((link) => (
+              <li key={link.label}>
+                <Link
+                  href={link.href}
+                  className="block py-0.5 text-[11px] md:text-[13px] text-white/70 hover:text-white transition-colors"
+                >
+                  {link.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+
+  {/* Social & Bottom */}
  <div className="mt-4 pt-4 border-t border-white/20 flex flex-col md:flex-row items-center justify-between gap-4">
  <div className="flex flex-wrap items-center gap-4">
   {companyProfile?.facebookUrl ? (
@@ -207,9 +211,8 @@ export async function Footer() {
   )}
  </div>
 
- <p className="text-xs text-white/40 text-center">
- © {new Date().getFullYear()} RK Fabrics Zone. All rights reserved. Made with{" "}
- <Heart size={12} className="inline text-rose" /> in Jaipur, India.
+ <p className="text-xs text-white/40 text-center leading-relaxed">
+ © {new Date().getFullYear()} RK Fabrics Zone. All rights reserved. <span className="block sm:inline">Made with <Heart size={12} className="inline text-rose" /> in Jaipur, India.</span>
  </p>
 
  <div className="flex items-center gap-3 text-xs text-white/40">

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo, useTransition, useEffect } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
@@ -26,11 +26,13 @@ import {
  X,
  ZoomIn,
  ZoomOut,
+ Zap,
 } from "lucide-react";
 import { cn, formatPrice, calculateDiscount } from "@/lib/utils";
 import { getProductBySlug, products } from "@/lib/data";
 import { addReview } from "@/actions/reviews";
 import { useCartStore, useWishlistStore } from "@/store";
+import { DeliveryDetails } from "@/components/product/delivery-details";
 import { ProductCard } from "@/components/product/product-card";
 import { toast } from "sonner";
 import { useSession } from "next-auth/react";
@@ -69,9 +71,17 @@ function ProductDetail({ product }: { product: NonNullable<ReturnType<typeof get
   useEffect(() => {
     getCompanyProfile().then(setCompanyProfile);
   }, []);
+  const router = useRouter();
   const addItem = useCartStore((s) => s.addItem);
+  const cartItems = useCartStore((s) => s.items);
   const { toggleItem, isInWishlist } = useWishlistStore();
-  const wishlisted = isInWishlist(product.id);
+  const [mounted, setMounted] = useState(false);
+  
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+  
+  const wishlisted = mounted ? isInWishlist(product.id) : false;
   const { data: session } = useSession();
 
   // Get unique colors and sizes
@@ -111,10 +121,10 @@ function ProductDetail({ product }: { product: NonNullable<ReturnType<typeof get
  ) || product.variants.find((v) => v.colorHex === selectedColor) || product.variants[0];
  }, [product, selectedColor, selectedSize]);
 
- const price = selectedVariant?.salePrice || product.salePrice || selectedVariant?.price || product.basePrice;
- const originalPrice = selectedVariant?.price || product.basePrice;
- const discount = product.discountPercent || 0;
- const hasDiscount = discount > 0;
+  const price = selectedVariant?.salePrice || product.salePrice || selectedVariant?.price || product.basePrice;
+  const originalPrice = selectedVariant?.price || product.basePrice;
+  const hasDiscount = originalPrice > price;
+  const discount = hasDiscount ? Math.round(((originalPrice - price) / originalPrice) * 100) : 0;
  const stock = selectedVariant?.stock || 0;
  const lowStock = stock > 0 && stock <= 5;
 
@@ -125,12 +135,18 @@ function ProductDetail({ product }: { product: NonNullable<ReturnType<typeof get
  .map((v) => ({ size: v.size, stock: v.stock }));
  }, [product, selectedColor]);
 
- const handleAddToCart = () => {
- if (!selectedVariant || stock <= 0) return;
- setIsAdding(true);
- addItem(product, selectedVariant, quantity);
- setTimeout(() => setIsAdding(false), 600);
- };
+  const isVariantInCart = mounted && selectedVariant ? cartItems.some(item => item.variant.id === selectedVariant.id) : false;
+
+  const handleAddToCart = () => {
+  if (!selectedVariant || stock <= 0) return;
+  if (isVariantInCart) {
+    router.push("/cart");
+    return;
+  }
+  setIsAdding(true);
+  addItem(product, selectedVariant, quantity);
+  setTimeout(() => setIsAdding(false), 600);
+  };
 
  const handleShare = (platform: "whatsapp" | "facebook" | "twitter" | "instagram" | "copy") => {
  const text = `Check out ${product.name} on RK Fabrics Zone — ${formatPrice(price)}`;
@@ -193,9 +209,9 @@ function ProductDetail({ product }: { product: NonNullable<ReturnType<typeof get
  </nav>
 
  {/* Product Grid */}
- <div className="grid md:grid-cols-2 gap-8 lg:gap-12">
+ <div className="grid grid-cols-1 md:grid-cols-12 gap-8 lg:gap-12">
  {/* Left: Gallery */}
- <div className="space-y-4">
+ <div className="md:col-span-5 lg:col-span-5 space-y-4">
  {/* Main Image */}
  <motion.div
  initial={{ opacity: 0 }}
@@ -239,6 +255,48 @@ function ProductDetail({ product }: { product: NonNullable<ReturnType<typeof get
  )}
  </div>
 
+ {/* Wishlist Button */}
+ <button
+ onClick={async (e) => {
+ e.stopPropagation();
+ toggleItem(product.id);
+ toast(wishlisted ? "Removed from wishlist" : "Saved to wishlist ❤️");
+ if (session?.user) {
+ try {
+ await fetch("/api/wishlist/toggle", {
+ method: "POST",
+ headers: { "Content-Type": "application/json" },
+ body: JSON.stringify({ productId: product.id })
+ });
+ } catch (err) {
+ console.error("Failed to sync wishlist with DB", err);
+ }
+ }
+ }}
+ className={cn(
+ "absolute top-4 right-4 w-11 h-11 z-20 rounded-full flex items-center justify-center transition-all shadow-sm backdrop-blur-md",
+ wishlisted
+ ? "bg-rose/10 text-rose border border-rose/20"
+ : "bg-white/80 text-charcoal border border-charcoal/10 hover:bg-white hover:text-rose hover:border-rose/30"
+ )}
+ >
+ <Heart size={20} className={wishlisted ? "fill-rose" : ""} />
+ </button>
+
+ {/* Share Button */}
+ <div className="absolute top-[68px] right-4 z-20 group flex flex-col items-center gap-2">
+  <button onClick={(e) => e.stopPropagation()} className="w-11 h-11 rounded-full flex items-center justify-center bg-white/80 text-charcoal border border-charcoal/10 shadow-sm backdrop-blur-md transition-all hover:bg-white hover:border-charcoal/20">
+    <Share2 size={20} />
+  </button>
+  <div className="flex flex-col gap-2 opacity-0 -translate-y-4 pointer-events-none group-hover:opacity-100 group-hover:translate-y-0 group-hover:pointer-events-auto transition-all duration-300">
+    <button onClick={(e) => { e.stopPropagation(); handleShare("whatsapp"); }} className="w-9 h-9 rounded-full bg-green-50 text-green-600 flex items-center justify-center shadow-sm hover:bg-green-100" title="Share on WhatsApp"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg></button>
+    <button onClick={(e) => { e.stopPropagation(); handleShare("facebook"); }} className="w-9 h-9 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center shadow-sm hover:bg-blue-100" title="Share on Facebook"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg></button>
+    <button onClick={(e) => { e.stopPropagation(); handleShare("twitter"); }} className="w-9 h-9 rounded-full bg-sky-50 text-sky-500 flex items-center justify-center shadow-sm hover:bg-sky-100" title="Share on Twitter"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"></path></svg></button>
+    <button onClick={(e) => { e.stopPropagation(); handleShare("instagram"); }} className="w-9 h-9 rounded-full bg-pink-50 text-pink-600 flex items-center justify-center shadow-sm hover:bg-pink-100" title="Share on Instagram"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg></button>
+    <button onClick={(e) => { e.stopPropagation(); handleShare("copy"); }} className="w-9 h-9 rounded-full bg-slate-100 text-slate-600 flex items-center justify-center shadow-sm hover:bg-slate-200" title="Copy Link"><LinkIcon size={14} /></button>
+  </div>
+ </div>
+
  {/* AR Try-On Button */}
  <button className="absolute bottom-4 right-4 flex items-center gap-2 px-4 py-2.5 bg-white/80 backdrop-blur-sm rounded-xl text-sm font-semibold text-teal-600 border border-teal-600/20 hover:bg-teal-600 hover:text-white transition-all shadow-lg group">
  <Camera size={16} className="group-hover:animate-pulse" />
@@ -269,7 +327,7 @@ function ProductDetail({ product }: { product: NonNullable<ReturnType<typeof get
  </div>
 
  {/* Right: Info */}
- <div>
+ <div className="md:col-span-7 lg:col-span-7">
  {/* Title */}
  <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
  <p className="font-[family-name:var(--font-cinzel)] text-xs tracking-[0.2em] text-gold-dark uppercase mb-2">
@@ -345,71 +403,70 @@ function ProductDetail({ product }: { product: NonNullable<ReturnType<typeof get
  </h3>
  <div className="flex gap-2.5">
  {uniqueColors.map((c) => (
- <button
- key={c.hex}
- onClick={() => setSelectedColor(c.hex)}
- className={cn(
- "w-10 h-10 rounded-full border-2 transition-all hover:scale-110",
- selectedColor === c.hex
- ? "border-teal-600 ring-2 ring-teal-600/30 scale-110"
- : "border-charcoal/10 "
- )}
- style={{ backgroundColor: c.hex }}
- title={c.color}
- />
+  <button
+  key={c.hex}
+  onClick={() => setSelectedColor(c.hex)}
+  className={cn(
+  "w-11 h-11 rounded-full flex items-center justify-center transition-all hover:scale-110",
+  selectedColor === c.hex
+  ? "neumorphic-inset scale-110"
+  : "neumorphic-surface"
+  )}
+  title={c.color}
+  >
+  <span className="w-6 h-6 rounded-full shadow-inner" style={{ backgroundColor: c.hex }} />
+  </button>
  ))}
  </div>
  </div>
 
  {/* Size Selection */}
  <div className="mb-5">
- <div className="flex items-center justify-between mb-3">
- <h3 className="text-sm font-semibold text-charcoal ">Size</h3>
- <button type="button" onClick={() => setIsSizeGuideOpen(true)} className="flex items-center gap-1 text-xs text-teal-600 font-medium hover:underline cursor-pointer">
- <Ruler size={12} /> Size Guide
- </button>
- </div>
- <div className="flex flex-wrap gap-2">
+ <h3 className="text-sm font-semibold text-charcoal mb-3">Size</h3>
+ <div className="flex flex-wrap items-center gap-2">
  {uniqueSizes.map((size) => {
  const sizeAvail = availableSizes.find((s) => s.size === size);
  const inStock = sizeAvail && sizeAvail.stock > 0;
  return (
- <button
- key={size}
- onClick={() => inStock && setSelectedSize(size)}
- disabled={!inStock}
- className={cn(
- "px-4 py-2.5 rounded-xl text-sm font-medium border-2 transition-all min-w-[60px]",
- selectedSize === size && inStock
- ? "bg-teal-600 text-white border-teal-600"
- : inStock
- ? "bg-white text-charcoal border-charcoal/10 hover:border-teal-500"
- : "bg-charcoal/5 text-charcoal/30 border-transparent cursor-not-allowed line-through"
- )}
- >
- {size}
- </button>
+  <button
+  key={size}
+  onClick={() => inStock && setSelectedSize(size)}
+  disabled={!inStock}
+  className={cn(
+  "min-w-[48px] h-12 px-3 rounded-full text-sm font-bold transition-all flex items-center justify-center shrink-0",
+  selectedSize === size && inStock
+  ? "neumorphic-inset text-teal-600"
+  : inStock
+  ? "neumorphic-surface text-charcoal hover:text-teal-600"
+  : "neumorphic-surface opacity-50 text-charcoal/30 cursor-not-allowed line-through"
+  )}
+  >
+  {size}
+  </button>
  );
  })}
+ <button type="button" onClick={() => setIsSizeGuideOpen(true)} className="flex items-center gap-1 text-xs text-teal-600 font-medium hover:underline cursor-pointer ml-2 self-start mt-1.5">
+ <Ruler size={12} /> Size Guide
+ </button>
  </div>
  </div>
-
- {/* Quantity + Actions */}
- <div className="flex items-center gap-4 mb-6">
+ {/* Action Buttons Container */}
+ <div className="w-full mt-8 mb-6 xl:pr-4">
+ <div className="flex flex-col lg:flex-row items-stretch lg:items-center gap-3 lg:gap-4">
  {/* Quantity */}
- <div className="flex items-center border-2 border-charcoal/10 rounded-xl">
+ <div className="neumorphic-surface flex items-center justify-between lg:justify-start rounded-full shrink-0 h-[56px] px-2">
  <button
  onClick={() => setQuantity(Math.max(1, quantity - 1))}
- className="w-11 h-11 flex items-center justify-center text-slate hover:text-charcoal :text-dark-text hover:bg-charcoal/5 :bg-dark-border rounded-l-lg transition-colors"
+ className="w-10 h-10 flex items-center justify-center text-slate hover:text-charcoal rounded-full transition-colors hover:bg-black/5"
  >
  <Minus size={16} />
  </button>
- <span className="w-12 text-center text-base font-semibold text-charcoal ">
+ <span className="w-10 text-center text-base font-bold text-charcoal ">
  {quantity}
  </span>
  <button
  onClick={() => setQuantity(Math.min(stock, quantity + 1))}
- className="w-11 h-11 flex items-center justify-center text-slate hover:text-charcoal :text-dark-text hover:bg-charcoal/5 :bg-dark-border rounded-r-lg transition-colors"
+ className="w-10 h-10 flex items-center justify-center text-slate hover:text-charcoal rounded-full transition-colors hover:bg-black/5"
  >
  <Plus size={16} />
  </button>
@@ -417,11 +474,11 @@ function ProductDetail({ product }: { product: NonNullable<ReturnType<typeof get
 
  {/* Add to Cart */}
  <motion.button
- onClick={handleAddToCart}
- disabled={stock <= 0}
- whileTap={{ scale: 0.95 }}
+  onClick={handleAddToCart}
+  disabled={stock <= 0 && !isVariantInCart}
+  whileTap={{ scale: 0.95 }}
  className={cn(
- "flex-1 flex items-center justify-center gap-2 py-3.5 rounded-full text-base font-semibold transition-all",
+ "flex-1 flex items-center justify-center gap-1.5 xl:gap-2 py-4 px-2 sm:px-4 rounded-full text-sm xl:text-base font-semibold transition-all whitespace-nowrap",
  stock > 0
  ? "btn-primary"
  : "bg-charcoal/10 text-charcoal/40 cursor-not-allowed"
@@ -446,84 +503,68 @@ function ProductDetail({ product }: { product: NonNullable<ReturnType<typeof get
  exit={{ scale: 0 }}
  className="flex items-center gap-2"
  >
- <ShoppingBag size={18} /> {stock > 0 ? "Add to Cart" : "Out of Stock"}
+ <ShoppingBag size={18} /> {isVariantInCart ? "Go to Cart" : (stock > 0 ? "Add to Cart" : "Out of Stock")}
  </motion.span>
  )}
  </AnimatePresence>
  </motion.button>
 
-          {/* Wishlist */}
-          <button
-            onClick={async () => {
-              toggleItem(product.id);
-              toast(wishlisted ? "Removed from wishlist" : "Saved to wishlist ❤️");
-              if (session?.user) {
-                try {
-                  await fetch("/api/wishlist/toggle", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ productId: product.id })
-                  });
-                } catch (e) {
-                  console.error("Failed to sync wishlist with DB", e);
-                }
-              }
-            }}
-            className={cn(
- "w-12 h-12 rounded-full border-2 flex items-center justify-center transition-all hover:scale-110",
- wishlisted
- ? "border-rose bg-rose/5 text-rose"
- : "border-charcoal/10 text-slate hover:border-rose hover:text-rose"
- )}
- >
- <Heart size={20} className={wishlisted ? "fill-rose" : ""} />
- </button>
- </div>
+  {/* Buy Now */}
+  <motion.button
+    onClick={() => {
+      handleAddToCart();
+      setTimeout(() => {
+        router.push('/checkout/payment');
+      }, 500);
+    }}
+    disabled={stock <= 0}
+    whileTap={{ scale: 0.95 }}
+    className={cn(
+      "flex-1 flex items-center justify-center gap-1.5 xl:gap-2 py-4 px-2 sm:px-4 rounded-full text-sm xl:text-base font-semibold transition-all whitespace-nowrap",
+      stock > 0
+        ? "btn-primary !text-[#008ba3]"
+        : "bg-charcoal/10 text-charcoal/40 cursor-not-allowed"
+    )}
+  >
+    <Zap size={18} /> {stock > 0 ? "Buy Now" : "Out of Stock"}
+  </motion.button>
 
- {/* Share */}
- <div className="mb-6">
-  <p className="text-sm font-semibold text-charcoal mb-2">Share this product:</p>
-  <div className="flex items-center gap-3">
-    <button onClick={() => handleShare("whatsapp")} className="w-10 h-10 flex items-center justify-center rounded-full bg-green-50 text-green-600 hover:bg-green-100 transition-colors" title="Share on WhatsApp">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
-    </button>
-    <button onClick={() => handleShare("facebook")} className="w-10 h-10 flex items-center justify-center rounded-full bg-blue-50 text-blue-600 hover:bg-blue-100 transition-colors" title="Share on Facebook">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
-    </button>
-    <button onClick={() => handleShare("twitter")} className="w-10 h-10 flex items-center justify-center rounded-full bg-sky-50 text-sky-500 hover:bg-sky-100 transition-colors" title="Share on Twitter">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"></path></svg>
-    </button>
-    <button onClick={() => handleShare("instagram")} className="w-10 h-10 flex items-center justify-center rounded-full bg-pink-50 text-pink-600 hover:bg-pink-100 transition-colors" title="Share on Instagram">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
-    </button>
-    <button onClick={() => handleShare("copy")} className="w-10 h-10 flex items-center justify-center rounded-full bg-slate-100 text-slate-600 hover:bg-slate-200 transition-colors" title="Copy Link">
-      <LinkIcon size={16} />
-    </button>
-  </div>
+ {/* WhatsApp CTA */}
+ {session && (
+ <a
+ href={`https://wa.me/${(companyProfile?.contactNumber || '+919876543210').replace(/[^0-9]/g, '')}?text=${encodeURIComponent(whatsappMessage)}`}
+ target="_blank"
+ rel="noopener noreferrer"
+ className="btn-primary flex-1 flex items-center justify-center gap-1.5 xl:gap-2 py-4 px-2 sm:px-4 rounded-full text-sm font-semibold transition-all !text-green-600 !border-green-500 !bg-white hover:!bg-green-50 whitespace-nowrap"
+ >
+ <MessageCircle size={18} /> Chat About This Fabric
+ </a>
+ )}
+ </div>
  </div>
 
  {/* Trust Badges */}
- <div className="grid grid-cols-3 gap-3 p-4 bg-teal-50/50 rounded-2xl border border-teal-100/50 ">
+ <div className="grid grid-cols-3 gap-3 p-4 bg-teal-50/50 rounded-2xl border border-teal-100/50 mb-6">
  <div className="flex flex-col items-center gap-1 text-center">
  <Truck size={18} className="text-teal-600 " />
  <span className="text-[10px] md:text-xs font-medium text-charcoal ">{product.isFreeDelivery ? "Free Delivery" : "Delivery Fee Applies"}</span>
  <span className="text-[9px] text-slate ">{product.isFreeDelivery ? "Available everywhere" : "Calculated at checkout"}</span>
  </div>
-  <div className="flex flex-col items-center gap-1 text-center">
-  {product.isReturnable ? (
-    <>
-      <RefreshCw size={18} className="text-teal-600 " />
-      <span className="text-[10px] md:text-xs font-medium text-charcoal ">7 Day Easy Returns</span>
-      <span className="text-[9px] text-slate ">Available</span>
-    </>
-  ) : (
-    <>
-      <RefreshCw size={18} className="text-slate-400 " />
-      <span className="text-[10px] md:text-xs font-medium text-slate-500 ">No Return Available</span>
-      <span className="text-[9px] text-slate ">For this product</span>
-    </>
-  )}
-  </div>
+ <div className="flex flex-col items-center gap-1 text-center">
+ {product.isReturnable ? (
+ <>
+ <RefreshCw size={18} className="text-teal-600 " />
+ <span className="text-[10px] md:text-xs font-medium text-charcoal ">7 Day Easy Returns</span>
+ <span className="text-[9px] text-slate ">Available</span>
+ </>
+ ) : (
+ <>
+ <RefreshCw size={18} className="text-slate-400 " />
+ <span className="text-[10px] md:text-xs font-medium text-slate-500 ">No Return Available</span>
+ <span className="text-[9px] text-slate ">For this product</span>
+ </>
+ )}
+ </div>
  <div className="flex flex-col items-center gap-1 text-center">
  <Shield size={18} className="text-teal-600 " />
  <span className="text-[10px] md:text-xs font-medium text-charcoal ">100% Genuine</span>
@@ -531,17 +572,9 @@ function ProductDetail({ product }: { product: NonNullable<ReturnType<typeof get
  </div>
  </div>
 
- {/* WhatsApp CTA */}
- {session && (
- <a
-  href={`https://wa.me/${(companyProfile?.contactNumber || '+919876543210').replace(/[^0-9]/g, '')}?text=${encodeURIComponent(whatsappMessage)}`}
-  target="_blank"
- rel="noopener noreferrer"
- className="flex items-center justify-center gap-2 mt-4 py-3 rounded-full border-2 border-green-500 text-green-600 font-semibold text-sm hover:bg-green-50 :bg-green-900/10 transition-colors"
- >
- <MessageCircle size={18} /> Chat About This Fabric
- </a>
- )}
+ {/* Delivery Details */}
+ <DeliveryDetails />
+
  </div>
  </div>
 
@@ -803,10 +836,10 @@ function ProductDetail({ product }: { product: NonNullable<ReturnType<typeof get
            animate={{ scale: 1, opacity: 1 }}
            exit={{ scale: 0.95, opacity: 0 }}
            transition={{ type: "spring", damping: 25, stiffness: 300 }}
-           className="relative w-[100vw] h-[100vh] flex items-center justify-center p-4 md:p-12"
+           className="relative w-[100vw] h-[100vh] flex items-center justify-center"
            onClick={(e) => e.stopPropagation()}
          >
-           <div className="relative w-full h-full max-w-5xl max-h-[85vh]">
+           <div className="relative w-full h-full">
              <Image
                src={product.images[selectedImage]?.url || product.images[0].url}
                alt={product.name}

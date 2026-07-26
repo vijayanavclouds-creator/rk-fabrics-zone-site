@@ -44,12 +44,11 @@ export const useCartStore = create<CartStore>()(
  ...newItems[existingIndex],
  quantity: newItems[existingIndex].quantity + quantity,
  };
- return { items: newItems, isOpen: true };
+ return { items: newItems };
  }
 
  return {
  items: [...state.items, { product, variant, quantity }],
- isOpen: true,
  };
  });
  },

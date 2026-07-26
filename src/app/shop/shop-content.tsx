@@ -39,7 +39,7 @@ export function ShopContent({
  const [selectedDiscount, setSelectedDiscount] = useState<number>(0);
  const [priceRange, setPriceRange] = useState<[number, number]>([0, 25000]);
  const [showFilters, setShowFilters] = useState(false);
- const [gridCols, setGridCols] = useState<3 | 5 | 7>(3);
+ const [gridCols, setGridCols] = useState<3 | 5 | 7>(5);
  const [isSortOpen, setIsSortOpen] = useState(false);
 
   const featuresParam = searchParams.get("features");
@@ -212,14 +212,14 @@ export function ShopContent({
  const hasActiveFilters = selectedCategories.length > 0 || selectedFabrics.length > 0 || selectedFeatures.length > 0 || selectedDiscount > 0 || priceRange[0] > 0 || priceRange[1] < 25000;
 
  return (
- <div className="w-full mx-auto px-4 md:px-6 lg:px-8 py-8 md:py-12">
+ <div className="w-full mx-auto px-4 md:px-6 lg:px-8 pt-4 pb-8 md:py-12">
  {/* Page Header */}
  <motion.div
  initial={{ opacity: 0, y: 20 }}
  animate={{ opacity: 1, y: 0 }}
- className="mb-8"
+ className="mb-6 md:mb-8"
  >
- <h1 className="font-[family-name:var(--font-playfair)] text-3xl md:text-4xl font-bold text-charcoal mt-1">
+ <h1 className="font-[family-name:var(--font-playfair)] text-[22px] md:text-4xl font-bold text-charcoal mt-1">
  Our Exclusives
  </h1>
  <p className="text-sm text-slate mt-2">
@@ -234,10 +234,8 @@ export function ShopContent({
  <button
  onClick={() => setShowFilters(!showFilters)}
  className={cn(
- "flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium border transition-colors",
- showFilters
- ? "bg-teal-600 text-white border-teal-600"
- : "bg-white text-charcoal border-charcoal/10 hover:border-teal-600"
+ "btn-primary !py-2.5 !px-4 flex items-center gap-2 text-sm font-medium transition-all",
+ showFilters ? "shadow-neo-pressed scale-[0.97]" : ""
  )}
  >
  <SlidersHorizontal size={16} />
@@ -262,16 +260,16 @@ export function ShopContent({
 
  <div className="flex items-center gap-3">
  {/* Grid Toggle */}
- <div className="hidden md:flex items-center gap-1 border border-charcoal/10 rounded-lg p-0.5">
+ <div className="hidden md:flex items-center gap-1 btn-primary !p-1 !px-1.5">
  {([3, 5, 7] as const).map((cols) => (
  <button
  key={cols}
  onClick={() => setGridCols(cols)}
  className={cn(
- "p-2 rounded-md transition-colors",
+ "p-1.5 rounded-xl transition-all flex items-center justify-center",
  gridCols === cols
- ? "bg-teal-600 text-white"
- : "text-slate hover:text-charcoal :text-dark-text"
+ ? "shadow-neo-pressed text-teal-600 scale-[0.97]"
+ : "text-slate hover:text-charcoal"
  )}
  >
  {cols === 3 ? <LayoutGrid size={16} /> : <Grid3X3 size={16} />}
@@ -284,10 +282,10 @@ export function ShopContent({
     <button
       onClick={() => setIsSortOpen(!isSortOpen)}
       onBlur={() => setTimeout(() => setIsSortOpen(false), 150)}
-      className="flex items-center gap-2 pl-4 pr-3 py-2.5 rounded-xl text-sm font-medium bg-white border border-charcoal/10 text-charcoal focus:outline-none transition-colors hover:border-charcoal/20"
+      className="btn-primary !py-2.5 !px-4 flex items-center gap-2 text-sm font-medium transition-all"
     >
       {sortOptions.find((opt) => opt.value === sortBy)?.label}
-      <ChevronDown size={14} className={cn("text-slate transition-transform", isSortOpen && "rotate-180")} />
+      <ChevronDown size={14} className={cn("transition-transform", isSortOpen && "rotate-180")} />
     </button>
     
     {isSortOpen && (
@@ -482,120 +480,121 @@ export function ShopContent({
  </div>
  )}
  </div>
- </div>
+ {/* Mobile Filter Sheet (Full Screen) */}
+  {showFilters && (
+  <div className="md:hidden fixed inset-0 z-[60] bg-slate-50 flex flex-col animate-in slide-in-from-bottom-2 duration-300">
+    <div className="flex items-center justify-between p-4 border-b border-charcoal/10">
+      <h3 className="font-bold text-charcoal text-lg">Filters</h3>
+      <button onClick={() => setShowFilters(false)} className="p-2 -mr-2 text-charcoal hover:bg-slate-200 rounded-full transition-colors">
+        <X size={20} />
+      </button>
+    </div>
 
- {/* Mobile Filter Sheet (Simplified) */}
- {showFilters && (
- <div className="md:hidden fixed inset-x-0 bottom-16 z-40 bg-cream border-t border-charcoal/10 rounded-t-2xl shadow-2xl p-4 max-h-[60vh] overflow-y-auto">
- <div className="flex items-center justify-between mb-4">
- <h3 className="font-semibold text-charcoal ">Filters</h3>
- <button onClick={() => setShowFilters(false)} className="p-1 text-slate"><X size={20} /></button>
- </div>
+    <div className="flex-1 overflow-y-auto p-4 space-y-6">
+      <div>
+        <h4 className="text-xs font-bold text-charcoal uppercase mb-3 tracking-wide">Category</h4>
+        <div className="flex flex-wrap gap-2">
+          {categories.slice(0, 6).map((cat) => (
+            <button
+              key={cat.id}
+              onClick={() => toggleCategory(cat.id)}
+              className={cn(
+                "px-3.5 py-1.5 rounded-full text-sm font-medium border transition-all",
+                selectedCategories.includes(cat.id)
+                  ? "bg-charcoal text-white border-charcoal"
+                  : "bg-white text-slate-700 border-charcoal/10 hover:border-charcoal/30"
+              )}
+            >
+              {cat.name}
+            </button>
+          ))}
+        </div>
+      </div>
 
- <div className="space-y-4">
- <div>
- <h4 className="text-xs font-medium text-slate uppercase mb-2">Category</h4>
- <div className="flex flex-wrap gap-2">
- {categories.slice(0, 6).map((cat) => (
- <button
- key={cat.id}
- onClick={() => toggleCategory(cat.id)}
- className={cn(
- "px-3 py-1.5 rounded-full text-xs font-medium border transition-colors",
- selectedCategories.includes(cat.id)
- ? "bg-teal-600 text-white border-teal-600"
- : "bg-white text-slate border-charcoal/10 "
- )}
- >
- {cat.name}
- </button>
- ))}
- </div>
- </div>
+      <div>
+        <h4 className="text-xs font-bold text-charcoal uppercase mb-3 tracking-wide">Fabric</h4>
+        <div className="flex flex-wrap gap-2">
+          {fabricFilters.map((fab) => (
+            <button
+              key={fab.id}
+              onClick={() => toggleFabric(fab.id)}
+              className={cn(
+                "px-3.5 py-1.5 rounded-full text-sm font-medium border transition-all",
+                selectedFabrics.includes(fab.id)
+                  ? "bg-charcoal text-white border-charcoal"
+                  : "bg-white text-slate-700 border-charcoal/10 hover:border-charcoal/30"
+              )}
+            >
+              {fab.name}
+            </button>
+          ))}
+        </div>
+      </div>
 
- <div>
- <h4 className="text-xs font-medium text-slate uppercase mb-2">Fabric</h4>
- <div className="flex flex-wrap gap-2">
- {fabricFilters.map((fab) => (
-                <button
-                  key={fab.id}
-                  onClick={() => toggleFabric(fab.id)}
-                  className={cn(
-                    "px-3 py-1.5 rounded-full text-xs font-medium border transition-colors",
-                    selectedFabrics.includes(fab.id)
-                      ? "bg-teal-600 text-white border-teal-600"
-                      : "bg-white text-slate border-charcoal/10 "
-                  )}
-                >
-                  {fab.name}
-                </button>
-              ))}
- </div>
- </div>
+      <div>
+        <h4 className="text-xs font-bold text-charcoal uppercase mb-3 tracking-wide">Highlights</h4>
+        <div className="flex flex-wrap gap-2">
+          {[
+            { id: "free_delivery", label: "Free Delivery" },
+            { id: "new_arrival", label: "New Arrival" },
+            { id: "bestseller", label: "Bestseller" },
+            { id: "featured", label: "Featured" },
+            { id: "on_sale", label: "On Sale" }
+          ].map((feat) => (
+            <button
+              key={feat.id}
+              onClick={() => toggleFeature(feat.id)}
+              className={cn(
+                "px-3.5 py-1.5 rounded-full text-sm font-medium border transition-all",
+                selectedFeatures.includes(feat.id)
+                  ? "bg-charcoal text-white border-charcoal"
+                  : "bg-white text-slate-700 border-charcoal/10 hover:border-charcoal/30"
+              )}
+            >
+              {feat.label}
+            </button>
+          ))}
+        </div>
+      </div>
 
- <div>
- <h4 className="text-xs font-medium text-slate uppercase mb-2">Highlights</h4>
- <div className="flex flex-wrap gap-2">
-   {[
-     { id: "free_delivery", label: "Free Delivery" },
-     { id: "new_arrival", label: "New Arrival" },
-     { id: "bestseller", label: "Bestseller" },
-     { id: "featured", label: "Featured" },
-     { id: "on_sale", label: "On Sale" }
-   ].map((feat) => (
-     <button
-       key={feat.id}
-       onClick={() => toggleFeature(feat.id)}
-       className={cn(
-         "px-3 py-1.5 rounded-full text-xs font-medium border transition-colors",
-         selectedFeatures.includes(feat.id)
-           ? "bg-teal-600 text-white border-teal-600"
-           : "bg-white text-slate border-charcoal/10"
-       )}
-     >
-       {feat.label}
-     </button>
-   ))}
- </div>
- </div>
+      <div>
+        <h4 className="text-xs font-bold text-charcoal uppercase mb-3 tracking-wide">Discount</h4>
+        <div className="flex flex-wrap gap-2">
+          {[
+            { value: 10, label: "10%+" },
+            { value: 20, label: "20%+" },
+            { value: 30, label: "30%+" },
+            { value: 40, label: "40%+" },
+            { value: 50, label: "50%+" }
+          ].map((disc) => (
+            <button
+              key={disc.value}
+              onClick={() => updateDiscount(disc.value)}
+              className={cn(
+                "px-3.5 py-1.5 rounded-full text-sm font-medium border transition-all",
+                selectedDiscount === disc.value
+                  ? "bg-charcoal text-white border-charcoal"
+                  : "bg-white text-slate-700 border-charcoal/10 hover:border-charcoal/30"
+              )}
+            >
+              {disc.label}
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
 
- <div>
- <h4 className="text-xs font-medium text-slate uppercase mb-2">Discount</h4>
- <div className="flex flex-wrap gap-2">
-   {[
-     { value: 10, label: "10%+" },
-     { value: 20, label: "20%+" },
-     { value: 30, label: "30%+" },
-     { value: 40, label: "40%+" },
-     { value: 50, label: "50%+" }
-   ].map((disc) => (
-     <button
-       key={disc.value}
-       onClick={() => updateDiscount(disc.value)}
-       className={cn(
-         "px-3 py-1.5 rounded-full text-xs font-medium border transition-colors",
-         selectedDiscount === disc.value
-           ? "bg-teal-600 text-white border-teal-600"
-           : "bg-white text-slate border-charcoal/10"
-       )}
-     >
-       {disc.label}
-     </button>
-   ))}
- </div>
- </div>
- </div>
-
- <button
- onClick={() => setShowFilters(false)}
- className="btn-primary w-full mt-4"
- >
- Show {filteredProducts.length} Results
- </button>
- </div>
- )}
- </div>
+    <div className="p-4 bg-slate-50 border-t border-charcoal/10 mt-auto sticky bottom-0 z-10">
+      <button
+        onClick={() => setShowFilters(false)}
+        className="btn-primary w-full py-4 text-base shadow-xl shadow-teal-600/20"
+      >
+        Show {filteredProducts.length} Results
+      </button>
+    </div>
+  </div>
+  )}
+  </div>
+  </div>
  );
 }
-
-

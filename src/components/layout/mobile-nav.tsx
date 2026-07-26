@@ -33,6 +33,8 @@ export function MobileNav() {
   const wishlistCount = useWishlistStore((s) => s.items.length);
   const { data: session } = useSession();
 
+  const { closeSearch, closeMobileMenu } = useUIStore();
+
   useEffect(() => {
     setMounted(true);
   }, []);
@@ -49,6 +51,10 @@ export function MobileNav() {
  <Link
  key={item.label}
  href={item.href}
+ onClick={() => {
+   closeSearch();
+   closeMobileMenu();
+ }}
  className={cn(
  "relative flex flex-col items-center gap-0.5 py-1 px-3 rounded-xl transition-colors",
  isActive

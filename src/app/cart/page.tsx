@@ -2,9 +2,9 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { Minus, Plus, Trash2, ArrowRight, ShoppingBag, Truck, Tag, ArrowLeft } from "lucide-react";
+import { Minus, Plus, Trash2, ArrowRight, ShoppingBag, Truck, Tag, ArrowLeft, Star } from "lucide-react";
 import { useCartStore } from "@/store";
-import { formatPrice } from "@/lib/utils";
+import { formatPrice, cn } from "@/lib/utils";
 import { ProductCard } from "@/components/product/product-card";
 import { products } from "@/lib/data";
 import { useState, useEffect } from "react";
@@ -15,7 +15,7 @@ import { useRouter } from "next/navigation";
 import { validateCartStock } from "@/actions/cart";
 
 export default function CartPage() {
-  const { items, updateQuantity, removeItem, getSubtotal, getShipping, getTotal, getItemCount } = useCartStore();
+  const { items, updateQuantity, removeItem, getSubtotal, getShipping, getTotal, getItemCount, getPlatformFee } = useCartStore();
   const [couponCode, setCouponCode] = useState("");
   const [couponApplied, setCouponApplied] = useState(false);
   const { data: session } = useSession();
@@ -23,8 +23,16 @@ export default function CartPage() {
 
   const subtotal = getSubtotal();
   const shipping = getShipping();
+  
+  const totalMrp = items.reduce((acc, item) => {
+    const originalPrice = item.variant.price || item.product.basePrice;
+    return acc + (originalPrice * item.quantity);
+  }, 0);
+  const productDiscount = totalMrp - subtotal;
+  const platformFee = getPlatformFee();
+
   const discount = couponApplied ? Math.round(subtotal * 0.1) : 0;
-  const total = subtotal + shipping - discount;
+  const total = subtotal + shipping + platformFee - discount;
 
   const [outOfStockMap, setOutOfStockMap] = useState<Record<string, number>>({});
   
@@ -66,9 +74,45 @@ export default function CartPage() {
     }
   };
 
- const suggestedProducts = products.filter(
- (p) => !items.some((item) => item.product.id === p.id)
- ).slice(0, 4);
+  // Smarter recommendation logic based on categories in cart
+  const cartCategories = new Set<string>();
+  items.forEach(item => {
+    try {
+      const cats = JSON.parse(item.product.category);
+      if (Array.isArray(cats)) cats.forEach(c => cartCategories.add(c));
+    } catch {
+      cartCategories.add(item.product.category);
+    }
+  });
+
+  let suggested = products.filter(p => {
+    // Don't recommend items already in cart
+    if (items.some(item => item.product.id === p.id)) return false; 
+    
+    // Check for category match if there are items in the cart
+    if (cartCategories.size > 0) {
+      try {
+        const cats = JSON.parse(p.category);
+        if (Array.isArray(cats)) return cats.some(c => cartCategories.has(c));
+      } catch {
+        return cartCategories.has(p.category);
+      }
+    }
+    return false;
+  });
+
+  // If we don't have enough matches (or cart is empty), fallback to bestsellers/general products
+  if (suggested.length < 4) {
+    const fallbacks = products.filter(p => 
+      !items.some(item => item.product.id === p.id) && 
+      !suggested.some(s => s.id === p.id)
+    );
+    // Prioritize bestsellers in fallbacks
+    fallbacks.sort((a, b) => (b.isBestseller ? 1 : 0) - (a.isBestseller ? 1 : 0));
+    suggested = [...suggested, ...fallbacks];
+  }
+
+  const suggestedProducts = suggested.slice(0, 4);
 
  if (items.length === 0) {
  return (
@@ -120,25 +164,28 @@ export default function CartPage() {
  </Link>
  </div>
 
- <div className="grid md:grid-cols-3 gap-8">
- {/* Cart Items */}
- <div className="md:col-span-2 space-y-4">
- {items.map((item) => {
- const price = item.variant.salePrice || item.variant.price;
- const isOutOfStock = outOfStockMap[item.variant.id] !== undefined;
+  <div className="mt-8 bg-white rounded-3xl border border-charcoal/10 shadow-sm p-4 sm:p-6 lg:p-10">
+    <div className="grid lg:grid-cols-5 gap-8 lg:gap-0">
+      {/* Cart Items */}
+      <div className="lg:col-span-3 space-y-4 lg:pr-8 lg:border-r lg:border-charcoal/10">
+    {items.map((item) => {
+      const price = item.variant.salePrice || item.product.salePrice || item.variant.price || item.product.basePrice;
+      const originalPrice = item.variant.price || item.product.basePrice;
+      const hasDiscount = originalPrice > price;
+      const isOutOfStock = outOfStockMap[item.variant.id] !== undefined;
  const availableStock = outOfStockMap[item.variant.id];
   
  return (
  <motion.div
- key={item.variant.id}
- layout
- initial={{ opacity: 0, y: 20 }}
- animate={{ opacity: 1, y: 0 }}
- exit={{ opacity: 0, x: -100 }}
- className="flex gap-4 p-4 md:p-5 bg-white rounded-2xl border border-charcoal/5"
- >
- {/* Image */}
- <div className="w-20 h-28 md:w-24 md:h-32 bg-cream-dark rounded-xl flex items-center justify-center shrink-0 overflow-hidden relative border border-charcoal/5">
+        key={item.variant.id}
+        layout
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, x: -100 }}
+        className="flex gap-4 py-3 md:py-4 border-b border-charcoal/5 last:border-0"
+      >
+        {/* Image */}
+        <div className="w-16 h-24 md:w-20 md:h-28 bg-cream-dark rounded-xl flex items-center justify-center shrink-0 overflow-hidden relative border border-charcoal/5">
    <Image
      src={
        (typeof item.variant.images?.[0] === 'string' ? item.variant.images[0] : (item.variant.images?.[0] as any)?.url) 
@@ -164,6 +211,20 @@ export default function CartPage() {
  <p className="text-xs text-slate mt-1">
  {item.variant.color} • {item.variant.size} • {item.product.fabric}
  </p>
+ <div className="flex items-center gap-0.5 mt-1.5">
+   {[1, 2, 3, 4, 5].map((star) => (
+     <Star
+       key={star}
+       size={12}
+       className={cn(
+         star <= Math.round(item.product.rating)
+           ? "fill-teal-600 text-teal-600"
+           : "fill-charcoal/10 text-charcoal/10"
+       )}
+     />
+   ))}
+   <span className="text-xs text-slate ml-1">({item.product.reviewCount})</span>
+ </div>
  {isOutOfStock && (
     <div className="mt-2 text-[11px] font-bold text-rose-600 bg-rose-50 px-2 py-1 rounded-md inline-block uppercase tracking-wider">
       {availableStock === 0 ? "Out of Stock" : `Only ${availableStock} left - Please reduce quantity`}
@@ -181,7 +242,7 @@ export default function CartPage() {
  </button>
  </div>
 
- <div className="flex items-center justify-between mt-4">
+ <div className="flex items-center justify-between mt-2 md:mt-3">
  {/* Quantity */}
  <div className="flex items-center border border-charcoal/10 rounded-xl">
  <button
@@ -201,28 +262,35 @@ export default function CartPage() {
  </button>
  </div>
 
- {/* Price */}
- <div className="text-right">
- <p className="text-base md:text-lg font-bold text-charcoal ">
- {formatPrice(price * item.quantity)}
- </p>
- {item.quantity > 1 && (
- <p className="text-xs text-slate ">
- {formatPrice(price)} each
- </p>
- )}
- </div>
+      {/* Price */}
+      <div className="text-right">
+        <div className="flex flex-col items-end">
+          <p className="text-base md:text-lg font-bold text-charcoal">
+            {formatPrice(price * item.quantity)}
+          </p>
+          {hasDiscount && (
+            <p className="text-xs text-slate line-through">
+              {formatPrice(originalPrice * item.quantity)}
+            </p>
+          )}
+        </div>
+        {item.quantity > 1 && (
+          <p className="text-xs text-slate mt-1">
+            {formatPrice(price)} each
+          </p>
+        )}
+      </div>
  </div>
  </div>
  </motion.div>
  );
  })}
- </div>
+      </div>
 
- {/* Order Summary */}
- <div className="md:col-span-1">
- <div className="sticky top-28 bg-white rounded-2xl border border-charcoal/5 p-6 space-y-5">
- <h2 className="font-[family-name:var(--font-playfair)] text-xl font-bold text-charcoal ">
+        {/* Order Summary */}
+        <div className="lg:col-span-2 lg:pl-8">
+          <div className="sticky top-28 space-y-5">
+            <h2 className="font-[family-name:var(--font-playfair)] text-xl font-bold text-charcoal ">
  Order Summary
  </h2>
 
@@ -252,15 +320,25 @@ export default function CartPage() {
  {/* Breakdown */}
  <div className="space-y-3 text-sm">
  <div className="flex justify-between text-slate ">
- <span>Subtotal ({getItemCount()} items)</span>
- <span>{formatPrice(subtotal)}</span>
+ <span>Total MRP ({getItemCount()} items)</span>
+ <span>{formatPrice(totalMrp)}</span>
  </div>
+ {productDiscount > 0 && (
+ <div className="flex justify-between text-success">
+ <span>Discount on MRP</span>
+ <span>-{formatPrice(productDiscount)}</span>
+ </div>
+ )}
  {couponApplied && (
  <div className="flex justify-between text-success">
  <span>Coupon Discount</span>
  <span>-{formatPrice(discount)}</span>
  </div>
  )}
+ <div className="flex justify-between text-slate ">
+ <span>Platform Fee (2%)</span>
+ <span>{formatPrice(platformFee)}</span>
+ </div>
  <div className="flex justify-between text-slate ">
  <span>Shipping</span>
  <span className={shipping === 0 ? "text-success font-medium" : ""}>
@@ -269,7 +347,7 @@ export default function CartPage() {
  </div>
  <div className="h-px bg-charcoal/10 " />
  <div className="flex justify-between text-lg font-bold text-charcoal ">
- <span>Total</span>
+ <span>Total Amount</span>
  <span className="text-teal-600 ">{formatPrice(total)}</span>
  </div>
  </div>
@@ -300,9 +378,22 @@ export default function CartPage() {
  <div className="flex items-center justify-center gap-3 text-xs text-slate pt-2">
  <span>UPI</span>•<span>Cards</span>•<span>Net Banking</span>•<span>COD</span>
  </div>
- </div>
- </div>
- </div>
- </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {/* Suggested Products Card */}
+    <div className="mt-8 bg-white rounded-3xl border border-charcoal/10 shadow-sm p-4 sm:p-6 lg:p-10">
+      <h2 className="font-[family-name:var(--font-playfair)] text-2xl font-bold text-charcoal mb-6">
+        Recommended For You
+      </h2>
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+        {suggestedProducts.map((p, i) => (
+          <ProductCard key={p.id} product={p} index={i} />
+        ))}
+      </div>
+    </div>
+  </div>
  );
 }

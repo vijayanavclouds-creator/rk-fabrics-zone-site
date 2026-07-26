@@ -91,6 +91,7 @@ export function Header({ initialNavLinks, announcementBanner }: { initialNavLink
  const cartItemCount = useCartStore((s) => s.getItemCount());
  const wishlistCount = useWishlistStore((s) => s.items.length);
  const { isMobileMenuOpen, toggleMobileMenu, closeMobileMenu } = useUIStore();
+ const isCustomerPortal = pathname.startsWith('/account');
 
  useEffect(() => {
  setMounted(true);
@@ -227,13 +228,15 @@ export function Header({ initialNavLinks, announcementBanner }: { initialNavLink
  <div className="hidden md:block">
    <InlineDesktopSearch />
  </div>
- <button
- onClick={session?.user?.role === 'ADMIN' ? toggleAdminSearch : toggleSearch}
- className="md:hidden p-2 text-charcoal/70 hover:text-teal-600 :text-teal-400 transition-colors"
- aria-label="Search"
- >
- <Search size={20} />
- </button>
+ <div className="md:hidden">
+   <button
+     onClick={session?.user?.role === 'ADMIN' ? toggleAdminSearch : toggleSearch}
+     className="btn-icon"
+     aria-label="Search"
+   >
+     <Search size={18} className="text-slate-500 stroke-[1.5]" />
+   </button>
+ </div>
 
           {/* Admin Icons */}
           {session?.user?.role === 'ADMIN' && (
@@ -244,46 +247,50 @@ export function Header({ initialNavLinks, announcementBanner }: { initialNavLink
 
           {/* Wishlist */}
           {(pathname !== '/login' && pathname !== '/register') && session?.user?.role !== 'ADMIN' && (
-            <Link
-              href="/wishlist"
-              className="hidden md:flex btn-icon"
-              aria-label="Wishlist"
-            >
-              <Heart size={18} className="text-slate-500 stroke-[1.5]" />
-              {mounted && wishlistCount > 0 && (
-                <span className="absolute -top-1 -right-1 w-4 h-4 bg-rose text-white text-[10px] font-bold flex items-center justify-center rounded-full">
-                  {wishlistCount}
-                </span>
-              )}
-            </Link>
+            <div className="hidden md:flex">
+              <Link
+                href="/wishlist"
+                className="btn-icon"
+                aria-label="Wishlist"
+              >
+                <Heart size={18} className="text-slate-500 stroke-[1.5]" />
+                {mounted && wishlistCount > 0 && (
+                  <span className="absolute -top-1 -right-1 w-4 h-4 bg-rose text-white text-[10px] font-bold flex items-center justify-center rounded-full">
+                    {wishlistCount}
+                  </span>
+                )}
+              </Link>
+            </div>
           )}
 
           {/* Notifications */}
           {(pathname !== '/login' && pathname !== '/register') && session?.user?.role !== 'ADMIN' && (
-            <div className="hidden md:flex">
+            <div className={isCustomerPortal ? "flex" : "hidden md:flex"}>
               <NotificationDropdown />
             </div>
           )}
 
           {/* Cart */}
           {(pathname !== '/login' && pathname !== '/register') && session?.user?.role !== 'ADMIN' && (
-            <button
-              onClick={() => useCartStore.getState().toggleCart()}
-              className="hidden md:flex btn-icon"
-              aria-label="Cart"
-            >
-              <ShoppingBag size={18} className="text-slate-500 stroke-[1.5]" />
-              {mounted && cartItemCount > 0 && (
-                <motion.span
-                  key={cartItemCount}
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
-                  className="absolute -top-1 -right-1 w-5 h-5 bg-teal-600 text-white text-[10px] font-bold flex items-center justify-center rounded-full"
-                >
-                  {cartItemCount}
-                </motion.span>
-              )}
-            </button>
+            <div className="hidden md:flex">
+              <Link
+                href="/cart"
+                className="btn-icon"
+                aria-label="Cart"
+              >
+                <ShoppingBag size={18} className="text-slate-500 stroke-[1.5]" />
+                {mounted && cartItemCount > 0 && (
+                  <motion.span
+                    key={cartItemCount}
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    className="absolute -top-1 -right-1 w-5 h-5 bg-teal-600 text-white text-[10px] font-bold flex items-center justify-center rounded-full"
+                  >
+                    {cartItemCount}
+                  </motion.span>
+                )}
+              </Link>
+            </div>
           )}
 
           {/* Account or Auth Buttons */}

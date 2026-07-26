@@ -24,9 +24,13 @@ export default function CheckoutPaymentPage() {
   const [paymentMethod, setPaymentMethod] = useState("COD")
   const [mounted, setMounted] = useState(false)
   const [fetchingAddress, setFetchingAddress] = useState(false)
+  const [saveAddressForFuture, setSaveAddressForFuture] = useState(false)
   const [promoCodeInput, setPromoCodeInput] = useState("")
   const [validatingPromo, setValidatingPromo] = useState(false)
   const { couponCode, discountAmount, applyCoupon, removeCoupon } = useCartStore()
+
+  const totalMrp = items.reduce((acc, item) => acc + (item.variant.price || item.product.basePrice) * item.quantity, 0)
+  const productDiscount = totalMrp - getSubtotal()
 
   useEffect(() => {
     setMounted(true)
@@ -36,27 +40,32 @@ export default function CheckoutPaymentPage() {
     async function checkAddress() {
       if (!mounted || status === "loading") return;
 
-      if (!selectedAddress) {
-        if (session) {
-          setFetchingAddress(true)
-          try {
-            const { getUserAddresses } = await import("@/actions/address")
-            const addresses = await getUserAddresses()
-            
-            if (addresses && addresses.length > 0) {
-              const defaultAddr = addresses.find((a: any) => a.isDefault) || addresses[0]
-              setAddress(defaultAddr)
-            } else {
-              router.push("/checkout/address")
+      if (session) {
+        setFetchingAddress(true)
+        try {
+          const { getUserAddresses } = await import("@/actions/address")
+          const addresses = await getUserAddresses()
+          
+          if (!selectedAddress) {
+            router.replace("/checkout/address")
+          } else {
+            // Verify selectedAddress still exists if it's not temporary
+            if (!selectedAddress.id?.startsWith("temp_")) {
+              const exists = addresses.find((a: any) => a.id === selectedAddress.id)
+              if (!exists) {
+                toast.error("Your selected address was deleted. Please select a new one.")
+                clearCheckout()
+                router.replace("/checkout/address")
+              }
             }
-          } catch (e) {
-            router.push("/checkout/address")
-          } finally {
-            setFetchingAddress(false)
           }
-        } else {
-          router.push("/checkout/address")
+        } catch (e) {
+          if (!selectedAddress) router.replace("/checkout/address")
+        } finally {
+          setFetchingAddress(false)
         }
+      } else {
+        if (!selectedAddress) router.replace("/checkout/address")
       }
     }
     
@@ -104,7 +113,10 @@ export default function CheckoutPaymentPage() {
 
     setLoading(true)
 
-    const fullAddress = `${selectedAddress.address}, ${selectedAddress.city}, ${selectedAddress.state} - ${selectedAddress.pincode}`
+    const fullName = `${selectedAddress.firstName} ${selectedAddress.lastName}`.trim()
+    const namePart = fullName ? `${fullName}, ` : ""
+    const phonePart = selectedAddress.phone ? `${selectedAddress.phone}, ` : ""
+    const fullAddress = `${namePart}${phonePart}${selectedAddress.address}, ${selectedAddress.city}, ${selectedAddress.state} - ${selectedAddress.pincode}`
     
     const orderData = {
       items,
@@ -113,6 +125,7 @@ export default function CheckoutPaymentPage() {
       platformFeeAmount: getPlatformFee(),
       subtotalAmount: getSubtotal(),
       shippingAddress: fullAddress,
+      addressDetails: selectedAddress, // passing for strict validation
       phone: selectedAddress.phone,
       email: session.user.email,
       paymentMethod,
@@ -186,10 +199,6 @@ export default function CheckoutPaymentPage() {
 
   return (
     <>
-      <Link href="/cart" className="hidden md:inline-flex items-center gap-2 text-teal-600 font-bold hover:text-teal-800 transition-colors mb-8">
-        <ArrowLeft size={18} />
-        Back to Cart
-      </Link>
       
       <div className="flex flex-col lg:flex-row gap-8 lg:gap-10">
           
@@ -205,7 +214,50 @@ export default function CheckoutPaymentPage() {
               <p className="font-bold text-charcoal">{selectedAddress.firstName} {selectedAddress.lastName}</p>
               <p className="text-sm text-slate mt-1">{selectedAddress.address}</p>
               <p className="text-sm text-slate">{selectedAddress.city}, {selectedAddress.state} - {selectedAddress.pincode}</p>
-              <p className="text-sm font-medium text-charcoal mt-2">Ph: {selectedAddress.phone}</p>
+              <p className="text-sm font-medium text-charcoal mt-2">Ph: {selectedAddress.phone || "N/A"}</p>
+              
+              {selectedAddress.id?.startsWith("temp_") && (
+                <div className="mt-6 pt-4 border-t border-charcoal/5 flex items-center gap-3">
+                  <input 
+                    type="checkbox" 
+                    id="saveAddressCheckbox" 
+                    checked={saveAddressForFuture} 
+                    onChange={async (e) => {
+                      const checked = e.target.checked;
+                      if (!checked || !selectedAddress || !selectedAddress.id?.startsWith("temp_")) return;
+                      setSaveAddressForFuture(true);
+                      const toastId = toast.loading("Saving address...");
+                      try {
+                        const { saveAddress } = await import("@/actions/address")
+                        const res = await saveAddress({
+                          firstName: selectedAddress.firstName,
+                          lastName: selectedAddress.lastName,
+                          phone: selectedAddress.phone || "0000000000",
+                          address: selectedAddress.address,
+                          city: selectedAddress.city,
+                          state: selectedAddress.state,
+                          pincode: selectedAddress.pincode,
+                          isDefault: false
+                        });
+                        if (res.success && res.address) {
+                          setAddress(res.address);
+                          toast.success("Address saved successfully!", { id: toastId });
+                        } else {
+                          setSaveAddressForFuture(false);
+                          toast.error("Failed to save address", { id: toastId });
+                        }
+                      } catch (e) {
+                        setSaveAddressForFuture(false);
+                        toast.error("Failed to save address", { id: toastId });
+                      }
+                    }} 
+                    className="w-4 h-4 text-teal-600 rounded border-gray-300 focus:ring-teal-600"
+                  />
+                  <label htmlFor="saveAddressCheckbox" className="text-sm font-medium text-charcoal cursor-pointer">
+                    Save this address for future reference
+                  </label>
+                </div>
+              )}
             </div>
 
             {/* Payment Method - Third on Mobile, Second in Left Column on Desktop */}
@@ -252,7 +304,11 @@ export default function CheckoutPaymentPage() {
               <h2 className="text-2xl font-[family-name:var(--font-playfair)] font-bold text-charcoal mb-6">Order Summary</h2>
               
               <div className="space-y-4 mb-6 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
-                {items.map((item) => (
+                {items.map((item) => {
+                  const price = item.variant.salePrice || item.product.salePrice || item.variant.price || item.product.basePrice;
+                  const originalPrice = item.variant.price || item.product.basePrice;
+                  const hasDiscount = originalPrice > price;
+                  return (
                   <div key={item.variant.id} className="flex gap-4">
                     <div className="w-16 h-20 bg-slate-100 rounded-lg overflow-hidden flex-shrink-0 relative">
                       <Image 
@@ -271,13 +327,18 @@ export default function CheckoutPaymentPage() {
                     <div className="flex-1">
                       <h4 className="font-bold text-charcoal text-sm line-clamp-1">{item.product.name}</h4>
                       <p className="text-xs text-slate mt-0.5">{item.variant.color} - {item.variant.size}</p>
-                      <div className="flex items-center justify-between mt-1">
+                      <div className="flex items-end justify-between mt-1">
                         <span className="text-xs font-bold text-charcoal">Qty: {item.quantity}</span>
-                        <span className="text-sm font-bold text-teal-600">₹{(item.variant.salePrice || item.variant.price) * item.quantity}</span>
+                        <div className="flex flex-col items-end">
+                          <span className="text-sm font-bold text-teal-600">₹{price * item.quantity}</span>
+                          {hasDiscount && (
+                            <span className="text-[10px] text-slate line-through">₹{originalPrice * item.quantity}</span>
+                          )}
+                        </div>
                       </div>
                     </div>
                   </div>
-                ))}
+                )})}
               </div>
 
               {/* Promo Code Section */}
@@ -319,23 +380,29 @@ export default function CheckoutPaymentPage() {
 
               <div className="space-y-3 py-4 border-t border-b border-charcoal/10 mb-6">
                 <div className="flex justify-between text-charcoal">
-                  <span className="text-sm font-bold">Subtotal</span>
-                  <span className="font-bold">₹{getSubtotal().toLocaleString()}</span>
+                  <span className="text-sm font-bold">Total MRP ({items.reduce((acc, item) => acc + item.quantity, 0)} items)</span>
+                  <span className="font-bold">₹{totalMrp.toLocaleString()}</span>
+                </div>
+                {productDiscount > 0 && (
+                  <div className="flex justify-between text-teal-700">
+                    <span className="text-sm font-bold">Discount on MRP</span>
+                    <span className="font-bold">-₹{productDiscount.toLocaleString()}</span>
+                  </div>
+                )}
+                {discountAmount > 0 && (
+                  <div className="flex justify-between text-teal-700">
+                    <span className="text-sm font-bold">Coupon Discount ({couponCode})</span>
+                    <span className="font-bold">-₹{discountAmount.toLocaleString()}</span>
+                  </div>
+                )}
+                <div className="flex justify-between text-charcoal">
+                  <span className="text-sm font-bold">Platform Fee (2%)</span>
+                  <span className="font-bold">₹{getPlatformFee().toLocaleString()}</span>
                 </div>
                 <div className="flex justify-between text-charcoal">
                   <span className="text-sm font-bold">Shipping</span>
                   <span className="font-bold">{getShipping() === 0 ? <span className="text-teal-600">Free</span> : `₹${getShipping()}`}</span>
                 </div>
-                <div className="flex justify-between text-charcoal">
-                  <span className="text-sm font-bold">Platform Fee (2%)</span>
-                  <span className="font-bold">₹{getPlatformFee().toLocaleString()}</span>
-                </div>
-                {discountAmount > 0 && (
-                  <div className="flex justify-between text-teal-700">
-                    <span className="text-sm font-bold">Discount ({couponCode})</span>
-                    <span className="font-bold">-₹{discountAmount.toLocaleString()}</span>
-                  </div>
-                )}
               </div>
 
               <div className="flex justify-between items-center mb-8">

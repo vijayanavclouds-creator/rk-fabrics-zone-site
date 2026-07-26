@@ -29,7 +29,19 @@ export async function saveAddress(data: any) {
       return { success: false, error: "Unauthorized" }
     }
 
-    if (data.isDefault) {
+    const addressCount = await prisma.address.count({
+      where: { userId: session.user.id }
+    })
+
+    let isDefault = data.isDefault || false
+
+    if (!data.id && addressCount === 0) {
+      isDefault = true
+    } else if (data.id && addressCount === 1) {
+      isDefault = true
+    }
+
+    if (isDefault) {
       // Remove default from all other addresses
       await prisma.address.updateMany({
         where: { userId: session.user.id, isDefault: true },
@@ -50,7 +62,7 @@ export async function saveAddress(data: any) {
           city: data.city,
           state: data.state,
           pincode: data.pincode,
-          isDefault: data.isDefault || false
+          isDefault: isDefault
         }
       })
     } else {
@@ -58,6 +70,7 @@ export async function saveAddress(data: any) {
       address = await prisma.address.create({
         data: {
           ...data,
+          isDefault: isDefault,
           userId: session.user.id
         }
       })
@@ -79,9 +92,31 @@ export async function deleteAddress(id: string) {
       return { success: false, error: "Unauthorized" }
     }
 
+    const addressToDelete = await prisma.address.findUnique({
+      where: { id, userId: session.user.id }
+    })
+
+    if (!addressToDelete) {
+      return { success: false, error: "Address not found" }
+    }
+
     await prisma.address.delete({
       where: { id, userId: session.user.id }
     })
+
+    const remainingAddresses = await prisma.address.findMany({
+      where: { userId: session.user.id },
+      orderBy: { createdAt: "desc" }
+    })
+
+    if (remainingAddresses.length > 0) {
+      if (addressToDelete.isDefault || remainingAddresses.length === 1) {
+        await prisma.address.update({
+          where: { id: remainingAddresses[0].id },
+          data: { isDefault: true }
+        })
+      }
+    }
 
     revalidatePath("/checkout/address")
     revalidatePath("/account")
