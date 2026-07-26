@@ -11,6 +11,87 @@ import 'swiper/css';
 import 'swiper/css/effect-coverflow';
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
+/* ── Decorative SVG Components ── */
+const ThreadSpool = ({ color = "#b89f92", className = "" }: { color?: string, className?: string }) => (
+  <svg width="48" height="60" viewBox="0 0 48 60" fill="none" xmlns="http://www.w3.org/2000/svg" className={className} style={{ filter: 'drop-shadow(3px 8px 12px rgba(0,0,0,0.15))', overflow: 'visible' }}>
+    <defs>
+      <linearGradient id={`shade-${color}`} x1="10" y1="30" x2="38" y2="30" gradientUnits="userSpaceOnUse">
+        <stop stopColor="#000" stopOpacity="0.4"/>
+        <stop offset="0.3" stopColor="#fff" stopOpacity="0.3"/>
+        <stop offset="0.7" stopColor="#fff" stopOpacity="0.1"/>
+        <stop offset="1" stopColor="#000" stopOpacity="0.5"/>
+      </linearGradient>
+      <linearGradient id="wood" x1="4" y1="0" x2="44" y2="0" gradientUnits="userSpaceOnUse">
+        <stop stopColor="#c2b2a1"/>
+        <stop offset="0.5" stopColor="#dfd2c4"/>
+        <stop offset="1" stopColor="#a39281"/>
+      </linearGradient>
+    </defs>
+
+    {/* Thread body */}
+    <rect x="10" y="8" width="28" height="44" fill={color} />
+    
+    {/* Thread texture */}
+    {[...Array(20)].map((_, i) => (
+      <line key={i} x1="10" y1={10 + i * 2} x2="38" y2={10 + i * 2} stroke="rgba(255,255,255,0.15)" strokeWidth="0.5" />
+    ))}
+    
+    {/* Thread shading */}
+    <rect x="10" y="8" width="28" height="44" fill={`url(#shade-${color})`} />
+
+    {/* Bottom wooden rim */}
+    <rect x="4" y="48" width="40" height="6" fill="url(#wood)" rx="1" />
+    <ellipse cx="24" cy="54" rx="20" ry="4" fill="#dfd2c4" />
+    <ellipse cx="24" cy="48" rx="20" ry="4" fill="#a39281" />
+
+    {/* Top wooden rim */}
+    <rect x="4" y="6" width="40" height="6" fill="url(#wood)" rx="1" />
+    <ellipse cx="24" cy="12" rx="20" ry="4" fill="#a39281" />
+    <ellipse cx="24" cy="6" rx="20" ry="4" fill="#dfd2c4" />
+    <ellipse cx="24" cy="6" rx="6" ry="1.5" fill="#8c7a6b" />
+  </svg>
+);
+
+const SewingPin = ({ className = "" }: { className?: string }) => (
+  <svg width="80" height="16" viewBox="0 0 80 16" fill="none" xmlns="http://www.w3.org/2000/svg" className={className} style={{ filter: 'drop-shadow(2px 4px 4px rgba(0,0,0,0.15))', overflow: 'visible' }}>
+    <defs>
+      <radialGradient id="pearl" cx="0.35" cy="0.35" r="0.6">
+        <stop stopColor="#ffffff" offset="0%"/>
+        <stop stopColor="#f8fafc" offset="30%"/>
+        <stop stopColor="#cbd5e1" offset="70%"/>
+        <stop stopColor="#94a3b8" offset="100%"/>
+      </radialGradient>
+      <linearGradient id="needle" x1="0" y1="8" x2="72" y2="8" gradientUnits="userSpaceOnUse">
+        <stop stopColor="#94a3b8" />
+        <stop offset="0.5" stopColor="#f1f5f9" />
+        <stop offset="1" stopColor="#64748b" />
+      </linearGradient>
+    </defs>
+    
+    {/* Needle */}
+    <line x1="2" y1="8" x2="68" y2="8" stroke="url(#needle)" strokeWidth="1.5" strokeLinecap="round"/>
+    
+    {/* Pearl head */}
+    <circle cx="72" cy="8" r="7" fill="url(#pearl)" />
+    {/* Specular highlight */}
+    <circle cx="69" cy="5" r="2" fill="white" opacity="0.9" filter="blur(0.5px)" />
+  </svg>
+);
+
+const SewingButton = ({ color = "#e5e7eb", className = "" }: { color?: string, className?: string }) => (
+  <svg width="24" height="24" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg" className={className} style={{ filter: 'drop-shadow(1px 3px 4px rgba(0,0,0,0.15))' }}>
+    <circle cx="15" cy="15" r="14" fill={color} stroke="rgba(0,0,0,0.05)" strokeWidth="1"/>
+    <circle cx="15" cy="15" r="10" fill="transparent" stroke="rgba(0,0,0,0.1)" strokeWidth="1"/>
+    <circle cx="15" cy="15" r="10" fill="rgba(0,0,0,0.02)"/>
+    <circle cx="12" cy="12" r="1.5" fill="#a8a29e" />
+    <circle cx="18" cy="12" r="1.5" fill="#a8a29e" />
+    <circle cx="12" cy="18" r="1.5" fill="#a8a29e" />
+    <circle cx="18" cy="18" r="1.5" fill="#a8a29e" />
+    <line x1="12" y1="12" x2="18" y2="18" stroke="#fdfbf7" strokeWidth="1.5" opacity="0.8"/>
+    <line x1="18" y1="12" x2="12" y2="18" stroke="#fdfbf7" strokeWidth="1.5" opacity="0.8"/>
+  </svg>
+);
+
 /* ── Hero Section ── */
 function HeroSection({ banners }: { banners: any[] }) {
   const heroImages = banners.length > 0 
@@ -24,21 +105,199 @@ function HeroSection({ banners }: { banners: any[] }) {
 
   const getImg = (idx: number) => heroImages[idx % heroImages.length];
   return (
-    <section className="relative min-h-[90vh] flex items-center pt-2 md:pt-24 overflow-hidden bg-white">
-      {/* Background patterns */}
-      <div className="absolute inset-0 pattern-dots opacity-[0.03] dark:opacity-[0.05]" />
-      <div className="absolute top-20 right-0 w-[500px] h-[500px] bg-gradient-to-br from-cream to-transparent rounded-full blur-[100px] -z-10" />
-      <div className="absolute bottom-20 left-10 w-96 h-96 bg-teal-500/5 rounded-full blur-3xl -z-10" />
+    <section className="relative flex items-center pt-2 md:pt-6 pb-2 md:pb-12 overflow-hidden bg-white">
+      {/* Background patterns for mobile */}
+      <div className="absolute inset-0 pattern-dots opacity-[0.03] dark:opacity-[0.05] md:hidden" />
+      <div className="absolute top-20 right-0 w-[500px] h-[500px] bg-gradient-to-br from-cream to-transparent rounded-full blur-[100px] -z-10 md:hidden" />
+      <div className="absolute bottom-20 left-10 w-96 h-96 bg-teal-500/5 rounded-full blur-3xl -z-10 md:hidden" />
 
-      <div className="relative max-w-[1600px] mx-auto px-4 md:px-6 lg:px-8 py-2 md:py-0 w-full">
-        <div className="grid lg:grid-cols-12 md:grid-cols-2 gap-[5px] md:gap-12 items-center">
+      <div className="relative w-full px-2 md:px-4 py-2 md:py-0">
+        {/* Desktop View - Horizontal Scattered Collage */}
+        <div className="hidden md:flex flex-col items-center justify-center w-full bg-cream rounded-[2.5rem] pt-12 pb-16 relative overflow-hidden shadow-sm border border-charcoal/5">
+          {/* Desktop background subtle texture */}
+          <div className="absolute inset-0 pattern-dots opacity-[0.04]" />
+
+          {/* Desktop Image Collage */}
+          <div className="relative w-full h-[350px] lg:h-[450px] max-w-6xl mx-auto z-10 mb-6 mt-4">
+            
+            {/* Decorative elements are now rendered inside the cards below */}
+
+            {heroImages.slice(0, 5).map((imgSrc, i) => {
+              const desktopPositions = [
+                "top-[10%] left-[8%] w-[18%] -rotate-2 z-10",
+                "top-[25%] left-[28%] w-[20%] rotate-3 z-20",
+                "top-[2%] left-[50%] -translate-x-1/2 w-[22%] -rotate-1 z-30", // center (largest)
+                "top-[30%] right-[25%] w-[18%] rotate-2 z-20",
+                "top-[12%] right-[8%] w-[19%] -rotate-3 z-10",
+              ];
+              
+              return (
+                <motion.div
+                  key={i}
+                  className={cn("absolute rounded-2xl overflow-visible shadow-xl border-[6px] lg:border-[8px] border-white bg-white", desktopPositions[i])}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.1 + i * 0.1, duration: 0.7 }}
+                  whileHover={{ scale: 1.05, zIndex: 40, transition: { duration: 0.2 } }}
+                >
+                  <div className="relative w-full aspect-[3/4] rounded-[10px] lg:rounded-[12px] overflow-hidden">
+                    <Image src={imgSrc} alt={`Hero Banner ${i}`} fill className="object-cover" sizes="25vw" />
+                  </div>
+                  
+                  {/* Decorative Elements Attached to Specific Cards */}
+                  {i === 0 && (
+                    <div className="absolute left-0 bottom-0 z-40 pointer-events-none">
+                      <ThreadSpool color="#c29f98" className="-rotate-12 absolute -left-10 -top-6 scale-90" />
+                      <ThreadSpool color="#d4c4a8" className="rotate-[15deg] absolute -left-2 -top-3 scale-90" />
+                      <SewingPin className="-rotate-[30deg] absolute -left-12 top-4" />
+                      <SewingButton color="#c2b2a1" className="absolute -left-14 top-2 rotate-12 scale-90" />
+                    </div>
+                  )}
+                  {i === 1 && (
+                    <div className="absolute left-0 bottom-0 z-40 pointer-events-none">
+                      <SewingPin className="-rotate-[120deg] absolute -left-14 top-2 scale-90" />
+                      <SewingButton color="#c29f98" className="absolute -left-6 -top-2 scale-75" />
+                    </div>
+                  )}
+                  {i === 2 && (
+                    <div className="absolute right-0 top-0 z-40 pointer-events-none">
+                      <SewingPin className="-rotate-[30deg] absolute -right-14 -top-2 scale-90" />
+                      <SewingButton color="#c29f98" className="absolute -right-6 -top-6 scale-75" />
+                    </div>
+                  )}
+                  {i === 3 && (
+                    <div className="absolute left-0 bottom-0 z-40 pointer-events-none">
+                      <ThreadSpool color="#2c5d63" className="-rotate-[15deg] absolute -left-8 top-2 scale-90" />
+                      <ThreadSpool color="#437a80" className="rotate-[20deg] absolute -left-0 top-6 scale-90" />
+                      <SewingPin className="-rotate-[25deg] absolute -left-12 -top-2" />
+                    </div>
+                  )}
+                  {i === 4 && (
+                    <div className="absolute right-0 top-0 z-40 pointer-events-none">
+                      <ThreadSpool color="#c29f98" className="rotate-[25deg] absolute -right-12 -top-10 scale-90" />
+                      <ThreadSpool color="#d4c4a8" className="-rotate-6 absolute -right-2 -top-12 scale-90" />
+                      <SewingPin className="rotate-[45deg] absolute -right-10 top-0" />
+                      <SewingButton color="#dfd2c4" className="absolute -right-1 -top-14 -rotate-12 scale-90" />
+                    </div>
+                  )}
+                </motion.div>
+              );
+            })}
+          </div>
+
+          {/* Text Below */}
+          <div className="text-center z-10 relative px-4">
+            <motion.h1
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, delay: 0.3 }}
+              className="font-[family-name:var(--font-playfair)] text-5xl lg:text-7xl font-bold text-charcoal leading-[1.15] mb-4"
+            >
+              Premium <span className="text-slate-600">Fabrics</span><br />
+              Stylish <span className="text-slate-600">You</span>
+            </motion.h1>
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, delay: 0.4 }}
+              className="text-lg lg:text-xl text-slate-700 max-w-2xl mx-auto mb-8 font-medium tracking-wide"
+            >
+              Curated collections for the fashion-forward you.
+            </motion.p>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, delay: 0.5 }}
+              className="flex items-center gap-4 justify-center"
+            >
+              <Link href="/shop" className="btn-primary text-base px-8 py-3.5 flex items-center gap-2">
+                Explore Collection <ArrowRight size={18} />
+              </Link>
+            </motion.div>
+          </div>
+        </div>
+
+        {/* Mobile View (Preserved) */}
+        <div className="block md:hidden w-full relative pt-2">
+          {/* Mobile Visual - Scattered Collage */}
+          <div className="relative w-full aspect-[3/4] sm:aspect-square mt-0 z-10 mb-8">
+            {heroImages.slice(0, 5).map((imgSrc, i) => {
+              const positions = [
+                "top-[2%] left-[10%] w-[34%] -rotate-6 z-10",
+                "top-[8%] right-[8%] w-[38%] rotate-3 z-20",
+                "top-[35%] left-[50%] -translate-x-1/2 w-[42%] rotate-0 z-40",
+                "bottom-[8%] left-[8%] w-[35%] -rotate-3 z-50",
+                "bottom-[12%] right-[10%] w-[32%] rotate-6 z-20",
+              ];
+
+              return (
+                <motion.div
+                  key={i}
+                  className={cn("absolute rounded-xl overflow-visible shadow-lg border-[4px] border-white bg-white", positions[i])}
+                  initial={{ opacity: 0, y: 20, rotate: 0 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.2 + i * 0.1, duration: 0.6, type: "spring" }}
+                  whileHover={{ scale: 1.05, zIndex: 60, transition: { duration: 0.2 } }}
+                  whileTap={{ scale: 1.05, zIndex: 60, transition: { duration: 0.2 } }}
+                >
+                  <div className="relative w-full aspect-[3/4] rounded-lg overflow-hidden">
+                    <Image
+                      src={imgSrc}
+                      alt={`Hero Banner ${i + 1}`}
+                      fill
+                      className="object-cover"
+                      sizes="50vw"
+                    />
+                  </div>
+
+                  {/* Decorative Elements Attached to Specific Cards (Scaled down for mobile) */}
+                  {i === 0 && (
+                    <div className="absolute left-0 bottom-0 z-40 pointer-events-none scale-[0.55] origin-bottom-left">
+                      <ThreadSpool color="#c29f98" className="-rotate-12 absolute -left-10 -top-6 scale-90" />
+                      <ThreadSpool color="#d4c4a8" className="rotate-[15deg] absolute -left-2 -top-3 scale-90" />
+                      <SewingPin className="-rotate-[30deg] absolute -left-12 top-4" />
+                      <SewingButton color="#c2b2a1" className="absolute -left-14 top-2 rotate-12 scale-90" />
+                    </div>
+                  )}
+                  {i === 1 && (
+                    <div className="absolute left-0 bottom-0 z-40 pointer-events-none scale-[0.55] origin-bottom-left">
+                      <SewingPin className="-rotate-[120deg] absolute -left-14 top-2 scale-90" />
+                      <SewingButton color="#c29f98" className="absolute -left-6 -top-2 scale-75" />
+                    </div>
+                  )}
+                  {i === 2 && (
+                    <div className="absolute right-0 top-0 z-40 pointer-events-none scale-[0.55] origin-top-right">
+                      <SewingPin className="-rotate-[30deg] absolute -right-14 -top-2 scale-90" />
+                      <SewingButton color="#c29f98" className="absolute -right-6 -top-6 scale-75" />
+                    </div>
+                  )}
+                  {i === 3 && (
+                    <div className="absolute left-0 bottom-0 z-40 pointer-events-none scale-[0.55] origin-bottom-left">
+                      <ThreadSpool color="#2c5d63" className="-rotate-[15deg] absolute -left-8 top-2 scale-90" />
+                      <ThreadSpool color="#437a80" className="rotate-[20deg] absolute -left-0 top-6 scale-90" />
+                      <SewingPin className="-rotate-[25deg] absolute -left-12 -top-2" />
+                    </div>
+                  )}
+                  {i === 4 && (
+                    <div className="absolute right-0 top-0 z-40 pointer-events-none scale-[0.55] origin-top-right">
+                      <ThreadSpool color="#c29f98" className="rotate-[25deg] absolute -right-12 -top-10 scale-90" />
+                      <ThreadSpool color="#d4c4a8" className="-rotate-6 absolute -right-2 -top-12 scale-90" />
+                      <SewingPin className="rotate-[45deg] absolute -right-10 top-0" />
+                      <SewingButton color="#dfd2c4" className="absolute -right-1 -top-14 -rotate-12 scale-90" />
+                    </div>
+                  )}
+                </motion.div>
+              );
+            })}
+          </div>
+
           {/* Text */}
-          <div className="text-center md:text-left z-10 order-2 md:order-1 lg:col-span-6">
+          <div className="text-center z-10 mb-8 mt-12">
             <motion.h1
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.1 }}
-              className="font-[family-name:var(--font-playfair)] text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-charcoal leading-[1.1] mb-6"
+              className="font-[family-name:var(--font-playfair)] text-4xl sm:text-5xl font-bold text-charcoal leading-[1.1] mb-6"
             >
               Premium <span className="text-gradient-gold">Fabrics</span>
               <br />
@@ -49,7 +308,7 @@ function HeroSection({ banners }: { banners: any[] }) {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.2 }}
-              className="text-lg md:text-xl text-slate max-w-lg mx-auto md:mx-0 mb-8 leading-relaxed"
+              className="text-lg text-slate max-w-lg mx-auto mb-8 leading-relaxed"
             >
               Discover handcrafted fabrics, designer ethnic wear & contemporary fashion — direct from our looms in Jaipur to your wardrobe.
             </motion.p>
@@ -58,132 +317,16 @@ function HeroSection({ banners }: { banners: any[] }) {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.3 }}
-              className="flex flex-col sm:flex-row items-center gap-4 justify-center md:justify-start"
+              className="flex flex-col sm:flex-row items-center gap-4 justify-center"
             >
               <Link
                 href="/shop"
-                className="btn-primary text-base px-8 py-4 flex items-center gap-2 w-full sm:w-auto justify-center"
+                className="btn-primary text-base px-8 py-4 inline-flex items-center gap-2"
               >
                 Explore Collection <ArrowRight size={18} />
               </Link>
-              <Link
-                href="/shop?category=fabrics"
-                className="px-8 py-4 text-base font-semibold text-teal-600 border-2 border-teal-600/20 rounded-full hover:bg-teal-600/5 transition-colors flex items-center gap-2 w-full sm:w-auto justify-center"
-              >
-                Shop Fabrics <Sparkles size={16} />
-              </Link>
-            </motion.div>
-
-            {/* Social Proof */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.7, delay: 0.5 }}
-              className="mt-10 flex items-center gap-6 justify-center md:justify-start"
-            >
-              <div className="flex -space-x-2">
-                {[1, 2, 3, 4, 5].map((i) => (
-                  <div
-                    key={i}
-                    className="w-8 h-8 rounded-full bg-gradient-to-br from-teal-400 to-teal-600 border-2 border-cream flex items-center justify-center text-[10px] text-white font-bold"
-                  >
-                    {String.fromCharCode(64 + i)}
-                  </div>
-                ))}
-              </div>
-              <div className="text-left">
-                <div className="flex items-center gap-1">
-                  {[1, 2, 3, 4, 5].map((i) => (
-                    <Star key={i} size={14} className="fill-gold text-gold" />
-                  ))}
-                </div>
-                <p className="text-xs text-slate">
-                  <strong className="text-charcoal">2,500+</strong> Happy Customers
-                </p>
-              </div>
             </motion.div>
           </div>
-
-          {/* Hero Visual - Floating Bento Grid */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            className="relative block order-1 md:order-2 mb-8 md:mb-0 w-full lg:col-span-6"
-          >
-            {/* Decorative Background Glows */}
-            <div className="absolute inset-10 rounded-full bg-gradient-to-br from-cream to-transparent shadow-2xl opacity-60 pointer-events-none" />
-
-            {/* Desktop Visual - Masonry Grid */}
-            <div className="hidden md:block columns-3 gap-5 lg:gap-6 w-full mx-auto relative z-10 overflow-visible pb-8">
-              {heroImages.slice(0, 10).map((imgSrc, i) => {
-                const duration = 4 + (i % 3);
-                const delay = i * 0.2;
-
-                return (
-                  <div key={i} className="break-inside-avoid mb-5" style={{ perspective: 1200 }}>
-                    <motion.div
-                      animate={{ 
-                        y: [-5, 5, -5],
-                        rotateX: [-1, 1, -1],
-                        rotateY: [-1, 1, -1]
-                      }}
-                      whileHover={{ 
-                        scale: 1.05, 
-                        rotateX: 4, 
-                        rotateY: -4,
-                        z: 20,
-                        transition: { duration: 0.3 }
-                      }}
-                      transition={{ duration, repeat: Infinity, ease: "easeInOut", delay }}
-                      className="relative w-full aspect-[3/4] rounded-2xl overflow-hidden shadow-md hover:shadow-2xl border border-slate-200/50 transition-shadow duration-300 bg-white"
-                    >
-                      <Image
-                        src={imgSrc}
-                        alt={`Hero Banner ${i + 1}`}
-                        fill
-                        className="object-cover"
-                        sizes="33vw"
-                      />
-                    </motion.div>
-                  </div>
-                );
-              })}
-            </div>
-
-            {/* Mobile Visual - Scattered Collage */}
-            <div className="block md:hidden relative w-full aspect-[3/4] sm:aspect-square mt-0 z-10">
-              {heroImages.slice(0, 5).map((imgSrc, i) => {
-                const positions = [
-                  "top-[0%] left-[8%] w-[40%] -rotate-3 z-10",
-                  "top-[15%] right-[5%] w-[42%] rotate-6 z-20",
-                  "top-[38%] left-[12%] w-[40%] rotate-2 z-30",
-                  "top-[48%] right-[10%] w-[38%] -rotate-3 z-40",
-                  "bottom-[0%] left-[25%] w-[45%] rotate-0 z-50",
-                ];
-
-                return (
-                  <motion.div
-                    key={i}
-                    className={cn("absolute rounded-xl overflow-hidden shadow-lg border-[4px] border-white bg-white", positions[i])}
-                    initial={{ opacity: 0, y: 20, rotate: 0 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.2 + i * 0.1, duration: 0.6, type: "spring" }}
-                  >
-                    <div className="relative w-full aspect-[3/4]">
-                      <Image
-                        src={imgSrc}
-                        alt={`Hero Banner ${i + 1}`}
-                        fill
-                        className="object-cover"
-                        sizes="50vw"
-                      />
-                    </div>
-                  </motion.div>
-                );
-              })}
-            </div>
-          </motion.div>
         </div>
       </div>
     </section>

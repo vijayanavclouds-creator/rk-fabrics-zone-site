@@ -217,13 +217,13 @@ export function ShopContent({
  <motion.div
  initial={{ opacity: 0, y: 20 }}
  animate={{ opacity: 1, y: 0 }}
- className="mb-6 md:mb-8"
+ className="mb-6 md:mb-8 flex flex-row items-baseline gap-3 flex-wrap"
  >
- <h1 className="font-[family-name:var(--font-playfair)] text-[22px] md:text-4xl font-bold text-charcoal mt-1">
+ <h1 className="font-[family-name:var(--font-playfair)] text-[22px] md:text-4xl font-bold text-charcoal">
  Our Exclusives
  </h1>
- <p className="text-sm text-slate mt-2">
- Showing {filteredProducts.length} of {products.length} products
+ <p className="text-sm text-slate">
+ ({filteredProducts.length}/{products.length})
  </p>
  </motion.div>
 
