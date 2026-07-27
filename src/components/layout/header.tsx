@@ -316,13 +316,15 @@ export function Header({ initialNavLinks, announcementBanner }: { initialNavLink
           )}
 
  {/* Mobile Menu Button */}
- <button
- onClick={toggleMobileMenu}
- className="md:hidden btn-icon"
- aria-label="Toggle menu"
- >
- {isMobileMenuOpen ? <X size={18} className="text-slate-500 stroke-[1.5]" /> : <Menu size={18} className="text-slate-500 stroke-[1.5]" />}
- </button>
+ <div className="md:hidden">
+   <button
+   onClick={toggleMobileMenu}
+   className="btn-icon"
+   aria-label="Toggle menu"
+   >
+   {isMobileMenuOpen ? <X size={18} className="text-slate-500 stroke-[1.5]" /> : <Menu size={18} className="text-slate-500 stroke-[1.5]" />}
+   </button>
+ </div>
  </div>
  </div>
  </div>
