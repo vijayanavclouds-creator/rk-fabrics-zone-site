@@ -15,7 +15,10 @@ export async function POST(req: Request) {
       if (process.env.NODE_ENV === "development" && transactionId) {
         await prisma.order.update({
           where: { id: transactionId },
-          data: { paymentStatus: "PAID" }
+          data: { 
+            paymentStatus: "PAID",
+            transactionDetails: JSON.stringify({ state: "COMPLETED", transactionId: transactionId || "local_txn_id" })
+          }
         })
         
         const order = await prisma.order.findUnique({ where: { id: transactionId }, include: { user: true } })

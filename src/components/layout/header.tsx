@@ -265,7 +265,7 @@ export function Header({ initialNavLinks, announcementBanner }: { initialNavLink
 
           {/* Notifications */}
           {(pathname !== '/login' && pathname !== '/register') && session?.user?.role !== 'ADMIN' && (
-            <div className={isCustomerPortal ? "flex" : "hidden md:flex"}>
+            <div className="flex">
               <NotificationDropdown />
             </div>
           )}
@@ -297,7 +297,9 @@ export function Header({ initialNavLinks, announcementBanner }: { initialNavLink
           {(pathname !== '/login' && pathname !== '/register') && (
             <div className="relative flex items-center">
               {session?.user ? (
-                <AccountDropdown />
+                <div className="hidden md:block">
+                  <AccountDropdown />
+                </div>
               ) : (
                   <Link
                     href="/login"

@@ -63,20 +63,20 @@ export function AdminSearchOverlay() {
           >
             {/* Search Input */}
             <div className="flex items-center gap-3 px-4 py-4 md:py-5 bg-white border-b border-charcoal/10">
-              <div className="flex-1 flex items-center gap-2 shadow-neo-input bg-[#f8fafc] rounded-xl px-4 py-2.5 transition-colors border border-charcoal/5 focus-within:border-teal-500 focus-within:ring-1 focus-within:ring-teal-500">
-                <Search size={18} className="text-teal-600 shrink-0" />
+              <div className="flex-1 flex items-center h-10 gap-2 bg-[#F6FAFD] shadow-[inset_1px_1px_2px_rgba(255,255,255,0.9),inset_-1px_-1px_3px_rgba(0,0,0,0.1),2px_2px_8px_rgba(0,0,0,0.05)] rounded-full px-3 border border-white/50 transition-colors focus-within:border-teal-200">
+                <Search size={18} className="text-slate-500 shrink-0" />
                 <input
                   ref={inputRef}
                   type="text"
                   placeholder="Search products, orders, users..."
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
-                  className="flex-1 bg-transparent text-charcoal text-base placeholder:text-slate/50 !outline-none !ring-0 !border-0 focus:!border-transparent p-0"
+                  className="flex-1 bg-transparent text-sm text-charcoal placeholder:text-slate/60 !outline-none !ring-0 !border-0 focus:!border-transparent p-0 w-full"
                 />
                 {isLoading && <div className="w-4 h-4 border-2 border-teal-600 border-t-transparent rounded-full animate-spin shrink-0"></div>}
               </div>
-              <button onClick={closeAdminSearch} className="p-2 text-slate hover:text-rose-500 transition-colors bg-rose-50 rounded-lg">
-                <X size={20} strokeWidth={2} />
+              <button onClick={closeAdminSearch} className="btn-icon" aria-label="Close">
+                <X size={18} className="text-slate-500 stroke-[1.5]" />
               </button>
             </div>
 

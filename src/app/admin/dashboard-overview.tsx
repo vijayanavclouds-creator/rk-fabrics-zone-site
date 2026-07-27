@@ -16,6 +16,12 @@ export function DashboardOverview({ initialData, isSupport = false }: { initialD
   const [timeRange, setTimeRange] = useState<string>("30");
   const [isInitialMount, setIsInitialMount] = useState(true);
 
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   useEffect(() => {
     if (isInitialMount) {
       setIsInitialMount(false);
@@ -513,11 +519,11 @@ export function DashboardOverview({ initialData, isSupport = false }: { initialD
         <GlassCard className="flex items-center justify-between gap-4 bg-white/90 !p-3 md:!p-5">
           <div className="flex items-center gap-3 md:gap-4">
             <div className="hidden md:flex w-10 h-10 md:w-14 md:h-14 shrink-0 rounded-full bg-teal-100 items-center justify-center text-teal-700 text-lg md:text-xl font-bold">
-              {session?.user?.name ? session.user.name.charAt(0).toUpperCase() : "A"}
+              {mounted && session?.user?.name ? session.user.name.charAt(0).toUpperCase() : "A"}
             </div>
             <div className="min-w-0">
-              <h1 className="text-lg md:text-2xl font-semibold text-charcoal tracking-tight truncate">Welcome, {session?.user?.name?.split(' ')[0] || "Admin"}</h1>
-              <p className="text-xs md:text-sm text-slate truncate hidden md:block">{session?.user?.email}</p>
+              <h1 className="text-lg md:text-2xl font-semibold text-charcoal tracking-tight truncate">Welcome, {mounted && session?.user?.name ? session.user.name.split(' ')[0] : "Admin"}</h1>
+              <p className="text-xs md:text-sm text-slate truncate hidden md:block">{mounted ? session?.user?.email : ""}</p>
             </div>
           </div>
           

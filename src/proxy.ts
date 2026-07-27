@@ -46,11 +46,12 @@ export default withAuth(
 
     // 3. Strict Staff Separation: Prevent staff from accessing customer-only pages like /shop, /cart, /checkout, /account while logged in as staff
     if (isAuth) {
-      const isCustomerOnlyRoute = req.nextUrl.pathname.startsWith('/account') || 
+      const isCustomerOnlyRoute = (req.nextUrl.pathname.startsWith('/account') || 
                                   req.nextUrl.pathname.startsWith('/checkout') || 
                                   req.nextUrl.pathname.startsWith('/cart') || 
                                   req.nextUrl.pathname.startsWith('/shop') ||
-                                  req.nextUrl.pathname.startsWith('/wishlist');
+                                  req.nextUrl.pathname.startsWith('/wishlist')) && 
+                                  !req.nextUrl.pathname.endsWith('/invoice');
       if (isCustomerOnlyRoute) {
         if (token.role === 'ADMIN') {
           return NextResponse.redirect(new URL('/admin?tab=overview', req.url))

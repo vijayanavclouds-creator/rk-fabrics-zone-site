@@ -232,6 +232,7 @@ model Order {
   totalAmount       Float
   shippingAmount    Float
   platformFeeAmount Float       @default(0)
+  gstAmount         Float       @default(0)
   subtotalAmount    Float
   discountAmount    Float       @default(0)
   couponCode        String?
@@ -240,6 +241,8 @@ model Order {
   email           String
   paymentMethod   String      @default("COD")
   paymentStatus   String      @default("PENDING") // PENDING, PAID, FAILED
+  transactionId   String?
+  transactionDetails String?  @db.Text
   isReadByAdmin   Boolean     @default(false)
   createdAt       DateTime    @default(now())
   updatedAt       DateTime    @updatedAt

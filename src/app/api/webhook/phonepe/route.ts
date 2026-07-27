@@ -28,7 +28,7 @@ export async function POST(req: Request) {
     const decodedStr = Buffer.from(body.response, "base64").toString("utf8")
     const responseData = JSON.parse(decodedStr)
 
-    const { merchantTransactionId, state } = responseData.data
+    const { merchantTransactionId, state, transactionId } = responseData.data
 
     if (merchantTransactionId) {
       // Find the order
@@ -47,7 +47,11 @@ export async function POST(req: Request) {
 
         await prisma.order.update({
           where: { id: merchantTransactionId },
-          data: { paymentStatus }
+          data: { 
+            paymentStatus, 
+            transactionId: transactionId || null,
+            transactionDetails: JSON.stringify(responseData.data)
+          }
         })
 
         // Send order confirmation email if PAID

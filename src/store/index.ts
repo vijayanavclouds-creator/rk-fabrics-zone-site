@@ -22,6 +22,9 @@ interface CartStore {
  applyCoupon: (code: string, discount: number) => void;
  removeCoupon: () => void;
  setItems: (items: CartItem[]) => void;
+ gstRates: { below1000: number, above1000: number, shipping: number } | null;
+ setGSTRates: (rates: { below1000: number, above1000: number, shipping: number }) => void;
+ getGSTAmount: () => number;
 }
 
 export const useCartStore = create<CartStore>()(
@@ -31,6 +34,7 @@ export const useCartStore = create<CartStore>()(
  isOpen: false,
  couponCode: null,
  discountAmount: 0,
+ gstRates: null,
 
  addItem: (product, variant, quantity = 1) => {
  set((state) => {
@@ -78,6 +82,7 @@ export const useCartStore = create<CartStore>()(
  closeCart: () => set({ isOpen: false }),
  applyCoupon: (code, discount) => set({ couponCode: code, discountAmount: discount }),
  removeCoupon: () => set({ couponCode: null, discountAmount: 0 }),
+ setGSTRates: (rates) => set({ gstRates: rates }),
 
  getSubtotal: () => {
  return get().items.reduce((total, item) => {
@@ -96,8 +101,35 @@ export const useCartStore = create<CartStore>()(
  return Math.round(subtotal * 0.02 * 100) / 100; // 2% platform fee
  },
 
+ getGSTAmount: () => {
+   const rates = get().gstRates || { below1000: 5, above1000: 12, shipping: 18 };
+   let gstAmount = 0;
+   const subtotal = get().getSubtotal();
+   const discount = get().discountAmount;
+   
+   if (subtotal > 0) {
+     get().items.forEach(item => {
+       const originalPrice = item.variant.salePrice || item.variant.price;
+       const itemTotal = originalPrice * item.quantity;
+       const itemWeight = itemTotal / subtotal;
+       const itemDiscount = discount * itemWeight;
+       const finalItemTotal = itemTotal - itemDiscount;
+       const finalItemPrice = finalItemTotal / item.quantity;
+       
+       const rate = finalItemPrice <= 1000 ? rates.below1000 : rates.above1000;
+       gstAmount += finalItemTotal * (rate / 100);
+     });
+   }
+   
+   const platformFee = get().getPlatformFee();
+   const shipping = get().getShipping();
+   gstAmount += (platformFee + shipping) * (rates.shipping / 100);
+   
+   return Math.round(gstAmount * 100) / 100;
+ },
+
  getTotal: () => {
-   const total = get().getSubtotal() + get().getShipping() + get().getPlatformFee();
+   const total = get().getSubtotal() + get().getShipping() + get().getPlatformFee() + get().getGSTAmount();
    return Math.max(0, total - get().discountAmount);
  },
 

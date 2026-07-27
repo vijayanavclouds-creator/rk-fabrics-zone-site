@@ -345,6 +345,10 @@ export default function CartPage() {
  {shipping === 0 ? "FREE 🎉" : formatPrice(shipping)}
  </span>
  </div>
+ <div className="flex justify-between text-slate ">
+ <span>GST</span>
+ <span>{formatPrice(useCartStore.getState().getGSTAmount())}</span>
+ </div>
  <div className="h-px bg-charcoal/10 " />
  <div className="flex justify-between text-lg font-bold text-charcoal ">
  <span>Total Amount</span>

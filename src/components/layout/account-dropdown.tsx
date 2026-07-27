@@ -86,7 +86,7 @@ export function AccountDropdown() {
   const activeLinks = session.user.role === "ADMIN" ? adminLinks : session.user.role === "SUPPORT" ? supportLinks : customerLinks
 
   return (
-    <div className="relative hidden md:block" ref={dropdownRef}>
+    <div className="relative" ref={dropdownRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="btn-icon"

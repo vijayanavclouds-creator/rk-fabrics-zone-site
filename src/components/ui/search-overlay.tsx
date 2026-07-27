@@ -53,23 +53,30 @@ export function SearchOverlay() {
  className="max-w-2xl mx-auto mt-0 md:mt-28 w-full md:w-auto h-[100dvh] md:h-auto bg-cream md:rounded-2xl shadow-2xl flex flex-col overflow-hidden"
  onClick={(e) => e.stopPropagation()}
  >
- {/* Search Input */}
- <div className="flex items-center gap-3 px-4 py-4 border-b border-charcoal/10">
- <div className="flex-1 flex items-center gap-2 shadow-neo-input bg-cream rounded-xl px-4 py-2.5 transition-colors">
- <Search size={18} className="text-teal-600 shrink-0" />
- <input
- ref={inputRef}
- type="text"
- placeholder="Search for sarees, fabrics, shirts..."
- value={query}
- onChange={(e) => setQuery(e.target.value)}
- className="flex-1 bg-transparent text-charcoal text-base placeholder:text-slate/50 !outline-none !ring-0 !border-0 focus:!border-transparent p-0"
- />
- </div>
- <button onClick={closeSearch} className="p-2 text-slate hover:text-charcoal transition-colors">
- <X size={24} strokeWidth={1.5} />
- </button>
- </div>
+          {/* Search Input */}
+          <div className="flex items-center gap-3 px-4 py-4 md:py-5 border-b border-charcoal/10 bg-white md:bg-transparent">
+            <div className="flex-1 flex items-center h-10 md:h-auto gap-2 bg-[#F6FAFD] shadow-[inset_1px_1px_2px_rgba(255,255,255,0.9),inset_-1px_-1px_3px_rgba(0,0,0,0.1),2px_2px_8px_rgba(0,0,0,0.05)] md:shadow-neo-input rounded-full md:rounded-xl px-3 md:px-4 py-0 md:py-2.5 transition-colors border border-white/50 md:border-transparent focus-within:border-teal-200 md:focus-within:border-transparent">
+              <Search className="w-[18px] h-[18px] text-slate-500 md:text-teal-600 shrink-0" />
+              <input
+                ref={inputRef}
+                type="text"
+                placeholder="Search for sarees, fabrics, shirts..."
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                className="flex-1 bg-transparent text-sm md:text-base text-charcoal placeholder:text-slate/60 md:placeholder:text-slate/50 !outline-none !ring-0 !border-0 focus:!border-transparent p-0 w-full"
+              />
+            </div>
+            
+            {/* Mobile Close Button */}
+            <button onClick={closeSearch} className="btn-icon md:hidden shrink-0" aria-label="Close">
+              <X size={18} className="text-slate-500 stroke-[1.5]" />
+            </button>
+            
+            {/* Desktop Close Button */}
+            <button onClick={closeSearch} className="hidden md:block p-2 text-slate hover:text-charcoal transition-colors shrink-0" aria-label="Close">
+              <X size={24} strokeWidth={1.5} />
+            </button>
+          </div>
 
  {/* Results / Suggestions */}
  <div 

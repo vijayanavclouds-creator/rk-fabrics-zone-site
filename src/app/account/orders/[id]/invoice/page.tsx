@@ -3,7 +3,7 @@ import { authOptions } from "@/lib/auth"
 import { redirect } from "next/navigation"
 import prisma from "@/lib/prisma"
 import Image from "next/image"
-import { AutoPrint } from "./auto-print"
+import { AutoPrint, PrintButton } from "./auto-print"
 
 export default async function InvoicePage({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = await params
@@ -14,7 +14,10 @@ export default async function InvoicePage({ params }: { params: Promise<{ id: st
   }
 
   const order = await prisma.order.findFirst({
-    where: { id: resolvedParams.id, userId: session.user.id },
+    where: { 
+      id: resolvedParams.id, 
+      ...(session.user.role === "ADMIN" ? {} : { userId: session.user.id }) 
+    },
     include: { items: true, user: true }
   })
 
@@ -23,20 +26,14 @@ export default async function InvoicePage({ params }: { params: Promise<{ id: st
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 py-8 px-4 sm:px-6 lg:px-8 font-[family-name:var(--font-inter)] print:bg-white print:py-0 print:px-0">
+    <div className="min-h-screen bg-transparent py-8 px-4 sm:px-6 lg:px-8 font-[family-name:var(--font-inter)] print:bg-white print:py-0 print:px-0">
       <div className="max-w-4xl mx-auto flex justify-end mb-8 print:hidden">
-        <button 
-          className="btn-primary px-8 py-3"
-          // @ts-ignore
-          onClick="window.print()"
-        >
-          Print Invoice
-        </button>
+        <PrintButton />
       </div>
 
       <div 
         id="invoice-container" 
-        className="max-w-4xl mx-auto bg-white p-8 md:p-12 shadow-sm border border-slate-200 print:shadow-none print:border-none print:p-0"
+        className="max-w-4xl mx-auto bg-white p-8 md:p-12 shadow-sm border border-slate-200 rounded-2xl print:shadow-none print:border-none print:p-0 print:rounded-none"
       >
         {/* Header */}
         <div className="flex justify-between items-start border-b border-slate-200 pb-8 mb-8">
@@ -116,6 +113,10 @@ export default async function InvoicePage({ params }: { params: Promise<{ id: st
                 <span className="text-charcoal">₹{order.platformFeeAmount.toLocaleString()}</span>
               </div>
             )}
+            <div className="flex justify-between text-slate">
+              <span>GST</span>
+              <span className="text-charcoal">₹{((order as any).gstAmount || 0).toLocaleString()}</span>
+            </div>
             {order.discountAmount > 0 && (
               <div className="flex justify-between text-emerald-600">
                 <span>Discount</span>

@@ -13,12 +13,16 @@ export async function getFinancialAnalytics() {
       where: { status: { not: "CANCELLED" } },
       select: {
         id: true,
+        userId: true,
         totalAmount: true,
         shippingAmount: true,
         platformFeeAmount: true,
         discountAmount: true,
         createdAt: true,
-        status: true
+        status: true,
+        paymentStatus: true,
+        transactionId: true,
+        transactionDetails: true,
       },
       orderBy: { createdAt: "desc" }
     });
@@ -34,14 +38,32 @@ export async function getFinancialAnalytics() {
       totalPlatformFees += order.platformFeeAmount;
       totalDiscounts += order.discountAmount;
 
+      let txStatus = order.paymentStatus;
+      let txDate = order.createdAt;
+      
+      try {
+        if (order.transactionDetails) {
+          const details = JSON.parse(order.transactionDetails);
+          if (details.state) txStatus = details.state;
+          else if (details.code) txStatus = details.code;
+          // You could potentially extract date from transactionDetails if it exists, but typically order.createdAt or updatedAt is fine
+        }
+      } catch (e) {
+        // ignore parse error
+      }
+
       return {
         id: order.id,
-        date: order.createdAt,
+        userId: order.userId,
+        date: txDate,
         amount: order.totalAmount,
         shipping: order.shippingAmount,
         fee: order.platformFeeAmount,
         discount: order.discountAmount,
-        status: order.status
+        status: order.status,
+        paymentStatus: order.paymentStatus,
+        transactionId: order.transactionId,
+        transactionStatus: txStatus,
       };
     });
 

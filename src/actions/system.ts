@@ -107,3 +107,13 @@ export async function saveCompanyProfile(profileData: any) {
     return { success: false, error: error.message };
   }
 }
+
+// Get GST Rates
+export async function getGSTRates() {
+  const profile = await getCompanyProfileData();
+  return {
+    below1000: profile?.gstPercentBelow1000 ?? 5,
+    above1000: profile?.gstPercentAbove1000 ?? 12,
+    shipping: profile?.gstPercentShipping ?? 18
+  };
+}

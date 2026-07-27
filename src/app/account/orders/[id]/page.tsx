@@ -258,6 +258,16 @@ export default async function OrderDetailsPage({ params }: { params: Promise<{ i
                       <span className="font-bold text-charcoal">₹{order.platformFeeAmount.toLocaleString()}</span>
                     </div>
                   )}
+                  <div className="flex justify-between">
+                    <span className="text-slate">GST</span>
+                    <span className="font-bold text-charcoal">₹{((order as any).gstAmount || 0).toLocaleString()}</span>
+                  </div>
+                  {order.discountAmount > 0 && (
+                    <div className="flex justify-between text-emerald-600">
+                      <span className="font-medium">Discount</span>
+                      <span className="font-bold">-₹{order.discountAmount.toLocaleString()}</span>
+                    </div>
+                  )}
                   <div className="flex justify-between items-center">
                     <span className="text-slate">Payment Method</span>
                     <span className="font-bold text-charcoal">{order.paymentMethod}</span>

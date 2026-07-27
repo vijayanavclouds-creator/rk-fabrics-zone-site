@@ -110,3 +110,12 @@ Payload: {"updatedVariants":[{"id":"cmrteydt10003cyygmiugpmrf","sku":"VAR-371108
 [logAdminActivity] called with action: updated <b>Stock</b> for variant <b>M / Beige</b> in <b>Solid Ivory Long Sleeve Ruffled Maxi Dress</b> from <b>9</b> to <b>0</b>
 [logAdminActivity] adminName resolved to: Vijay jangir
 [logAdminActivity] success! inserted id: cms0ferkr0000ye5lbefj7o01
+[logAdminActivity] called with action: marked Order <b>#990CI8</b> as <b>PROCESSING</b>
+[logAdminActivity] adminName resolved to: Vijay jangir
+[logAdminActivity] success! inserted id: cms2s1r610001poq5rcstze3m
+[logAdminActivity] called with action: marked Order <b>#G3BPCE</b> as <b>SHIPPED</b>
+[logAdminActivity] adminName resolved to: Vijay jangir
+[logAdminActivity] success! inserted id: cms2s1z6p0002poq5rwivvund
+[logAdminActivity] called with action: marked Order <b>#132WZS</b> as <b>PROCESSING</b>
+[logAdminActivity] adminName resolved to: Vijay jangir
+[logAdminActivity] success! inserted id: cms2s2bjz0003poq5yx013yhf

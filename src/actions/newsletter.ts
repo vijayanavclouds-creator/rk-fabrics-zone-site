@@ -212,3 +212,21 @@ export async function generateNewsletterWithAI(prompt: string) {
     return { success: false, error: "Failed to connect to AI service" }
   }
 }
+
+export async function deleteAdminNewsletter(id: string) {
+  try {
+    const session = await getServerSession(authOptions)
+    if (!session || session.user.role !== "ADMIN") {
+      return { success: false, error: "Unauthorized" }
+    }
+
+    await prisma.newsletter.delete({
+      where: { id }
+    })
+
+    return { success: true }
+  } catch (error) {
+    console.error("Error deleting admin newsletter:", error)
+    return { success: false, error: "Failed to delete newsletter" }
+  }
+}

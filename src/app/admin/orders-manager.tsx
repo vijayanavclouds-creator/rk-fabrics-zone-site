@@ -1,13 +1,13 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { useRouter } from "next/navigation"
 import { getAllOrders, updateOrderStatus, toggleUserOrdersReadStatus } from "@/actions/order"
 import { getAbandonedCarts, sendAbandonedCartReminder } from "@/actions/cart"
 import { getAdminSettings } from "@/actions/admin-notifications"
 import AdminSettingsForm from "./order-settings-form"
 import { toast } from "sonner"
-import { Package, Search, ChevronRight, CheckCircle, Clock, Truck, XCircle, User, Bell, Settings } from "lucide-react"
+import { Package, Search, ChevronRight, CheckCircle, Clock, Truck, XCircle, User, Bell, Settings, SlidersHorizontal, X, Check } from "lucide-react"
 
 export function OrdersManager({ readOnly = false, basePath = "/admin" }: { readOnly?: boolean; basePath?: string }) {
   const router = useRouter()
@@ -18,6 +18,19 @@ export function OrdersManager({ readOnly = false, basePath = "/admin" }: { readO
   const [activeTab, setActiveTab] = useState<"orders" | "abandoned" | "settings">("orders")
   const [sentReminders, setSentReminders] = useState<string[]>([])
   const [threshold, setThreshold] = useState<number>(6)
+  const [filterStatuses, setFilterStatuses] = useState<string[]>([])
+  const [showFilters, setShowFilters] = useState(false)
+  const filterDropdownRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (filterDropdownRef.current && !filterDropdownRef.current.contains(event.target as Node)) {
+        setShowFilters(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [])
 
   useEffect(() => {
     fetchOrders()
@@ -107,8 +120,13 @@ export function OrdersManager({ readOnly = false, basePath = "/admin" }: { readO
     }
   }
 
+  // Filter orders by status if any filters are selected
+  const filteredOrders = filterStatuses.length > 0 
+    ? orders.filter(o => filterStatuses.includes(o.status))
+    : orders;
+
   // Group orders by User
-  const groupedUsers = orders.reduce((acc, order) => {
+  const groupedUsers = filteredOrders.reduce((acc, order) => {
     const userId = order.user?.id || order.email;
     if (!acc[userId]) {
       acc[userId] = {
@@ -124,7 +142,7 @@ export function OrdersManager({ readOnly = false, basePath = "/admin" }: { readO
       };
     }
     acc[userId].orders.push(order);
-    if (!order.isReadByAdmin) acc[userId].hasUnreadOrders = true;
+    if (!order.isReadByAdmin && order.status === "PROCESSING") acc[userId].hasUnreadOrders = true;
     
     // aggregate total products purchased
     const orderQuantity = order.items.reduce((sum: number, item: any) => sum + item.quantity, 0);
@@ -163,31 +181,23 @@ export function OrdersManager({ readOnly = false, basePath = "/admin" }: { readO
   }
 
   return (
-    <div className="space-y-6 animate-in fade-in duration-300">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 border-b border-charcoal/10 pb-4">
+    <div className="animate-in fade-in duration-300">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 border-b border-charcoal/10 pb-2 mb-1">
         <div>
           <h2 className="font-[family-name:var(--font-playfair)] text-2xl font-bold text-charcoal">
             Order Management
           </h2>
           <p className="text-slate mt-1 text-sm">View and manage customer orders.</p>
         </div>
-        <div className="relative w-full md:max-w-md">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
-          <input 
-            type="text" 
-            placeholder="Search by User Name, Email, or Order ID..." 
-            value={searchTerm}
-            onChange={e => setSearchTerm(e.target.value)}
-            className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-charcoal/20 bg-white focus:outline-none focus:border-teal-600 focus:ring-1 focus:ring-teal-600 transition-all text-sm"
-          />
-        </div>
       </div>
       
+
+
       {/* Sub Tabs */}
-      <div className="flex items-center gap-4 border-b border-charcoal/10 pb-4 mt-2">
+      <div className="flex items-center gap-1 md:gap-4 overflow-x-auto no-scrollbar py-2 mb-1">
         <button
           onClick={() => setActiveTab("orders")}
-          className={`btn-primary !py-2 !px-4 text-sm transition-all ${
+          className={`btn-primary !py-2 !px-4 text-xs md:text-sm whitespace-nowrap transition-all ${
             activeTab === "orders" ? "opacity-100" : "opacity-60 hover:opacity-80"
           }`}
         >
@@ -196,7 +206,7 @@ export function OrdersManager({ readOnly = false, basePath = "/admin" }: { readO
         {!readOnly && (
           <button
             onClick={() => setActiveTab("abandoned")}
-            className={`btn-primary !py-2 !px-4 text-sm flex items-center gap-2 transition-all ${
+            className={`btn-primary !py-2 !px-4 text-xs md:text-sm whitespace-nowrap flex items-center gap-2 transition-all ${
               activeTab === "abandoned" ? "opacity-100" : "opacity-60 hover:opacity-80"
             }`}
           >
@@ -213,7 +223,7 @@ export function OrdersManager({ readOnly = false, basePath = "/admin" }: { readO
         {!readOnly && (
           <button
             onClick={() => setActiveTab("settings")}
-            className={`btn-primary !py-2 !px-4 text-sm flex items-center gap-2 transition-all ${
+            className={`btn-primary !py-2 !px-4 text-xs md:text-sm whitespace-nowrap flex items-center gap-2 transition-all ${
               activeTab === "settings" ? "opacity-100" : "opacity-60 hover:opacity-80"
             }`}
           >
@@ -222,7 +232,7 @@ export function OrdersManager({ readOnly = false, basePath = "/admin" }: { readO
         )}
       </div>
 
-      <div className="bg-white rounded-3xl border border-charcoal/10 shadow-sm overflow-hidden">
+      <div className="bg-white rounded-none md:rounded-3xl border-y md:border border-charcoal/10 border-x-0 md:border-x shadow-sm -mx-4 md:mx-0">
 
 
         {loading ? (
@@ -238,7 +248,61 @@ export function OrdersManager({ readOnly = false, basePath = "/admin" }: { readO
             <AdminSettingsForm initialThreshold={threshold} />
           </div>
         ) : activeTab === "orders" ? (
-          usersList.length === 0 ? (
+          <div className="flex flex-col w-full">
+            <div className="flex justify-end items-center gap-4 py-2 px-3 md:px-5 md:rounded-t-3xl">
+              <div className="flex items-center overflow-hidden h-8 md:h-[34px] btn-primary !p-0 !pl-3 md:!pl-4 w-full max-w-[200px] md:max-w-[280px]">
+                <Search className="text-slate-500 shrink-0 stroke-[1.5]" size={14} />
+                <input 
+                  type="text" 
+                  placeholder="Search orders..." 
+                  value={searchTerm}
+                  onChange={e => setSearchTerm(e.target.value)}
+                  className="flex-1 bg-transparent !border-none !outline-none !ring-0 focus:!ring-0 focus:!border-none focus:!outline-none text-[10px] md:text-xs text-charcoal placeholder:text-slate/60 w-full pl-2 pr-3 h-full"
+                />
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="relative" ref={filterDropdownRef}>
+                <button
+                  onClick={() => setShowFilters(!showFilters)}
+                  className={`btn-primary !py-1 !px-2.5 md:!py-1.5 md:!px-3 flex items-center gap-1.5 text-[10px] md:text-xs font-medium transition-all ${
+                    showFilters ? "shadow-neo-pressed scale-[0.97]" : ""
+                  }`}
+                >
+                  <SlidersHorizontal size={12} />
+                  Filters
+                  {filterStatuses.length > 0 && (
+                    <span className="w-4 h-4 bg-teal-600 text-white text-[9px] font-bold rounded-full flex items-center justify-center">
+                      {filterStatuses.length}
+                    </span>
+                  )}
+                </button>
+                {showFilters && (
+                  <div className="absolute right-0 top-full mt-1.5 w-[110px] md:w-[130px] bg-white border border-charcoal/10 rounded-xl shadow-xl z-50 p-1 md:p-1.5 max-h-64 overflow-y-auto no-scrollbar">
+                    {["CONFIRMED", "PROCESSING", "SHIPPED", "DELIVERED", "CANCELLED"].map((status) => {
+                      const isSelected = filterStatuses.includes(status);
+                      return (
+                      <button
+                        key={status} 
+                        type="button"
+                        onClick={() => {
+                          if (isSelected) {
+                            setFilterStatuses(filterStatuses.filter(s => s !== status))
+                          } else {
+                            setFilterStatuses([...filterStatuses, status])
+                          }
+                          setShowFilters(false)
+                        }}
+                        className={`w-full text-left px-3 py-1.5 rounded-lg cursor-pointer transition-colors ${isSelected ? "bg-teal-50/80" : "hover:bg-slate-50"}`}
+                      >
+                        <span className={`text-[10px] md:text-[13px] transition-colors truncate ${isSelected ? "font-bold text-teal-700" : "font-medium text-charcoal"}`}>{status}</span>
+                      </button>
+                    )})}
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+          {usersList.length === 0 ? (
             <div className="p-12 text-center text-slate">
               <Package size={48} className="mx-auto mb-4 opacity-50" />
               <h3 className="text-lg font-bold text-charcoal">No Customers Found</h3>
@@ -249,13 +313,13 @@ export function OrdersManager({ readOnly = false, basePath = "/admin" }: { readO
               <table className="w-full text-left border-collapse">
                 <thead>
                   <tr className="bg-cream-dark/30 border-b border-charcoal/10">
-                    <th className="p-5 font-bold text-charcoal text-xs uppercase tracking-wider min-w-[200px]">Customer Name</th>
-                    <th className="p-5 font-bold text-charcoal text-xs uppercase tracking-wider whitespace-nowrap">Total Products</th>
-                    <th className="p-5 font-bold text-charcoal text-xs uppercase tracking-wider whitespace-nowrap">Recent Order Items</th>
-                    <th className="p-5 font-bold text-charcoal text-xs uppercase tracking-wider whitespace-nowrap">Last Ordered Date</th>
-                    <th className="p-5 font-bold text-charcoal text-xs uppercase tracking-wider whitespace-nowrap">Account Created</th>
-                    <th className="p-5 font-bold text-charcoal text-xs uppercase tracking-wider whitespace-nowrap">Read Status</th>
-                    <th className="p-5 w-10"></th>
+                    <th className="p-3 md:p-5 font-bold text-charcoal text-[10px] md:text-xs uppercase tracking-wider min-w-[140px] md:min-w-[200px]">Customer Name</th>
+                    <th className="p-3 md:p-5 font-bold text-charcoal text-[10px] md:text-xs uppercase tracking-wider whitespace-nowrap">Total Products</th>
+                    <th className="p-3 md:p-5 font-bold text-charcoal text-[10px] md:text-xs uppercase tracking-wider whitespace-nowrap hidden md:table-cell">Recent Items</th>
+                    <th className="p-3 md:p-5 font-bold text-charcoal text-[10px] md:text-xs uppercase tracking-wider whitespace-nowrap hidden md:table-cell">Ordered Date</th>
+                    <th className="p-3 md:p-5 font-bold text-charcoal text-[10px] md:text-xs uppercase tracking-wider whitespace-nowrap hidden lg:table-cell">Account Created</th>
+                    <th className="p-3 md:p-5 font-bold text-charcoal text-[10px] md:text-xs uppercase tracking-wider whitespace-nowrap">Status</th>
+                    <th className="p-3 md:p-5 w-8 md:w-10"></th>
                   </tr>
                 </thead>
                 <tbody>
@@ -265,50 +329,50 @@ export function OrdersManager({ readOnly = false, basePath = "/admin" }: { readO
                       className={`border-b border-charcoal/5 hover:bg-slate-50 transition-colors cursor-pointer group ${user.hasUnreadOrders ? 'bg-amber-50/30' : ''}`}
                       onClick={() => router.push(`${basePath}/orders/user/${encodeURIComponent(user.id)}`)}
                     >
-                      <td className="p-5 align-middle">
-                        <div className="flex items-center gap-3">
+                      <td className="p-3 md:p-5 align-middle">
+                        <div className="flex items-center gap-2 md:gap-3">
                           <div>
-                            <p className="font-semibold text-charcoal flex items-center gap-2">
+                            <p className="font-semibold text-charcoal text-xs md:text-base flex items-center gap-1 md:gap-2">
                               {user.name}
                               {user.hasUnreadOrders && (
-                                <span className="bg-amber-100 text-amber-800 text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-wider whitespace-nowrap">New Order</span>
+                                <span className="bg-amber-100 text-amber-800 text-[9px] md:text-[10px] font-bold px-1.5 md:px-2 py-0.5 rounded uppercase tracking-wider whitespace-nowrap">New</span>
                               )}
                             </p>
-                            <p className="text-sm text-slate">{user.email}</p>
+                            <p className="text-[10px] md:text-sm text-slate">{user.email}</p>
                           </div>
                         </div>
                       </td>
-                      <td className="p-5 align-middle">
-                        <span className="font-medium text-charcoal">{user.totalPurchased} items</span>
+                      <td className="p-3 md:p-5 align-middle">
+                        <span className="font-medium text-xs md:text-base text-charcoal whitespace-nowrap">{user.totalPurchased} items</span>
                       </td>
-                      <td className="p-5 align-middle">
-                        <span className="font-medium text-charcoal">{user.recentOrderItemsCount} items</span>
+                      <td className="p-3 md:p-5 align-middle hidden md:table-cell">
+                        <span className="font-medium text-xs md:text-base text-charcoal whitespace-nowrap">{user.recentOrderItemsCount} items</span>
                       </td>
-                      <td className="p-5 align-middle">
-                        <span className="text-slate">{new Date(user.lastOrderedDate).toLocaleDateString()}</span>
+                      <td className="p-3 md:p-5 align-middle hidden md:table-cell">
+                        <span className="text-[10px] md:text-base text-slate whitespace-nowrap">{new Date(user.lastOrderedDate).toLocaleDateString()}</span>
                       </td>
-                      <td className="p-5 align-middle">
-                        <span className="text-slate">{user.createdAt}</span>
+                      <td className="p-3 md:p-5 align-middle hidden lg:table-cell">
+                        <span className="text-[10px] md:text-base text-slate whitespace-nowrap">{user.createdAt}</span>
                       </td>
-                      <td className="p-5 align-middle" onClick={(e) => e.stopPropagation()}>
+                      <td className="p-3 md:p-5 align-middle" onClick={(e) => e.stopPropagation()}>
                         {user.hasUnreadOrders ? (
                           !readOnly ? (
                             <button
                               onClick={(e) => handleToggleReadStatus(e, user.id, false)}
-                              className="text-xs font-bold px-3 py-1.5 rounded-lg bg-teal-50 text-teal-700 hover:bg-teal-100 transition-colors whitespace-nowrap border border-teal-200 shadow-sm"
+                              className="text-[10px] md:text-xs font-bold px-2 py-1 md:px-3 md:py-1.5 rounded-lg bg-teal-50 text-teal-700 hover:bg-teal-100 transition-colors whitespace-nowrap border border-teal-200 shadow-sm"
                             >
                               Mark Read
                             </button>
                           ) : (
-                            <span className="text-xs font-medium text-amber-600 whitespace-nowrap">Unread</span>
+                            <span className="text-[10px] md:text-xs font-medium text-amber-600 whitespace-nowrap">Unread</span>
                           )
                         ) : (
-                          <span className="text-xs font-medium text-slate-500 whitespace-nowrap flex items-center gap-1">
+                          <span className="text-[10px] md:text-xs font-medium text-slate-500 whitespace-nowrap flex items-center gap-1">
                             <CheckCircle size={14} className="text-slate-400" /> Read
                           </span>
                         )}
                       </td>
-                      <td className="p-5 align-middle text-right">
+                      <td className="p-3 md:p-5 align-middle text-right">
                         <ChevronRight className="text-slate-400 group-hover:text-teal-600 transition-colors" />
                       </td>
                     </tr>
@@ -316,7 +380,8 @@ export function OrdersManager({ readOnly = false, basePath = "/admin" }: { readO
                 </tbody>
               </table>
             </div>
-          )
+          )}
+        </div>
         ) : (
           abandonedCarts.length === 0 ? (
             <div className="p-12 text-center text-slate">
@@ -329,45 +394,45 @@ export function OrdersManager({ readOnly = false, basePath = "/admin" }: { readO
               <table className="w-full text-left border-collapse">
                 <thead>
                   <tr className="bg-cream-dark/30 border-b border-charcoal/10">
-                    <th className="p-5 font-bold text-charcoal text-xs uppercase tracking-wider min-w-[200px]">Customer Name</th>
-                    <th className="p-5 font-bold text-charcoal text-xs uppercase tracking-wider whitespace-nowrap">Cart Value</th>
-                    <th className="p-5 font-bold text-charcoal text-xs uppercase tracking-wider whitespace-nowrap">Items</th>
-                    <th className="p-5 font-bold text-charcoal text-xs uppercase tracking-wider whitespace-nowrap">Last Updated</th>
-                    <th className="p-5 font-bold text-charcoal text-xs uppercase tracking-wider whitespace-nowrap text-right">Action</th>
+                    <th className="p-3 md:p-5 font-bold text-charcoal text-[10px] md:text-xs uppercase tracking-wider min-w-[140px] md:min-w-[200px]">Customer Name</th>
+                    <th className="p-3 md:p-5 font-bold text-charcoal text-[10px] md:text-xs uppercase tracking-wider whitespace-nowrap">Cart Value</th>
+                    <th className="p-3 md:p-5 font-bold text-charcoal text-[10px] md:text-xs uppercase tracking-wider whitespace-nowrap">Items</th>
+                    <th className="p-3 md:p-5 font-bold text-charcoal text-[10px] md:text-xs uppercase tracking-wider whitespace-nowrap hidden md:table-cell">Last Updated</th>
+                    <th className="p-3 md:p-5 font-bold text-charcoal text-[10px] md:text-xs uppercase tracking-wider whitespace-nowrap text-right">Action</th>
                   </tr>
                 </thead>
                 <tbody>
                   {abandonedCarts.map((user: any) => (
                     <tr key={user.id} className="border-b border-charcoal/5 hover:bg-slate-50 transition-colors">
-                      <td className="p-5 align-middle">
-                        <div className="flex items-center gap-3">
+                      <td className="p-3 md:p-5 align-middle">
+                        <div className="flex items-center gap-2 md:gap-3">
                           <div>
-                            <p className="font-semibold text-charcoal flex items-center gap-2">
+                            <p className="font-semibold text-charcoal text-xs md:text-base flex items-center gap-2">
                               {user.name}
                             </p>
-                            <p className="text-sm text-slate">{user.email}</p>
+                            <p className="text-[10px] md:text-sm text-slate">{user.email}</p>
                           </div>
                         </div>
                       </td>
-                      <td className="p-5 align-middle">
-                        <span className="font-medium text-charcoal text-lg">₹{user.totalAmount?.toLocaleString() || 0}</span>
+                      <td className="p-3 md:p-5 align-middle">
+                        <span className="font-medium text-charcoal text-sm md:text-lg whitespace-nowrap">₹{user.totalAmount?.toLocaleString() || 0}</span>
                       </td>
-                      <td className="p-5 align-middle">
+                      <td className="p-3 md:p-5 align-middle">
                         <div className="flex flex-col gap-1">
                           {user.items?.map((item: any, idx: number) => (
-                            <span key={idx} className="text-sm text-slate flex items-center gap-2">
-                              <span className="w-6 h-6 rounded bg-slate-100 flex items-center justify-center text-xs font-bold text-charcoal">{item.quantity}x</span>
-                              <span className="truncate max-w-[200px]" title={item.product?.name || item.productName || 'Product'}>
+                            <span key={idx} className="text-[10px] md:text-sm text-slate flex items-center gap-1 md:gap-2">
+                              <span className="w-5 h-5 md:w-6 md:h-6 rounded bg-slate-100 flex items-center justify-center text-[9px] md:text-xs font-bold text-charcoal">{item.quantity}x</span>
+                              <span className="truncate max-w-[120px] md:max-w-[200px]" title={item.product?.name || item.productName || 'Product'}>
                                 {item.product?.name || item.productName || 'Product'}
                               </span>
                             </span>
                           ))}
                         </div>
                       </td>
-                      <td className="p-5 align-middle">
-                        <span className="text-slate">{new Date(user.cartUpdatedAt).toLocaleString()}</span>
+                      <td className="p-3 md:p-5 align-middle hidden md:table-cell">
+                        <span className="text-[10px] md:text-base text-slate whitespace-nowrap">{new Date(user.cartUpdatedAt).toLocaleString()}</span>
                       </td>
-                      <td className="p-5 align-middle text-right">
+                      <td className="p-3 md:p-5 align-middle text-right">
                         <button
                           type="button"
                           onClick={(e) => {

@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useTransition } from "react"
+import { useState, useTransition, useEffect, useRef } from "react"
 import { toast } from "sonner"
 import { Plus, X, Tag, Scissors } from "lucide-react"
 import { saveStoreTaxonomy } from "@/actions/system"
@@ -20,6 +20,8 @@ interface TaxonomyManagerProps {
 export function TaxonomyManager({ initialCategories, initialFabrics }: TaxonomyManagerProps) {
   const [categories, setCategories] = useState<Option[]>(initialCategories)
   const [fabrics, setFabrics] = useState<Option[]>(initialFabrics)
+  const [savedCategories, setSavedCategories] = useState<Option[]>(initialCategories)
+  const [savedFabrics, setSavedFabrics] = useState<Option[]>(initialFabrics)
   const [isPending, startTransition] = useTransition()
 
   const [newCatLabel, setNewCatLabel] = useState("")
@@ -74,11 +76,56 @@ export function TaxonomyManager({ initialCategories, initialFabrics }: TaxonomyM
       const res = await saveStoreTaxonomy(categories, fabrics)
       if (res.success) {
         toast.success("Categories & Fabrics saved successfully!")
+        setSavedCategories(categories);
+        setSavedFabrics(fabrics);
+        wasDirty.current = false;
       } else {
         toast.error(res.error || "Failed to save taxonomy.")
       }
     })
   }
+
+  const hasChanges = JSON.stringify(categories) !== JSON.stringify(savedCategories) || JSON.stringify(fabrics) !== JSON.stringify(savedFabrics);
+  const wasDirty = useRef(false);
+
+  useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      if (hasChanges) {
+        e.preventDefault();
+        e.returnValue = "";
+      }
+    };
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => window.removeEventListener("beforeunload", handleBeforeUnload);
+  }, [hasChanges]);
+
+  useEffect(() => {
+    const handlePopState = () => {
+      if (hasChanges) {
+        if (!window.confirm("You have unsaved changes. Are you sure you want to discard them?")) {
+          window.history.pushState(null, "", window.location.href);
+        } else {
+          setTimeout(() => {
+            window.history.back();
+          }, 0);
+        }
+      }
+    };
+
+    if (hasChanges && !wasDirty.current) {
+      window.history.pushState(null, "", window.location.href);
+      window.addEventListener("popstate", handlePopState);
+      wasDirty.current = true;
+    } else if (!hasChanges && wasDirty.current) {
+      window.removeEventListener("popstate", handlePopState);
+      wasDirty.current = false;
+      window.history.back();
+    }
+
+    return () => {
+      window.removeEventListener("popstate", handlePopState);
+    };
+  }, [hasChanges]);
 
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -92,28 +139,18 @@ export function TaxonomyManager({ initialCategories, initialFabrics }: TaxonomyM
             Manage the master list of categories and fabrics. These will be available when adding products and as filters on the Shop page.
           </p>
         </div>
-        <button 
-          onClick={handleSave} 
-          disabled={isPending}
-          className={cn(
-            "btn-primary",
-            isPending && "opacity-50 cursor-not-allowed"
-          )}
-        >
-          {isPending ? "Saving..." : "Save All Changes"}
-        </button>
       </div>
 
       <div className="grid md:grid-cols-2 gap-8">
         {/* Categories Section */}
-        <div className="bg-white rounded-3xl border border-charcoal/10 shadow-sm overflow-hidden">
-          <div className="px-6 py-4 border-b border-charcoal/10 bg-cream/50 flex items-center gap-2">
+        <div className="bg-white rounded-none md:rounded-3xl border-y md:border-x border-charcoal/10 shadow-sm overflow-hidden -mx-4 md:mx-0">
+          <div className="px-4 py-3 md:px-6 md:py-4 border-b border-charcoal/10 bg-cream/50 flex items-center gap-2">
             <Tag size={18} className="text-teal-600" />
-            <h3 className="font-bold text-charcoal">Product Categories</h3>
+            <h3 className="font-bold text-charcoal text-sm md:text-base">Product Categories</h3>
           </div>
           
-          <div className="p-6">
-            <div className="flex gap-2 mb-6 items-end">
+          <div className="p-4 md:p-6">
+            <div className="flex gap-1.5 md:gap-2 mb-4 md:mb-6 items-end">
               <div className="flex-1">
                 <label className="text-xs font-semibold text-slate uppercase mb-1 block">Display Name</label>
                 <input 
@@ -125,7 +162,7 @@ export function TaxonomyManager({ initialCategories, initialFabrics }: TaxonomyM
                       setNewCatValue(autoGenerateSlug(e.target.value));
                     }
                   }}
-                  className="w-full bg-white border border-charcoal/20 rounded-xl px-4 py-2.5 focus:border-teal-500 focus:ring-1 focus:ring-teal-500 outline-none text-sm"
+                  className="w-full bg-white border border-charcoal/20 rounded-full px-3 py-2 md:px-5 md:py-2.5 focus:border-teal-500 focus:ring-1 focus:ring-teal-500 outline-none text-xs md:text-sm shadow-sm"
                   placeholder="e.g. Summer Collection"
                 />
               </div>
@@ -135,7 +172,7 @@ export function TaxonomyManager({ initialCategories, initialFabrics }: TaxonomyM
                   type="text" 
                   value={newCatValue}
                   onChange={(e) => setNewCatValue(e.target.value)}
-                  className="w-full bg-slate/5 border border-charcoal/20 rounded-xl px-4 py-2.5 focus:border-teal-500 focus:ring-1 focus:ring-teal-500 outline-none text-sm font-mono text-teal-700"
+                  className="w-full bg-slate/5 border border-charcoal/20 rounded-full px-3 py-2 md:px-5 md:py-2.5 focus:border-teal-500 focus:ring-1 focus:ring-teal-500 outline-none text-xs md:text-sm font-mono text-teal-700 shadow-sm"
                   placeholder="e.g. summer-collection"
                 />
               </div>
@@ -152,18 +189,18 @@ export function TaxonomyManager({ initialCategories, initialFabrics }: TaxonomyM
               <button 
                 onClick={handleAddCategory}
                 disabled={!newCatLabel || !newCatValue}
-                className="bg-teal-600 text-white rounded-xl h-[42px] px-4 hover:bg-teal-700 transition-colors disabled:opacity-50 flex items-center justify-center"
+                className="btn-icon !w-8 !h-8 md:!w-10 md:!h-10 text-teal-600 disabled:opacity-50 shrink-0 mb-0.5 md:mb-1 ml-1 md:ml-2"
               >
-                <Plus size={20} />
+                <Plus className="w-4 h-4 md:w-5 md:h-5 stroke-[2.5]" />
               </button>
             </div>
 
             <div className="space-y-2 max-h-[500px] overflow-y-auto pr-2 custom-scrollbar">
               {categories.map((cat, i) => (
-                <div key={i} className="flex items-center justify-between p-3 rounded-xl border border-charcoal/10 hover:border-teal-500/30 bg-white group transition-colors">
+                <div key={i} className="flex items-center justify-between px-3 py-2 md:px-5 md:py-3 rounded-full border border-charcoal/10 hover:border-teal-500/30 bg-white group transition-colors shadow-sm">
                   <div>
-                    <div className="font-medium text-sm text-charcoal">{cat.label}</div>
-                    <div className="text-xs font-mono text-teal-600/70 mt-0.5">{cat.value}</div>
+                    <div className="font-medium text-[11px] md:text-sm text-charcoal">{cat.label}</div>
+                    <div className="text-[9px] md:text-xs font-mono text-teal-600/70 mt-0.5">{cat.value}</div>
                   </div>
                   <div className="flex items-center gap-3">
                     <label className="flex items-center gap-1.5 cursor-pointer">
@@ -176,19 +213,22 @@ export function TaxonomyManager({ initialCategories, initialFabrics }: TaxonomyM
                             return;
                           }
                           const newCats = [...categories];
-                          newCats[i].showInFooter = e.target.checked;
+                          newCats[i] = { ...newCats[i], showInFooter: e.target.checked };
                           setCategories(newCats);
                         }}
                         className="w-4 h-4 rounded border-charcoal/20 text-teal-600 focus:ring-teal-500"
                       />
-                      <span className="text-[10px] uppercase font-bold text-slate">Footer</span>
+                      <span className="text-[9px] md:text-[10px] uppercase font-bold text-slate">Footer</span>
                     </label>
-                    <button 
-                      onClick={() => setCategories(categories.filter((_, idx) => idx !== i))}
-                      className="w-8 h-8 flex items-center justify-center rounded-lg text-rose hover:bg-rose/10 transition-colors"
+                      <button 
+                      onClick={() => {
+                        const newCats = categories.filter((_, idx) => idx !== i);
+                        setCategories(newCats);
+                      }}
+                      className="w-6 h-6 md:w-8 md:h-8 flex items-center justify-center rounded-full text-rose hover:bg-rose/10 transition-colors"
                       title="Remove category"
                     >
-                      <X size={16} />
+                      <X className="w-3 h-3 md:w-4 md:h-4" />
                     </button>
                   </div>
                 </div>
@@ -201,14 +241,14 @@ export function TaxonomyManager({ initialCategories, initialFabrics }: TaxonomyM
         </div>
 
         {/* Fabrics Section */}
-        <div className="bg-white rounded-3xl border border-charcoal/10 shadow-sm overflow-hidden">
-          <div className="px-6 py-4 border-b border-charcoal/10 bg-cream/50 flex items-center gap-2">
+        <div className="bg-white rounded-none md:rounded-3xl border-y md:border-x border-charcoal/10 shadow-sm overflow-hidden -mx-4 md:mx-0">
+          <div className="px-4 py-3 md:px-6 md:py-4 border-b border-charcoal/10 bg-cream/50 flex items-center gap-2">
             <Scissors size={18} className="text-teal-600" />
-            <h3 className="font-bold text-charcoal">Fabric Options</h3>
+            <h3 className="font-bold text-charcoal text-sm md:text-base">Fabric Options</h3>
           </div>
           
-          <div className="p-6">
-            <div className="flex gap-2 mb-6 items-end">
+          <div className="p-4 md:p-6">
+            <div className="flex gap-1.5 md:gap-2 mb-4 md:mb-6 items-end">
               <div className="flex-1">
                 <label className="text-xs font-semibold text-slate uppercase mb-1 block">Display Name</label>
                 <input 
@@ -220,7 +260,7 @@ export function TaxonomyManager({ initialCategories, initialFabrics }: TaxonomyM
                       setNewFabValue(autoGenerateSlug(e.target.value));
                     }
                   }}
-                  className="w-full bg-white border border-charcoal/20 rounded-xl px-4 py-2.5 focus:border-teal-500 focus:ring-1 focus:ring-teal-500 outline-none text-sm"
+                  className="w-full bg-white border border-charcoal/20 rounded-full px-3 py-2 md:px-5 md:py-2.5 focus:border-teal-500 focus:ring-1 focus:ring-teal-500 outline-none text-xs md:text-sm shadow-sm"
                   placeholder="e.g. Organza"
                 />
               </div>
@@ -230,7 +270,7 @@ export function TaxonomyManager({ initialCategories, initialFabrics }: TaxonomyM
                   type="text" 
                   value={newFabValue}
                   onChange={(e) => setNewFabValue(e.target.value)}
-                  className="w-full bg-slate/5 border border-charcoal/20 rounded-xl px-4 py-2.5 focus:border-teal-500 focus:ring-1 focus:ring-teal-500 outline-none text-sm font-mono text-teal-700"
+                  className="w-full bg-slate/5 border border-charcoal/20 rounded-full px-3 py-2 md:px-5 md:py-2.5 focus:border-teal-500 focus:ring-1 focus:ring-teal-500 outline-none text-xs md:text-sm font-mono text-teal-700 shadow-sm"
                   placeholder="e.g. organza"
                 />
               </div>
@@ -247,18 +287,18 @@ export function TaxonomyManager({ initialCategories, initialFabrics }: TaxonomyM
               <button 
                 onClick={handleAddFabric}
                 disabled={!newFabLabel || !newFabValue}
-                className="bg-teal-600 text-white rounded-xl h-[42px] px-4 hover:bg-teal-700 transition-colors disabled:opacity-50 flex items-center justify-center"
+                className="btn-icon !w-8 !h-8 md:!w-10 md:!h-10 text-teal-600 disabled:opacity-50 shrink-0 mb-0.5 md:mb-1 ml-1 md:ml-2"
               >
-                <Plus size={20} />
+                <Plus className="w-4 h-4 md:w-5 md:h-5 stroke-[2.5]" />
               </button>
             </div>
 
             <div className="space-y-2 max-h-[500px] overflow-y-auto pr-2 custom-scrollbar">
               {fabrics.map((fab, i) => (
-                <div key={i} className="flex items-center justify-between p-3 rounded-xl border border-charcoal/10 hover:border-teal-500/30 bg-white group transition-colors">
+                <div key={i} className="flex items-center justify-between px-3 py-2 md:px-5 md:py-3 rounded-full border border-charcoal/10 hover:border-teal-500/30 bg-white group transition-colors shadow-sm">
                   <div>
-                    <div className="font-medium text-sm text-charcoal">{fab.label}</div>
-                    <div className="text-xs font-mono text-teal-600/70 mt-0.5">{fab.value}</div>
+                    <div className="font-medium text-[11px] md:text-sm text-charcoal">{fab.label}</div>
+                    <div className="text-[9px] md:text-xs font-mono text-teal-600/70 mt-0.5">{fab.value}</div>
                   </div>
                   <div className="flex items-center gap-3">
                     <label className="flex items-center gap-1.5 cursor-pointer">
@@ -271,19 +311,22 @@ export function TaxonomyManager({ initialCategories, initialFabrics }: TaxonomyM
                             return;
                           }
                           const newFabs = [...fabrics];
-                          newFabs[i].showInFooter = e.target.checked;
+                          newFabs[i] = { ...newFabs[i], showInFooter: e.target.checked };
                           setFabrics(newFabs);
                         }}
                         className="w-4 h-4 rounded border-charcoal/20 text-teal-600 focus:ring-teal-500"
                       />
-                      <span className="text-[10px] uppercase font-bold text-slate">Footer</span>
+                      <span className="text-[9px] md:text-[10px] uppercase font-bold text-slate">Footer</span>
                     </label>
                     <button 
-                      onClick={() => setFabrics(fabrics.filter((_, idx) => idx !== i))}
-                      className="w-8 h-8 flex items-center justify-center rounded-lg text-rose hover:bg-rose/10 transition-colors"
+                      onClick={() => {
+                        const newFabs = fabrics.filter((_, idx) => idx !== i);
+                        setFabrics(newFabs);
+                      }}
+                      className="w-6 h-6 md:w-8 md:h-8 flex items-center justify-center rounded-full text-rose hover:bg-rose/10 transition-colors"
                       title="Remove fabric"
                     >
-                      <X size={16} />
+                      <X className="w-3 h-3 md:w-4 md:h-4" />
                     </button>
                   </div>
                 </div>
@@ -294,7 +337,19 @@ export function TaxonomyManager({ initialCategories, initialFabrics }: TaxonomyM
             </div>
           </div>
         </div>
+      </div>
 
+      <div className="flex justify-end pt-2">
+        <button 
+          onClick={handleSave} 
+          disabled={isPending}
+          className={cn(
+            "btn-primary px-8 py-3 text-sm font-bold shadow-md hover:shadow-lg transition-all",
+            isPending && "opacity-50 cursor-not-allowed shadow-none"
+          )}
+        >
+          {isPending ? "Saving..." : "Save All Changes"}
+        </button>
       </div>
     </div>
   )

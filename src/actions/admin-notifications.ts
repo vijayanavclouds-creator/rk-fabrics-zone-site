@@ -113,7 +113,7 @@ export async function getLateShippingAlerts() {
     const lateOrders = await prisma.order.findMany({
       where: {
         createdAt: { lt: thresholdDate },
-        status: { notIn: ["SHIPPED", "DELIVERED", "CANCELLED", "RETURNED"] }
+        status: "PROCESSING"
       },
       include: {
         user: { select: { name: true, email: true } }

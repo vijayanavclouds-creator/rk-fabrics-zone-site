@@ -6,6 +6,7 @@ import { authOptions } from "@/lib/auth"
 import { revalidatePath } from "next/cache"
 import { sendOrderConfirmationEmail, sendOrderShippedEmail, sendOrderDeliveredEmail, sendOrderCancelledEmail } from "@/lib/email"
 import { logAdminActivity } from "./admin-activity"
+import { getGSTRates } from "./system"
 
 export async function createOrder(data: any) {
   try {
@@ -68,6 +69,34 @@ export async function createOrder(data: any) {
       }
     }
 
+      // Calculate GST based on the latest rates
+      let calculatedGst = 0
+      const rates = await getGSTRates()
+      
+      if (subtotalAmount > 0) {
+        items.forEach((item: any) => {
+          const originalPrice = item.variant.salePrice || item.variant.price
+          const itemTotal = originalPrice * item.quantity
+          const itemWeight = itemTotal / subtotalAmount
+          const itemDiscount = validatedDiscount * itemWeight
+          const finalItemTotal = itemTotal - itemDiscount
+          const finalItemPrice = finalItemTotal / item.quantity
+          
+          const rate = finalItemPrice <= 1000 ? rates.below1000 : rates.above1000
+          calculatedGst += finalItemTotal * (rate / 100)
+        })
+      }
+      calculatedGst += ((platformFeeAmount || 0) + shippingAmount) * (rates.shipping / 100)
+      calculatedGst = Math.round(calculatedGst * 100) / 100
+
+      // Securely recalculate the total
+      const secureTotalAmount = Math.max(0, subtotalAmount + shippingAmount + (platformFeeAmount || 0) + calculatedGst - validatedDiscount)
+      
+      // Make sure the frontend isn't lying about the total amount
+      if (Math.abs(secureTotalAmount - totalAmount) > 2) {
+        return { success: false, error: "Order total mismatch" }
+      }
+
     // Verify stock before proceeding
     for (const item of items) {
       const variant = await prisma.productVariant.findUnique({
@@ -90,9 +119,10 @@ export async function createOrder(data: any) {
       const newOrder = await tx.order.create({
         data: {
           userId: session.user.id,
-          totalAmount,
+          totalAmount: secureTotalAmount,
           shippingAmount,
           platformFeeAmount: platformFeeAmount || 0,
+          gstAmount: calculatedGst,
           subtotalAmount,
           shippingAddress,
           phone,

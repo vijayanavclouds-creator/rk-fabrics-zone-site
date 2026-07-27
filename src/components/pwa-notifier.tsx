@@ -45,7 +45,7 @@ export function PwaNotifier() {
           initial={{ opacity: 0, y: 10, scale: 0.95 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
           exit={{ opacity: 0, y: 10, scale: 0.95 }}
-          className="absolute top-[calc(100%+12px)] right-0 w-80 bg-white border border-charcoal/10 rounded-2xl shadow-2xl z-[100] p-4 hidden md:block"
+          className="absolute top-[calc(100%+12px)] right-0 w-72 sm:w-80 bg-white border border-charcoal/10 rounded-2xl shadow-2xl z-[100] p-4"
         >
           {/* Arrow pointing up */}
           <div className="absolute -top-2 right-4 w-4 h-4 bg-white border-t border-l border-charcoal/10 transform rotate-45 z-0" />

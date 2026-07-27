@@ -1,9 +1,9 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { sendNewsletter, generateNewsletterWithAI, getAdminNewsletters } from "@/actions/newsletter"
+import { sendNewsletter, generateNewsletterWithAI, getAdminNewsletters, deleteAdminNewsletter } from "@/actions/newsletter"
 import { toast } from "sonner"
-import { Send, Mail, Sparkles, Clock, Users, ArrowRight } from "lucide-react"
+import { Send, Mail, Sparkles, Clock, Users, ArrowRight, Trash2 } from "lucide-react"
 
 export function NewsletterManager() {
   const [subject, setSubject] = useState("")
@@ -69,6 +69,20 @@ export function NewsletterManager() {
     setLoading(false)
   }
 
+  const handleDelete = async (id: string) => {
+    if (!confirm("Are you sure you want to delete this campaign? This action cannot be undone.")) return;
+    
+    toast.loading("Deleting campaign...", { id: "delete" });
+    const res = await deleteAdminNewsletter(id);
+    
+    if (res.success) {
+      toast.success("Campaign deleted successfully!", { id: "delete" });
+      loadCampaigns();
+    } else {
+      toast.error(res.error || "Failed to delete campaign", { id: "delete" });
+    }
+  }
+
   return (
     <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 w-full">
       <div className="mb-6 border-b border-charcoal/10 pb-4">
@@ -81,9 +95,9 @@ export function NewsletterManager() {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-8 items-start">
         {/* LEFT COLUMN: COMPOSER */}
-        <div className="bg-white p-6 rounded-3xl border border-charcoal/10 shadow-sm">
+        <div className="-mx-4 md:mx-0 bg-white p-4 md:p-6 rounded-none md:rounded-3xl border-y md:border border-charcoal/10 shadow-sm">
           <form onSubmit={handleSubmit} className="space-y-6">
             
             {/* AI Prompt Box */}
@@ -158,7 +172,7 @@ export function NewsletterManager() {
         </div>
 
         {/* RIGHT COLUMN: CAMPAIGN HISTORY */}
-        <div className="bg-white p-6 rounded-3xl border border-charcoal/10 shadow-sm h-full max-h-[800px] flex flex-col">
+        <div className="-mx-4 md:mx-0 bg-white p-4 md:p-6 rounded-none md:rounded-3xl border-y md:border border-charcoal/10 shadow-sm h-full max-h-[800px] flex flex-col">
           <div className="flex items-center justify-between mb-6">
             <h3 className="font-bold text-charcoal text-lg flex items-center gap-2">
               <Clock size={20} className="text-slate" />
@@ -191,7 +205,13 @@ export function NewsletterManager() {
                     </span>
                   </div>
 
-                  <div className="mt-4 flex justify-end opacity-0 group-hover:opacity-100 transition-opacity">
+                  <div className="mt-4 flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <button 
+                      onClick={() => handleDelete(campaign.id)}
+                      className="text-xs font-bold text-rose-600 hover:text-rose-700 flex items-center gap-1 bg-rose-50 hover:bg-rose-100 px-3 py-1.5 rounded-lg transition-colors"
+                    >
+                      <Trash2 size={14} /> Delete
+                    </button>
                     <button 
                       onClick={() => {
                         setSubject(campaign.subject)

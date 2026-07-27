@@ -1,7 +1,8 @@
 "use client"
 
-import { useState, useTransition, useEffect, useRef } from "react"
-import { useSearchParams } from "next/navigation"
+import { useState, useTransition, useEffect, useRef, Fragment } from "react"
+import { useSearchParams, useRouter } from "next/navigation"
+import Link from "next/link"
 import { updateProduct, createProduct, deleteProduct, bulkUpdateImagesAndVariants, toggleProductStatus } from "@/actions/admin"
 import { toast } from "sonner"
 import { Save, Upload, X, Star, Trash2, Plus, Edit, Image as ImageIcon, ChevronDown, LayoutTemplate, Activity, User, Menu, Tag, Scissors } from "lucide-react"
@@ -171,28 +172,38 @@ export function AdminDashboard({
               <p className="text-slate mt-1 text-sm">Manage your products and inventory in real-time.</p>
             </div>
           </div>
-          <div className="bg-white rounded-3xl border border-charcoal/10 overflow-hidden shadow-[0_8px_30px_rgb(0,0,0,0.08)] bg-gradient-to-br from-white to-cream/20">
+          <div className="-mx-4 md:mx-0 bg-white md:rounded-3xl border-y md:border border-charcoal/10 overflow-hidden md:shadow-[0_8px_30px_rgb(0,0,0,0.08)] bg-gradient-to-br from-white to-cream/20">
           <div className="w-full">
-            <table className="w-full text-left border-collapse table-fixed">
-            <thead>
+            <table className="w-full text-left border-collapse table-fixed block md:table">
+            <thead className="hidden md:table-header-group">
               <tr className="bg-cream-dark/30 border-b border-charcoal/10">
-              <th className="py-2 px-4 font-bold text-charcoal w-[30%]">Product Name</th>
-              <th className="py-2 px-4 font-bold text-charcoal w-[10%] whitespace-nowrap overflow-hidden text-ellipsis text-left">Category</th>
-              <th className="py-2 px-4 font-bold text-charcoal w-[10%] whitespace-nowrap overflow-hidden text-ellipsis text-left">MRP (₹)</th>
-              <th className="py-2 px-4 font-bold text-charcoal w-[10%] whitespace-nowrap overflow-hidden text-ellipsis text-left">Disc.</th>
-              <th className="py-2 px-4 font-bold text-charcoal w-[10%] text-left">Images</th>
-              <th className="py-2 px-4 font-bold text-charcoal w-[10%] text-left">Variants</th>
-              <th className="py-2 px-4 font-bold text-charcoal w-[10%] whitespace-nowrap overflow-hidden text-ellipsis text-left">Status</th>
-              <th className="py-2 px-4 font-bold text-charcoal w-[10%] text-left">Action</th>
+              <th className="py-2 px-4 font-bold text-charcoal text-sm w-[30%]">Product Name</th>
+              <th className="py-2 px-4 font-bold text-charcoal text-sm w-[10%] whitespace-nowrap overflow-hidden text-ellipsis text-left">Category</th>
+              <th className="py-2 px-4 font-bold text-charcoal text-sm w-[10%] whitespace-nowrap overflow-hidden text-ellipsis text-left">MRP</th>
+              <th className="py-2 px-4 font-bold text-charcoal text-sm w-[10%] whitespace-nowrap overflow-hidden text-ellipsis text-left">Disc.</th>
+              <th className="py-2 px-4 font-bold text-charcoal text-sm w-[10%] text-left">Images</th>
+              <th className="py-2 px-4 font-bold text-charcoal text-sm w-[10%] text-left">Variants</th>
+              <th className="py-2 px-4 font-bold text-charcoal text-sm w-[10%] whitespace-nowrap overflow-hidden text-ellipsis text-left">Status</th>
+              <th className="py-2 px-4 font-bold text-charcoal text-sm w-[10%] text-left">Action</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody className="block md:table-row-group">
             {products.map((product) => {
               const isNew = new Date(product.createdAt).getTime() >= Date.now() - 16 * 24 * 60 * 60 * 1000;
               const isOutOfStock = product.variants?.length > 0 && product.variants.every((v:any) => v.stock <= 0);
+              
+              const categoryStr = (() => {
+                try {
+                  const cats = JSON.parse(product.category);
+                  if (Array.isArray(cats)) return cats.map((c:string) => c.replace("-", " ")).join(", ");
+                } catch(e) {}
+                return String(product.category).replace("-", " ");
+              })();
 
               return (
-              <tr key={product.id} className="border-b border-charcoal/5 hover:bg-cream/40 transition-colors group relative">
+              <Fragment key={product.id}>
+              {/* DESKTOP ROW */}
+              <tr className="hidden md:table-row border-b border-charcoal/5 hover:bg-cream/40 transition-colors group relative">
 
                 <td className="py-2 px-4 relative">
                   <div className="flex items-center gap-3">
@@ -204,32 +215,26 @@ export function AdminDashboard({
                       )}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <span className="font-semibold text-charcoal block group-hover:text-teal-700 transition-colors truncate" title={product.name}>{product.name}</span>
+                      <span className="font-semibold text-charcoal block group-hover:text-teal-700 transition-colors truncate text-base" title={product.name}>{product.name}</span>
                       {product.isFreeDelivery && <span className="inline-block mt-1 text-[10px] uppercase font-bold tracking-wider text-teal-700 bg-teal-50 px-1.5 py-0.5 rounded border border-teal-200">Free Delivery</span>}
                     </div>
                   </div>
                 </td>
-                <td className="py-2 px-4 text-charcoal font-medium capitalize whitespace-nowrap">
-                  {(() => {
-                    try {
-                      const cats = JSON.parse(product.category);
-                      if (Array.isArray(cats)) return cats.map(c => c.replace("-", " ")).join(", ");
-                    } catch(e) {}
-                    return String(product.category).replace("-", " ");
-                  })()}
+                <td className="py-2 px-4 text-charcoal font-medium capitalize whitespace-nowrap text-sm">
+                  {categoryStr}
                 </td>
-                <td className="py-2 px-4 text-charcoal font-bold whitespace-nowrap">₹{product.basePrice}</td>
+                <td className="py-2 px-4 text-charcoal font-bold whitespace-nowrap text-sm">₹{product.basePrice}</td>
                 <td className="py-2 px-4 whitespace-nowrap">
                   {product.discountPercent > 0 ? (
                     <span className="text-rose font-bold bg-rose-50 px-2 py-1 rounded text-xs border border-rose-100 whitespace-nowrap">{product.discountPercent}% OFF</span>
-                  ) : <span className="text-slate-400">-</span>}
+                  ) : <span className="text-slate-400 text-sm">-</span>}
                 </td>
-                <td className="py-2 px-4 text-slate font-medium">
+                <td className="py-2 px-4 text-slate font-medium text-sm">
                   <div className="flex items-center gap-1">
                     <ImageIcon size={14} className="text-teal-600" /> {product.images?.length || 0}
                   </div>
                 </td>
-                <td className="py-2 px-4 text-slate font-medium">{product.variants?.length || 0}</td>
+                <td className="py-2 px-4 text-slate font-medium text-sm">{product.variants?.length || 0}</td>
                 <td className="py-2 px-4 text-left">
                   <input
                     type="checkbox"
@@ -256,17 +261,17 @@ export function AdminDashboard({
                       </span>
                     </div>
                   )}
-                  <div className="flex justify-start gap-2">
-                    <button 
-                      onClick={() => { setEditingProduct(product); setActiveView("edit") }}
-                      className="btn-primary w-9 h-9 flex items-center justify-center p-0 !px-0 rounded-lg flex-shrink-0"
+                  <div className="flex gap-2 justify-start items-center">
+                    <Link 
+                      href={`/admin/products/${product.id}/edit`}
+                      className="btn-icon !w-8 !h-8 text-slate-400 hover:text-teal-600"
                       title="Edit"
                     >
                       <Edit size={16} />
-                    </button>
+                    </Link>
                     <button 
                       onClick={() => handleDeleteProduct(product.id, product.name)}
-                      className="w-9 h-9 flex items-center justify-center rounded-lg flex-shrink-0 text-charcoal bg-cream hover:bg-rose hover:text-white transition-colors"
+                      className="btn-icon !w-8 !h-8 text-slate-400 hover:text-rose-600"
                       title="Delete"
                     >
                       <Trash2 size={16} />
@@ -274,6 +279,86 @@ export function AdminDashboard({
                   </div>
                 </td>
               </tr>
+
+              {/* MOBILE ROW (CARD LAYOUT) */}
+              <tr className="md:hidden block border-b border-charcoal/5 hover:bg-cream/40 transition-colors relative">
+                <td className="block p-3 w-full">
+                  {/* Row 1: Image, Name, Free Del + Actions */}
+                  <div className="flex justify-between items-start gap-3 w-full mb-3">
+                    <div className="flex items-center gap-3 flex-1 min-w-0">
+                      <div className="w-11 h-11 rounded-lg overflow-hidden bg-cream border border-charcoal/10 shrink-0 relative">
+                        {product.images && product.images.length > 0 ? (
+                          <Image src={product.images.find((i:any)=>i.isPrimary)?.url || product.images[0].url} alt={product.name} fill className="object-cover" />
+                        ) : (
+                          <div className="absolute inset-0 flex items-center justify-center text-slate/30"><ImageIcon size={16} /></div>
+                        )}
+                      </div>
+                      <div className="flex-1 min-w-0 flex flex-col items-start">
+                        <span className="font-semibold text-charcoal truncate w-full text-sm leading-tight">{product.name}</span>
+                        {product.isFreeDelivery && (
+                          <span className="inline-block mt-1 text-[9px] uppercase font-bold tracking-wider text-teal-700 bg-teal-50 px-1.5 py-0.5 rounded border border-teal-200">Free Delivery</span>
+                        )}
+                      </div>
+                    </div>
+                    {/* Actions */}
+                    <div className="flex gap-2 shrink-0">
+                      <Link href={`/admin/products/${product.id}/edit`} className="btn-icon !w-8 !h-8 text-slate-500 hover:text-teal-600" title="Edit">
+                        <Edit size={14} />
+                      </Link>
+                      <button onClick={() => handleDeleteProduct(product.id, product.name)} className="btn-icon !w-8 !h-8 text-slate-500 hover:text-rose-600" title="Delete">
+                        <Trash2 size={14} />
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Row 2: Category, MRP, Disc, Variants, Status */}
+                  <div className="flex flex-wrap items-center gap-x-3 gap-y-2 w-full text-xs text-charcoal bg-cream-dark/10 p-2.5 rounded-xl border border-charcoal/5 relative overflow-hidden pr-8">
+                    {/* Tags placed inside second row with 30deg angle */}
+                    {isOutOfStock && (
+                      <div className="absolute bottom-2 -right-1 flex flex-col gap-1 z-20 rotate-[30deg] origin-bottom-right opacity-90 pointer-events-none shadow-xl">
+                        <span className="bg-rose-600 text-white text-[7px] font-black uppercase px-1.5 py-0.5 rounded shadow-sm border border-rose-700 whitespace-nowrap">
+                          Out of Stock
+                        </span>
+                      </div>
+                    )}
+                    {isNew && !isOutOfStock && (
+                      <div className="absolute bottom-2 -right-1 flex flex-col gap-1 z-20 rotate-[30deg] origin-bottom-right opacity-90 pointer-events-none shadow-xl">
+                        <span className="bg-amber-400 text-charcoal text-[7px] font-black uppercase px-1.5 py-0.5 rounded shadow-sm border border-amber-500 whitespace-nowrap">
+                          New
+                        </span>
+                      </div>
+                    )}
+
+                    <div className="flex items-center gap-1 font-medium capitalize">
+                      <span className="text-slate-400 font-normal">Cat:</span> {categoryStr}
+                    </div>
+                    <div className="w-px h-3 bg-charcoal/10"></div>
+                    <div><span className="text-slate-400 font-normal mr-1">MRP:</span><span className="font-bold">₹{product.basePrice}</span></div>
+                    {product.discountPercent > 0 && (
+                      <>
+                        <div className="w-px h-3 bg-charcoal/10"></div>
+                        <span className="text-rose font-bold">{product.discountPercent}% OFF</span>
+                      </>
+                    )}
+                    <div className="w-px h-3 bg-charcoal/10"></div>
+                    <div className="flex items-center gap-1 font-medium"><span className="text-slate-400 font-normal mr-1">Img:</span><ImageIcon size={12} className="text-teal-600" /> {product.images?.length || 0}</div>
+                    <div className="w-px h-3 bg-charcoal/10"></div>
+                    <div className="font-medium"><span className="text-slate-400 font-normal mr-1">Var:</span>{product.variants?.length || 0}</div>
+                    <div className="w-px h-3 bg-charcoal/10"></div>
+                    <div className="flex items-center gap-1.5 font-medium">
+                      <span className="text-slate-400 font-normal">Stat:</span>
+                      <input
+                        type="checkbox"
+                        checked={product.isActive !== false}
+                        onChange={() => handleToggleStatus(product.id, product.isActive !== false)}
+                        className="w-3 h-3 rounded border-gray-300 text-teal-600 focus:ring-teal-600 accent-teal-600 cursor-pointer disabled:opacity-50"
+                        disabled={isPending}
+                      />
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              </Fragment>
             )})}
             </tbody>
             </table>
@@ -285,7 +370,10 @@ export function AdminDashboard({
   )
 }
 
-function ProductEditor({ product = {}, products, storeCategories, storeFabrics, onClose }: { product?: any, products: any[], storeCategories: any[], storeFabrics: any[], onClose: () => void }) {
+export function ProductEditor({ product = {}, products, storeCategories, storeFabrics, onClose }: { product?: any, products: any[], storeCategories: any[], storeFabrics: any[], onClose?: () => void }) {
+  const router = useRouter()
+  const searchParams = useSearchParams()
+
   const [activeProductId, setActiveProductId] = useState<string | null>(product.id || null)
   const [isPending, startTransition] = useTransition()
   const [isSavingBulk, setIsSavingBulk] = useState(false)
@@ -478,8 +566,17 @@ function ProductEditor({ product = {}, products, storeCategories, storeFabrics, 
 
     if (savedSomething && baseSuccess && variantsImagesSuccess) {
       toast.success(activeProductId ? "All changes saved successfully!" : "Product created successfully!");
-      if (!activeProductId) {
+      
+      wasDirty.current = false;
+      setBaseDetailsChanged(false);
+
+      if (onClose) {
         onClose();
+      } else {
+        window.history.back();
+        setTimeout(() => {
+          router.replace('/admin');
+        }, 50);
       }
     }
   }
@@ -503,7 +600,9 @@ function ProductEditor({ product = {}, products, storeCategories, storeFabrics, 
         return;
       }
     }
-    onClose();
+    if (onClose) {
+      onClose();
+    }
   }
 
   // Handle beforeunload to warn user if they try to close tab or navigate away via browser
@@ -518,34 +617,69 @@ function ProductEditor({ product = {}, products, storeCategories, storeFabrics, 
     return () => window.removeEventListener("beforeunload", handleBeforeUnload);
   }, [hasChanges, baseDetailsChanged]);
 
+  const wasDirty = useRef(false);
+  const isDirty = hasChanges || baseDetailsChanged;
+
+  useEffect(() => {
+    if (onClose) return;
+
+    const handlePopState = () => {
+      if (isDirty) {
+        if (!window.confirm("You have unsaved changes. Are you sure you want to discard them?")) {
+          window.history.pushState(null, "", window.location.href);
+        } else {
+          setTimeout(() => {
+            router.replace('/admin');
+          }, 0);
+        }
+      }
+    };
+
+    if (isDirty && !wasDirty.current) {
+      window.history.pushState(null, "", window.location.href);
+      window.addEventListener("popstate", handlePopState);
+      wasDirty.current = true;
+    } else if (!isDirty && wasDirty.current) {
+      window.removeEventListener("popstate", handlePopState);
+      wasDirty.current = false;
+      window.history.back();
+    }
+
+    return () => {
+      window.removeEventListener("popstate", handlePopState);
+    };
+  }, [isDirty, onClose, router]);
+
   return (
     <div className="space-y-3 animate-in fade-in slide-in-from-bottom-4 duration-300">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 border-b border-charcoal/10 pb-3 mb-4">
+      <div className="flex flex-col px-4 md:px-0 md:flex-row justify-between items-start md:items-end gap-4 border-b border-charcoal/10 pb-3 mb-4">
         <div>
           <h2 className="font-[family-name:var(--font-playfair)] text-2xl font-bold text-charcoal">
             {activeProductId ? "Edit Product" : "Create New Product"}
           </h2>
           <p className="text-slate mt-1 text-sm">{activeProductId ? "Update product details, images, and variants." : "Add a new product to your catalog."}</p>
         </div>
-        <button 
-          onClick={handleClose}
-          className="flex items-center justify-center p-2 text-white bg-teal-600 hover:bg-teal-700 rounded-full transition-colors border border-teal-600 shadow-sm mb-[13px]"
-          title="Close"
-        >
-          <X size={20} strokeWidth={2.5} />
-        </button>
+        {onClose && (
+          <button 
+            onClick={handleClose}
+            className="flex items-center justify-center p-2 text-white bg-teal-600 hover:bg-teal-700 rounded-full transition-colors border border-teal-600 shadow-sm mb-[13px]"
+            title="Close"
+          >
+            <X size={20} strokeWidth={2.5} />
+          </button>
+        )}
       </div>
 
-      <div className="bg-white rounded-3xl border border-charcoal/10 p-4 shadow-[0_8px_30px_rgb(0,0,0,0.08)] bg-gradient-to-br from-white to-cream/20 flex flex-col gap-4">
-        <div>
+      <div className="bg-white rounded-none md:rounded-3xl border-y md:border border-charcoal/10 p-4 shadow-sm md:shadow-[0_8px_30px_rgb(0,0,0,0.08)] bg-gradient-to-br from-white to-cream/20 flex flex-col gap-4 w-full min-w-0">
+        <div className="w-full min-w-0">
           <h3 className="text-lg font-semibold text-charcoal mb-2 border-b border-charcoal/10 pb-1">Base Details</h3>
-          <form ref={baseDetailsFormRef} onChange={() => setBaseDetailsChanged(true)} className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <form ref={baseDetailsFormRef} onChange={() => setBaseDetailsChanged(true)} className="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-3">
           <div>
-            <label className="block text-sm font-semibold text-charcoal mb-2">Product Name</label>
-            <input required name="name" type="text" defaultValue={product.name} className="w-full p-3 rounded-xl border border-charcoal/10 focus:outline-none focus:border-teal-600 focus:ring-2 focus:ring-teal-600/20 shadow-inner bg-slate-50 transition-all" />
+            <label className="block text-[11px] md:text-sm font-semibold text-charcoal mb-1 md:mb-2">Product Name</label>
+            <input required name="name" type="text" defaultValue={product.name} className="w-full p-2 md:p-3 text-xs md:text-sm rounded-lg md:rounded-xl border border-charcoal/10 focus:outline-none focus:border-teal-600 focus:ring-1 md:focus:ring-2 focus:ring-teal-600/20 shadow-inner bg-slate-50 transition-all" />
           </div>
           <div>
-            <label className="block text-sm font-semibold text-charcoal mb-2">Category</label>
+            <label className="block text-[11px] md:text-sm font-semibold text-charcoal mb-1 md:mb-2">Category</label>
             <CategorySelect 
               selected={updatedCategory} 
               onChange={(v:any) => { setUpdatedCategory(v); setBaseDetailsChanged(true); }} 
@@ -553,14 +687,14 @@ function ProductEditor({ product = {}, products, storeCategories, storeFabrics, 
             />
           </div>
           <div>
-            <label className="block text-sm font-semibold text-charcoal mb-2">Base Price (MRP ₹)</label>
-            <input required name="basePrice" type="number" min="0" defaultValue={product.basePrice} className="w-full p-3 rounded-xl border border-charcoal/10 focus:outline-none focus:border-teal-600 focus:ring-2 focus:ring-teal-600/20 shadow-inner bg-slate-50 transition-all" />
+            <label className="block text-[11px] md:text-sm font-semibold text-charcoal mb-1 md:mb-2">Base Price (MRP ₹)</label>
+            <input required name="basePrice" type="number" min="0" defaultValue={product.basePrice} className="w-full p-2 md:p-3 text-xs md:text-sm rounded-lg md:rounded-xl border border-charcoal/10 focus:outline-none focus:border-teal-600 focus:ring-1 md:focus:ring-2 focus:ring-teal-600/20 shadow-inner bg-slate-50 transition-all" />
           </div>
           <div>
-            <label className="block text-sm font-semibold text-charcoal mb-2">Discount (%)</label>
-            <input name="discountPercent" type="number" min="0" max="100" defaultValue={product.discountPercent || 0} className="w-full p-3 rounded-xl border border-charcoal/10 focus:outline-none focus:border-teal-600 focus:ring-2 focus:ring-teal-600/20 shadow-inner bg-slate-50 transition-all" />
+            <label className="block text-[11px] md:text-sm font-semibold text-charcoal mb-1 md:mb-2">Discount (%)</label>
+            <input name="discountPercent" type="number" min="0" max="100" defaultValue={product.discountPercent || 0} className="w-full p-2 md:p-3 text-xs md:text-sm rounded-lg md:rounded-xl border border-charcoal/10 focus:outline-none focus:border-teal-600 focus:ring-1 md:focus:ring-2 focus:ring-teal-600/20 shadow-inner bg-slate-50 transition-all" />
           </div>
-          <div className="flex flex-wrap items-center gap-4 pt-2 md:col-span-2">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:flex md:flex-wrap items-center gap-4 pt-4 pb-2 md:col-span-2 border-t border-charcoal/10 md:border-t-0 md:pt-2">
             <div className="flex items-center gap-2">
               <input type="checkbox" name="isFreeDelivery" value="true" defaultChecked={product.id ? product.isFreeDelivery : true} id="isFreeDeliveryEdit" className="w-5 h-5 rounded border-gray-300 text-teal-600 focus:ring-teal-600 accent-teal-600" />
               <label htmlFor="isFreeDeliveryEdit" className="text-sm font-bold text-charcoal cursor-pointer">Free Delivery</label>
@@ -590,7 +724,7 @@ function ProductEditor({ product = {}, products, storeCategories, storeFabrics, 
             <h3 className="text-lg font-semibold text-charcoal mb-2">Fabric Details</h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="flex gap-2 relative">
-                <div className="absolute -left-12 top-2 text-teal-600/20">
+                <div className="hidden md:block absolute -left-12 top-2 text-teal-600/20">
                   <Scissors size={40} />
                 </div>
                 <FabricSelect 
@@ -600,13 +734,13 @@ function ProductEditor({ product = {}, products, storeCategories, storeFabrics, 
                   name="fabric"
                 />
               </div>
-              <input name="fabricDetails" type="text" value={updatedFabricDetails} onChange={(e) => { setUpdatedFabricDetails(e.target.value); setBaseDetailsChanged(true); }} className="w-full p-3 rounded-xl border border-charcoal/10 focus:outline-none focus:border-teal-600 focus:ring-2 focus:ring-teal-600/20 shadow-inner bg-slate-50 transition-all text-sm" placeholder="e.g. 100% Pure, Handwoven" />
+              <input name="fabricDetails" type="text" value={updatedFabricDetails} onChange={(e) => { setUpdatedFabricDetails(e.target.value); setBaseDetailsChanged(true); }} className="w-full p-2 md:p-3 rounded-lg md:rounded-xl border border-charcoal/10 focus:outline-none focus:border-teal-600 focus:ring-1 md:focus:ring-2 focus:ring-teal-600/20 shadow-inner bg-slate-50 transition-all text-xs md:text-sm" placeholder="e.g. 100% Pure, Handwoven" />
             </div>
           </div>
           </form>
         </div>
 
-        <div className="pt-2 border-t border-charcoal/10">
+        <div className="pt-2 border-t border-charcoal/10 w-full overflow-hidden">
           <h3 className="text-lg font-semibold text-charcoal mb-2 border-b border-charcoal/10 pb-1">Variant Management</h3>
           <VariantManager 
             basePrice={product.basePrice}
@@ -619,7 +753,7 @@ function ProductEditor({ product = {}, products, storeCategories, storeFabrics, 
           />
         </div>
 
-        <div className="pt-2 border-t border-charcoal/10">
+        <div className="pt-2 border-t border-charcoal/10 w-full overflow-hidden">
           <ImageManager 
             images={images} 
             setImages={setImages}
@@ -720,9 +854,9 @@ function ImageManager({ images, setImages, newImageFiles, setNewImageFiles, dele
   return (
     <div className="pt-2">
       <h3 className="text-lg font-semibold text-charcoal mb-4 border-b border-charcoal/10 pb-2">Product Images</h3>
-      <div className="flex flex-wrap gap-4 mb-6">
+      <div className="flex flex-wrap gap-2 md:gap-4 mb-6">
         {visibleImages.map((img: any) => (
-          <div key={img.id} className="relative group w-32 h-32 rounded-2xl overflow-hidden border border-charcoal/10 shadow-sm">
+          <div key={img.id} className="relative group w-24 h-24 md:w-32 md:h-32 rounded-xl md:rounded-2xl overflow-hidden border border-charcoal/10 shadow-sm">
             <img src={img.url} alt={img.alt} className="object-cover w-full h-full" />
             {img.id === primaryImageId && (
               <div className="absolute top-2 left-2 bg-teal-600 text-white rounded-full p-1 shadow-md">
@@ -745,7 +879,7 @@ function ImageManager({ images, setImages, newImageFiles, setNewImageFiles, dele
           </div>
         ))}
         {newImageFiles.map((nimg: any, idx: number) => (
-          <div key={idx} className="relative group w-32 h-32 rounded-2xl overflow-hidden border border-sky-400 shadow-[0_0_10px_rgba(56,189,248,0.2)]">
+          <div key={idx} className="relative group w-24 h-24 md:w-32 md:h-32 rounded-xl md:rounded-2xl overflow-hidden border border-sky-400 shadow-[0_0_10px_rgba(56,189,248,0.2)]">
             <div className="absolute top-0 right-0 bg-sky-500 text-white text-[9px] px-1.5 py-0.5 font-bold rounded-bl-lg z-10 uppercase tracking-wider">New</div>
             <img src={nimg.preview} alt="New Upload" className="object-cover w-full h-full opacity-90" />
             {newPrimaryIndex === idx && (
@@ -770,9 +904,9 @@ function ImageManager({ images, setImages, newImageFiles, setNewImageFiles, dele
         ))}
       </div>
       
-      <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-sky-300 bg-sky-50/50 hover:bg-sky-50 rounded-2xl cursor-pointer transition-colors text-sky-800 font-medium">
+      <label className="flex flex-col items-center justify-center w-full h-20 md:h-32 border-2 border-dashed border-sky-300 bg-sky-50/50 hover:bg-sky-50 rounded-xl md:rounded-2xl cursor-pointer transition-colors text-sky-800 font-medium text-xs md:text-base">
         <input type="file" accept="image/*" multiple className="hidden" onChange={handleFileUpload} />
-        <Upload size={28} className="mb-2 text-sky-600" />
+        <Upload className="w-5 h-5 md:w-7 md:h-7 mb-1 md:mb-2 text-sky-600" />
         <span>Click to add new images</span>
       </label>
     </div>
@@ -819,10 +953,10 @@ function SizeSelect({ value, onChange }: { value: string, onChange: (val: string
       <button 
         type="button" 
         onClick={(e) => { e.preventDefault(); e.stopPropagation(); setOpen(!open); }}
-        className="w-full h-full flex justify-between items-center text-left focus:outline-none focus:border-teal-600 focus:ring-1 focus:ring-teal-600 bg-transparent px-2 rounded-lg"
+        className="w-full h-full flex justify-between items-center text-left focus:outline-none focus:border-teal-600 focus:ring-1 focus:ring-teal-600 bg-transparent px-1 md:px-2 rounded-lg"
       >
-        <span className="truncate pr-2 font-medium">{value}</span>
-        <ChevronDown size={14} className={`shrink-0 transition-transform duration-200 ${open ? 'rotate-180 text-teal-600' : 'text-slate-400'}`} />
+        <span className="truncate pr-1 md:pr-2 font-medium">{value}</span>
+        <ChevronDown className={`w-3 h-3 md:w-4 md:h-4 shrink-0 transition-transform duration-200 ${open ? 'rotate-180 text-teal-600' : 'text-slate-400'}`} />
       </button>
       
       {open && (
@@ -833,7 +967,7 @@ function SizeSelect({ value, onChange }: { value: string, onChange: (val: string
               <div 
                 key={s}
                 onClick={(e) => { e.stopPropagation(); onChange(s); setOpen(false); }}
-                className={`px-3 py-2 text-sm cursor-pointer transition-colors ${value === s ? 'bg-teal-50 text-teal-700 font-bold border-l-4 border-teal-600 pl-2' : 'text-charcoal hover:bg-slate-50 border-l-4 border-transparent pl-3'}`}
+                className={`px-2 py-1.5 md:px-3 md:py-2 text-[10px] md:text-sm cursor-pointer transition-colors ${value === s ? 'bg-teal-50 text-teal-700 font-bold border-l-4 border-teal-600 pl-1.5 md:pl-2' : 'text-charcoal hover:bg-slate-50 border-l-4 border-transparent pl-2.5 md:pl-3'}`}
               >
                 {s}
               </div>
@@ -905,17 +1039,17 @@ function VariantManager({ basePrice, variants, setVariants, newVariants, setNewV
   const visibleVariants = variants.filter((v:any) => !deletedVariantIds.includes(v.id))
 
   return (
-    <div>
-      <div className="space-y-3 mb-8 overflow-x-auto pb-4">
-        <div className="min-w-[600px] space-y-1.5">
+    <div className="w-full min-w-0 overflow-hidden">
+      <div className="space-y-2 md:space-y-3 mb-6 md:mb-8 overflow-x-auto pb-4 w-full no-scrollbar">
+        <div className="min-w-full md:min-w-[600px] space-y-1 md:space-y-1.5">
         {(visibleVariants.length > 0 || newVariants.length > 0) && (
-          <div className="grid grid-cols-[1fr_1fr_1fr_1fr_1fr_auto] gap-3 px-2 pb-1 border-b border-charcoal/10">
-            <div className="text-sm font-bold text-charcoal">Color Code</div>
-            <div className="text-sm font-bold text-charcoal">Color Name</div>
-            <div className="text-sm font-bold text-charcoal">Size</div>
-            <div className="text-sm font-bold text-charcoal">Price</div>
-            <div className="text-sm font-bold text-charcoal">Qty</div>
-            <div className="text-sm font-bold text-charcoal text-center">Action</div>
+          <div className="grid grid-cols-[1.4fr_1fr_1fr_1.2fr_0.6fr_auto] md:grid-cols-[1fr_1fr_1fr_1fr_1fr_auto] gap-1 md:gap-3 px-1 md:px-2 pb-1 border-b border-charcoal/10">
+            <div className="text-[10px] md:text-sm font-bold text-charcoal truncate">Color Code</div>
+            <div className="text-[10px] md:text-sm font-bold text-charcoal truncate">Color Name</div>
+            <div className="text-[10px] md:text-sm font-bold text-charcoal truncate">Size</div>
+            <div className="text-[10px] md:text-sm font-bold text-charcoal truncate">Price</div>
+            <div className="text-[10px] md:text-sm font-bold text-charcoal truncate">Qty</div>
+            <div className="text-[10px] md:text-sm font-bold text-charcoal text-center truncate">Action</div>
           </div>
         )}
         {visibleVariants.map((v:any) => (
@@ -932,32 +1066,32 @@ function VariantManager({ basePrice, variants, setVariants, newVariants, setNewV
         </div>
       </div>
 
-      <h4 className="font-semibold text-charcoal mb-3 text-sm">Add New Variant</h4>
-      <form onSubmit={handleAddVariant} className="flex flex-wrap items-end gap-3 bg-white p-4 rounded-xl border border-charcoal/10 shadow-sm shadow-charcoal/5">
+      <h4 className="font-semibold text-charcoal mb-2 md:mb-3 text-xs md:text-sm">Add New Variant</h4>
+      <form onSubmit={handleAddVariant} className="flex flex-wrap items-end gap-2 md:gap-3 bg-white p-2.5 md:p-4 rounded-xl border border-charcoal/10 shadow-sm shadow-charcoal/5">
         <input type="hidden" name="color" value={newColorName} />
-        <div className="w-[110px]">
-          <label className="block text-xs font-bold text-slate-600 mb-1">Color (Hex)</label>
-          <div className="flex items-center gap-1 bg-slate-50 border border-charcoal/10 rounded-lg h-10 px-1 focus-within:border-teal-600 focus-within:ring-1 focus-within:ring-teal-600">
-            <input name="colorHex" type="text" value={newHex} onChange={(e) => handleHexChange(e.target.value)} placeholder="#HEX" className="w-16 bg-transparent text-sm font-mono uppercase focus:outline-none pl-1" />
-            <input type="color" value={newHex} onChange={(e) => handleHexChange(e.target.value)} className="w-7 h-7 rounded cursor-pointer border-none p-0 bg-transparent shrink-0" />
+        <div className="w-[80px] md:w-[110px]">
+          <label className="block text-[10px] md:text-xs font-bold text-slate-600 mb-1">Color (Hex)</label>
+          <div className="flex items-center gap-1 bg-slate-50 border border-charcoal/10 rounded-lg h-8 md:h-10 px-1 focus-within:border-teal-600 focus-within:ring-1 focus-within:ring-teal-600">
+            <input name="colorHex" type="text" value={newHex} onChange={(e) => handleHexChange(e.target.value)} placeholder="#HEX" className="w-12 md:w-16 bg-transparent text-[10px] md:text-sm font-mono uppercase focus:outline-none pl-1" />
+            <input type="color" value={newHex} onChange={(e) => handleHexChange(e.target.value)} className="w-5 h-5 md:w-7 md:h-7 rounded cursor-pointer border-none p-0 bg-transparent shrink-0" />
           </div>
         </div>
-        <div className="flex-1 min-w-[100px]">
-          <label className="block text-xs font-bold text-slate-600 mb-1">Size</label>
-          <div className="w-full h-10 text-sm rounded-lg border border-charcoal/10 bg-slate-50 relative group">
+        <div className="flex-1 min-w-[70px] md:min-w-[100px]">
+          <label className="block text-[10px] md:text-xs font-bold text-slate-600 mb-1">Size</label>
+          <div className="w-full h-8 md:h-10 text-[10px] md:text-sm rounded-lg border border-charcoal/10 bg-slate-50 relative group">
             <SizeSelect value={newSize} onChange={setNewSize} />
           </div>
         </div>
-        <div className="w-24">
-          <label className="block text-xs font-bold text-slate-600 mb-1">Price (₹)</label>
-          <input required name="price" type="number" defaultValue={basePrice} className="w-full p-2.5 text-sm rounded-lg border border-charcoal/10 focus:outline-none focus:border-teal-600 focus:ring-1 focus:ring-teal-600 bg-slate-50" />
+        <div className="w-16 md:w-24">
+          <label className="block text-[10px] md:text-xs font-bold text-slate-600 mb-1">Price (₹)</label>
+          <input required name="price" type="number" defaultValue={basePrice} className="w-full p-1.5 md:p-2.5 text-[10px] md:text-sm rounded-lg border border-charcoal/10 focus:outline-none focus:border-teal-600 focus:ring-1 focus:ring-teal-600 bg-slate-50" />
         </div>
-        <div className="w-20">
-          <label className="block text-xs font-bold text-slate-600 mb-1">Stock</label>
-          <input required name="stock" type="number" min="0" defaultValue="10" className="w-full p-2.5 text-sm rounded-lg border border-charcoal/10 focus:outline-none focus:border-teal-600 focus:ring-1 focus:ring-teal-600 bg-slate-50" />
+        <div className="w-12 md:w-20">
+          <label className="block text-[10px] md:text-xs font-bold text-slate-600 mb-1">Stock</label>
+          <input required name="stock" type="number" min="0" defaultValue="10" className="w-full p-1.5 md:p-2.5 text-[10px] md:text-sm rounded-lg border border-charcoal/10 focus:outline-none focus:border-teal-600 focus:ring-1 focus:ring-teal-600 bg-slate-50" />
         </div>
-        <button type="submit" className="p-2 h-10 w-10 flex items-center justify-center text-white bg-teal-600 hover:bg-teal-700 rounded-lg shadow-md hover:shadow-lg transition-all active:scale-95" title="Add Variant">
-          <Plus size={20} strokeWidth={3} />
+        <button type="submit" className="p-1 md:p-2 h-8 md:h-10 w-8 md:w-10 flex items-center justify-center text-white bg-teal-600 hover:bg-teal-700 rounded-lg shadow-md hover:shadow-lg transition-all active:scale-95" title="Add Variant">
+          <Plus className="w-4 h-4 md:w-5 md:h-5" strokeWidth={3} />
         </button>
       </form>
     </div>
@@ -974,26 +1108,26 @@ function VariantRow({ variant, onUpdate, onDelete, isNew }: any) {
   };
 
   return (
-    <div className={`grid grid-cols-[1fr_1fr_1fr_1fr_1fr_auto] items-center gap-2 p-1.5 rounded-xl border transition-colors group ${isNew ? 'bg-sky-50 border-sky-200' : 'bg-slate-50 border-charcoal/5 hover:border-teal-200'}`}>
+    <div className={`grid grid-cols-[1.4fr_1fr_1fr_1.2fr_0.6fr_auto] md:grid-cols-[1fr_1fr_1fr_1fr_1fr_auto] items-center gap-1 md:gap-2 p-1 md:p-1.5 rounded-lg md:rounded-xl border transition-colors group ${isNew ? 'bg-sky-50 border-sky-200' : 'bg-slate-50 border-charcoal/5 hover:border-teal-200'}`}>
       <div className="flex items-center gap-1 w-full">
-        <input type="color" value={variant.colorHex} onChange={e => handleHexChange(e.target.value)} className="w-7 h-7 rounded-full cursor-pointer border-none p-0 bg-transparent shrink-0" title="Pick Color" />
-        <input type="text" value={variant.colorHex} onChange={e => handleHexChange(e.target.value)} className="w-full min-w-0 py-1.5 px-2 text-xs font-mono font-medium rounded-lg border border-transparent hover:border-charcoal/20 focus:border-teal-600 focus:bg-white outline-none transition-all bg-transparent uppercase" />
+        <input type="color" value={variant.colorHex} onChange={e => handleHexChange(e.target.value)} className="w-5 h-5 md:w-7 md:h-7 rounded-full cursor-pointer border-none p-0 bg-transparent shrink-0" title="Pick Color" />
+        <input type="text" value={variant.colorHex} onChange={e => handleHexChange(e.target.value)} className="w-full min-w-0 py-1 md:py-1.5 px-1 md:px-2 text-[9px] md:text-xs font-mono font-medium rounded-md md:rounded-lg border border-transparent hover:border-charcoal/20 focus:border-teal-600 focus:bg-white outline-none transition-all bg-transparent uppercase" />
       </div>
-      <input type="text" value={variant.color} onChange={e => onUpdate("color", e.target.value)} className="w-full min-w-0 py-1.5 px-2 text-sm font-medium rounded-lg border border-transparent hover:border-charcoal/20 focus:border-teal-600 focus:bg-white outline-none transition-all bg-transparent" />
+      <input type="text" value={variant.color} onChange={e => onUpdate("color", e.target.value)} className="w-full min-w-0 py-1 md:py-1.5 px-1 md:px-2 text-[10px] md:text-sm font-medium rounded-md md:rounded-lg border border-transparent hover:border-charcoal/20 focus:border-teal-600 focus:bg-white outline-none transition-all bg-transparent truncate" />
       <div className="w-full min-w-0">
-        <div className="w-full h-8 rounded-lg border border-transparent hover:border-charcoal/20 focus-within:border-teal-600 focus-within:bg-white transition-all bg-transparent">
+        <div className="w-full h-6 md:h-8 rounded-md md:rounded-lg border border-transparent hover:border-charcoal/20 focus-within:border-teal-600 focus-within:bg-white transition-all bg-transparent text-[10px] md:text-sm">
           <SizeSelect value={variant.size} onChange={val => onUpdate("size", val)} />
         </div>
       </div>
-      <div className="flex items-center gap-1 w-full min-w-0 relative">
-        <span className="text-xs text-slate font-bold absolute left-2 pointer-events-none">₹</span>
-        <input type="number" value={variant.price} onChange={e => onUpdate("price", Number(e.target.value))} className="w-full pl-5 py-1.5 px-2 text-sm font-bold text-teal-700 rounded-lg border border-transparent hover:border-charcoal/20 focus:border-teal-600 focus:bg-white outline-none transition-all bg-transparent" />
+      <div className="flex items-center gap-0.5 md:gap-1 w-full min-w-0 relative">
+        <span className="text-[10px] md:text-xs text-slate font-bold absolute left-1 md:left-2 pointer-events-none">₹</span>
+        <input type="number" value={variant.price} onChange={e => onUpdate("price", Number(e.target.value))} className="w-full pl-3 md:pl-5 py-1 md:py-1.5 px-1 md:px-2 text-[10px] md:text-sm font-bold text-teal-700 rounded-md md:rounded-lg border border-transparent hover:border-charcoal/20 focus:border-teal-600 focus:bg-white outline-none transition-all bg-transparent" />
       </div>
       <div className="w-full min-w-0">
-        <input type="number" value={variant.stock} onChange={e => onUpdate("stock", Number(e.target.value))} className="w-full py-1.5 px-2 text-sm font-bold text-charcoal rounded-lg border border-transparent hover:border-charcoal/20 focus:border-teal-600 focus:bg-white outline-none transition-all bg-transparent" />
+        <input type="number" value={variant.stock} onChange={e => onUpdate("stock", Number(e.target.value))} className="w-full py-1 md:py-1.5 px-1 md:px-2 text-[10px] md:text-sm font-bold text-charcoal rounded-md md:rounded-lg border border-transparent hover:border-charcoal/20 focus:border-teal-600 focus:bg-white outline-none transition-all bg-transparent" />
       </div>
-      <button type="button" onClick={onDelete} className="justify-self-center p-1.5 text-rose-600 bg-rose-50 hover:bg-rose-100 hover:text-rose-700 rounded-lg border border-rose-100 transition-all active:scale-95 shrink-0" title="Remove Variant">
-        <Trash2 size={16} />
+      <button type="button" onClick={onDelete} className="justify-self-center p-1 md:p-1.5 text-rose-600 bg-rose-50 hover:bg-rose-100 hover:text-rose-700 rounded-md md:rounded-lg border border-rose-100 transition-all active:scale-95 shrink-0" title="Remove Variant">
+        <Trash2 className="w-3 h-3 md:w-4 md:h-4" />
       </button>
     </div>
   )
@@ -1024,9 +1158,9 @@ const CategorySelect = ({ selected, onChange, options, name }: { selected: strin
   return (
     <div className="relative" ref={dropdownRef}>
       {name && <input type="hidden" name={name} value={JSON.stringify(selected)} />}
-      <button type="button" onClick={() => setIsOpen(!isOpen)} className="w-full bg-white border border-charcoal/20 rounded-xl px-4 py-2.5 focus:border-teal-500 focus:ring-1 focus:ring-teal-500 outline-none text-sm flex justify-between items-center">
+      <button type="button" onClick={() => setIsOpen(!isOpen)} className="w-full bg-white border border-charcoal/20 rounded-lg md:rounded-xl px-2.5 md:px-4 py-2 md:py-2.5 focus:border-teal-500 focus:ring-1 focus:ring-teal-500 outline-none text-xs md:text-sm flex justify-between items-center">
         <span className={selected.length === 0 ? "text-slate" : "text-charcoal"}>{getLabel()}</span>
-        <ChevronDown size={16} className={cn("text-slate transition-transform", isOpen && "rotate-180")} />
+        <ChevronDown size={14} className={cn("text-slate transition-transform", isOpen && "rotate-180")} />
       </button>
       {isOpen && (
         <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-charcoal/10 rounded-xl shadow-xl z-50 p-2 max-h-64 overflow-y-auto no-scrollbar">
