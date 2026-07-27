@@ -318,10 +318,10 @@ export function Header({ initialNavLinks, announcementBanner }: { initialNavLink
  {/* Mobile Menu Button */}
  <button
  onClick={toggleMobileMenu}
- className="md:hidden p-2 -mr-2 text-charcoal hover:text-teal-600 transition-colors"
+ className="md:hidden btn-icon"
  aria-label="Toggle menu"
  >
- {isMobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
+ {isMobileMenuOpen ? <X size={18} className="text-slate-500 stroke-[1.5]" /> : <Menu size={18} className="text-slate-500 stroke-[1.5]" />}
  </button>
  </div>
  </div>
