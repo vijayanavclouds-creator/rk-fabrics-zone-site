@@ -2,7 +2,7 @@ const sharp = require('sharp');
 const fs = require('fs');
 const path = require('path');
 
-const inputPath = path.join(__dirname, '../public', 'logo.png');
+const inputPath = path.join(__dirname, '../public', 'app-logo.jpg');
 
 async function generateIcons() {
   if (!fs.existsSync(inputPath)) {
