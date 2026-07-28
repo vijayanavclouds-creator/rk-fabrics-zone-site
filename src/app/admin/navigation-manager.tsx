@@ -111,53 +111,55 @@ export function NavigationManager() {
           <Plus size={18} /> Add Tab
         </button>
       </div>
-      <div className="bg-white rounded-3xl border border-charcoal/10 p-8 shadow-[0_8px_30px_rgb(0,0,0,0.08)]">
+      <div className="bg-white md:rounded-3xl border border-charcoal/10 p-2 sm:p-5 md:p-8 md:shadow-[0_8px_30px_rgb(0,0,0,0.08)] -mx-4 sm:mx-0 sm:w-full border-x-0 sm:border-x">
 
       <div className="space-y-4">
         {links.map((link, idx) => (
           <div key={idx} className="border border-charcoal/10 rounded-2xl bg-slate-50 overflow-hidden">
-            <div className="flex items-center gap-4 p-4 bg-white border-b border-charcoal/10">
-              <div className="flex flex-col gap-1">
-                <button type="button" onClick={() => moveUp(idx)} disabled={idx === 0} className="text-slate-400 hover:text-charcoal disabled:opacity-30">
-                  <ChevronUp size={16} />
-                </button>
-                <button type="button" onClick={() => moveDown(idx)} disabled={idx === links.length - 1} className="text-slate-400 hover:text-charcoal disabled:opacity-30">
-                  <ChevronDown size={16} />
-                </button>
-              </div>
-              
-              <div className="flex-1 grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-xs font-bold text-slate-500 mb-1">Tab Label</label>
-                  <input 
-                    type="text" 
-                    value={link.label} 
-                    onChange={e => updateMainTab(idx, "label", e.target.value)}
-                    className="w-full p-2.5 text-sm font-semibold rounded-lg border border-charcoal/20 focus:border-teal-600 focus:ring-1 focus:ring-teal-600 bg-white"
-                  />
+            <div className="flex flex-col md:flex-row gap-2 md:gap-4 p-2 md:p-4 bg-white border-b border-charcoal/10">
+              <div className="flex items-center gap-2 md:gap-4 w-full md:w-auto md:flex-1">
+                <div className="flex flex-col gap-1 shrink-0">
+                  <button type="button" onClick={() => moveUp(idx)} disabled={idx === 0} className="text-slate-400 hover:text-charcoal disabled:opacity-30">
+                    <ChevronUp size={16} />
+                  </button>
+                  <button type="button" onClick={() => moveDown(idx)} disabled={idx === links.length - 1} className="text-slate-400 hover:text-charcoal disabled:opacity-30">
+                    <ChevronDown size={16} />
+                  </button>
                 </div>
-                <div>
-                  <label className="block text-xs font-bold text-slate-500 mb-1">Target URL</label>
-                  <input 
-                    type="text" 
-                    value={link.href} 
-                    onChange={e => updateMainTab(idx, "href", e.target.value)}
-                    className="w-full p-2.5 text-sm rounded-lg border border-charcoal/20 focus:border-teal-600 focus:ring-1 focus:ring-teal-600 bg-white"
-                  />
+                
+                <div className="flex-1 grid grid-cols-2 gap-2 md:gap-4">
+                  <div>
+                    <label className="block text-[10px] md:text-xs font-bold text-charcoal mb-1 ml-2">Tab Label</label>
+                    <input 
+                      type="text" 
+                      value={link.label} 
+                      onChange={e => updateMainTab(idx, "label", e.target.value)}
+                      className="w-full px-3 md:px-4 py-2 md:py-2.5 text-xs md:text-sm bg-cream shadow-neo-input !border-none rounded-full focus:!outline-none focus:!ring-0 text-charcoal placeholder:text-slate/60 transition-all font-semibold"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] md:text-xs font-bold text-charcoal mb-1 ml-2">Target URL</label>
+                    <input 
+                      type="text" 
+                      value={link.href} 
+                      onChange={e => updateMainTab(idx, "href", e.target.value)}
+                      className="w-full px-3 md:px-4 py-2 md:py-2.5 text-xs md:text-sm bg-cream shadow-neo-input !border-none rounded-full focus:!outline-none focus:!ring-0 text-charcoal placeholder:text-slate/60 transition-all font-mono"
+                    />
+                  </div>
                 </div>
               </div>
 
-              <div className="flex items-center gap-2">
+              <div className="flex items-center justify-between md:justify-end gap-2 w-full md:w-auto pl-6 sm:pl-8 md:pl-0 pt-1 md:pt-0 mt-1 md:mt-0">
                 <button 
                   onClick={() => setExpandedTab(expandedTab === idx ? null : idx)}
-                  className="px-4 py-2 bg-charcoal/5 hover:bg-charcoal/10 text-charcoal rounded-lg font-medium text-sm transition-colors flex items-center gap-2"
+                  className="px-4 py-2 bg-charcoal/5 hover:bg-charcoal/10 text-charcoal rounded-lg font-medium text-sm transition-colors flex items-center gap-2 flex-1 md:flex-none justify-center"
                 >
                   Submenus ({link.submenu?.length || 0})
                   <ChevronDown size={16} className={`transition-transform ${expandedTab === idx ? 'rotate-180' : ''}`} />
                 </button>
                 <button 
                   onClick={() => removeMainTab(idx)}
-                  className="p-2.5 text-rose-500 bg-rose-50 hover:bg-rose-100 rounded-lg transition-colors"
+                  className="p-2.5 text-rose-500 bg-rose-50 hover:bg-rose-100 rounded-lg transition-colors shrink-0"
                 >
                   <Trash2 size={18} />
                 </button>
@@ -175,14 +177,14 @@ export function NavigationManager() {
                         placeholder="Submenu Label"
                         value={sub.label} 
                         onChange={e => updateSubmenu(idx, subIdx, "label", e.target.value)}
-                        className="flex-1 max-w-[200px] p-2 text-sm rounded-lg border border-charcoal/20 focus:border-teal-600 focus:ring-1 focus:ring-teal-600 bg-white"
+                        className="flex-1 max-w-[200px] px-3 md:px-4 py-2 md:py-2.5 text-xs md:text-sm bg-cream shadow-neo-input !border-none rounded-full focus:!outline-none focus:!ring-0 text-charcoal placeholder:text-slate/60 transition-all font-semibold"
                       />
                       <input 
                         type="text" 
                         placeholder="URL (/shop?category=...)"
                         value={sub.href} 
                         onChange={e => updateSubmenu(idx, subIdx, "href", e.target.value)}
-                        className="flex-1 p-2 text-sm rounded-lg border border-charcoal/20 focus:border-teal-600 focus:ring-1 focus:ring-teal-600 bg-white text-teal-700 font-mono"
+                        className="flex-1 px-3 md:px-4 py-2 md:py-2.5 text-xs md:text-sm bg-cream shadow-neo-input !border-none rounded-full focus:!outline-none focus:!ring-0 text-charcoal placeholder:text-slate/60 transition-all font-mono"
                       />
                       <button 
                         onClick={() => removeSubmenu(idx, subIdx)}
