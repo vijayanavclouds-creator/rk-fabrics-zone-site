@@ -4,6 +4,7 @@ import prisma from "@/lib/prisma"
 import { revalidatePath } from "next/cache"
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
+import { logAdminActivity } from "./admin-activity"
 
 export async function subscribeToNewsletter(email: string) {
   try {
@@ -81,6 +82,8 @@ export async function sendNewsletter(subject: string, content: string) {
 
     // TODO: In a real app, you would also use an email service (SendGrid, AWS SES) 
     // to email all `NewsletterSubscriber` records.
+
+    await logAdminActivity(`sent newsletter <b>${subject}</b>`, `Delivered to ${users.length} users`);
 
     return { success: true }
   } catch (error: any) {
@@ -220,9 +223,15 @@ export async function deleteAdminNewsletter(id: string) {
       return { success: false, error: "Unauthorized" }
     }
 
+    const oldNewsletter = await prisma.newsletter.findUnique({ where: { id } });
+
     await prisma.newsletter.delete({
       where: { id }
     })
+
+    if (oldNewsletter) {
+      await logAdminActivity(`deleted newsletter <b>${oldNewsletter.subject}</b>`);
+    }
 
     return { success: true }
   } catch (error) {

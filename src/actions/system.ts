@@ -2,6 +2,8 @@
 
 import prisma from "@/lib/prisma";
 import { revalidatePath, revalidateTag } from "next/cache";
+import { logAdminActivity } from "./admin-activity";
+import { generateDiffString } from "@/lib/utils";
 import { PRODUCT_CATEGORIES, FABRIC_OPTIONS } from "@/lib/constants";
 import { getNavigationLinksData, getStoreTaxonomyData, getAnnouncementBannerData, getCompanyProfileData } from "@/lib/data/system";
 
@@ -18,6 +20,8 @@ export async function getAnnouncementBanner() {
 // Save Announcement Banner
 export async function saveAnnouncementBanner(data: { text: string; isActive: boolean }) {
   try {
+    const oldBanner = await getAnnouncementBannerData();
+    
     await prisma.systemSetting.upsert({
       where: { key: "announcement_banner" },
       update: { value: JSON.stringify(data) },
@@ -25,6 +29,12 @@ export async function saveAnnouncementBanner(data: { text: string; isActive: boo
     });
     revalidateTag("announcement_banner", "max");
     revalidatePath("/", "layout");
+    
+    const diff = generateDiffString(oldBanner || {}, data);
+    if (diff) {
+      await logAdminActivity("updated announcement banner", diff);
+    }
+    
     return { success: true };
   } catch (error: any) {
     return { success: false, error: error.message };
@@ -34,6 +44,8 @@ export async function saveAnnouncementBanner(data: { text: string; isActive: boo
 // Save Navigation Links
 export async function saveNavigationLinks(links: any) {
   try {
+    const oldLinks = await getNavigationLinksData();
+    
     await prisma.systemSetting.upsert({
       where: { key: "navigation_links" },
       update: { value: JSON.stringify(links) },
@@ -43,6 +55,9 @@ export async function saveNavigationLinks(links: any) {
     // Revalidate the entire app so the header updates instantly everywhere
     revalidateTag("navigation_links", "max");
     revalidatePath("/", "layout");
+    
+    const diff = `updated from ${oldLinks.length} links to ${links.length} links`;
+    await logAdminActivity("updated navigation links", diff);
     
     return { success: true };
   } catch (error: any) {
@@ -59,6 +74,8 @@ export async function getStoreTaxonomy() {
 // Save Store Taxonomy
 export async function saveStoreTaxonomy(categories: any[], fabrics: any[]) {
   try {
+    const oldTaxonomy = await getStoreTaxonomyData();
+    
     await prisma.$transaction([
       prisma.systemSetting.upsert({
         where: { key: "store_categories" },
@@ -78,6 +95,16 @@ export async function saveStoreTaxonomy(categories: any[], fabrics: any[]) {
     revalidatePath("/shop");
     revalidatePath("/admin");
     
+    const catDiff = oldTaxonomy.categories.length !== categories.length 
+      ? `categories: ${oldTaxonomy.categories.length} -> ${categories.length}` : "";
+    const fabDiff = oldTaxonomy.fabrics.length !== fabrics.length
+      ? `fabrics: ${oldTaxonomy.fabrics.length} -> ${fabrics.length}` : "";
+    
+    const diffParts = [catDiff, fabDiff].filter(Boolean);
+    const diff = diffParts.length > 0 ? diffParts.join(", ") : "updated names or ordering";
+    
+    await logAdminActivity("updated store taxonomy", diff);
+    
     return { success: true };
   } catch (error: any) {
     console.error("Error saving store taxonomy:", error);
@@ -93,6 +120,8 @@ export async function getCompanyProfile() {
 // Save Company Profile Settings
 export async function saveCompanyProfile(profileData: any) {
   try {
+    const oldProfile = await getCompanyProfileData();
+    
     await prisma.systemSetting.upsert({
       where: { key: "company_profile" },
       update: { value: JSON.stringify(profileData) },
@@ -101,6 +130,12 @@ export async function saveCompanyProfile(profileData: any) {
     
     revalidateTag("company_profile", "max");
     revalidatePath("/", "layout"); // Revalidate all pages in case footer/header uses this
+    
+    const diff = generateDiffString(oldProfile || {}, profileData);
+    if (diff) {
+      await logAdminActivity("updated company profile settings", diff);
+    }
+    
     return { success: true };
   } catch (error: any) {
     console.error("Error saving company profile:", error);

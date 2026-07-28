@@ -119,3 +119,104 @@ Payload: {"updatedVariants":[{"id":"cmrteydt10003cyygmiugpmrf","sku":"VAR-371108
 [logAdminActivity] called with action: marked Order <b>#132WZS</b> as <b>PROCESSING</b>
 [logAdminActivity] adminName resolved to: Vijay jangir
 [logAdminActivity] success! inserted id: cms2s2bjz0003poq5yx013yhf
+[logAdminActivity] called with action: updated product <b>Striped Spaghetti Strap Tiered Midi Dress</b>
+[logAdminActivity] adminName resolved to: Vijay jangir
+[logAdminActivity] success! inserted id: cms4ixjmb0004w0yamzxebkjp
+[2026-07-28T10:39:38.628Z] bulkUpdateImagesAndVariants called
+Payload: {"updatedVariants":[]}
+[logAdminActivity] called with action: updated product <b>The Riviera Striped Tunic</b>
+[logAdminActivity] adminName resolved to: Vijay jangir
+[logAdminActivity] success! inserted id: cms4jaci10009w0yani0zngld
+[2026-07-28T10:49:35.936Z] bulkUpdateImagesAndVariants called
+Payload: {"updatedVariants":[]}
+[logAdminActivity] called with action: updated product <b>A-Line Kurti — Meadow Bloom</b>
+[logAdminActivity] adminName resolved to: Vijay jangir
+[logAdminActivity] success! inserted id: cms4jivow000bw0yad74wwoad
+[2026-07-28T10:56:14.054Z] bulkUpdateImagesAndVariants called
+Payload: {"updatedVariants":[]}
+[logAdminActivity] called with action: updated product <b>Solid Ivory Long Sleeve Ruffled Maxi Dress</b>
+[logAdminActivity] adminName resolved to: Vijay jangir
+[logAdminActivity] success! inserted id: cms4jjm1r000dw0yamdt2i0nu
+[2026-07-28T10:56:48.236Z] bulkUpdateImagesAndVariants called
+Payload: {"updatedVariants":[]}
+[logAdminActivity] called with action: updated product <b>Ochre & Blue Mixed Stripe Button-Down Shirt</b>
+[logAdminActivity] adminName resolved to: Vijay jangir
+[logAdminActivity] success! inserted id: cms4jk969000fw0yadknex9zb
+[2026-07-28T10:57:18.085Z] bulkUpdateImagesAndVariants called
+Payload: {"updatedVariants":[]}
+[2026-07-28T10:57:53.684Z] bulkUpdateImagesAndVariants called
+Payload: {"updatedVariants":[{"id":"cmrteydt10003cyygmiugpmrf","sku":"VAR-371108","size":"M","color":"Beige","colorHex":"#F5F4F0","price":399,"salePrice":null,"stock":2,"productId":"cmrtex4wp0000cyygm2lwgihs"},{"id":"cmrteydt20005cyygqqx3vvev","sku":"VAR-371110","size":"XL","color":"Beige","colorHex":"#F5F4F0","price":399,"salePrice":null,"stock":2,"productId":"cmrtex4wp0000cyygm2lwgihs"},{"id":"cmrtf1c4n000lcyygmgprjcsm","sku":"VAR-508902","size":"L","color":"Beige","colorHex":"#F5F4F0","price":399,"salePrice":null,"stock":2,"productId":"cmrtex4wp0000cyygm2lwgihs"}]}
+[logAdminActivity] called with action: updated <b>Stock</b> for variant <b>M / Beige</b> in <b>Solid Ivory Long Sleeve Ruffled Maxi Dress</b> from <b>0</b> to <b>2</b>
+[logAdminActivity] adminName resolved to: Vijay jangir
+[logAdminActivity] success! inserted id: cms4jl12h000hw0ya1p2nzv9v
+[logAdminActivity] called with action: updated <b>Stock</b> for variant <b>XL / Beige</b> in <b>Solid Ivory Long Sleeve Ruffled Maxi Dress</b> from <b>0</b> to <b>2</b>
+[logAdminActivity] adminName resolved to: Vijay jangir
+[logAdminActivity] success! inserted id: cms4jl1ep000iw0yar3e8tfmd
+[logAdminActivity] called with action: updated <b>Stock</b> for variant <b>L / Beige</b> in <b>Solid Ivory Long Sleeve Ruffled Maxi Dress</b> from <b>0</b> to <b>2</b>
+[logAdminActivity] adminName resolved to: Vijay jangir
+[logAdminActivity] success! inserted id: cms4jl1ny000jw0yatwb1irjv
+[2026-07-28T10:58:47.347Z] bulkUpdateImagesAndVariants called
+Payload: {"updatedVariants":[{"id":"10-v2","sku":"RKF-DLH-010-RSE-M","size":"M","color":"Coral","colorHex":"#C49A52","price":249,"salePrice":136.95,"stock":0,"productId":"10"},{"id":"10-v3","sku":"RKF-DLH-010-RSE-L","size":"L","color":"Coral","colorHex":"#C49A52","price":249,"salePrice":136.95,"stock":0,"productId":"10"},{"id":"10-v4","sku":"RKF-DLH-010-SAG-M","size":"XL","color":"Coral","colorHex":"#C49A52","price":249,"salePrice":136.95,"stock":0,"productId":"10"}]}
+[logAdminActivity] called with action: updated <b>Stock</b> for variant <b>M / Coral</b> in <b>Ochre & Blue Mixed Stripe Button-Down Shirt</b> from <b>7</b> to <b>0</b>
+[logAdminActivity] adminName resolved to: Vijay jangir
+[logAdminActivity] success! inserted id: cms4jm6f7000lw0yazjwre8y2
+[logAdminActivity] called with action: updated <b>Stock</b> for variant <b>L / Coral</b> in <b>Ochre & Blue Mixed Stripe Button-Down Shirt</b> from <b>6</b> to <b>0</b>
+[logAdminActivity] adminName resolved to: Vijay jangir
+[logAdminActivity] success! inserted id: cms4jm7hh000mw0yae8itkihj
+[logAdminActivity] called with action: updated <b>Stock</b> for variant <b>XL / Coral</b> in <b>Ochre & Blue Mixed Stripe Button-Down Shirt</b> from <b>7</b> to <b>0</b>
+[logAdminActivity] adminName resolved to: Vijay jangir
+[logAdminActivity] success! inserted id: cms4jm7qm000nw0ya7rygt1e5
+[2026-07-28T11:05:39.222Z] bulkUpdateImagesAndVariants called
+Payload: {"updatedVariants":[{"id":"10-v1","sku":"RKF-DLH-010-RSE-S","size":"S","color":"Coral","colorHex":"#C49A52","price":249,"salePrice":136.95,"stock":1,"productId":"10"},{"id":"10-v2","sku":"RKF-DLH-010-RSE-M","size":"M","color":"Coral","colorHex":"#C49A52","price":249,"salePrice":136.95,"stock":2,"productId":"10"},{"id":"10-v4","sku":"RKF-DLH-010-SAG-M","size":"XL","color":"Coral","colorHex":"#C49A52","price":249,"salePrice":136.95,"stock":2,"productId":"10"}]}
+[logAdminActivity] called with action: updated <b>Stock</b> for variant <b>S / Coral</b> in <b>Ochre & Blue Mixed Stripe Button-Down Shirt</b> from <b>0</b> to <b>1</b>
+[logAdminActivity] adminName resolved to: Vijay jangir
+[logAdminActivity] success! inserted id: cms4jv0i1000pw0ya6jzhlsjc
+[logAdminActivity] called with action: updated <b>Stock</b> for variant <b>M / Coral</b> in <b>Ochre & Blue Mixed Stripe Button-Down Shirt</b> from <b>0</b> to <b>2</b>
+[logAdminActivity] adminName resolved to: Vijay jangir
+[logAdminActivity] success! inserted id: cms4jv1ka000qw0yac8036cqq
+[logAdminActivity] called with action: updated <b>Stock</b> for variant <b>XL / Coral</b> in <b>Ochre & Blue Mixed Stripe Button-Down Shirt</b> from <b>0</b> to <b>2</b>
+[logAdminActivity] adminName resolved to: Vijay jangir
+[logAdminActivity] success! inserted id: cms4jv1ts000rw0yahc4e2kdo
+[logAdminActivity] called with action: updated product <b>The Riviera Striped Tunic</b>
+[logAdminActivity] adminName resolved to: Vijay jangir
+[logAdminActivity] success! inserted id: cms4k1q2l000tw0yagn0eapxr
+[2026-07-28T11:10:53.271Z] bulkUpdateImagesAndVariants called
+Payload: {"updatedVariants":[]}
+[logAdminActivity] called with action: updated product <b>The Riviera Striped Tunic</b>
+[logAdminActivity] adminName resolved to: Vijay jangir
+[logAdminActivity] success! inserted id: cms4kahy5000vw0yazh9d68s3
+[2026-07-28T11:17:42.618Z] bulkUpdateImagesAndVariants called
+Payload: {"updatedVariants":[]}
+[logAdminActivity] called with action: updated product <b>The Riviera Striped Tunic</b>
+[logAdminActivity] adminName resolved to: Vijay jangir
+[logAdminActivity] success! inserted id: cms4kc8xt000xw0ya2j8evtc7
+[2026-07-28T11:19:04.148Z] bulkUpdateImagesAndVariants called
+Payload: {"updatedVariants":[]}
+[logAdminActivity] called with action: updated product <b>The Riviera Striped Tunic</b>
+[logAdminActivity] adminName resolved to: Vijay jangir
+[logAdminActivity] success! inserted id: cms4kh570000zw0ya3cuun1uf
+[logAdminActivity] called with action: updated product <b>The Riviera Striped Tunic</b>
+[logAdminActivity] adminName resolved to: Vijay jangir
+[logAdminActivity] success! inserted id: cms4kn5400010w0yaxxa7cx7r
+[logAdminActivity] called with action: updated product <b>Solid Ivory Long Sleeve Ruffled Maxi Dress</b>
+[logAdminActivity] adminName resolved to: Vijay jangir
+[logAdminActivity] success! inserted id: cms4knqm70011w0yaifo38zas
+[2026-07-28T11:28:00.263Z] bulkUpdateImagesAndVariants called
+Payload: {"updatedVariants":[{"id":"cmrtex4wp0001cyygi2cg840o","sku":"SOLID-IVORY-LONG-SLEEVE-RUFFLED-MAXI-DRESS-2920-01","size":"S","color":"Beige","colorHex":"#F5F4F0","price":349,"salePrice":null,"stock":4,"productId":"cmrtex4wp0000cyygm2lwgihs"}]}
+[logAdminActivity] called with action: updated <b>Stock</b> for variant <b>S / Beige</b> in <b>Solid Ivory Long Sleeve Ruffled Maxi Dress</b> from <b>0</b> to <b>4</b>
+[logAdminActivity] adminName resolved to: Vijay jangir
+[logAdminActivity] success! inserted id: cms4knrbw0012w0yavxrpeiud
+[logAdminActivity] called with action: updated product <b>Ochre & Blue Mixed Stripe Button-Down Shirt</b>
+[logAdminActivity] adminName resolved to: Vijay jangir
+[logAdminActivity] success! inserted id: cms4ks31y0014w0yagriv6r3x
+[2026-07-28T11:31:23.019Z] bulkUpdateImagesAndVariants called
+Payload: {"updatedVariants":[{"id":"10-v2","sku":"RKF-DLH-010-RSE-M","size":"M","color":"Coral","colorHex":"#C49A52","price":249,"salePrice":136.95,"stock":4,"productId":"10"}]}
+[logAdminActivity] called with action: updated <b>Stock</b> for variant <b>M / Coral</b> in <b>Ochre & Blue Mixed Stripe Button-Down Shirt</b> from <b>2</b> to <b>4</b>
+[logAdminActivity] adminName resolved to: Vijay jangir
+[logAdminActivity] success! inserted id: cms4ks3oe0015w0ya0n95uw0i
+[logAdminActivity] called with action: marked Order <b>#132WZS</b> as <b>SHIPPED</b>
+[logAdminActivity] adminName resolved to: Vijay jangir
+[logAdminActivity] success! inserted id: cms4kzo4c0017w0yab8ksfagx
+[logAdminActivity] called with action: updated navigation links
+[logAdminActivity] adminName resolved to: Vijay jangir
+[logAdminActivity] success! inserted id: cms51bhzo0008wm48tum7wu1f

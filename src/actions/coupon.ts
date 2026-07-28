@@ -4,6 +4,7 @@ import prisma from "@/lib/prisma"
 import { getServerSession } from "next-auth/next"
 import { authOptions } from "@/lib/auth"
 import { sendCouponEmail } from "@/lib/email"
+import { logAdminActivity } from "./admin-activity"
 
 export async function createCoupon(data: {
   discountValue: number;
@@ -54,6 +55,9 @@ export async function createCoupon(data: {
         }
       })
     }
+
+    const diff = `assigned to user <b>${user.name || user.email}</b>, type: <i>${discountType}</i>, expires in <i>${expiresInDays} days</i>`;
+    await logAdminActivity(`created coupon <b>${code}</b> for <b>${discountValue}</b> off`, diff);
 
     return { success: true, coupon }
   } catch (error: any) {

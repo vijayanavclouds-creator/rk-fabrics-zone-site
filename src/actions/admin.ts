@@ -7,6 +7,7 @@ import path from "path"
 import { v2 as cloudinary } from "cloudinary"
 import { getBannersData } from "@/lib/data/banners"
 import { logAdminActivity } from "./admin-activity"
+import { generateDiffString } from "@/lib/utils"
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
 
@@ -39,24 +40,28 @@ export async function updateProduct(formData: FormData) {
     const salePrice = discountPercent > 0 ? basePrice * (1 - discountPercent / 100) : null
     const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, "-") + "-" + Date.now().toString().slice(-4)
 
+    const oldProduct = await prisma.product.findUnique({ where: { id } })
+    
+    const updateData = { 
+      name,
+      category,
+      slug,
+      basePrice,
+      salePrice,
+      discountPercent,
+      isFreeDelivery,
+      isNewArrival,
+      isBestseller,
+      isFeatured,
+      isOnSale,
+      isReturnable,
+      fabric,
+      fabricDetails
+    };
+
     await prisma.product.update({
       where: { id },
-      data: { 
-        name,
-        category,
-        slug,
-        basePrice,
-        salePrice,
-        discountPercent,
-        isFreeDelivery,
-        isNewArrival,
-        isBestseller,
-        isFeatured,
-        isOnSale,
-        isReturnable,
-        fabric,
-        fabricDetails
-      }
+      data: updateData
     })
 
     // Update all variants to inherit the new salePrice logic if they relied on the basePrice
@@ -74,7 +79,12 @@ export async function updateProduct(formData: FormData) {
     revalidatePath("/shop")
     revalidatePath(`/product/[slug]`, "page")
     
-    await logAdminActivity(`updated product <b>${name}</b>`);
+    const diff = generateDiffString(oldProduct || {}, updateData, ['slug']);
+    if (diff) {
+      await logAdminActivity(`updated product <b>${name}</b>`, diff);
+    } else {
+      await logAdminActivity(`updated product <b>${name}</b>`);
+    }
     
     return { success: true }
   } catch (error: any) {
@@ -680,7 +690,9 @@ export async function updateUserRole(userId: string, newRole: "CUSTOMER" | "ADMI
     })
 
     revalidatePath("/admin")
-    await logAdminActivity(`changed role of user ${userId} to ${newRole}`)
+    
+    const diff = `changed role from <i>${currentUser?.role}</i> to <i>${newRole}</i>`;
+    await logAdminActivity(`updated role for user <b>${currentUser?.name || currentUser?.email || userId}</b>`, diff)
 
     return { success: true }
   } catch (error: any) {

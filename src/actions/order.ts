@@ -324,7 +324,8 @@ export async function updateOrderStatus(orderId: string, status: string) {
     revalidatePath("/admin")
     revalidatePath("/account")
     
-    await logAdminActivity(`marked Order <b>#${updatedOrder.id.slice(-6).toUpperCase()}</b> as <b>${status}</b>`);
+    const diff = `changed status from <i>${existingOrder.status}</i> to <i>${status}</i>`;
+    await logAdminActivity(`updated Order <b>#${updatedOrder.id.slice(-6).toUpperCase()}</b> status`, diff);
     
     return { success: true }
   } catch (error: any) {
