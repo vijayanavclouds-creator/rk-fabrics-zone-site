@@ -619,7 +619,17 @@ export function ProductEditor({ product = {}, products, storeCategories, storeFa
   const variantsImagesChanges = [];
   if (newImageFiles.length > 0) variantsImagesChanges.push(`${newImageFiles.length} new images`);
   if (deletedImageIds.length > 0) variantsImagesChanges.push(`${deletedImageIds.length} deleted images`);
-  if (newVariants.length > 0) variantsImagesChanges.push(`${newVariants.length} new variants`);
+  
+  const initialNewVariantsCount = !activeProductId ? 4 : 0;
+  if (newVariants.length !== initialNewVariantsCount) {
+    variantsImagesChanges.push(`${newVariants.length} new variants`);
+  } else if (!activeProductId && newVariants.length === 4) {
+    const isDefaultModified = newVariants.some(v => v.price !== 0 || v.stock !== 10 || v.colorHex !== "#000000" || !["S", "M", "L", "XL"].includes(v.size) || v.color !== "Default");
+    if (isDefaultModified) variantsImagesChanges.push(`variants modified`);
+  } else if (newVariants.length > 0) {
+    variantsImagesChanges.push(`${newVariants.length} new variants`);
+  }
+
   if (deletedVariantIds.length > 0) variantsImagesChanges.push(`${deletedVariantIds.length} deleted variants`);
   if (updatedVariants.length > 0) variantsImagesChanges.push(`${updatedVariants.length} updated variants`);
   const initialPrimaryImageId = product.images?.find((i:any)=>i.isPrimary)?.id || null;
@@ -627,7 +637,7 @@ export function ProductEditor({ product = {}, products, storeCategories, storeFa
   
   const hasVariantsImagesChanges = variantsImagesChanges.length > 0;
   const changes = [];
-  if (baseDetailsChanged || !activeProductId) changes.push(`base details`);
+  if (baseDetailsChanged) changes.push(`base details`);
   changes.push(...variantsImagesChanges);
   
   const hasChanges = changes.length > 0;
