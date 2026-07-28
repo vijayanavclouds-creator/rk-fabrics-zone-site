@@ -152,10 +152,10 @@ export function NavigationManager() {
                 </div>
               </div>
 
-              <div className="flex items-center justify-between md:justify-end gap-2 w-full md:w-auto pl-6 sm:pl-8 md:pl-0 pt-1 md:pt-0 mt-1 md:mt-0">
+              <div className="flex items-center justify-start md:justify-end gap-2 w-full md:w-auto pl-[44px] md:pl-0 pt-1 md:pt-0 mt-1 md:mt-0">
                 <button 
                   onClick={() => setExpandedTab(expandedTab === idx ? null : idx)}
-                  className="px-4 py-2 bg-charcoal/5 hover:bg-charcoal/10 text-charcoal rounded-lg font-medium text-sm transition-colors flex items-center gap-2 flex-1 md:flex-none justify-center"
+                  className="px-4 py-2 bg-charcoal/5 hover:bg-charcoal/10 text-charcoal rounded-lg font-medium text-sm transition-colors flex items-center gap-2 justify-center"
                 >
                   Submenus ({link.submenu?.length || 0})
                   <ChevronDown size={16} className={`transition-transform ${expandedTab === idx ? 'rotate-180' : ''}`} />
@@ -180,7 +180,7 @@ export function NavigationManager() {
                         placeholder="Submenu Label"
                         value={sub.label} 
                         onChange={e => updateSubmenu(idx, subIdx, "label", e.target.value)}
-                        className="w-[40%] md:w-auto md:flex-1 md:max-w-[200px] px-3 md:px-4 py-2 md:py-2.5 text-xs md:text-sm bg-cream shadow-neo-input !border-none rounded-full focus:!outline-none focus:!ring-0 text-charcoal placeholder:text-slate/60 transition-all font-semibold"
+                        className="w-[50%] md:w-auto md:flex-1 md:max-w-[200px] px-3 md:px-4 py-2 md:py-2.5 text-xs md:text-sm bg-cream shadow-neo-input !border-none rounded-full focus:!outline-none focus:!ring-0 text-charcoal placeholder:text-slate/60 transition-all font-semibold"
                       />
                       <input 
                         type="text" 
@@ -210,7 +210,6 @@ export function NavigationManager() {
               </div>
             )}
                         </div>
-                      </div>
                     )}
                   </Draggable>
                 ))}
