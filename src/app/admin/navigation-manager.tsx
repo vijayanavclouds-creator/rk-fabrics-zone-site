@@ -127,7 +127,7 @@ export function NavigationManager() {
                   </button>
                 </div>
                 
-                <div className="flex-1 grid grid-cols-2 gap-2 md:gap-4">
+                <div className="flex-1 grid grid-cols-[35%_minmax(0,1fr)] md:grid-cols-2 gap-2 md:gap-4">
                   <div>
                     <label className="block text-[10px] md:text-xs font-bold text-charcoal mb-1 ml-2">Tab Label</label>
                     <input 
@@ -177,7 +177,7 @@ export function NavigationManager() {
                         placeholder="Submenu Label"
                         value={sub.label} 
                         onChange={e => updateSubmenu(idx, subIdx, "label", e.target.value)}
-                        className="flex-1 max-w-[200px] px-3 md:px-4 py-2 md:py-2.5 text-xs md:text-sm bg-cream shadow-neo-input !border-none rounded-full focus:!outline-none focus:!ring-0 text-charcoal placeholder:text-slate/60 transition-all font-semibold"
+                        className="w-[40%] md:w-auto md:flex-1 md:max-w-[200px] px-3 md:px-4 py-2 md:py-2.5 text-xs md:text-sm bg-cream shadow-neo-input !border-none rounded-full focus:!outline-none focus:!ring-0 text-charcoal placeholder:text-slate/60 transition-all font-semibold"
                       />
                       <input 
                         type="text" 
