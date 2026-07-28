@@ -7,7 +7,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Home, LayoutGrid, Heart, ShoppingBag, User, LogOut, Ticket, MessageSquare, Mail, Bell, HelpCircle, LayoutDashboard, Package, Scissors, DollarSign, Users, Building2, Menu, Image as ImageIcon, Settings, Smartphone } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useCartStore, useWishlistStore, useUIStore } from "@/store";
-import { useCheckoutStore } from "@/store/checkout";
+import { useCheckoutStore } from "@/store/checkout"
+import { handlePwaInstallFallback } from "@/lib/pwa";
 import { useSession, signOut } from "next-auth/react";
 import Image from "next/image";
 
@@ -208,7 +209,7 @@ export function MobileNav() {
                     (window as any).deferredPrompt = null;
                   }
                 } else {
-                  alert("To install, tap the 'Share' icon on Safari and select 'Add to Home Screen'.");
+                  handlePwaInstallFallback();
                 }
               }} 
               className="flex items-center justify-center gap-2 btn-primary !h-10 !rounded-xl text-sm mb-2 mt-1 mx-2 shrink-0"
