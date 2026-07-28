@@ -73,7 +73,7 @@ export function DashboardOverview({ initialData, isSupport = false }: { initialD
   const cancelledOrders = counts.cancelled || 0;
 
   const GlassCard = ({ children, className }: { children: React.ReactNode, className?: string }) => (
-    <div className={cn("bg-white/80 backdrop-blur-xl border border-white/50 shadow-[0_8px_30px_rgb(0,0,0,0.04)] rounded-2xl p-4 md:p-5 hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all duration-300", className)}>
+    <div className={cn("bg-white/80 backdrop-blur-xl border border-white/50 shadow-[0_8px_30px_rgb(0,0,0,0.04)] sm:rounded-2xl sm:border-x p-4 md:p-5 hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all duration-300 max-sm:rounded-none max-sm:border-x-0", className)}>
       {children}
     </div>
   );
@@ -172,52 +172,52 @@ export function DashboardOverview({ initialData, isSupport = false }: { initialD
   );
 
   const MetricsRow = (
-    <div className="grid grid-cols-4 gap-1.5 md:gap-4">
+    <div className="grid grid-cols-2 lg:grid-cols-4 gap-1 sm:gap-4 max-sm:px-0">
       <Link href="/admin?tab=finance" className="block cursor-pointer">
-        <GlassCard className="bg-white/80 h-full hover:shadow-md transition-all !p-1.5 md:!p-4">
-          <div className="flex flex-col xl:flex-row xl:items-center gap-0.5 xl:gap-1.5 mb-1 md:mb-2">
-            <div className="p-0.5 xl:p-1 bg-blue-50/50 text-blue-500 rounded flex justify-center">
-              <BarChart3 size={10} strokeWidth={3} className="xl:w-[12px] xl:h-[12px]" />
+        <GlassCard className="bg-white/80 h-full hover:shadow-md transition-all !p-3 md:!p-4">
+          <div className="flex items-center gap-1.5 mb-1 md:mb-2">
+            <div className="p-1 bg-blue-50/50 text-blue-500 rounded flex justify-center">
+              <BarChart3 size={12} strokeWidth={3} className="xl:w-[14px] xl:h-[14px]" />
             </div>
-            <span className="text-[6px] md:text-[8px] font-bold text-charcoal uppercase tracking-tighter xl:tracking-widest whitespace-nowrap text-center">Sales</span>
+            <span className="text-[9px] md:text-[10px] font-bold text-charcoal uppercase tracking-widest whitespace-nowrap text-center">Sales</span>
           </div>
-          <h3 className="text-xs md:text-xl font-black text-charcoal tracking-tight text-center xl:text-left mt-0.5 md:mt-1">₹{data.totalSales?.toLocaleString()}</h3>
+          <h3 className="text-base md:text-xl font-black text-charcoal tracking-tight mt-0.5 md:mt-1">₹{data.totalSales?.toLocaleString()}</h3>
         </GlassCard>
       </Link>
       
       <Link href="/admin?tab=users" className="block cursor-pointer">
-        <GlassCard className="bg-emerald-50/30 h-full hover:shadow-md transition-all !p-1.5 md:!p-4">
-          <div className="flex flex-col xl:flex-row xl:items-center gap-0.5 xl:gap-1.5 mb-1 md:mb-2">
-            <div className="p-0.5 xl:p-1 bg-emerald-50 text-emerald-500 rounded flex justify-center">
-              <Users size={10} strokeWidth={3} className="xl:w-[12px] xl:h-[12px]" />
+        <GlassCard className="bg-emerald-50/30 h-full hover:shadow-md transition-all !p-3 md:!p-4">
+          <div className="flex items-center gap-1.5 mb-1 md:mb-2">
+            <div className="p-1 bg-emerald-50 text-emerald-500 rounded flex justify-center">
+              <Users size={12} strokeWidth={3} className="xl:w-[14px] xl:h-[14px]" />
             </div>
-            <span className="text-[6px] md:text-[8px] font-bold text-charcoal uppercase tracking-tighter xl:tracking-widest whitespace-nowrap text-center">Users</span>
+            <span className="text-[9px] md:text-[10px] font-bold text-charcoal uppercase tracking-widest whitespace-nowrap text-center">Users</span>
           </div>
-          <h3 className="text-xs md:text-xl font-black text-charcoal tracking-tight text-center xl:text-left mt-0.5 md:mt-1">{data.totalUsers || 0}</h3>
+          <h3 className="text-base md:text-xl font-black text-charcoal tracking-tight mt-0.5 md:mt-1">{data.totalUsers || 0}</h3>
         </GlassCard>
       </Link>
 
       <Link href="/admin?tab=finance" className="block cursor-pointer">
-        <GlassCard className="bg-amber-50/40 h-full hover:shadow-md transition-all !p-1.5 md:!p-4 border border-amber-100/30">
-          <div className="flex flex-col xl:flex-row xl:items-center gap-0.5 xl:gap-1.5 mb-1 md:mb-2">
-            <div className="p-0.5 xl:p-1 bg-amber-100/50 text-amber-500 rounded flex justify-center">
-              <Ticket size={10} strokeWidth={3} className="xl:w-[12px] xl:h-[12px]" />
+        <GlassCard className="bg-amber-50/40 h-full hover:shadow-md transition-all !p-3 md:!p-4 border border-amber-100/30">
+          <div className="flex items-center gap-1.5 mb-1 md:mb-2">
+            <div className="p-1 bg-amber-100/50 text-amber-500 rounded flex justify-center">
+              <Ticket size={12} strokeWidth={3} className="xl:w-[14px] xl:h-[14px]" />
             </div>
-            <span className="text-[6px] md:text-[8px] font-bold text-charcoal uppercase tracking-tighter xl:tracking-widest whitespace-nowrap text-center text-ellipsis overflow-hidden">Discount</span>
+            <span className="text-[9px] md:text-[10px] font-bold text-charcoal uppercase tracking-widest whitespace-nowrap text-center text-ellipsis overflow-hidden">Discount</span>
           </div>
-          <h3 className="text-xs md:text-xl font-black text-charcoal tracking-tight text-center xl:text-left mt-0.5 md:mt-1">₹{(data.totalDiscounts || 0).toLocaleString()}</h3>
+          <h3 className="text-base md:text-xl font-black text-charcoal tracking-tight mt-0.5 md:mt-1">₹{(data.totalDiscounts || 0).toLocaleString()}</h3>
         </GlassCard>
       </Link>
 
       <Link href="/admin?tab=taxonomy" className="block cursor-pointer">
-        <GlassCard className="bg-purple-50/30 h-full hover:shadow-md transition-all !p-1.5 md:!p-4 border border-purple-100/30">
-          <div className="flex flex-col xl:flex-row xl:items-center gap-0.5 xl:gap-1.5 mb-1 md:mb-2">
-            <div className="p-0.5 xl:p-1 bg-purple-100/50 text-purple-500 rounded flex justify-center">
-              <Tags size={10} strokeWidth={3} className="xl:w-[12px] xl:h-[12px]" />
+        <GlassCard className="bg-purple-50/30 h-full hover:shadow-md transition-all !p-3 md:!p-4 border border-purple-100/30">
+          <div className="flex items-center gap-1.5 mb-1 md:mb-2">
+            <div className="p-1 bg-purple-100/50 text-purple-500 rounded flex justify-center">
+              <Tags size={12} strokeWidth={3} className="xl:w-[14px] xl:h-[14px]" />
             </div>
-            <span className="text-[6px] md:text-[8px] font-bold text-charcoal uppercase tracking-tighter xl:tracking-widest whitespace-nowrap text-center text-ellipsis overflow-hidden">Tags</span>
+            <span className="text-[9px] md:text-[10px] font-bold text-charcoal uppercase tracking-widest whitespace-nowrap text-center text-ellipsis overflow-hidden">Tags</span>
           </div>
-          <h3 className="text-xs md:text-xl font-black text-charcoal tracking-tight text-center xl:text-left mt-0.5 md:mt-1">{data.totalCategories}</h3>
+          <h3 className="text-base md:text-xl font-black text-charcoal tracking-tight mt-0.5 md:mt-1">{data.totalCategories}</h3>
         </GlassCard>
       </Link>
     </div>
@@ -225,15 +225,16 @@ export function DashboardOverview({ initialData, isSupport = false }: { initialD
 
   const ChartCard = (
     <GlassCard className="!p-3 md:!p-6 bg-white !rounded-2xl">
-      <div className="flex items-center justify-between gap-1 mb-2">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-1 mb-2">
         <h3 className="text-xs md:text-sm font-bold text-charcoal flex items-center gap-1.5">
           <Activity size={14} className="text-slate-400 stroke-[2.5]" />
           Performance <span className="hidden sm:inline">({timeRange === "365" ? "Last 1 Year" : timeRange === "730" ? "Last 2 Years" : timeRange === "1095" ? "Last 3 Years" : timeRange === "1460" ? "Last 4 Years" : timeRange === "1825" ? "Last 5 Years" : `Last ${timeRange} Days`})</span>
         </h3>
-        <div className="flex items-center gap-1.5 scale-75 md:scale-100 origin-right">
+        <div className="flex items-center gap-1.5 sm:scale-100 origin-right w-full sm:w-auto">
           <MetricSelect 
             value={timeRange}
             onChange={(val) => setTimeRange(val)}
+            className="flex-1 sm:flex-none"
             options={[
               { value: "30", label: "Last 30 Days" },
               { value: "45", label: "Last 45 Days" },
@@ -249,6 +250,7 @@ export function DashboardOverview({ initialData, isSupport = false }: { initialD
           <MetricSelect 
             value={activeMetric}
             onChange={(val) => setActiveMetric(val as any)}
+            className="flex-1 sm:flex-none"
             options={[
               { value: "all", label: "All Metrics" },
               { value: "sales", label: "Sales (₹)" },
@@ -512,8 +514,8 @@ export function DashboardOverview({ initialData, isSupport = false }: { initialD
   );
 
   return (
-    <div className="min-h-screen bg-[#f8fafc] md:bg-gradient-to-br md:from-teal-50 md:via-[#fdfaf6] md:to-blue-50/50 p-4 sm:p-6 lg:p-8 animate-in fade-in duration-700">
-      <div className="max-w-[1600px] mx-auto space-y-4 md:space-y-6">
+    <div className="min-h-screen bg-[#f8fafc] md:bg-gradient-to-br md:from-teal-50 md:via-[#fdfaf6] md:to-blue-50/50 sm:p-6 lg:p-8 animate-in fade-in duration-700">
+      <div className="max-w-[1600px] mx-auto space-y-2 md:space-y-6">
         
         {/* Welcome Header */}
         <GlassCard className="flex items-center justify-between gap-4 bg-white/90 !p-3 md:!p-5">
@@ -535,20 +537,20 @@ export function DashboardOverview({ initialData, isSupport = false }: { initialD
         </GlassCard>
 
         {/* MOBILE LAYOUT */}
-        <div className="xl:hidden flex flex-col space-y-2 md:space-y-4">
+        <div className="xl:hidden flex flex-col space-y-2 md:space-y-4 max-sm:space-y-[2px] max-sm:bg-charcoal/5">
           {!isSupport && SystemStatusCard}
           {MetricsRow}
           {ChartCard}
           {!isSupport && ActivityFeedCard}
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-4">
-            <div className="space-y-2 md:space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-4 max-sm:gap-[2px]">
+            <div className="space-y-2 md:space-y-4 max-sm:space-y-[2px]">
               {!isSupport && NavigationCard}
               {!isSupport && TaxonomyCard}
               {UserManagementCard}
               {QueryManagementCard}
             </div>
-            <div className="space-y-2 md:space-y-4">
+            <div className="space-y-2 md:space-y-4 max-sm:space-y-[2px]">
               {OrderManagementCard}
               {!isSupport && ContentPromoCard}
             </div>
@@ -621,7 +623,7 @@ export function DashboardOverview({ initialData, isSupport = false }: { initialD
   );
 }
 
-const MetricSelect = ({ value, onChange, options }: { value: string, onChange: (v: string) => void, options: {value: string, label: string}[] }) => {
+const MetricSelect = ({ value, onChange, options, className }: { value: string, onChange: (v: string) => void, options: {value: string, label: string}[], className?: string }) => {
   const [isOpen, setIsOpen] = useState(false)
   const dropdownRef = useRef<HTMLDivElement>(null)
 
@@ -638,8 +640,8 @@ const MetricSelect = ({ value, onChange, options }: { value: string, onChange: (
   const selectedLabel = options.find(o => o.value === value)?.label || "Select metric..."
 
   return (
-    <div className="relative" ref={dropdownRef}>
-      <button type="button" onClick={() => setIsOpen(!isOpen)} className="w-[180px] bg-white/60 backdrop-blur border border-white rounded-xl px-4 py-2 hover:bg-white/90 transition-colors outline-none text-sm flex justify-between items-center shadow-sm text-charcoal font-semibold">
+    <div className={cn("relative", className)} ref={dropdownRef}>
+      <button type="button" onClick={() => setIsOpen(!isOpen)} className="w-full sm:w-[180px] bg-white/60 backdrop-blur border border-white rounded-xl px-4 py-2 hover:bg-white/90 transition-colors outline-none text-[11px] sm:text-sm flex justify-between items-center shadow-sm text-charcoal font-semibold">
         <span className="truncate">{selectedLabel}</span>
         <ChevronDown size={16} className={cn("text-slate transition-transform shrink-0", isOpen && "rotate-180")} />
       </button>
