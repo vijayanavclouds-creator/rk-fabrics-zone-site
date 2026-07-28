@@ -142,16 +142,11 @@ export function DashboardOverview({ initialData, isSupport = false }: { initialD
                 <div className="absolute left-[3px] top-4 w-px h-full bg-slate-200 -z-0"></div>
                 <div className="pb-2 w-full">
                   <p className="text-sm text-charcoal">
-                    <span className="font-bold">{activity.adminName}</span> <span dangerouslySetInnerHTML={{ __html: activity.action }} />
+                    <span className="font-bold">{activity.adminName}</span> <span dangerouslySetInnerHTML={{ __html: activity.action + (activity.details ? ` - ${activity.details}` : '') }} />
                   </p>
                   <p className="text-xs text-slate mt-0.5">
                     {new Date(activity.createdAt).toLocaleDateString('en-GB', { weekday: 'long', day: '2-digit', month: '2-digit', year: 'numeric' })} at {new Date(activity.createdAt).toLocaleTimeString('en-US', {hour: '2-digit', minute:'2-digit', hour12: true})}
                   </p>
-                  {activity.details && (
-                    <div className="mt-2 text-xs text-slate-600 bg-cream-dark/30 p-2.5 rounded-lg border border-charcoal/5 whitespace-pre-wrap font-mono shadow-inner">
-                      {activity.details}
-                    </div>
-                  )}
                 </div>
               </div>
             ))}

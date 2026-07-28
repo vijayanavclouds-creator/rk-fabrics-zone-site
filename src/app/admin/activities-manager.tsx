@@ -59,19 +59,13 @@ export function ActivitiesManager() {
                 <div className="pb-4 w-full">
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                     <p className="text-base text-charcoal">
-                      <span className="font-bold text-lg">{activity.adminName}</span> <span dangerouslySetInnerHTML={{ __html: activity.action }} />
+                      <span className="font-bold text-lg">{activity.adminName}</span> <span dangerouslySetInnerHTML={{ __html: activity.action + (activity.details ? ` - ${activity.details}` : '') }} />
                     </p>
                     <div className="flex items-center gap-1.5 text-xs text-slate bg-slate-50 px-2.5 py-1 rounded-md shrink-0 border border-slate-100">
                       <Clock size={12} />
                       <span>{new Date(activity.createdAt).toLocaleDateString('en-GB', { weekday: 'long', day: '2-digit', month: '2-digit', year: 'numeric' })} at {new Date(activity.createdAt).toLocaleTimeString('en-US', {hour: '2-digit', minute:'2-digit', hour12: true})}</span>
                     </div>
                   </div>
-                  
-                  {activity.details && (
-                    <div className="mt-3 text-sm text-slate-700 bg-cream-dark/30 p-4 rounded-xl border border-charcoal/5 whitespace-pre-wrap font-mono shadow-inner overflow-x-auto">
-                      {activity.details}
-                    </div>
-                  )}
                 </div>
               </div>
             ))}

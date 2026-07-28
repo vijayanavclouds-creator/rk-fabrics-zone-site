@@ -101,151 +101,6 @@ export const categories: CategoryInfo[] = [
 
 export const products: Product[] = [
   {
-    "id": "12",
-    "name": "A-Line Kurti — Meadow Bloom",
-    "slug": "a-line-kurti-meadow-bloom-1490",
-    "description": "Cheerful A-line cotton kurti with digital floral print and mirror work accents. The flattering silhouette, three-quarter sleeves, and mandarin collar make it a versatile piece for daily wear and casual outings. Machine washable.",
-    "shortDescription": "Digital print cotton kurti with mirror work",
-    "category": "[\"womens-kurtis\"]",
-    "subcategory": "kurtis",
-    "gender": "women",
-    "type": "readymade",
-    "basePrice": 1299,
-    "salePrice": 909.3,
-    "discountPercent": 30,
-    "isOnSale": false,
-    "isFreeDelivery": true,
-    "fabric": "Cotton",
-    "fabricDetails": null,
-    "occasion": [
-      "Daily Wear",
-      "Casual",
-      "College"
-    ],
-    "tags": [
-      "kurti",
-      "a-line",
-      "cotton",
-      "casual",
-      "daily-wear",
-      "floral"
-    ],
-    "rating": 5,
-    "reviewCount": 89,
-    "isFeatured": false,
-    "isNewArrival": true,
-    "isBestseller": false,
-    "isActive": true,
-    "isReturnable": true,
-    "createdAt": "2026-07-22T20:12:26.019Z",
-    "variants": [
-      {
-        "id": "12-v2",
-        "sku": "RKF-ALK-012-YLW-M",
-        "size": "S",
-        "color": "Green",
-        "colorHex": "#3d573e",
-        "price": 1299,
-        "salePrice": 909.3,
-        "stock": 5,
-        "productId": "12"
-      },
-      {
-        "id": "12-v3",
-        "sku": "RKF-ALK-012-YLW-L",
-        "size": "M",
-        "color": "Green",
-        "colorHex": "#3d573e",
-        "price": 1299,
-        "salePrice": 909.3,
-        "stock": 5,
-        "productId": "12"
-      },
-      {
-        "id": "12-v4",
-        "sku": "RKF-ALK-012-YLW-XL",
-        "size": "L",
-        "color": "Green",
-        "colorHex": "#3d573e",
-        "price": 1299,
-        "salePrice": 909.3,
-        "stock": 5,
-        "productId": "12"
-      },
-      {
-        "id": "cmrrx78rc000b7qenqy86uqvt",
-        "sku": "VAR-085206",
-        "size": "XL",
-        "color": "Green",
-        "colorHex": "#3d573e",
-        "price": 1299,
-        "salePrice": 909.3,
-        "stock": 5,
-        "productId": "12"
-      },
-      {
-        "id": "cmrrx8hch000d7qen1cqsmsib",
-        "sku": "VAR-142990",
-        "size": "XXL",
-        "color": "Green",
-        "colorHex": "#3d573e",
-        "price": 1299,
-        "salePrice": 909.3,
-        "stock": 7,
-        "productId": "12"
-      },
-      {
-        "id": "12-v1",
-        "sku": "RKF-ALK-012-YLW-S",
-        "size": "XS",
-        "color": "Green",
-        "colorHex": "#3d573e",
-        "price": 1299,
-        "salePrice": 909.3,
-        "stock": 5,
-        "productId": "12"
-      }
-    ],
-    "images": [
-      {
-        "id": "cmrtg8qio00072o7lll03rceo",
-        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1784565519/rk-fabrics/products/m9mznz19qxcsl7md8v6t.jpg",
-        "alt": "Gemini_Generated_Image_e68xt6e68xt6e68x.png",
-        "isPrimary": false,
-        "productId": "12"
-      },
-      {
-        "id": "cmrtg8qip00092o7l1s9otzeu",
-        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1784565521/rk-fabrics/products/kbfo6kwlovcl5sapeokf.jpg",
-        "alt": "Gemini_Generated_Image_f6qdf9f6qdf9f6qd.png",
-        "isPrimary": false,
-        "productId": "12"
-      },
-      {
-        "id": "cmrtg8qiq000b2o7lsn5zcuv8",
-        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1784565524/rk-fabrics/products/onxrhpzojyvkfj4xrg0r.jpg",
-        "alt": "Gemini_Generated_Image_omvf13omvf13omvf.png",
-        "isPrimary": false,
-        "productId": "12"
-      },
-      {
-        "id": "cmrtg8qiq000d2o7lrki5eipl",
-        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1784565526/rk-fabrics/products/bggmb3mniadk901ogevf.jpg",
-        "alt": "Gemini_Generated_Image_qlpc6kqlpc6kqlpc.png",
-        "isPrimary": false,
-        "productId": "12"
-      },
-      {
-        "id": "cmrtg8qir000f2o7lg9f9y13d",
-        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1784565532/rk-fabrics/products/mvexvsawgp7rcwguxz0m.jpg",
-        "alt": "Gemini_Generated_Image_tqm9sctqm9sctqm9.png",
-        "isPrimary": false,
-        "productId": "12"
-      }
-    ],
-    "reviews": []
-  },
-  {
     "id": "3",
     "name": "Striped Spaghetti Strap Tiered Midi Dress",
     "slug": "striped-spaghetti-strap-tiered-midi-dress-6256",
@@ -729,6 +584,151 @@ export const products: Product[] = [
         "orderItemId": null
       }
     ]
+  },
+  {
+    "id": "12",
+    "name": "A-Line Kurti — Meadow Bloom",
+    "slug": "a-line-kurti-meadow-bloom-9104",
+    "description": "Cheerful A-line cotton kurti with digital floral print and mirror work accents. The flattering silhouette, three-quarter sleeves, and mandarin collar make it a versatile piece for daily wear and casual outings. Machine washable.",
+    "shortDescription": "Digital print cotton kurti with mirror work",
+    "category": "[\"womens-kurtis\"]",
+    "subcategory": "kurtis",
+    "gender": "women",
+    "type": "readymade",
+    "basePrice": 1299,
+    "salePrice": 909.3,
+    "discountPercent": 30,
+    "isOnSale": false,
+    "isFreeDelivery": true,
+    "fabric": "Cotton",
+    "fabricDetails": null,
+    "occasion": [
+      "Daily Wear",
+      "Casual",
+      "College"
+    ],
+    "tags": [
+      "kurti",
+      "a-line",
+      "cotton",
+      "casual",
+      "daily-wear",
+      "floral"
+    ],
+    "rating": 5,
+    "reviewCount": 89,
+    "isFeatured": true,
+    "isNewArrival": true,
+    "isBestseller": false,
+    "isActive": true,
+    "isReturnable": true,
+    "createdAt": "2026-07-22T20:12:26.019Z",
+    "variants": [
+      {
+        "id": "12-v2",
+        "sku": "RKF-ALK-012-YLW-M",
+        "size": "S",
+        "color": "Green",
+        "colorHex": "#3d573e",
+        "price": 1299,
+        "salePrice": 909.3,
+        "stock": 5,
+        "productId": "12"
+      },
+      {
+        "id": "12-v3",
+        "sku": "RKF-ALK-012-YLW-L",
+        "size": "M",
+        "color": "Green",
+        "colorHex": "#3d573e",
+        "price": 1299,
+        "salePrice": 909.3,
+        "stock": 5,
+        "productId": "12"
+      },
+      {
+        "id": "12-v4",
+        "sku": "RKF-ALK-012-YLW-XL",
+        "size": "L",
+        "color": "Green",
+        "colorHex": "#3d573e",
+        "price": 1299,
+        "salePrice": 909.3,
+        "stock": 5,
+        "productId": "12"
+      },
+      {
+        "id": "cmrrx78rc000b7qenqy86uqvt",
+        "sku": "VAR-085206",
+        "size": "XL",
+        "color": "Green",
+        "colorHex": "#3d573e",
+        "price": 1299,
+        "salePrice": 909.3,
+        "stock": 5,
+        "productId": "12"
+      },
+      {
+        "id": "cmrrx8hch000d7qen1cqsmsib",
+        "sku": "VAR-142990",
+        "size": "XXL",
+        "color": "Green",
+        "colorHex": "#3d573e",
+        "price": 1299,
+        "salePrice": 909.3,
+        "stock": 7,
+        "productId": "12"
+      },
+      {
+        "id": "12-v1",
+        "sku": "RKF-ALK-012-YLW-S",
+        "size": "XS",
+        "color": "Green",
+        "colorHex": "#3d573e",
+        "price": 1299,
+        "salePrice": 909.3,
+        "stock": 5,
+        "productId": "12"
+      }
+    ],
+    "images": [
+      {
+        "id": "cmrtg8qio00072o7lll03rceo",
+        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1784565519/rk-fabrics/products/m9mznz19qxcsl7md8v6t.jpg",
+        "alt": "Gemini_Generated_Image_e68xt6e68xt6e68x.png",
+        "isPrimary": false,
+        "productId": "12"
+      },
+      {
+        "id": "cmrtg8qip00092o7l1s9otzeu",
+        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1784565521/rk-fabrics/products/kbfo6kwlovcl5sapeokf.jpg",
+        "alt": "Gemini_Generated_Image_f6qdf9f6qdf9f6qd.png",
+        "isPrimary": false,
+        "productId": "12"
+      },
+      {
+        "id": "cmrtg8qiq000b2o7lsn5zcuv8",
+        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1784565524/rk-fabrics/products/onxrhpzojyvkfj4xrg0r.jpg",
+        "alt": "Gemini_Generated_Image_omvf13omvf13omvf.png",
+        "isPrimary": false,
+        "productId": "12"
+      },
+      {
+        "id": "cmrtg8qiq000d2o7lrki5eipl",
+        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1784565526/rk-fabrics/products/bggmb3mniadk901ogevf.jpg",
+        "alt": "Gemini_Generated_Image_qlpc6kqlpc6kqlpc.png",
+        "isPrimary": false,
+        "productId": "12"
+      },
+      {
+        "id": "cmrtg8qir000f2o7lg9f9y13d",
+        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1784565532/rk-fabrics/products/mvexvsawgp7rcwguxz0m.jpg",
+        "alt": "Gemini_Generated_Image_tqm9sctqm9sctqm9.png",
+        "isPrimary": false,
+        "productId": "12"
+      }
+    ],
+    "reviews": []
   }
 ];
 

@@ -220,3 +220,6 @@ Payload: {"updatedVariants":[{"id":"10-v2","sku":"RKF-DLH-010-RSE-M","size":"M",
 [logAdminActivity] called with action: updated navigation links
 [logAdminActivity] adminName resolved to: Vijay jangir
 [logAdminActivity] success! inserted id: cms51bhzo0008wm48tum7wu1f
+[logAdminActivity] called with action: updated product <b>A-Line Kurti — Meadow Bloom</b>
+[logAdminActivity] adminName resolved to: Vijay jangir
+[logAdminActivity] success! inserted id: cms51xz3j0009wm485wu20h7g
