@@ -173,7 +173,7 @@ export function AdminDashboard({
             </div>
             <div>
               <button 
-                onClick={() => router.push('/admin?tab=new')} 
+                onClick={() => setActiveView("new")} 
                 className="btn-primary flex items-center justify-center gap-2 py-2 px-6 shadow-sm"
               >
                 <Plus size={18} /> Add Product
