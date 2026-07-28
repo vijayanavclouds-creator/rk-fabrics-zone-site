@@ -3,6 +3,7 @@
 import { useState, useEffect, useTransition } from "react"
 import { toast } from "sonner"
 import { Plus, Trash2, Save, GripVertical, ChevronDown } from "lucide-react"
+import { DragDropContext, Droppable, Draggable, DropResult } from "@hello-pangea/dnd"
 import { getNavigationLinks, saveNavigationLinks } from "@/actions/system"
 import { defaultNavLinks } from "@/components/layout/header"
 
@@ -11,16 +12,14 @@ export function NavigationManager() {
   const [isLoading, setIsLoading] = useState(true)
   const [isPending, startTransition] = useTransition()
   const [expandedTab, setExpandedTab] = useState<number | null>(null)
-  const [draggedIdx, setDraggedIdx] = useState<number | null>(null)
-  const [dragOverIdx, setDragOverIdx] = useState<number | null>(null)
 
   useEffect(() => {
     const fetchLinks = async () => {
       const data = await getNavigationLinks()
       if (data && data.length > 0) {
-        setLinks(data)
+        setLinks(data.map((l:any) => ({ ...l, _id: l._id || crypto.randomUUID() })))
       } else {
-        setLinks(defaultNavLinks)
+        setLinks(defaultNavLinks.map(l => ({ ...l, _id: crypto.randomUUID() })))
       }
       setIsLoading(false)
     }
@@ -29,7 +28,8 @@ export function NavigationManager() {
 
   const handleSave = () => {
     startTransition(async () => {
-      const res = await saveNavigationLinks(links)
+      const linksToSave = links.map(({ _id, ...rest }) => rest);
+      const res = await saveNavigationLinks(linksToSave)
       if (res.success) {
         toast.success("Navigation links saved successfully!")
       } else {
@@ -39,7 +39,7 @@ export function NavigationManager() {
   }
 
   const addMainTab = () => {
-    setLinks([...links, { label: "New Tab", href: "/shop", submenu: [] }])
+    setLinks([...links, { _id: crypto.randomUUID(), label: "New Tab", href: "/shop", submenu: [] }])
   }
 
   const updateMainTab = (idx: number, field: string, value: string) => {
@@ -77,15 +77,15 @@ export function NavigationManager() {
     setLinks(updated)
   }
 
-  const handleDrop = (dropIdx: number) => {
-    if (draggedIdx === null || draggedIdx === dropIdx) return;
-    const newLinks = [...links];
-    const draggedItem = newLinks[draggedIdx];
-    newLinks.splice(draggedIdx, 1);
-    newLinks.splice(dropIdx, 0, draggedItem);
+  const handleDragEnd = (result: DropResult) => {
+    if (!result.destination) return;
+    const { source, destination } = result;
+    if (source.index === destination.index) return;
+    
+    const newLinks = Array.from(links);
+    const [draggedItem] = newLinks.splice(source.index, 1);
+    newLinks.splice(destination.index, 0, draggedItem);
     setLinks(newLinks);
-    setDraggedIdx(null);
-    setDragOverIdx(null);
   }
 
   if (isLoading) {
@@ -107,26 +107,28 @@ export function NavigationManager() {
         </button>
       </div>
       <div className="bg-white md:rounded-3xl border border-charcoal/10 p-2 sm:p-5 md:p-8 md:shadow-[0_8px_30px_rgb(0,0,0,0.08)] -mx-4 sm:mx-0 sm:w-full border-x-0 sm:border-x">
-
-      <div className="space-y-4">
-        {links.map((link, idx) => (
-          <div 
-            key={idx} 
-            draggable
-            onDragStart={() => setDraggedIdx(idx)}
-            onDragOver={(e) => { e.preventDefault(); setDragOverIdx(idx); }}
-            onDrop={() => handleDrop(idx)}
-            onDragEnd={() => { setDraggedIdx(null); setDragOverIdx(null); }}
-            className={`border rounded-2xl bg-slate-50 overflow-hidden transition-all duration-200 ${
-              draggedIdx === idx ? 'opacity-40 border-dashed border-teal-500 scale-[0.98]' : 
-              dragOverIdx === idx ? 'border-teal-500 shadow-[0_0_0_2px_rgba(13,148,136,0.2)]' : 'border-charcoal/10'
-            }`}
-          >
-            <div className="flex flex-col md:flex-row gap-2 md:gap-4 p-2 md:p-4 bg-white border-b border-charcoal/10">
-              <div className="flex items-center gap-2 md:gap-4 w-full md:w-auto md:flex-1">
-                <div className="flex items-center justify-center p-2 text-slate-300 hover:text-charcoal cursor-grab active:cursor-grabbing transition-colors shrink-0">
-                  <GripVertical size={20} />
-                </div>
+        <DragDropContext onDragEnd={handleDragEnd}>
+          <Droppable droppableId="main-tabs">
+            {(provided) => (
+              <div className="space-y-4" {...provided.droppableProps} ref={provided.innerRef}>
+                {links.map((link, idx) => (
+                  <Draggable key={link._id} draggableId={link._id} index={idx}>
+                    {(provided, snapshot) => (
+                      <div 
+                        ref={provided.innerRef}
+                        {...provided.draggableProps}
+                        className={`border rounded-2xl bg-slate-50 overflow-hidden transition-all duration-200 ${
+                          snapshot.isDragging ? 'shadow-lg border-teal-500 scale-[1.02] bg-white z-50' : 'border-charcoal/10'
+                        }`}
+                      >
+                        <div className="flex flex-col md:flex-row gap-2 md:gap-4 p-2 md:p-4 bg-white border-b border-charcoal/10">
+                          <div className="flex items-center gap-2 md:gap-4 w-full md:w-auto md:flex-1">
+                            <div 
+                              {...provided.dragHandleProps}
+                              className="flex items-center justify-center p-2 text-slate-300 hover:text-charcoal cursor-grab active:cursor-grabbing transition-colors shrink-0"
+                            >
+                              <GripVertical size={20} />
+                            </div>
                 
                 <div className="flex-1 grid grid-cols-[35%_minmax(0,1fr)] md:grid-cols-2 gap-2 md:gap-4">
                   <div>
@@ -207,8 +209,16 @@ export function NavigationManager() {
                 </button>
               </div>
             )}
-          </div>
-        ))}
+                        </div>
+                      </div>
+                    )}
+                  </Draggable>
+                ))}
+                {provided.placeholder}
+              </div>
+            )}
+          </Droppable>
+        </DragDropContext>
       </div>
       
       <div className="mt-6 flex justify-end">
