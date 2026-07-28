@@ -174,7 +174,7 @@ export function NavigationManager() {
                 <div className="space-y-3 mb-4">
                   {(link.submenu || []).map((sub: any, subIdx: number) => (
                     <div key={subIdx} className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-full bg-charcoal/10 flex items-center justify-center text-xs font-bold text-charcoal">{subIdx + 1}</div>
+                      <div className="w-8 h-8 rounded-full bg-charcoal/10 flex items-center justify-center text-xs font-bold text-charcoal shrink-0">{subIdx + 1}</div>
                       <input 
                         type="text" 
                         placeholder="Submenu Label"
