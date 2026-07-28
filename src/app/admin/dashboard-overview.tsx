@@ -601,7 +601,7 @@ export function DashboardOverview({ initialData, isSupport = false }: { initialD
                     <div className="p-1 bg-slate-200/50 text-slate-500 rounded flex justify-center">
                       <Settings size={12} strokeWidth={3} />
                     </div>
-                    <span className="text-[9px] font-bold text-charcoal uppercase tracking-widest whitespace-nowrap">Nav Settings</span>
+                    <span className="text-[9px] font-bold text-charcoal uppercase tracking-widest whitespace-nowrap text-ellipsis overflow-hidden">Navigation Settings</span>
                   </div>
                   <h3 className="text-sm font-black text-charcoal tracking-tight mt-0.5">Menus</h3>
                 </GlassCard>
