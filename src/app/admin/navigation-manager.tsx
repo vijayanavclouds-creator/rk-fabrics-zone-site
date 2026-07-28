@@ -218,8 +218,6 @@ export function NavigationManager() {
             )}
           </Droppable>
         </DragDropContext>
-      </div>
-      
       <div className="mt-6 flex justify-end">
         <button 
           onClick={handleSave} 
