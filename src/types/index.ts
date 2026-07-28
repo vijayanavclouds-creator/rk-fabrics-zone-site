@@ -28,7 +28,7 @@ export interface Product {
  isReturnable?: boolean;
  isActive?: boolean;
  createdAt: string;
- reviews?: { id?: string; userName: string; rating: number; comment: string; productId?: string; createdAt?: any; }[];
+ reviews?: { id?: string; userName: string; rating: number; comment: string; productId?: string; createdAt?: any; userId?: string | null; orderItemId?: string | null; }[];
 }
 
 export interface ProductVariant {
