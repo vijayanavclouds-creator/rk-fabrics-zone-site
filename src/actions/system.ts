@@ -56,7 +56,29 @@ export async function saveNavigationLinks(links: any) {
     revalidateTag("navigation_links", "max");
     revalidatePath("/", "layout");
     
-    const diff = `updated from ${oldLinks.length} links to ${links.length} links`;
+    const changes: string[] = [];
+    if (oldLinks.length !== links.length) {
+      changes.push(`changed link count from ${oldLinks.length} to ${links.length}`);
+    } else {
+      for (let i = 0; i < oldLinks.length; i++) {
+        if (oldLinks[i].label !== links[i].label) {
+          changes.push(`renamed <i>${oldLinks[i].label}</i> to <i>${links[i].label}</i>`);
+        }
+        if (oldLinks[i].submenu && links[i].submenu) {
+          if (oldLinks[i].submenu.length !== links[i].submenu.length) {
+            changes.push(`changed submenus under <b>${links[i].label}</b> from ${oldLinks[i].submenu.length} to ${links[i].submenu.length}`);
+          } else {
+            for (let j = 0; j < oldLinks[i].submenu.length; j++) {
+              if (oldLinks[i].submenu[j].label !== links[i].submenu[j].label) {
+                changes.push(`renamed submenu <i>${oldLinks[i].submenu[j].label}</i> to <i>${links[i].submenu[j].label}</i> under <b>${links[i].label}</b>`);
+              }
+            }
+          }
+        }
+      }
+    }
+    const diff = changes.length > 0 ? changes.join(", ") : "reordered links";
+    
     await logAdminActivity("updated navigation links", diff);
     
     return { success: true };
@@ -95,13 +117,28 @@ export async function saveStoreTaxonomy(categories: any[], fabrics: any[]) {
     revalidatePath("/shop");
     revalidatePath("/admin");
     
-    const catDiff = oldTaxonomy.categories.length !== categories.length 
-      ? `categories: ${oldTaxonomy.categories.length} -> ${categories.length}` : "";
-    const fabDiff = oldTaxonomy.fabrics.length !== fabrics.length
-      ? `fabrics: ${oldTaxonomy.fabrics.length} -> ${fabrics.length}` : "";
+    const changes: string[] = [];
+    if (oldTaxonomy.categories.length !== categories.length) {
+      changes.push(`categories count: ${oldTaxonomy.categories.length} -> ${categories.length}`);
+    } else {
+      for (let i = 0; i < oldTaxonomy.categories.length; i++) {
+        if (oldTaxonomy.categories[i].label !== categories[i].label) {
+          changes.push(`renamed category <i>${oldTaxonomy.categories[i].label}</i> to <i>${categories[i].label}</i>`);
+        }
+      }
+    }
     
-    const diffParts = [catDiff, fabDiff].filter(Boolean);
-    const diff = diffParts.length > 0 ? diffParts.join(", ") : "updated names or ordering";
+    if (oldTaxonomy.fabrics.length !== fabrics.length) {
+      changes.push(`fabrics count: ${oldTaxonomy.fabrics.length} -> ${fabrics.length}`);
+    } else {
+      for (let i = 0; i < oldTaxonomy.fabrics.length; i++) {
+        if (oldTaxonomy.fabrics[i].label !== fabrics[i].label) {
+          changes.push(`renamed fabric <i>${oldTaxonomy.fabrics[i].label}</i> to <i>${fabrics[i].label}</i>`);
+        }
+      }
+    }
+    
+    const diff = changes.length > 0 ? changes.join(", ") : "reordered taxonomy";
     
     await logAdminActivity("updated store taxonomy", diff);
     
