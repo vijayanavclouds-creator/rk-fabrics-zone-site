@@ -226,3 +226,6 @@ Payload: {"updatedVariants":[{"id":"10-v2","sku":"RKF-DLH-010-RSE-M","size":"M",
 [logAdminActivity] called with action: updated navigation links
 [logAdminActivity] adminName resolved to: Vijay jangir
 [logAdminActivity] success! inserted id: cms525kcl000bwm48kvjh9bjq
+[logAdminActivity] called with action: updated navigation links
+[logAdminActivity] adminName resolved to: Vijay jangir
+[logAdminActivity] success! inserted id: cms52f2wc000dwm483p4yp46v

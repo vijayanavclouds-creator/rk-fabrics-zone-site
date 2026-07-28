@@ -57,26 +57,43 @@ export async function saveNavigationLinks(links: any) {
     revalidatePath("/", "layout");
     
     const changes: string[] = [];
-    if (oldLinks.length !== links.length) {
-      changes.push(`changed link count from ${oldLinks.length} to ${links.length}`);
-    } else {
-      for (let i = 0; i < oldLinks.length; i++) {
-        if (oldLinks[i].label !== links[i].label) {
-          changes.push(`renamed <i>${oldLinks[i].label}</i> to <i>${links[i].label}</i>`);
+    
+    const findChanges = (oldArr: any[], newArr: any[], prefix = "link") => {
+      // Find deleted
+      oldArr.forEach(oldItem => {
+        const found = newArr.find(newItem => (oldItem.href && newItem.href === oldItem.href) || newItem.label === oldItem.label);
+        if (!found) {
+          changes.push(`deleted ${prefix} <i>${oldItem.label}</i>`);
         }
-        if (oldLinks[i].submenu && links[i].submenu) {
-          if (oldLinks[i].submenu.length !== links[i].submenu.length) {
-            changes.push(`changed submenus under <b>${links[i].label}</b> from ${oldLinks[i].submenu.length} to ${links[i].submenu.length}`);
-          } else {
-            for (let j = 0; j < oldLinks[i].submenu.length; j++) {
-              if (oldLinks[i].submenu[j].label !== links[i].submenu[j].label) {
-                changes.push(`renamed submenu <i>${oldLinks[i].submenu[j].label}</i> to <i>${links[i].submenu[j].label}</i> under <b>${links[i].label}</b>`);
-              }
-            }
+      });
+      
+      // Find added and renamed
+      newArr.forEach(newItem => {
+        // Try match by href first (if exists)
+        let oldMatch = newItem.href ? oldArr.find(oldItem => oldItem.href === newItem.href) : null;
+        if (!oldMatch) {
+          // Try match by label
+          oldMatch = oldArr.find(oldItem => oldItem.label === newItem.label);
+        }
+        
+        if (!oldMatch) {
+          changes.push(`added ${prefix} <i>${newItem.label}</i>`);
+        } else {
+          // Matched! Did label change?
+          if (oldMatch.label !== newItem.label) {
+            changes.push(`renamed ${prefix} <i>${oldMatch.label}</i> to <i>${newItem.label}</i>`);
+          }
+          // Check submenus
+          if (oldMatch.submenu || newItem.submenu) {
+             const oldSub = oldMatch.submenu || [];
+             const newSub = newItem.submenu || [];
+             findChanges(oldSub, newSub, `submenu under <b>${newItem.label}</b>`);
           }
         }
-      }
-    }
+      });
+    };
+    
+    findChanges(oldLinks, links);
     const diff = changes.length > 0 ? changes.join(", ") : "reordered links";
     
     await logAdminActivity("updated navigation links", diff);
@@ -118,25 +135,27 @@ export async function saveStoreTaxonomy(categories: any[], fabrics: any[]) {
     revalidatePath("/admin");
     
     const changes: string[] = [];
-    if (oldTaxonomy.categories.length !== categories.length) {
-      changes.push(`categories count: ${oldTaxonomy.categories.length} -> ${categories.length}`);
-    } else {
-      for (let i = 0; i < oldTaxonomy.categories.length; i++) {
-        if (oldTaxonomy.categories[i].label !== categories[i].label) {
-          changes.push(`renamed category <i>${oldTaxonomy.categories[i].label}</i> to <i>${categories[i].label}</i>`);
-        }
-      }
-    }
     
-    if (oldTaxonomy.fabrics.length !== fabrics.length) {
-      changes.push(`fabrics count: ${oldTaxonomy.fabrics.length} -> ${fabrics.length}`);
-    } else {
-      for (let i = 0; i < oldTaxonomy.fabrics.length; i++) {
-        if (oldTaxonomy.fabrics[i].label !== fabrics[i].label) {
-          changes.push(`renamed fabric <i>${oldTaxonomy.fabrics[i].label}</i> to <i>${fabrics[i].label}</i>`);
+    const diffTaxonomy = (oldArr: any[], newArr: any[], prefix: string) => {
+      oldArr.forEach(oldItem => {
+        if (!newArr.find(newItem => (oldItem.value && newItem.value === oldItem.value) || newItem.label === oldItem.label)) {
+          changes.push(`deleted ${prefix} <i>${oldItem.label}</i>`);
         }
-      }
-    }
+      });
+      newArr.forEach(newItem => {
+        let oldMatch = newItem.value ? oldArr.find(oldItem => oldItem.value === newItem.value) : null;
+        if (!oldMatch) oldMatch = oldArr.find(oldItem => oldItem.label === newItem.label);
+        
+        if (!oldMatch) {
+          changes.push(`added ${prefix} <i>${newItem.label}</i>`);
+        } else if (oldMatch.label !== newItem.label) {
+          changes.push(`renamed ${prefix} <i>${oldMatch.label}</i> to <i>${newItem.label}</i>`);
+        }
+      });
+    };
+    
+    diffTaxonomy(oldTaxonomy.categories, categories, "category");
+    diffTaxonomy(oldTaxonomy.fabrics, fabrics, "fabric");
     
     const diff = changes.length > 0 ? changes.join(", ") : "reordered taxonomy";
     
