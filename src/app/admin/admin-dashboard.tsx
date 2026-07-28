@@ -104,10 +104,10 @@ export function AdminDashboard({
     })
   }
 
-  if ((activeView === "edit" && editingProduct) || activeView === "new") {
+  if (activeView === "edit" && editingProduct) {
     return (
       <ProductEditor 
-        product={editingProduct || {}} 
+        product={editingProduct} 
         products={products}
         storeCategories={storeCategories}
         storeFabrics={storeFabrics}
@@ -131,12 +131,12 @@ export function AdminDashboard({
           title="Admin Dashboard"
           description="Manage your products and inventory in real-time."
           rightElement={
-            <button 
-              onClick={() => setActiveView("new")}
+            <Link 
+              href="/admin/products/new"
               className="flex items-center gap-2 bg-charcoal text-white px-6 py-2.5 rounded-2xl font-bold hover:bg-black transition-all shadow-neo-btn hover:-translate-y-1 w-full sm:w-auto justify-center whitespace-nowrap text-sm"
             >
               <Plus size={18} /> Add Product
-            </button>
+            </Link>
           }
         />
       )}
@@ -172,12 +172,12 @@ export function AdminDashboard({
               <p className="text-slate mt-1 text-sm">Manage your products and inventory in real-time.</p>
             </div>
             <div>
-              <button 
-                onClick={() => setActiveView("new")} 
+              <Link 
+                href="/admin/products/new" 
                 className="btn-primary flex items-center justify-center gap-2 py-2 px-6 shadow-sm"
               >
                 <Plus size={18} /> Add Product
-              </button>
+              </Link>
             </div>
           </div>
           <div className="-mx-4 md:mx-0 bg-white md:rounded-3xl border-y md:border border-charcoal/10 overflow-hidden md:shadow-[0_8px_30px_rgb(0,0,0,0.08)] bg-gradient-to-br from-white to-cream/20">
@@ -552,6 +552,18 @@ export function ProductEditor({ product = {}, products, storeCategories, storeFa
   }
 
   const handleGlobalSave = async () => {
+    const finalImagesCount = images.length - deletedImageIds.length + newImageFiles.length;
+    const finalVariantsCount = variants.length - deletedVariantIds.length + newVariants.length;
+
+    if (finalImagesCount === 0) {
+      toast.error("Please add at least one image before saving.");
+      return;
+    }
+    if (finalVariantsCount === 0) {
+      toast.error("Please add at least one variant before saving.");
+      return;
+    }
+
     setIsSavingBase(true);
     toast.loading("Saving changes...", { id: "globalSave" });
     
@@ -629,6 +641,8 @@ export function ProductEditor({ product = {}, products, storeCategories, storeFa
     }
     if (onClose) {
       onClose();
+    } else {
+      router.push('/admin?tab=list');
     }
   }
 
