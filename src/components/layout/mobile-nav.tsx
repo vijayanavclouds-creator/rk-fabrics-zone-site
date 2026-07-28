@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Home, LayoutGrid, Heart, ShoppingBag, User, LogOut, Ticket, MessageSquare, Mail, Bell, HelpCircle, LayoutDashboard, Package, Scissors, DollarSign, Users, Building2, Menu, Image as ImageIcon, Settings } from "lucide-react";
+import { Home, LayoutGrid, Heart, ShoppingBag, User, LogOut, Ticket, MessageSquare, Mail, Bell, HelpCircle, LayoutDashboard, Package, Scissors, DollarSign, Users, Building2, Menu, Image as ImageIcon, Settings, Smartphone } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useCartStore, useWishlistStore, useUIStore } from "@/store";
 import { useCheckoutStore } from "@/store/checkout";
@@ -197,6 +197,24 @@ export function MobileNav() {
               </Link>
             ))}
             <div className="h-px bg-slate-100 my-1 mx-2 shrink-0" />
+            <button 
+              onClick={async () => {
+                setIsAccountMenuOpen(false);
+                const deferredPrompt = (window as any).deferredPrompt;
+                if (deferredPrompt) {
+                  deferredPrompt.prompt();
+                  const { outcome } = await deferredPrompt.userChoice;
+                  if (outcome === 'accepted') {
+                    (window as any).deferredPrompt = null;
+                  }
+                } else {
+                  alert("To install, tap the 'Share' icon on Safari and select 'Add to Home Screen'.");
+                }
+              }} 
+              className="flex items-center justify-center gap-2 btn-primary !h-10 !rounded-xl text-sm mb-2 mt-1 mx-2 shrink-0"
+            >
+              <Smartphone size={16} /> Install App
+            </button>
             <button 
               onClick={() => { 
                 setIsAccountMenuOpen(false); 

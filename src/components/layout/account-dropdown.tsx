@@ -5,7 +5,7 @@ import Link from "next/link"
 import Image from "next/image"
 import { useSession, signOut } from "next-auth/react"
 import { motion, AnimatePresence } from "framer-motion"
-import { User, LayoutDashboard, ShoppingBag, Heart, Ticket, Settings, Bell, HelpCircle, MessageSquare, LogOut, Package, Image as ImageIcon, Users, Menu, Scissors, AlertTriangle, Building2, DollarSign, Mail } from "lucide-react"
+import { User, LayoutDashboard, ShoppingBag, Heart, Ticket, Settings, Bell, HelpCircle, MessageSquare, LogOut, Package, Image as ImageIcon, Users, Menu, Scissors, AlertTriangle, Building2, DollarSign, Mail, Smartphone } from "lucide-react"
 import { useCartStore, useWishlistStore } from "@/store"
 import { useCheckoutStore } from "@/store/checkout"
 
@@ -136,6 +136,25 @@ export function AccountDropdown() {
               </nav>
             </div>
             <div className="p-2 border-t border-charcoal/10">
+              <button
+                onClick={async () => {
+                  setIsOpen(false);
+                  const deferredPrompt = (window as any).deferredPrompt;
+                  if (deferredPrompt) {
+                    deferredPrompt.prompt();
+                    const { outcome } = await deferredPrompt.userChoice;
+                    if (outcome === 'accepted') {
+                      (window as any).deferredPrompt = null;
+                    }
+                  } else {
+                    alert("To install, tap the 'Share' icon on Safari and select 'Add to Home Screen'.");
+                  }
+                }}
+                className="flex w-full items-center justify-center gap-2 btn-primary !h-10 !rounded-xl text-sm mb-2 mt-1"
+              >
+                <Smartphone size={16} />
+                Install App
+              </button>
               <button
                 onClick={() => {
                   setIsOpen(false)

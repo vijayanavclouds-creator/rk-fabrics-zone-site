@@ -23,6 +23,7 @@ export function PwaNotifier() {
       e.preventDefault();
       // Save the event so it can be triggered later
       setDeferredPrompt(e);
+      (window as any).deferredPrompt = e;
       
       const lastShown = localStorage.getItem("pwa-prompt-last-shown");
       const now = Date.now();
