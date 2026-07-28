@@ -6,6 +6,7 @@ import { getAnnouncementBanner, saveAnnouncementBanner } from "@/actions/system"
 import imageCompression from 'browser-image-compression';
 import { toast } from "sonner"
 import { Upload, X, GripVertical, Image as ImageIcon, Loader2 } from "lucide-react"
+import { DragDropContext, Droppable, Draggable, DropResult } from "@hello-pangea/dnd"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
 
@@ -157,19 +158,19 @@ export function BannerManager({ banners }: { banners: any[] }) {
     })
   }
 
-  const moveItem = async (typeBanners: any[], index: number, direction: 'up' | 'down') => {
-    if ((direction === 'up' && index === 0) || (direction === 'down' && index === typeBanners.length - 1)) return
+  const handleDragEnd = (result: DropResult, typeBanners: any[]) => {
+    if (!result.destination) return;
+    const { source, destination } = result;
+    if (source.index === destination.index) return;
     
-    const newItems = [...typeBanners]
-    const swapIndex = direction === 'up' ? index - 1 : index + 1
-    const temp = newItems[index]
-    newItems[index] = newItems[swapIndex]
-    newItems[swapIndex] = temp
-
+    const newItems = Array.from(typeBanners);
+    const [draggedItem] = newItems.splice(source.index, 1);
+    newItems.splice(destination.index, 0, draggedItem);
+    
     startTransition(async () => {
-      await updateBannerOrder(newItems.map(b => b.id))
-      toast.success("Order updated")
-    })
+      await updateBannerOrder(newItems.map(b => b.id));
+      toast.success("Order updated");
+    });
   }
 
   const BannerList = ({ title, items, type }: { title: string, items: any[], type: "hero" | "carousel" }) => (
@@ -203,55 +204,62 @@ export function BannerManager({ banners }: { banners: any[] }) {
         </label>
       </div>
 
-      <div className="space-y-4">
-        {items.length === 0 && (
-          <div className="text-center py-12 bg-slate-50 rounded-2xl border border-dashed border-charcoal/20">
-            <ImageIcon className="mx-auto text-slate-400 mb-3" size={32} />
-            <p className="text-slate font-medium">No images added yet.</p>
-          </div>
-        )}
-        
-        {items.map((banner, index) => (
-          <div key={banner.id} className="flex items-center gap-2 sm:gap-4 bg-slate-50 p-2 sm:p-3 rounded-2xl border border-charcoal/5 group">
-            <div className="flex flex-col gap-1 px-1 sm:px-2 text-slate-400">
-              <button 
-                onClick={() => moveItem(items, index, 'up')} 
-                disabled={index === 0 || isPending}
-                className="hover:text-charcoal disabled:opacity-30"
-              >
-                ▲
-              </button>
-              <button 
-                onClick={() => moveItem(items, index, 'down')} 
-                disabled={index === items.length - 1 || isPending}
-                className="hover:text-charcoal disabled:opacity-30"
-              >
-                ▼
-              </button>
-            </div>
-            
-            <div className="relative w-20 h-14 sm:w-32 sm:h-20 rounded-xl overflow-hidden shadow-inner bg-charcoal/5 flex-shrink-0">
-              <Image src={banner.imageUrl} alt="Banner" fill className="object-cover" />
-            </div>
+      <DragDropContext onDragEnd={(res) => handleDragEnd(res, items)}>
+        <Droppable droppableId={`${type}-banners`}>
+          {(provided) => (
+            <div className="space-y-4" {...provided.droppableProps} ref={provided.innerRef}>
+              {items.length === 0 && (
+                <div className="text-center py-12 bg-slate-50 rounded-2xl border border-dashed border-charcoal/20">
+                  <ImageIcon className="mx-auto text-slate-400 mb-3" size={32} />
+                  <p className="text-slate font-medium">No images added yet.</p>
+                </div>
+              )}
+              
+              {items.map((banner, index) => (
+                <Draggable key={banner.id} draggableId={banner.id} index={index}>
+                  {(provided, snapshot) => (
+                    <div 
+                      ref={provided.innerRef}
+                      {...provided.draggableProps}
+                      className={`flex items-center gap-2 sm:gap-4 bg-slate-50 p-2 sm:p-3 rounded-2xl border transition-all duration-200 ${
+                        snapshot.isDragging ? 'shadow-lg border-teal-500 scale-[1.02] bg-white z-50' : 'border-charcoal/5 group'
+                      }`}
+                    >
+                      <div 
+                        {...provided.dragHandleProps}
+                        className="flex flex-col gap-1 px-1 sm:px-2 text-slate-300 hover:text-charcoal cursor-grab active:cursor-grabbing transition-colors"
+                      >
+                        <GripVertical size={20} />
+                      </div>
+                      
+                      <div className="relative w-20 h-14 sm:w-32 sm:h-20 rounded-xl overflow-hidden shadow-inner bg-charcoal/5 flex-shrink-0">
+                        <Image src={banner.imageUrl} alt="Banner" fill className="object-cover" />
+                      </div>
 
-            <div className="flex-grow pl-1 sm:pl-4 flex flex-col justify-center overflow-hidden">
-              <div>
-                <FileSizeDisplay url={banner.imageUrl} />
-              </div>
-              {type === "carousel" && <BannerTitleInput banner={banner} />}
-            </div>
+                      <div className="flex-grow pl-1 sm:pl-4 flex flex-col justify-center overflow-hidden">
+                        <div>
+                          <FileSizeDisplay url={banner.imageUrl} />
+                        </div>
+                        {type === "carousel" && <BannerTitleInput banner={banner} />}
+                      </div>
 
-            <button 
-              onClick={() => handleDelete(banner.id)}
-              disabled={isPending}
-              className="p-2 text-rose-500 hover:bg-rose-100 rounded-full transition-colors mr-2"
-              title="Remove"
-            >
-              <X size={20} />
-            </button>
-          </div>
-        ))}
-      </div>
+                      <button 
+                        onClick={() => handleDelete(banner.id)}
+                        disabled={isPending}
+                        className="p-2 text-rose-500 hover:bg-rose-100 rounded-full transition-colors mr-2 shrink-0"
+                        title="Remove"
+                      >
+                        <X size={20} />
+                      </button>
+                    </div>
+                  )}
+                </Draggable>
+              ))}
+              {provided.placeholder}
+            </div>
+          )}
+        </Droppable>
+      </DragDropContext>
     </div>
   )
 
@@ -266,7 +274,7 @@ export function BannerManager({ banners }: { banners: any[] }) {
         </div>
       </div>
       
-      <div className="bg-white md:rounded-3xl border-y md:border border-charcoal/10 p-4 sm:p-5 md:p-8 shadow-[0_8px_30px_rgb(0,0,0,0.08)] md:shadow-sm mb-8 -mx-4 sm:mx-0">
+      <div className="bg-[#f6fafd] md:rounded-3xl border-y md:border border-charcoal/10 p-4 sm:p-5 md:p-8 shadow-[0_8px_30px_rgb(0,0,0,0.08)] md:shadow-sm mb-8 -mx-4 sm:mx-0">
         <h3 className="text-xl font-bold text-charcoal mb-4">Announcement Banner (Top Header)</h3>
         {isLoadingAnnouncement && !announcement.text ? (
           <p className="text-sm text-slate animate-pulse">Loading...</p>
@@ -274,7 +282,7 @@ export function BannerManager({ banners }: { banners: any[] }) {
           <div className="space-y-6 w-full">
             
             <div className="grid md:grid-cols-2 gap-6 items-start">
-              <div className="w-full">
+              <div className="w-full min-w-0">
                 <label className="block text-sm font-bold text-charcoal mb-2">Banner Content (HTML supported)</label>
                 <textarea 
                   value={announcement.text}
@@ -285,7 +293,7 @@ export function BannerManager({ banners }: { banners: any[] }) {
                 />
               </div>
               
-              <div className="w-full h-full flex flex-col">
+              <div className="w-full h-full flex flex-col min-w-0">
                 <label className="block text-sm font-bold text-charcoal mb-2">Live Preview</label>
                 <div className="flex-1 border border-charcoal/10 rounded-xl overflow-hidden bg-cream flex flex-col justify-center min-h-[8rem]">
                   <div className="w-full bg-charcoal text-white text-xs py-2 font-medium relative z-10 marquee-container">
@@ -316,10 +324,9 @@ export function BannerManager({ banners }: { banners: any[] }) {
               <button 
                 onClick={handleSaveAnnouncement}
                 disabled={isLoadingAnnouncement}
-                className="w-full sm:w-auto btn-primary flex flex-col items-center justify-center text-center py-2 px-8 disabled:opacity-50"
+                className="w-full sm:w-auto btn-primary flex flex-row items-center justify-center gap-2 py-2.5 px-6 disabled:opacity-50 text-sm font-semibold whitespace-nowrap"
               >
-                <span>Save</span>
-                <span>Announcement</span>
+                <span>Save Announcement</span>
               </button>
             </div>
           </div>
