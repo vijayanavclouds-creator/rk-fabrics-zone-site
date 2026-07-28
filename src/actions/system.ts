@@ -114,6 +114,6 @@ export async function getGSTRates() {
   return {
     below1000: profile?.gstPercentBelow1000 ?? 5,
     above1000: profile?.gstPercentAbove1000 ?? 12,
-    shipping: profile?.gstPercentShipping ?? 18
+    shippingFee: profile?.shippingFee ?? 79
   };
 }

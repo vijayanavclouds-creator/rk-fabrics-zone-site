@@ -86,7 +86,7 @@ export async function createOrder(data: any) {
           calculatedGst += finalItemTotal * (rate / 100)
         })
       }
-      calculatedGst += ((platformFeeAmount || 0) + shippingAmount) * (rates.shipping / 100)
+      calculatedGst += ((platformFeeAmount || 0) + shippingAmount) * (18 / 100)
       calculatedGst = Math.round(calculatedGst * 100) / 100
 
       // Securely recalculate the total

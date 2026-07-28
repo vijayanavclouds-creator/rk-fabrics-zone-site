@@ -27,7 +27,7 @@ export function CompanyProfileManager() {
     gstNumber: "",
     gstPercentBelow1000: 5,
     gstPercentAbove1000: 12,
-    gstPercentShipping: 18
+    shippingFee: 79
   });
 
   useEffect(() => {
@@ -336,15 +336,15 @@ export function CompanyProfileManager() {
             </div>
             <div>
               <label className="block text-sm font-bold text-charcoal mb-1 md:mb-2">
-                Shipping / Fees (%)
+                Shipping Fee (₹)
               </label>
               <input
                 type="number"
-                name="gstPercentShipping"
-                value={profile.gstPercentShipping ?? ""}
+                name="shippingFee"
+                value={profile.shippingFee ?? ""}
                 onChange={handleChange}
-                placeholder="18"
-                step="0.1"
+                placeholder="79"
+                step="1"
                 min="0"
                 className="w-full px-4 py-2.5 md:py-3 text-base bg-cream shadow-neo-input !border-none rounded-full focus:!outline-none focus:!ring-0 focus:!border-none text-charcoal placeholder:text-slate/60 transition-all"
               />
