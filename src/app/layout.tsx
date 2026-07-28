@@ -75,10 +75,15 @@ export const metadata: Metadata = {
  index: true,
  follow: true,
  },
+ appleWebApp: {
+    title: "RK Fabrics",
+    statusBarStyle: "default",
+    capable: true,
+  },
 };
 
 export const viewport: Viewport = {
-  themeColor: "#ffffff",
+  themeColor: "#FFFFFF",
   colorScheme: "light",
 };
 
