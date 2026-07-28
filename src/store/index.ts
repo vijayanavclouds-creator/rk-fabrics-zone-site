@@ -22,8 +22,8 @@ interface CartStore {
  applyCoupon: (code: string, discount: number) => void;
  removeCoupon: () => void;
  setItems: (items: CartItem[]) => void;
- gstRates: { below1000: number, above1000: number, shippingFee: number } | null;
- setGSTRates: (rates: { below1000: number, above1000: number, shippingFee: number }) => void;
+ gstRates: { below1000: number, above1000: number, shippingFee: number, platformFeePercent: number } | null;
+ setGSTRates: (rates: { below1000: number, above1000: number, shippingFee: number, platformFeePercent: number }) => void;
  getGSTAmount: () => number;
 }
 
@@ -97,13 +97,14 @@ export const useCartStore = create<CartStore>()(
     return subtotal >= 999 ? 0 : shippingFee;
   },
 
- getPlatformFee: () => {
- const subtotal = get().getSubtotal();
- return Math.round(subtotal * 0.02 * 100) / 100; // 2% platform fee
- },
+  getPlatformFee: () => {
+    const subtotal = get().getSubtotal();
+    const percent = get().gstRates?.platformFeePercent ?? 2;
+    return Math.round(subtotal * (percent / 100) * 100) / 100;
+  },
 
  getGSTAmount: () => {
-    const rates = get().gstRates || { below1000: 5, above1000: 12, shippingFee: 79 };
+    const rates = get().gstRates || { below1000: 5, above1000: 12, shippingFee: 79, platformFeePercent: 2 };
    let gstAmount = 0;
    const subtotal = get().getSubtotal();
    const discount = get().discountAmount;

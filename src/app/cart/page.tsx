@@ -15,7 +15,7 @@ import { useRouter } from "next/navigation";
 import { validateCartStock } from "@/actions/cart";
 
 export default function CartPage() {
-  const { items, updateQuantity, removeItem, getSubtotal, getShipping, getTotal, getItemCount, getPlatformFee } = useCartStore();
+  const { items, updateQuantity, removeItem, getSubtotal, getShipping, getTotal, getItemCount, getPlatformFee, gstRates } = useCartStore();
   const [couponCode, setCouponCode] = useState("");
   const [couponApplied, setCouponApplied] = useState(false);
   const { data: session } = useSession();
@@ -336,7 +336,7 @@ export default function CartPage() {
  </div>
  )}
  <div className="flex justify-between text-slate ">
- <span>Platform Fee (2%)</span>
+ <span>Platform Fee ({gstRates?.platformFeePercent ?? 2}%)</span>
  <span>{formatPrice(platformFee)}</span>
  </div>
  <div className="flex justify-between text-slate ">

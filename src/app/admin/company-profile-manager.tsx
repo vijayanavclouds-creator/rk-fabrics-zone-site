@@ -27,7 +27,8 @@ export function CompanyProfileManager() {
     gstNumber: "",
     gstPercentBelow1000: 5,
     gstPercentAbove1000: 12,
-    shippingFee: 79
+    shippingFee: 79,
+    platformFeePercent: 2
   });
 
   useEffect(() => {
@@ -297,13 +298,13 @@ export function CompanyProfileManager() {
         </div>
         </div>
 
-        {/* GST Configuration */}
+        {/* Fees & Taxes Configuration */}
         <div className="bg-slate-50 p-4 md:p-6 rounded-2xl border border-charcoal/5">
           <h3 className="text-lg font-bold text-charcoal mb-4 flex items-center gap-2 border-b border-charcoal/10 pb-2">
-            <Building2 className="text-purple-600" size={20} /> GST Configuration
+            <Building2 className="text-purple-600" size={20} /> Fees & Taxes Configuration
           </h3>
-          <p className="text-xs text-slate-500 mb-4">Set the GST percentages for different item prices based on the standard taxation rules.</p>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
+          <p className="text-xs text-slate-500 mb-4">Set the platform fees, shipping costs, and GST percentages based on the standard taxation rules.</p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
             <div>
               <label className="block text-sm font-bold text-charcoal mb-1 md:mb-2">
                 Items ≤ ₹1,000 (%)
@@ -345,6 +346,21 @@ export function CompanyProfileManager() {
                 onChange={handleChange}
                 placeholder="79"
                 step="1"
+                min="0"
+                className="w-full px-4 py-2.5 md:py-3 text-base bg-cream shadow-neo-input !border-none rounded-full focus:!outline-none focus:!ring-0 focus:!border-none text-charcoal placeholder:text-slate/60 transition-all"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-bold text-charcoal mb-1 md:mb-2">
+                Platform Fee (%)
+              </label>
+              <input
+                type="number"
+                name="platformFeePercent"
+                value={profile.platformFeePercent ?? ""}
+                onChange={handleChange}
+                placeholder="2"
+                step="0.1"
                 min="0"
                 className="w-full px-4 py-2.5 md:py-3 text-base bg-cream shadow-neo-input !border-none rounded-full focus:!outline-none focus:!ring-0 focus:!border-none text-charcoal placeholder:text-slate/60 transition-all"
               />

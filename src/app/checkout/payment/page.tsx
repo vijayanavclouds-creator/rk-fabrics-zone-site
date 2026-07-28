@@ -17,7 +17,7 @@ import { useCheckoutStore } from "@/store/checkout"
 export default function CheckoutPaymentPage() {
   const router = useRouter()
   const { data: session, status } = useSession()
-  const { items, getTotal, getSubtotal, getShipping, getPlatformFee, clearCart } = useCartStore()
+  const { items, getTotal, getSubtotal, getShipping, getPlatformFee, clearCart, gstRates } = useCartStore()
   const { selectedAddress, setAddress, clearCheckout } = useCheckoutStore()
 
   const [loading, setLoading] = useState(false)
@@ -396,7 +396,7 @@ export default function CheckoutPaymentPage() {
                   </div>
                 )}
                 <div className="flex justify-between text-charcoal">
-                  <span className="text-sm font-bold">Platform Fee (2%)</span>
+                  <span className="text-sm font-bold">Platform Fee ({gstRates?.platformFeePercent ?? 2}%)</span>
                   <span className="font-bold">₹{getPlatformFee().toLocaleString()}</span>
                 </div>
                 <div className="flex justify-between text-charcoal">

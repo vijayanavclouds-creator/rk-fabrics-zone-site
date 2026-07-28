@@ -17,7 +17,7 @@ export async function getDashboardAnalytics() {
     // Batch 1: Orders, Users, and Open Queries (limited concurrency to prevent connection limit issues)
     const [allOrders, allUsers, recentUnsolvedQueries, totalSubscribers] = await Promise.all([
       prisma.order.findMany({
-        select: { totalAmount: true, createdAt: true, status: true, discountAmount: true }
+        select: { totalAmount: true, createdAt: true, status: true, discountAmount: true, platformFeeAmount: true }
       }),
       prisma.user.findMany({
         where: { role: { not: "ADMIN" } },
@@ -54,7 +54,7 @@ export async function getDashboardAnalytics() {
     const validOrders = allOrders.filter(o => o.status !== "CANCELLED");
     const totalSales = validOrders.reduce((sum, order) => sum + order.totalAmount, 0);
     const totalDiscounts = validOrders.reduce((sum, order) => sum + (order.discountAmount || 0), 0);
-    const platformFees = totalSales * 0.02;
+    const platformFees = validOrders.reduce((sum, order) => sum + (order.platformFeeAmount || 0), 0);
 
     const totalProducts = allProducts.length;
     const recentProducts = allProducts.filter(p => new Date(p.createdAt) >= sixteenDaysAgo).length;

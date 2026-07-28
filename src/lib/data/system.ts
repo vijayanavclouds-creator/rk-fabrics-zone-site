@@ -106,7 +106,8 @@ export async function getCompanyProfileData() {
         address: "",
         companyDescription: "",
         gstNumber: "",
-        shippingFee: 79
+        shippingFee: 79,
+        platformFeePercent: 2
       };
     } catch (error) {
       console.error("Error fetching company profile:", error);
