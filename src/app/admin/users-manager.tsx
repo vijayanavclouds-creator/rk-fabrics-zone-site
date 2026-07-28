@@ -86,7 +86,7 @@ export function UsersManager() {
   return (
     <div className="space-y-6 animate-in fade-in duration-300">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 border-b border-charcoal/10 pb-4 mb-6">
-        <h2 className="font-[family-name:var(--font-playfair)] text-2xl font-bold text-charcoal">Account Management</h2>
+        <h2 className="font-[family-name:var(--font-playfair)] text-2xl font-bold text-charcoal">User Management</h2>
         <div className="flex gap-2">
           <div className="px-4 py-2 bg-slate-50 border border-slate-100 rounded-xl text-sm font-bold text-slate">
             Admin Accounts: <span className={adminUsers.length >= 5 ? "text-rose-600" : "text-teal-600"}>{adminUsers.length}/5</span>
