@@ -96,13 +96,13 @@ export function AccountDropdown() {
           <Image 
             src={session.user.image} 
             alt={session.user.name || "User"} 
-            width={28} 
-            height={28} 
-            className="rounded-full object-cover w-7 h-7 shadow-sm border border-charcoal/5"
+            width={40} 
+            height={40} 
+            className="rounded-full object-cover w-full h-full shadow-sm"
           />
         ) : (
-          <div className="w-7 h-7 rounded-full bg-cream shadow-neo-input flex items-center justify-center text-[10px] font-[family-name:var(--font-playfair)] text-slate-500 border border-white/50 tracking-wider">
-            {session.user.name ? getInitials(session.user.name) : <User size={14} />}
+          <div className="w-full h-full rounded-full bg-cream shadow-neo-input flex items-center justify-center text-[13px] font-[family-name:var(--font-playfair)] text-slate-500 border border-white/50 tracking-wider">
+            {session.user.name ? getInitials(session.user.name) : <User size={18} />}
           </div>
         )}
       </button>
