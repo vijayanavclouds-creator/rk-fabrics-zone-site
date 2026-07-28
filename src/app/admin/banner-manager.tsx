@@ -50,7 +50,7 @@ function BannerTitleInput({ banner }: { banner: any }) {
         onBlur={handleSave}
         onKeyDown={e => e.key === 'Enter' && handleSave()}
         placeholder="Enter tag (e.g. Cottons)" 
-        className="text-sm px-3 py-1.5 rounded-lg border border-charcoal/10 bg-white focus:outline-none focus:border-teal-500 w-48"
+        className="text-sm px-3 py-1.5 rounded-lg border border-charcoal/10 bg-white focus:outline-none focus:border-teal-500 w-full sm:w-48"
       />
       {isSaving && <Loader2 size={14} className="animate-spin text-slate-400" />}
     </div>
@@ -173,8 +173,8 @@ export function BannerManager({ banners }: { banners: any[] }) {
   }
 
   const BannerList = ({ title, items, type }: { title: string, items: any[], type: "hero" | "carousel" }) => (
-    <div className="bg-white rounded-3xl border border-charcoal/10 p-8 shadow-sm">
-      <div className="flex justify-between items-center mb-6 border-b border-charcoal/10 pb-4">
+    <div className="bg-white md:rounded-3xl border-y md:border border-charcoal/10 p-4 sm:p-5 md:p-8 shadow-[0_8px_30px_rgb(0,0,0,0.08)] md:shadow-sm -mx-4 sm:mx-0 mb-6 md:mb-0">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 border-b border-charcoal/10 pb-4">
         <div>
           <h3 className="text-xl font-bold text-charcoal">{title}</h3>
           <p className="text-sm text-slate mt-1">
@@ -212,8 +212,8 @@ export function BannerManager({ banners }: { banners: any[] }) {
         )}
         
         {items.map((banner, index) => (
-          <div key={banner.id} className="flex items-center gap-4 bg-slate-50 p-3 rounded-2xl border border-charcoal/5 group">
-            <div className="flex flex-col gap-1 px-2 text-slate-400">
+          <div key={banner.id} className="flex items-center gap-2 sm:gap-4 bg-slate-50 p-2 sm:p-3 rounded-2xl border border-charcoal/5 group">
+            <div className="flex flex-col gap-1 px-1 sm:px-2 text-slate-400">
               <button 
                 onClick={() => moveItem(items, index, 'up')} 
                 disabled={index === 0 || isPending}
@@ -230,11 +230,11 @@ export function BannerManager({ banners }: { banners: any[] }) {
               </button>
             </div>
             
-            <div className="relative w-32 h-20 rounded-xl overflow-hidden shadow-inner bg-charcoal/5 flex-shrink-0">
+            <div className="relative w-20 h-14 sm:w-32 sm:h-20 rounded-xl overflow-hidden shadow-inner bg-charcoal/5 flex-shrink-0">
               <Image src={banner.imageUrl} alt="Banner" fill className="object-cover" />
             </div>
 
-            <div className="flex-grow pl-4 flex flex-col justify-center">
+            <div className="flex-grow pl-1 sm:pl-4 flex flex-col justify-center overflow-hidden">
               <div>
                 <FileSizeDisplay url={banner.imageUrl} />
               </div>
@@ -266,7 +266,7 @@ export function BannerManager({ banners }: { banners: any[] }) {
         </div>
       </div>
       
-      <div className="bg-white rounded-3xl border border-charcoal/10 p-8 shadow-sm mb-8">
+      <div className="bg-white md:rounded-3xl border-y md:border border-charcoal/10 p-4 sm:p-5 md:p-8 shadow-[0_8px_30px_rgb(0,0,0,0.08)] md:shadow-sm mb-8 -mx-4 sm:mx-0">
         <h3 className="text-xl font-bold text-charcoal mb-4">Announcement Banner (Top Header)</h3>
         {isLoadingAnnouncement && !announcement.text ? (
           <p className="text-sm text-slate animate-pulse">Loading...</p>
@@ -302,23 +302,24 @@ export function BannerManager({ banners }: { banners: any[] }) {
               </div>
             </div>
             
-            <div className="flex items-center justify-between pt-2 border-t border-charcoal/10">
-              <label className="flex items-center gap-2 text-sm font-bold text-charcoal cursor-pointer">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-t border-charcoal/10 pt-6">
+              <label className="flex items-center gap-2 cursor-pointer">
                 <input 
                   type="checkbox" 
-                  checked={announcement.isActive} 
+                  checked={announcement.isActive}
                   onChange={(e) => setAnnouncement({...announcement, isActive: e.target.checked})}
-                  className="w-4 h-4 rounded text-teal-600 focus:ring-teal-500"
+                  className="w-4 h-4 rounded text-teal-600 focus:ring-teal-600"
                 />
-                Show Announcement Banner
+                <span className="text-sm font-bold text-charcoal">Show Announcement Banner</span>
               </label>
               
               <button 
                 onClick={handleSaveAnnouncement}
                 disabled={isLoadingAnnouncement}
-                className="btn-primary text-sm"
+                className="w-full sm:w-auto btn-primary flex flex-col items-center justify-center text-center py-2 px-8 disabled:opacity-50"
               >
-                {isLoadingAnnouncement ? "Saving..." : "Save Announcement"}
+                <span>Save</span>
+                <span>Announcement</span>
               </button>
             </div>
           </div>
