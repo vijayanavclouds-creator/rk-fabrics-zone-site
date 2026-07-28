@@ -37,19 +37,25 @@ export function PwaNotifier() {
 
     window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
 
-    // Fallback: If beforeinstallprompt doesn't fire (like in dev mode or iOS)
-    // we still want to show the popup UI.
-    const timer = setTimeout(() => {
-      const lastShown = localStorage.getItem("pwa-prompt-last-shown");
-      const now = Date.now();
-      if (!lastShown || (now - parseInt(lastShown) > 24 * 60 * 60 * 1000)) {
-        setShow(true);
-        localStorage.setItem("pwa-prompt-last-shown", now.toString());
-      }
-    }, 3000);
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as any).MSStream;
+    const isMacSafari = /Macintosh/.test(navigator.userAgent) && /Safari/.test(navigator.userAgent) && !/Chrome/.test(navigator.userAgent);
+
+    // Fallback: If beforeinstallprompt doesn't fire (like in iOS or Safari)
+    // we still want to show the popup UI because manual install is possible.
+    let timer: NodeJS.Timeout;
+    if (isIOS || isMacSafari) {
+      timer = setTimeout(() => {
+        const lastShown = localStorage.getItem("pwa-prompt-last-shown");
+        const now = Date.now();
+        if (!lastShown || (now - parseInt(lastShown) > 24 * 60 * 60 * 1000)) {
+          setShow(true);
+          localStorage.setItem("pwa-prompt-last-shown", now.toString());
+        }
+      }, 3000);
+    }
 
     return () => {
-      clearTimeout(timer);
+      if (timer) clearTimeout(timer);
       window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
     };
   }, [status]);
@@ -63,7 +69,16 @@ export function PwaNotifier() {
         setShow(false);
       }
     } else {
-      alert("To install, tap the 'Share' icon on Safari and select 'Add to Home Screen'.");
+      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as any).MSStream;
+      const isMacSafari = /Macintosh/.test(navigator.userAgent) && /Safari/.test(navigator.userAgent) && !/Chrome/.test(navigator.userAgent);
+      
+      if (isIOS) {
+        alert("To install, tap the 'Share' icon at the bottom of Safari and select 'Add to Home Screen'.");
+      } else if (isMacSafari) {
+        alert("To install, click the 'Share' icon in Safari's toolbar and select 'Add to Dock'.");
+      } else {
+        alert("To install, look for the install icon (looks like a monitor with an arrow) on the right side of your browser's address bar.");
+      }
     }
   };
 
