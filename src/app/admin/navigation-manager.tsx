@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useTransition } from "react"
 import { toast } from "sonner"
-import { Plus, Trash2, Save, GripVertical, ChevronDown, ChevronUp } from "lucide-react"
+import { Plus, Trash2, Save, GripVertical, ChevronDown } from "lucide-react"
 import { getNavigationLinks, saveNavigationLinks } from "@/actions/system"
 import { defaultNavLinks } from "@/components/layout/header"
 
@@ -11,6 +11,8 @@ export function NavigationManager() {
   const [isLoading, setIsLoading] = useState(true)
   const [isPending, startTransition] = useTransition()
   const [expandedTab, setExpandedTab] = useState<number | null>(null)
+  const [draggedIdx, setDraggedIdx] = useState<number | null>(null)
+  const [dragOverIdx, setDragOverIdx] = useState<number | null>(null)
 
   useEffect(() => {
     const fetchLinks = async () => {
@@ -75,22 +77,15 @@ export function NavigationManager() {
     setLinks(updated)
   }
 
-  const moveUp = (idx: number) => {
-    if (idx === 0) return
-    const updated = [...links]
-    const temp = updated[idx]
-    updated[idx] = updated[idx - 1]
-    updated[idx - 1] = temp
-    setLinks(updated)
-  }
-
-  const moveDown = (idx: number) => {
-    if (idx === links.length - 1) return
-    const updated = [...links]
-    const temp = updated[idx]
-    updated[idx] = updated[idx + 1]
-    updated[idx + 1] = temp
-    setLinks(updated)
+  const handleDrop = (dropIdx: number) => {
+    if (draggedIdx === null || draggedIdx === dropIdx) return;
+    const newLinks = [...links];
+    const draggedItem = newLinks[draggedIdx];
+    newLinks.splice(draggedIdx, 1);
+    newLinks.splice(dropIdx, 0, draggedItem);
+    setLinks(newLinks);
+    setDraggedIdx(null);
+    setDragOverIdx(null);
   }
 
   if (isLoading) {
@@ -115,16 +110,22 @@ export function NavigationManager() {
 
       <div className="space-y-4">
         {links.map((link, idx) => (
-          <div key={idx} className="border border-charcoal/10 rounded-2xl bg-slate-50 overflow-hidden">
+          <div 
+            key={idx} 
+            draggable
+            onDragStart={() => setDraggedIdx(idx)}
+            onDragOver={(e) => { e.preventDefault(); setDragOverIdx(idx); }}
+            onDrop={() => handleDrop(idx)}
+            onDragEnd={() => { setDraggedIdx(null); setDragOverIdx(null); }}
+            className={`border rounded-2xl bg-slate-50 overflow-hidden transition-all duration-200 ${
+              draggedIdx === idx ? 'opacity-40 border-dashed border-teal-500 scale-[0.98]' : 
+              dragOverIdx === idx ? 'border-teal-500 shadow-[0_0_0_2px_rgba(13,148,136,0.2)]' : 'border-charcoal/10'
+            }`}
+          >
             <div className="flex flex-col md:flex-row gap-2 md:gap-4 p-2 md:p-4 bg-white border-b border-charcoal/10">
               <div className="flex items-center gap-2 md:gap-4 w-full md:w-auto md:flex-1">
-                <div className="flex flex-col gap-1 shrink-0">
-                  <button type="button" onClick={() => moveUp(idx)} disabled={idx === 0} className="text-slate-400 hover:text-charcoal disabled:opacity-30">
-                    <ChevronUp size={16} />
-                  </button>
-                  <button type="button" onClick={() => moveDown(idx)} disabled={idx === links.length - 1} className="text-slate-400 hover:text-charcoal disabled:opacity-30">
-                    <ChevronDown size={16} />
-                  </button>
+                <div className="flex items-center justify-center p-2 text-slate-300 hover:text-charcoal cursor-grab active:cursor-grabbing transition-colors shrink-0">
+                  <GripVertical size={20} />
                 </div>
                 
                 <div className="flex-1 grid grid-cols-[35%_minmax(0,1fr)] md:grid-cols-2 gap-2 md:gap-4">
