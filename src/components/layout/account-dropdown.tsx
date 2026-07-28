@@ -41,7 +41,6 @@ export function AccountDropdown() {
 
   const customerLinks = [
     { href: "/account/orders", label: "My Orders", icon: ShoppingBag },
-    { href: "/account/profile", label: "Account Information", icon: User },
     { href: "/account/addresses", label: "Saved Addresses", icon: User },
     { href: "/account/wishlist", label: "Wishlist", icon: Heart },
     { href: "/account/coupons", label: "Coupons & Offers", icon: Ticket },
@@ -72,16 +71,12 @@ export function AccountDropdown() {
     { href: "/admin?tab=navigation", label: "Navigation Settings", icon: Menu },
     { href: "/admin?tab=banners", label: "Banner Settings", icon: ImageIcon },
     { href: "/admin?tab=system", label: "System Status", icon: Settings },
-    
-    // Account
-    { href: "/admin?tab=profile", label: "My Profile", icon: User },
   ]
 
   const supportLinks = [
     { href: "/support?tab=overview", label: "Dashboard Overview", icon: LayoutDashboard },
     { href: "/support?tab=orders", label: "Orders Management", icon: ShoppingBag },
     { href: "/support?tab=queries", label: "Queries Management", icon: MessageSquare },
-    { href: "/support?tab=profile", label: "My Profile", icon: User },
   ]
 
   const activeLinks = session.user.role === "ADMIN" ? adminLinks : session.user.role === "SUPPORT" ? supportLinks : customerLinks
@@ -117,10 +112,14 @@ export function AccountDropdown() {
             transition={{ duration: 0.2 }}
             className="absolute right-0 mt-2 w-64 bg-white rounded-2xl shadow-neo-card border border-charcoal/10 overflow-hidden z-50 flex flex-col"
           >
-            <div className="p-4 border-b border-charcoal/10 bg-slate-50/50">
+            <Link 
+              href={session.user.role === "ADMIN" ? "/admin?tab=profile" : session.user.role === "SUPPORT" ? "/support?tab=profile" : "/account/profile"}
+              onClick={() => setIsOpen(false)}
+              className="block p-4 border-b border-charcoal/10 bg-slate-50/50 hover:bg-slate-100 transition-colors"
+            >
               <p className="font-bold text-charcoal truncate">{session.user.name}</p>
               <p className="text-xs text-slate truncate">{session.user.email}</p>
-            </div>
+            </Link>
             <div className="max-h-[60vh] overflow-y-auto custom-scrollbar p-2">
               <nav className="space-y-1">
                 {activeLinks.map((link) => (

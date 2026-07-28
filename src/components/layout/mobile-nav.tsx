@@ -43,7 +43,6 @@ export function MobileNav() {
 
   const customerLinks = [
     { href: "/account/orders", label: "My Orders", icon: ShoppingBag },
-    { href: "/account/profile", label: "Account Information", icon: User },
     { href: "/account/addresses", label: "Saved Addresses", icon: User },
     { href: "/account/wishlist", label: "Wishlist", icon: Heart },
     { href: "/account/coupons", label: "Coupons & Offers", icon: Ticket },
@@ -66,14 +65,12 @@ export function MobileNav() {
     { href: "/admin?tab=navigation", label: "Navigation Settings", icon: Menu },
     { href: "/admin?tab=banners", label: "Banner Settings", icon: ImageIcon },
     { href: "/admin?tab=system", label: "System Status", icon: Settings },
-    { href: "/admin?tab=profile", label: "My Profile", icon: User },
   ];
 
   const supportLinks = [
     { href: "/support?tab=overview", label: "Dashboard Overview", icon: LayoutDashboard },
     { href: "/support?tab=orders", label: "Orders Management", icon: ShoppingBag },
     { href: "/support?tab=queries", label: "Queries Management", icon: MessageSquare },
-    { href: "/support?tab=profile", label: "My Profile", icon: User },
   ];
 
   const activeLinks = session?.user?.role === "ADMIN" ? adminLinks : session?.user?.role === "SUPPORT" ? supportLinks : customerLinks;
@@ -176,7 +173,11 @@ export function MobileNav() {
           transition={{ type: "spring", bounce: 0, duration: 0.3 }}
           className="absolute bottom-[72px] right-2 w-64 bg-white rounded-2xl shadow-xl z-50 overflow-hidden border border-slate-100"
         >
-          <div className="p-4 border-b border-slate-100 flex items-center gap-3 bg-slate-50">
+          <Link
+            href={session.user.role === "ADMIN" ? "/admin?tab=profile" : session.user.role === "SUPPORT" ? "/support?tab=profile" : "/account/profile"}
+            onClick={() => setIsAccountMenuOpen(false)}
+            className="p-4 border-b border-slate-100 flex items-center gap-3 bg-slate-50 hover:bg-slate-100 transition-colors"
+          >
             {session.user.image ? (
               <div className="w-10 h-10 rounded-full overflow-hidden border border-charcoal/20 shrink-0">
                 <Image src={session.user.image} alt={session.user.name || "User"} width={40} height={40} className="object-cover w-full h-full" />
@@ -190,7 +191,7 @@ export function MobileNav() {
               <p className="font-bold text-charcoal truncate">{session.user.name}</p>
               <p className="text-[10px] text-slate truncate">{session.user.email}</p>
             </div>
-          </div>
+          </Link>
           <div className="p-2 flex flex-col gap-1 max-h-[60vh] overflow-y-auto">
             {activeLinks.map((link) => (
               <Link key={link.href} href={link.href} onClick={() => setIsAccountMenuOpen(false)} className="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-50 transition-colors text-charcoal font-medium text-sm">
