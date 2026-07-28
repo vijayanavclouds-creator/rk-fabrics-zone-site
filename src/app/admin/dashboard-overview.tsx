@@ -174,7 +174,7 @@ export function DashboardOverview({ initialData, isSupport = false }: { initialD
   const MetricsRow = (
     <div className="grid grid-cols-2 lg:grid-cols-4 gap-1 sm:gap-4 max-sm:px-0">
       <Link href="/admin?tab=finance" className="block cursor-pointer">
-        <GlassCard className="bg-white/80 h-full hover:shadow-md transition-all !p-3 md:!p-4">
+        <GlassCard className="bg-white/80 h-full hover:shadow-md transition-all !p-2 md:!p-4">
           <div className="flex items-center gap-1.5 mb-1 md:mb-2">
             <div className="p-1 bg-blue-50/50 text-blue-500 rounded flex justify-center">
               <BarChart3 size={12} strokeWidth={3} className="xl:w-[14px] xl:h-[14px]" />
@@ -186,7 +186,7 @@ export function DashboardOverview({ initialData, isSupport = false }: { initialD
       </Link>
       
       <Link href="/admin?tab=users" className="block cursor-pointer">
-        <GlassCard className="bg-emerald-50/30 h-full hover:shadow-md transition-all !p-3 md:!p-4">
+        <GlassCard className="bg-emerald-50/30 h-full hover:shadow-md transition-all !p-2 md:!p-4">
           <div className="flex items-center gap-1.5 mb-1 md:mb-2">
             <div className="p-1 bg-emerald-50 text-emerald-500 rounded flex justify-center">
               <Users size={12} strokeWidth={3} className="xl:w-[14px] xl:h-[14px]" />
@@ -198,7 +198,7 @@ export function DashboardOverview({ initialData, isSupport = false }: { initialD
       </Link>
 
       <Link href="/admin?tab=finance" className="block cursor-pointer">
-        <GlassCard className="bg-amber-50/40 h-full hover:shadow-md transition-all !p-3 md:!p-4 border border-amber-100/30">
+        <GlassCard className="bg-amber-50/40 h-full hover:shadow-md transition-all !p-2 md:!p-4 border border-amber-100/30">
           <div className="flex items-center gap-1.5 mb-1 md:mb-2">
             <div className="p-1 bg-amber-100/50 text-amber-500 rounded flex justify-center">
               <Ticket size={12} strokeWidth={3} className="xl:w-[14px] xl:h-[14px]" />
@@ -210,7 +210,7 @@ export function DashboardOverview({ initialData, isSupport = false }: { initialD
       </Link>
 
       <Link href="/admin?tab=taxonomy" className="block cursor-pointer">
-        <GlassCard className="bg-purple-50/30 h-full hover:shadow-md transition-all !p-3 md:!p-4 border border-purple-100/30">
+        <GlassCard className="bg-purple-50/30 h-full hover:shadow-md transition-all !p-2 md:!p-4 border border-purple-100/30">
           <div className="flex items-center gap-1.5 mb-1 md:mb-2">
             <div className="p-1 bg-purple-100/50 text-purple-500 rounded flex justify-center">
               <Tags size={12} strokeWidth={3} className="xl:w-[14px] xl:h-[14px]" />
@@ -539,22 +539,116 @@ export function DashboardOverview({ initialData, isSupport = false }: { initialD
         {/* MOBILE LAYOUT */}
         <div className="xl:hidden flex flex-col space-y-2 md:space-y-4 max-sm:space-y-[2px] max-sm:bg-charcoal/5">
           {!isSupport && SystemStatusCard}
-          {MetricsRow}
           {ChartCard}
-          {!isSupport && ActivityFeedCard}
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-4 max-sm:gap-[2px]">
-            <div className="space-y-2 md:space-y-4 max-sm:space-y-[2px]">
-              {!isSupport && NavigationCard}
-              {!isSupport && TaxonomyCard}
-              {UserManagementCard}
-              {QueryManagementCard}
+          {!isSupport && (
+            <div className="grid grid-cols-2 gap-[2px] max-sm:px-0">
+              <Link href="/admin?tab=navigation" className="block cursor-pointer">
+                <GlassCard className="bg-slate-50 h-full !p-2 !shadow-none">
+                  <div className="flex items-center gap-1.5 mb-1">
+                    <div className="p-1 bg-slate-200/50 text-slate-500 rounded flex justify-center">
+                      <Settings size={12} strokeWidth={3} />
+                    </div>
+                    <span className="text-[9px] font-bold text-charcoal uppercase tracking-widest whitespace-nowrap">Navigation</span>
+                  </div>
+                  <h3 className="text-sm font-black text-charcoal tracking-tight mt-0.5">Menus</h3>
+                </GlassCard>
+              </Link>
+              
+              <Link href="/admin?tab=taxonomy" className="block cursor-pointer">
+                <GlassCard className="bg-indigo-50/50 h-full !p-2 !shadow-none">
+                  <div className="flex items-center gap-1.5 mb-1">
+                    <div className="p-1 bg-indigo-100/50 text-indigo-500 rounded flex justify-center">
+                      <Network size={12} strokeWidth={3} />
+                    </div>
+                    <span className="text-[9px] font-bold text-charcoal uppercase tracking-widest whitespace-nowrap">Taxonomy</span>
+                  </div>
+                  <h3 className="text-sm font-black text-charcoal tracking-tight mt-0.5">Structure</h3>
+                </GlassCard>
+              </Link>
+        
+              <Link href="/admin?tab=banners" className="block cursor-pointer">
+                <GlassCard className="bg-pink-50/50 h-full !p-2 !shadow-none">
+                  <div className="flex items-center gap-1.5 mb-1">
+                    <div className="p-1 bg-pink-100/50 text-pink-500 rounded flex justify-center">
+                      <ImageIcon size={12} strokeWidth={3} />
+                    </div>
+                    <span className="text-[9px] font-bold text-charcoal uppercase tracking-widest whitespace-nowrap">Banners</span>
+                  </div>
+                  <h3 className="text-sm font-black text-charcoal tracking-tight mt-0.5">Graphics</h3>
+                </GlassCard>
+              </Link>
+        
+              <Link href="/admin?tab=newsletters" className="block cursor-pointer">
+                <GlassCard className="bg-sky-50/50 h-full !p-2 !shadow-none">
+                  <div className="flex items-center gap-1.5 mb-1">
+                    <div className="p-1 bg-sky-100/50 text-sky-500 rounded flex justify-center">
+                      <Mail size={12} strokeWidth={3} />
+                    </div>
+                    <span className="text-[9px] font-bold text-charcoal uppercase tracking-widest whitespace-nowrap">Newsletter</span>
+                  </div>
+                  <h3 className="text-sm font-black text-charcoal tracking-tight mt-0.5">Subscribers</h3>
+                </GlassCard>
+              </Link>
+        
+              {/* Sales */}
+              <Link href="/admin?tab=finance" className="block cursor-pointer">
+                <GlassCard className="bg-white/80 h-full !p-2 !shadow-none">
+                  <div className="flex items-center gap-1.5 mb-1">
+                    <div className="p-1 bg-blue-50/50 text-blue-500 rounded flex justify-center">
+                      <BarChart3 size={12} strokeWidth={3} />
+                    </div>
+                    <span className="text-[9px] font-bold text-charcoal uppercase tracking-widest whitespace-nowrap">Sales</span>
+                  </div>
+                  <h3 className="text-base font-black text-charcoal tracking-tight mt-0.5">₹{data.totalSales?.toLocaleString()}</h3>
+                </GlassCard>
+              </Link>
+              
+              {/* Users */}
+              <Link href="/admin?tab=users" className="block cursor-pointer">
+                <GlassCard className="bg-emerald-50/30 h-full !p-2 !shadow-none">
+                  <div className="flex items-center gap-1.5 mb-1">
+                    <div className="p-1 bg-emerald-50 text-emerald-500 rounded flex justify-center">
+                      <Users size={12} strokeWidth={3} />
+                    </div>
+                    <span className="text-[9px] font-bold text-charcoal uppercase tracking-widest whitespace-nowrap">Users</span>
+                  </div>
+                  <h3 className="text-base font-black text-charcoal tracking-tight mt-0.5">{data.totalUsers || 0}</h3>
+                </GlassCard>
+              </Link>
+        
+              {/* Discount */}
+              <Link href="/admin?tab=finance" className="block cursor-pointer">
+                <GlassCard className="bg-amber-50/40 h-full !p-2 !shadow-none border-amber-100/30">
+                  <div className="flex items-center gap-1.5 mb-1">
+                    <div className="p-1 bg-amber-100/50 text-amber-500 rounded flex justify-center">
+                      <Ticket size={12} strokeWidth={3} />
+                    </div>
+                    <span className="text-[9px] font-bold text-charcoal uppercase tracking-widest whitespace-nowrap text-ellipsis overflow-hidden">Discount</span>
+                  </div>
+                  <h3 className="text-base font-black text-charcoal tracking-tight mt-0.5">₹{(data.totalDiscounts || 0).toLocaleString()}</h3>
+                </GlassCard>
+              </Link>
+        
+              {/* Tags */}
+              <Link href="/admin?tab=taxonomy" className="block cursor-pointer">
+                <GlassCard className="bg-purple-50/30 h-full !p-2 !shadow-none border-purple-100/30">
+                  <div className="flex items-center gap-1.5 mb-1">
+                    <div className="p-1 bg-purple-100/50 text-purple-500 rounded flex justify-center">
+                      <Tags size={12} strokeWidth={3} />
+                    </div>
+                    <span className="text-[9px] font-bold text-charcoal uppercase tracking-widest whitespace-nowrap text-ellipsis overflow-hidden">Tags</span>
+                  </div>
+                  <h3 className="text-base font-black text-charcoal tracking-tight mt-0.5">{data.totalCategories}</h3>
+                </GlassCard>
+              </Link>
             </div>
-            <div className="space-y-2 md:space-y-4 max-sm:space-y-[2px]">
-              {OrderManagementCard}
-              {!isSupport && ContentPromoCard}
-            </div>
-          </div>
+          )}
+
+          {OrderManagementCard}
+          {UserManagementCard}
+          {!isSupport && ActivityFeedCard}
+          {QueryManagementCard}
         </div>
 
         {/* DESKTOP LAYOUT */}
