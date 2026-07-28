@@ -538,6 +538,7 @@ export function DashboardOverview({ initialData, isSupport = false }: { initialD
 
         {/* MOBILE LAYOUT */}
         <div className="xl:hidden flex flex-col space-y-2 md:space-y-4 max-sm:space-y-[2px] max-sm:bg-charcoal/5">
+          {OrderManagementCard}
           {!isSupport && SystemStatusCard}
           {ChartCard}
           
@@ -645,7 +646,6 @@ export function DashboardOverview({ initialData, isSupport = false }: { initialD
             </div>
           )}
 
-          {OrderManagementCard}
           {UserManagementCard}
           {!isSupport && ActivityFeedCard}
           {QueryManagementCard}
