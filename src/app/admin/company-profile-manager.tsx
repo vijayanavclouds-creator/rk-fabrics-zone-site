@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { getCompanyProfile, saveCompanyProfile } from "@/actions/system";
 import { toast } from "sonner";
 import { Save, Link as LinkIcon, Phone, Mail, User, Globe, MapPin, Building2 } from "lucide-react";
+import { InstagramIcon, FacebookIcon, TwitterIcon, LinkedinIcon, PinterestIcon, ThreadsIcon, WhatsAppIcon } from "@/components/icons/social";
 
 export function CompanyProfileManager() {
   const [loading, setLoading] = useState(true);
@@ -81,17 +82,17 @@ export function CompanyProfileManager() {
         </p>
       </div>
 
-      <div className="bg-white p-6 rounded-3xl border border-charcoal/10 shadow-sm">
-      <form onSubmit={handleSubmit} className="space-y-8">
+      <div className="bg-white p-4 sm:p-6 -mx-4 sm:mx-0 rounded-none sm:rounded-3xl border-y sm:border border-charcoal/10 shadow-sm">
+      <form onSubmit={handleSubmit} className="space-y-4 md:space-y-8">
         {/* Social Media & Links */}
-        <div className="bg-slate-50 p-6 rounded-2xl border border-charcoal/5">
+        <div className="bg-slate-50 p-4 md:p-6 rounded-2xl border border-charcoal/5">
           <h3 className="text-lg font-bold text-charcoal mb-4 flex items-center gap-2 border-b border-charcoal/10 pb-2">
             <Globe className="text-blue-500" size={20} /> Social & Links
           </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
             <div>
-              <label className="block text-sm font-bold text-charcoal mb-2 flex items-center gap-2">
-                <LinkIcon size={16} /> Instagram URL
+              <label className="block text-sm font-bold text-charcoal mb-1 md:mb-2 flex items-center gap-2">
+                <InstagramIcon size={16} className="text-pink-600" /> Instagram URL
               </label>
               <input
                 type="url"
@@ -99,12 +100,12 @@ export function CompanyProfileManager() {
                 value={profile.instagramUrl || ""}
                 onChange={handleChange}
                 placeholder="https://instagram.com/yourstore"
-                className="w-full px-4 py-3 bg-white border border-charcoal/20 rounded-xl focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-all"
+                className="w-full px-4 py-2.5 md:py-3 text-base bg-cream shadow-neo-input !border-none rounded-full focus:!outline-none focus:!ring-0 focus:!border-none text-charcoal placeholder:text-slate/60 transition-all"
               />
             </div>
             <div>
-              <label className="block text-sm font-bold text-charcoal mb-2 flex items-center gap-2">
-                <LinkIcon size={16} /> Facebook URL
+              <label className="block text-sm font-bold text-charcoal mb-1 md:mb-2 flex items-center gap-2">
+                <FacebookIcon size={16} className="text-blue-600" /> Facebook URL
               </label>
               <input
                 type="url"
@@ -112,12 +113,12 @@ export function CompanyProfileManager() {
                 value={profile.facebookUrl || ""}
                 onChange={handleChange}
                 placeholder="https://facebook.com/yourstore"
-                className="w-full px-4 py-3 bg-white border border-charcoal/20 rounded-xl focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-all"
+                className="w-full px-4 py-2.5 md:py-3 text-base bg-cream shadow-neo-input !border-none rounded-full focus:!outline-none focus:!ring-0 focus:!border-none text-charcoal placeholder:text-slate/60 transition-all"
               />
             </div>
             <div>
-              <label className="block text-sm font-bold text-charcoal mb-2 flex items-center gap-2">
-                <LinkIcon size={16} /> X (Twitter) URL
+              <label className="block text-sm font-bold text-charcoal mb-1 md:mb-2 flex items-center gap-2">
+                <TwitterIcon size={16} className="text-slate-800" /> X (Twitter) URL
               </label>
               <input
                 type="url"
@@ -125,12 +126,12 @@ export function CompanyProfileManager() {
                 value={profile.xUrl || ""}
                 onChange={handleChange}
                 placeholder="https://x.com/yourstore"
-                className="w-full px-4 py-3 bg-white border border-charcoal/20 rounded-xl focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-all"
+                className="w-full px-4 py-2.5 md:py-3 text-base bg-cream shadow-neo-input !border-none rounded-full focus:!outline-none focus:!ring-0 focus:!border-none text-charcoal placeholder:text-slate/60 transition-all"
               />
             </div>
             <div>
-              <label className="block text-sm font-bold text-charcoal mb-2 flex items-center gap-2">
-                <LinkIcon size={16} /> Threads URL
+              <label className="block text-sm font-bold text-charcoal mb-1 md:mb-2 flex items-center gap-2">
+                <ThreadsIcon size={16} className="text-slate-900" /> Threads URL
               </label>
               <input
                 type="url"
@@ -138,12 +139,12 @@ export function CompanyProfileManager() {
                 value={profile.threadsUrl || ""}
                 onChange={handleChange}
                 placeholder="https://threads.net/@yourstore"
-                className="w-full px-4 py-3 bg-white border border-charcoal/20 rounded-xl focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-all"
+                className="w-full px-4 py-2.5 md:py-3 text-base bg-cream shadow-neo-input !border-none rounded-full focus:!outline-none focus:!ring-0 focus:!border-none text-charcoal placeholder:text-slate/60 transition-all"
               />
             </div>
             <div>
-              <label className="block text-sm font-bold text-charcoal mb-2 flex items-center gap-2">
-                <LinkIcon size={16} /> Pinterest URL
+              <label className="block text-sm font-bold text-charcoal mb-1 md:mb-2 flex items-center gap-2">
+                <PinterestIcon size={16} className="text-red-600" /> Pinterest URL
               </label>
               <input
                 type="url"
@@ -151,12 +152,12 @@ export function CompanyProfileManager() {
                 value={profile.pinterestUrl || ""}
                 onChange={handleChange}
                 placeholder="https://pinterest.com/yourstore"
-                className="w-full px-4 py-3 bg-white border border-charcoal/20 rounded-xl focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-all"
+                className="w-full px-4 py-2.5 md:py-3 text-base bg-cream shadow-neo-input !border-none rounded-full focus:!outline-none focus:!ring-0 focus:!border-none text-charcoal placeholder:text-slate/60 transition-all"
               />
             </div>
             <div>
-              <label className="block text-sm font-bold text-charcoal mb-2 flex items-center gap-2">
-                <LinkIcon size={16} /> LinkedIn URL
+              <label className="block text-sm font-bold text-charcoal mb-1 md:mb-2 flex items-center gap-2">
+                <LinkedinIcon size={16} className="text-blue-700" /> LinkedIn URL
               </label>
               <input
                 type="url"
@@ -164,12 +165,12 @@ export function CompanyProfileManager() {
                 value={profile.linkedinUrl || ""}
                 onChange={handleChange}
                 placeholder="https://linkedin.com/company/yourstore"
-                className="w-full px-4 py-3 bg-white border border-charcoal/20 rounded-xl focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-all"
+                className="w-full px-4 py-2.5 md:py-3 text-base bg-cream shadow-neo-input !border-none rounded-full focus:!outline-none focus:!ring-0 focus:!border-none text-charcoal placeholder:text-slate/60 transition-all"
               />
             </div>
             <div>
-              <label className="block text-sm font-bold text-charcoal mb-2 flex items-center gap-2">
-                <LinkIcon size={16} /> WhatsApp URL
+              <label className="block text-sm font-bold text-charcoal mb-1 md:mb-2 flex items-center gap-2">
+                <WhatsAppIcon size={16} className="text-green-600" /> WhatsApp URL
               </label>
               <input
                 type="url"
@@ -177,11 +178,11 @@ export function CompanyProfileManager() {
                 value={profile.whatsappUrl || ""}
                 onChange={handleChange}
                 placeholder="https://wa.me/1234567890"
-                className="w-full px-4 py-3 bg-white border border-charcoal/20 rounded-xl focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-all"
+                className="w-full px-4 py-2.5 md:py-3 text-base bg-cream shadow-neo-input !border-none rounded-full focus:!outline-none focus:!ring-0 focus:!border-none text-charcoal placeholder:text-slate/60 transition-all"
               />
             </div>
             <div>
-              <label className="block text-sm font-bold text-charcoal mb-2 flex items-center gap-2">
+              <label className="block text-sm font-bold text-charcoal mb-1 md:mb-2 flex items-center gap-2">
                 <Globe size={16} /> Website URL (Main/Blog)
               </label>
               <input
@@ -190,162 +191,162 @@ export function CompanyProfileManager() {
                 value={profile.websiteUrl || ""}
                 onChange={handleChange}
                 placeholder="https://rkfabricszone.com"
-                className="w-full px-4 py-3 bg-white border border-charcoal/20 rounded-xl focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-all"
+                className="w-full px-4 py-2.5 md:py-3 text-base bg-cream shadow-neo-input !border-none rounded-full focus:!outline-none focus:!ring-0 focus:!border-none text-charcoal placeholder:text-slate/60 transition-all"
               />
             </div>
           </div>
         </div>
 
         {/* Contact Information */}
-        <div className="bg-slate-50 p-6 rounded-2xl border border-charcoal/5">
+        <div className="bg-slate-50 p-4 md:p-6 rounded-2xl border border-charcoal/5">
           <h3 className="text-lg font-bold text-charcoal mb-4 flex items-center gap-2 border-b border-charcoal/10 pb-2">
             <Phone className="text-emerald-600" size={20} /> Contact & Support
           </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
             <div>
-              <label className="block text-sm font-bold text-charcoal mb-2 flex items-center gap-2">
+              <label className="block text-sm font-bold text-charcoal mb-1 md:mb-2 flex items-center gap-2">
                 <Phone size={16} /> Contact Number
               </label>
               <input
                 type="text"
                 name="contactNumber"
-                value={profile.contactNumber}
+                value={profile.contactNumber || ""}
                 onChange={handleChange}
                 placeholder="+91 98765 43210"
-                className="w-full px-4 py-3 bg-white border border-charcoal/20 rounded-xl focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-all"
+                className="w-full px-4 py-2.5 md:py-3 text-base bg-cream shadow-neo-input !border-none rounded-full focus:!outline-none focus:!ring-0 focus:!border-none text-charcoal placeholder:text-slate/60 transition-all"
               />
             </div>
             <div>
-              <label className="block text-sm font-bold text-charcoal mb-2 flex items-center gap-2">
+              <label className="block text-sm font-bold text-charcoal mb-1 md:mb-2 flex items-center gap-2">
                 <Phone size={16} /> Help Center Number
               </label>
               <input
                 type="text"
                 name="helpCenterNumber"
-                value={profile.helpCenterNumber}
+                value={profile.helpCenterNumber || ""}
                 onChange={handleChange}
                 placeholder="1800-123-4567"
-                className="w-full px-4 py-3 bg-white border border-charcoal/20 rounded-xl focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-all"
+                className="w-full px-4 py-2.5 md:py-3 text-base bg-cream shadow-neo-input !border-none rounded-full focus:!outline-none focus:!ring-0 focus:!border-none text-charcoal placeholder:text-slate/60 transition-all"
               />
             </div>
             <div>
-              <label className="block text-sm font-bold text-charcoal mb-2 flex items-center gap-2">
+              <label className="block text-sm font-bold text-charcoal mb-1 md:mb-2 flex items-center gap-2">
                 <Mail size={16} /> Support Email
               </label>
               <input
                 type="email"
                 name="supportEmail"
-                value={profile.supportEmail}
+                value={profile.supportEmail || ""}
                 onChange={handleChange}
                 placeholder="support@rkfabricszone.com"
-                className="w-full px-4 py-3 bg-white border border-charcoal/20 rounded-xl focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-all"
+                className="w-full px-4 py-2.5 md:py-3 text-base bg-cream shadow-neo-input !border-none rounded-full focus:!outline-none focus:!ring-0 focus:!border-none text-charcoal placeholder:text-slate/60 transition-all"
               />
             </div>
             <div>
-              <label className="block text-sm font-bold text-charcoal mb-2 flex items-center gap-2">
+              <label className="block text-sm font-bold text-charcoal mb-1 md:mb-2 flex items-center gap-2">
                 <User size={16} /> Owner / Entity Name
               </label>
               <input
                 type="text"
                 name="ownerName"
-                value={profile.ownerName}
+                value={profile.ownerName || ""}
                 onChange={handleChange}
                 placeholder="RK Fabrics Zone Pvt Ltd"
-                className="w-full px-4 py-3 bg-white border border-charcoal/20 rounded-xl focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-all"
+                className="w-full px-4 py-2.5 md:py-3 text-base bg-cream shadow-neo-input !border-none rounded-full focus:!outline-none focus:!ring-0 focus:!border-none text-charcoal placeholder:text-slate/60 transition-all"
               />
             </div>
             <div>
-              <label className="block text-sm font-bold text-charcoal mb-2 flex items-center gap-2">
+              <label className="block text-sm font-bold text-charcoal mb-1 md:mb-2 flex items-center gap-2">
                 <Building2 size={16} /> GST Number
               </label>
               <input
                 type="text"
                 name="gstNumber"
-                value={profile.gstNumber}
+                value={profile.gstNumber || ""}
                 onChange={handleChange}
                 placeholder="08XXXXX1234X1ZX"
-                className="w-full px-4 py-3 bg-white border border-charcoal/20 rounded-xl focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-all"
+                className="w-full px-4 py-2.5 md:py-3 text-base bg-cream shadow-neo-input !border-none rounded-full focus:!outline-none focus:!ring-0 focus:!border-none text-charcoal placeholder:text-slate/60 transition-all"
               />
             </div>
             <div className="md:col-span-2">
-              <label className="block text-sm font-bold text-charcoal mb-2 flex items-center gap-2">
+              <label className="block text-sm font-bold text-charcoal mb-1 md:mb-2 flex items-center gap-2">
                 <MapPin size={16} /> Registered Address
               </label>
               <textarea
                 name="address"
-                value={profile.address}
+                value={profile.address || ""}
                 onChange={handleChange}
                 rows={3}
                 placeholder="Full registered address of the store..."
-                className="w-full px-4 py-3 bg-white border border-charcoal/20 rounded-xl focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-all custom-scrollbar"
+                className="w-full px-4 py-3 text-base bg-cream shadow-neo-input !border-none rounded-2xl focus:!outline-none focus:!ring-0 focus:!border-none text-charcoal placeholder:text-slate/60 transition-all custom-scrollbar"
               />
             </div>
             <div className="md:col-span-2">
-              <label className="block text-sm font-bold text-charcoal mb-2 flex items-center gap-2">
+              <label className="block text-sm font-bold text-charcoal mb-1 md:mb-2 flex items-center gap-2">
                 <Building2 size={16} /> Company Description (Footer)
               </label>
               <textarea
                 name="companyDescription"
-                value={profile.companyDescription}
+                value={profile.companyDescription || ""}
                 onChange={handleChange}
                 rows={3}
                 placeholder="Short description about the company for the footer..."
-                className="w-full px-4 py-3 bg-white border border-charcoal/20 rounded-xl focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-all custom-scrollbar"
+                className="w-full px-4 py-3 text-base bg-cream shadow-neo-input !border-none rounded-2xl focus:!outline-none focus:!ring-0 focus:!border-none text-charcoal placeholder:text-slate/60 transition-all custom-scrollbar"
               />
           </div>
         </div>
         </div>
 
         {/* GST Configuration */}
-        <div className="bg-slate-50 p-6 rounded-2xl border border-charcoal/5">
+        <div className="bg-slate-50 p-4 md:p-6 rounded-2xl border border-charcoal/5">
           <h3 className="text-lg font-bold text-charcoal mb-4 flex items-center gap-2 border-b border-charcoal/10 pb-2">
             <Building2 className="text-purple-600" size={20} /> GST Configuration
           </h3>
           <p className="text-xs text-slate-500 mb-4">Set the GST percentages for different item prices based on the standard taxation rules.</p>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
             <div>
-              <label className="block text-sm font-bold text-charcoal mb-2">
+              <label className="block text-sm font-bold text-charcoal mb-1 md:mb-2">
                 Items ≤ ₹1,000 (%)
               </label>
               <input
                 type="number"
                 name="gstPercentBelow1000"
-                value={profile.gstPercentBelow1000}
+                value={profile.gstPercentBelow1000 ?? ""}
                 onChange={handleChange}
                 placeholder="5"
                 step="0.1"
                 min="0"
-                className="w-full px-4 py-3 bg-white border border-charcoal/20 rounded-xl focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-all"
+                className="w-full px-4 py-2.5 md:py-3 text-base bg-cream shadow-neo-input !border-none rounded-full focus:!outline-none focus:!ring-0 focus:!border-none text-charcoal placeholder:text-slate/60 transition-all"
               />
             </div>
             <div>
-              <label className="block text-sm font-bold text-charcoal mb-2">
+              <label className="block text-sm font-bold text-charcoal mb-1 md:mb-2">
                 Items &gt; ₹1,000 (%)
               </label>
               <input
                 type="number"
                 name="gstPercentAbove1000"
-                value={profile.gstPercentAbove1000}
+                value={profile.gstPercentAbove1000 ?? ""}
                 onChange={handleChange}
                 placeholder="12"
                 step="0.1"
                 min="0"
-                className="w-full px-4 py-3 bg-white border border-charcoal/20 rounded-xl focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-all"
+                className="w-full px-4 py-2.5 md:py-3 text-base bg-cream shadow-neo-input !border-none rounded-full focus:!outline-none focus:!ring-0 focus:!border-none text-charcoal placeholder:text-slate/60 transition-all"
               />
             </div>
             <div>
-              <label className="block text-sm font-bold text-charcoal mb-2">
+              <label className="block text-sm font-bold text-charcoal mb-1 md:mb-2">
                 Shipping / Fees (%)
               </label>
               <input
                 type="number"
                 name="gstPercentShipping"
-                value={profile.gstPercentShipping}
+                value={profile.gstPercentShipping ?? ""}
                 onChange={handleChange}
                 placeholder="18"
                 step="0.1"
                 min="0"
-                className="w-full px-4 py-3 bg-white border border-charcoal/20 rounded-xl focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-all"
+                className="w-full px-4 py-2.5 md:py-3 text-base bg-cream shadow-neo-input !border-none rounded-full focus:!outline-none focus:!ring-0 focus:!border-none text-charcoal placeholder:text-slate/60 transition-all"
               />
             </div>
           </div>
