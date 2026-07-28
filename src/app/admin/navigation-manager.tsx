@@ -155,7 +155,7 @@ export function NavigationManager() {
               <div className="flex items-center justify-start md:justify-end gap-2 w-full md:w-auto pl-[44px] md:pl-0 pt-1 md:pt-0 mt-1 md:mt-0">
                 <button 
                   onClick={() => setExpandedTab(expandedTab === idx ? null : idx)}
-                  className="px-4 py-2 bg-charcoal/5 hover:bg-charcoal/10 text-charcoal rounded-lg font-medium text-sm transition-colors flex items-center gap-2 justify-center"
+                  className="flex-1 md:flex-none px-4 py-2 bg-charcoal/5 hover:bg-charcoal/10 text-charcoal rounded-lg font-medium text-sm transition-colors flex items-center justify-center gap-2"
                 >
                   Submenus ({link.submenu?.length || 0})
                   <ChevronDown size={16} className={`transition-transform ${expandedTab === idx ? 'rotate-180' : ''}`} />
