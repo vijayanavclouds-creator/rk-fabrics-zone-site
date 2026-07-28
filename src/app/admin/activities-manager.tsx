@@ -1,9 +1,9 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Activity, Clock } from "lucide-react"
+import { Activity, Clock, Trash2, AlertTriangle } from "lucide-react"
 import { PortalHeader } from "@/components/layout/portal-header"
-import { getAllAdminActivities } from "@/actions/admin-activity"
+import { getAllAdminActivities, deleteAdminActivitiesByDateRange } from "@/actions/admin-activity"
 import { toast } from "sonner"
 
 export function ActivitiesManager() {
@@ -11,6 +11,16 @@ export function ActivitiesManager() {
   const [loading, setLoading] = useState(true)
   const [page, setPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
+  
+  const [showClearHistory, setShowClearHistory] = useState(false)
+  const [startDate, setStartDate] = useState("")
+  const [endDate, setEndDate] = useState("")
+  const [isClearing, setIsClearing] = useState(false)
+  
+  // Calculate max date (3 months ago)
+  const maxDate = new Date()
+  maxDate.setMonth(maxDate.getMonth() - 3)
+  const maxDateStr = maxDate.toISOString().split("T")[0]
 
   useEffect(() => {
     fetchActivities(page)
@@ -28,6 +38,26 @@ export function ActivitiesManager() {
     setLoading(false)
   }
 
+  const handleClearHistory = async () => {
+    if (!startDate || !endDate) return toast.error("Please select both dates")
+    if (new Date(startDate) > new Date(endDate)) return toast.error("Start date cannot be after end date")
+    
+    setIsClearing(true)
+    const res = await deleteAdminActivitiesByDateRange(startDate, endDate)
+    setIsClearing(false)
+    
+    if (res.success) {
+      toast.success(`Successfully deleted ${res.count} activities`)
+      setShowClearHistory(false)
+      setStartDate("")
+      setEndDate("")
+      setPage(1)
+      fetchActivities(1)
+    } else {
+      toast.error(res.error || "Failed to delete history")
+    }
+  }
+
   return (
     <div className="space-y-6">
       <PortalHeader 
@@ -36,15 +66,72 @@ export function ActivitiesManager() {
       />
 
       <div className="bg-white rounded-3xl border border-charcoal/10 overflow-hidden shadow-sm p-6 lg:p-8">
-        <div className="flex items-center gap-3 mb-8 pb-4 border-b border-charcoal/10">
-          <div className="p-3 bg-teal-50 text-teal-600 rounded-xl">
-            <Activity size={24} />
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8 pb-4 border-b border-charcoal/10">
+          <div className="flex items-center gap-3">
+            <div className="p-3 bg-teal-50 text-teal-600 rounded-xl">
+              <Activity size={24} />
+            </div>
+            <div>
+              <h3 className="text-xl font-bold text-charcoal">System Activity Log</h3>
+              <p className="text-sm text-slate">All actions are recorded for security and auditing purposes.</p>
+            </div>
           </div>
-          <div>
-            <h3 className="text-xl font-bold text-charcoal">System Activity Log</h3>
-            <p className="text-sm text-slate">All actions are recorded for security and auditing purposes.</p>
-          </div>
+          
+          <button 
+            onClick={() => setShowClearHistory(!showClearHistory)}
+            className="flex items-center justify-center gap-2 px-4 py-2 text-sm font-bold text-red-600 bg-red-50 hover:bg-red-100 rounded-xl transition-colors"
+          >
+            <Trash2 size={16} />
+            Clear History
+          </button>
         </div>
+
+        {showClearHistory && (
+          <div className="mb-8 p-5 bg-red-50/50 border border-red-100 rounded-2xl">
+            <div className="flex items-center gap-2 text-red-600 font-bold mb-4">
+              <AlertTriangle size={18} />
+              <h4>Delete Activity History</h4>
+            </div>
+            <p className="text-sm text-slate mb-4">
+              Select a date range to permanently delete activity logs. For security purposes, logs from the last 3 months cannot be deleted.
+            </p>
+            <div className="flex flex-wrap items-end gap-4">
+              <div className="space-y-1.5 flex-1 min-w-[200px]">
+                <label className="text-xs font-bold text-charcoal uppercase tracking-wider">Start Date</label>
+                <input 
+                  type="date" 
+                  max={maxDateStr}
+                  value={startDate}
+                  onChange={(e) => setStartDate(e.target.value)}
+                  className="w-full px-4 py-2.5 bg-white border border-charcoal/10 rounded-xl text-charcoal focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 transition-all"
+                />
+              </div>
+              <div className="space-y-1.5 flex-1 min-w-[200px]">
+                <label className="text-xs font-bold text-charcoal uppercase tracking-wider">End Date (Max: {new Date(maxDateStr).toLocaleDateString()})</label>
+                <input 
+                  type="date" 
+                  max={maxDateStr}
+                  value={endDate}
+                  onChange={(e) => setEndDate(e.target.value)}
+                  className="w-full px-4 py-2.5 bg-white border border-charcoal/10 rounded-xl text-charcoal focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 transition-all"
+                />
+              </div>
+              <button 
+                onClick={handleClearHistory}
+                disabled={isClearing || !startDate || !endDate}
+                className="px-6 py-2.5 bg-red-600 hover:bg-red-700 text-white font-bold rounded-xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isClearing ? "Deleting..." : "Delete Logs"}
+              </button>
+              <button 
+                onClick={() => setShowClearHistory(false)}
+                className="px-6 py-2.5 bg-white border border-charcoal/10 hover:bg-cream text-charcoal font-bold rounded-xl transition-colors"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        )}
 
         {loading ? (
           <div className="flex justify-center p-12">

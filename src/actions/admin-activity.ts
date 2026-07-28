@@ -70,3 +70,50 @@ export async function getAllAdminActivities(page = 1, limit = 50) {
   }
 }
 
+/**
+ * Delete admin activities within a specific date range.
+ * Restricts deletion of activities from the last 3 months.
+ */
+export async function deleteAdminActivitiesByDateRange(startDateStr: string, endDateStr: string) {
+  try {
+    const session = await getServerSession(authOptions);
+    if (!session || session.user?.role !== "ADMIN") {
+      return { success: false, error: "Unauthorized" };
+    }
+
+    const startDate = new Date(startDateStr);
+    const endDate = new Date(endDateStr);
+    
+    // Set endDate to end of the day to include the whole day
+    endDate.setHours(23, 59, 59, 999);
+
+    // Validate that endDate is not within the last 3 months
+    const threeMonthsAgo = new Date();
+    threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
+
+    if (endDate > threeMonthsAgo) {
+      return { success: false, error: "Cannot delete activities from the last 3 months" };
+    }
+
+    if (startDate > endDate) {
+      return { success: false, error: "Start date must be before end date" };
+    }
+
+    const result = await prisma.adminActivity.deleteMany({
+      where: {
+        createdAt: {
+          gte: startDate,
+          lte: endDate,
+        },
+      },
+    });
+
+    await logAdminActivity("cleared activity history", `deleted ${result.count} logs from ${startDate.toLocaleDateString()} to ${endDate.toLocaleDateString()}`);
+
+    return { success: true, count: result.count };
+  } catch (error: any) {
+    console.error("Failed to delete admin activities:", error);
+    return { success: false, error: error.message };
+  }
+}
+
