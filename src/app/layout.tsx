@@ -87,6 +87,12 @@ export const viewport: Viewport = {
   colorScheme: "light",
 };
 
+const toastOptions = {
+  style: {
+    fontFamily: "var(--font-inter)",
+  },
+};
+
 export default async function RootLayout({
  children,
 }: Readonly<{
@@ -129,11 +135,7 @@ export default async function RootLayout({
  <Toaster
  position="top-center"
  richColors
- toastOptions={{
- style: {
- fontFamily: "var(--font-inter)",
- },
- }}
+ toastOptions={toastOptions}
  />
  </ThemeProvider>
  </body>

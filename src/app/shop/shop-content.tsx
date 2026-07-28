@@ -41,6 +41,21 @@ export function ShopContent({
  const [showFilters, setShowFilters] = useState(false);
  const [gridCols, setGridCols] = useState<3 | 5 | 7>(5);
  const [isSortOpen, setIsSortOpen] = useState(false);
+ const [initialParams, setInitialParams] = useState<string>("");
+
+  const handleOpenFilters = () => {
+    setInitialParams(searchParams.toString());
+    setShowFilters(true);
+  };
+
+  const handleCloseFiltersWithoutSaving = () => {
+    router.replace(`${pathname}?${initialParams}`, { scroll: false });
+    setShowFilters(false);
+  };
+
+  const handleShowResults = () => {
+    setShowFilters(false);
+  };
 
   const featuresParam = searchParams.get("features");
   const discountParam = searchParams.get("discount");
@@ -232,7 +247,7 @@ export function ShopContent({
  <div className="flex items-center gap-2">
  {/* Filter Toggle */}
  <button
- onClick={() => setShowFilters(!showFilters)}
+ onClick={handleOpenFilters}
  className={cn(
  "btn-primary !py-2.5 !px-4 flex items-center gap-2 text-sm font-medium transition-all",
  showFilters ? "shadow-neo-pressed scale-[0.97]" : ""
@@ -485,7 +500,7 @@ export function ShopContent({
   <div className="md:hidden fixed inset-0 z-[60] bg-slate-50 flex flex-col animate-in slide-in-from-bottom-2 duration-300">
     <div className="flex items-center justify-between p-4 border-b border-charcoal/10">
       <h3 className="font-bold text-charcoal text-lg">Filters</h3>
-      <button onClick={() => setShowFilters(false)} className="p-2 -mr-2 text-charcoal hover:bg-slate-200 rounded-full transition-colors">
+      <button onClick={handleCloseFiltersWithoutSaving} className="p-2 -mr-2 text-charcoal hover:bg-slate-200 rounded-full transition-colors">
         <X size={20} />
       </button>
     </div>
@@ -569,7 +584,7 @@ export function ShopContent({
           ].map((disc) => (
             <button
               key={disc.value}
-              onClick={() => updateDiscount(disc.value)}
+              onClick={() => updateDiscount(selectedDiscount === disc.value ? 0 : disc.value)}
               className={cn(
                 "px-3.5 py-1.5 rounded-full text-sm font-medium border transition-all",
                 selectedDiscount === disc.value
@@ -586,7 +601,7 @@ export function ShopContent({
 
     <div className="p-4 bg-slate-50 border-t border-charcoal/10 mt-auto sticky bottom-0 z-10">
       <button
-        onClick={() => setShowFilters(false)}
+        onClick={handleShowResults}
         className="btn-primary w-full py-4 text-base shadow-xl shadow-teal-600/20"
       >
         Show {filteredProducts.length} Results

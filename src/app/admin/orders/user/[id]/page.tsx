@@ -38,6 +38,22 @@ export default function UserOrdersPage() {
     return () => window.removeEventListener('popstate', handlePopState)
   }, [userIdOrEmail])
 
+  useEffect(() => {
+    const expandedParam = searchParams.get("expanded");
+    if (expandedParam) {
+      setExpandedOrderId(expandedParam);
+      // Wait for DOM to render the list, then scroll
+      if (!loading && orders.length > 0) {
+        setTimeout(() => {
+          const el = document.getElementById(expandedParam);
+          if (el) {
+            el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }
+        }, 100);
+      }
+    }
+  }, [searchParams, loading, orders.length]);
+
   const fetchOrders = async () => {
     setLoading(true)
     const res = await getAdminUserOrders(userIdOrEmail)
@@ -257,7 +273,14 @@ export default function UserOrdersPage() {
               >
                 <div className="w-[50%] md:w-[50%] pr-2 md:pr-4 flex min-w-0">
                   <span className="font-mono text-[10px] md:text-sm font-bold text-charcoal bg-slate-100 px-1.5 md:px-3 py-1 rounded-lg break-all">
-                    {order.id}
+                    {order.id.length > 6 ? (
+                      <>
+                        <span className="opacity-40 font-normal">{order.id.slice(0, -6)}</span>
+                        <span className="text-rose-600 bg-rose-50 px-0.5 rounded">{order.id.slice(-6).toUpperCase()}</span>
+                      </>
+                    ) : (
+                      <span className="text-rose-600 bg-rose-50 px-0.5 rounded">{order.id.toUpperCase()}</span>
+                    )}
                   </span>
                 </div>
                 <div className="w-[18%] md:w-[20%] pr-2 md:pr-4 flex items-center">

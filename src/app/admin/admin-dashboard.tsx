@@ -171,6 +171,14 @@ export function AdminDashboard({
               </h2>
               <p className="text-slate mt-1 text-sm">Manage your products and inventory in real-time.</p>
             </div>
+            <div>
+              <button 
+                onClick={() => router.push('/admin?tab=new')} 
+                className="btn-primary flex items-center justify-center gap-2 py-2 px-6 shadow-sm"
+              >
+                <Plus size={18} /> Add Product
+              </button>
+            </div>
           </div>
           <div className="-mx-4 md:mx-0 bg-white md:rounded-3xl border-y md:border border-charcoal/10 overflow-hidden md:shadow-[0_8px_30px_rgb(0,0,0,0.08)] bg-gradient-to-br from-white to-cream/20">
           <div className="w-full">
@@ -377,6 +385,8 @@ export function ProductEditor({ product = {}, products, storeCategories, storeFa
   const [activeProductId, setActiveProductId] = useState<string | null>(product.id || null)
   const [isPending, startTransition] = useTransition()
   const [isSavingBulk, setIsSavingBulk] = useState(false)
+  const [isSavingBase, setIsSavingBase] = useState(false)
+  const [isRedirecting, setIsRedirecting] = useState(false)
 
   // Top level fields state
   const [updatedCategory, setUpdatedCategory] = useState<string[]>(() => {
@@ -516,7 +526,6 @@ export function ProductEditor({ product = {}, products, storeCategories, storeFa
       
       const res = await bulkUpdateImagesAndVariants(formData)
       if (res.success) {
-        toast.success("Images and Variants saved successfully!")
         if (res.product) {
           setVariants(res.product.variants || [])
           setImages(res.product.images || [])
@@ -543,53 +552,71 @@ export function ProductEditor({ product = {}, products, storeCategories, storeFa
   }
 
   const handleGlobalSave = async () => {
-    let baseSuccess = true;
-    let variantsImagesSuccess = true;
-    let savedSomething = false;
-    let currentId = activeProductId;
+    setIsSavingBase(true);
+    toast.loading("Saving changes...", { id: "globalSave" });
+    
+    let shouldKeepLoading = false;
+    
+    try {
+      let baseSuccess = true;
+      let variantsImagesSuccess = true;
+      let savedSomething = false;
+      let currentId = activeProductId;
 
-    if ((baseDetailsChanged || !currentId) && baseDetailsFormRef.current) {
-      const formData = new FormData(baseDetailsFormRef.current);
-      const newId = await handleUpdateBaseDetails(formData);
-      if (newId) {
-        currentId = newId;
-        savedSomething = true;
-      } else {
-        baseSuccess = false;
+      if ((baseDetailsChanged || !currentId) && baseDetailsFormRef.current) {
+        const formData = new FormData(baseDetailsFormRef.current);
+        const newId = await handleUpdateBaseDetails(formData);
+        if (newId) {
+          currentId = newId;
+          savedSomething = true;
+        } else {
+          baseSuccess = false;
+        }
       }
-    }
 
-    if (hasChanges && currentId && baseSuccess) {
-      variantsImagesSuccess = await handleBulkSave(currentId);
-      if (variantsImagesSuccess) savedSomething = true;
-    }
-
-    if (savedSomething && baseSuccess && variantsImagesSuccess) {
-      toast.success(activeProductId ? "All changes saved successfully!" : "Product created successfully!");
-      
-      wasDirty.current = false;
-      setBaseDetailsChanged(false);
-
-      if (onClose) {
-        onClose();
-      } else {
-        window.history.back();
-        setTimeout(() => {
-          router.replace('/admin');
-        }, 50);
+      if (hasVariantsImagesChanges && currentId && baseSuccess) {
+        variantsImagesSuccess = await handleBulkSave(currentId);
+        if (variantsImagesSuccess) savedSomething = true;
       }
+
+      if (savedSomething && baseSuccess && variantsImagesSuccess) {
+        toast.success(activeProductId ? "All changes saved successfully!" : "Product created successfully!");
+        
+        skipPopStateWarn.current = true;
+        wasDirty.current = false;
+        setBaseDetailsChanged(false);
+
+        if (onClose) {
+          onClose();
+        } else {
+          setIsRedirecting(true);
+          shouldKeepLoading = true;
+          setTimeout(() => {
+            router.replace('/admin?tab=list');
+          }, 800);
+        }
+      }
+    } finally {
+      if (!shouldKeepLoading) {
+        setIsSavingBase(false);
+      }
+      toast.dismiss("globalSave");
     }
   }
 
+  const variantsImagesChanges = [];
+  if (newImageFiles.length > 0) variantsImagesChanges.push(`${newImageFiles.length} new images`);
+  if (deletedImageIds.length > 0) variantsImagesChanges.push(`${deletedImageIds.length} deleted images`);
+  if (newVariants.length > 0) variantsImagesChanges.push(`${newVariants.length} new variants`);
+  if (deletedVariantIds.length > 0) variantsImagesChanges.push(`${deletedVariantIds.length} deleted variants`);
+  if (updatedVariants.length > 0) variantsImagesChanges.push(`${updatedVariants.length} updated variants`);
+  const initialPrimaryImageId = product.images?.find((i:any)=>i.isPrimary)?.id || null;
+  if (primaryImageId !== initialPrimaryImageId || newPrimaryIndex !== null) variantsImagesChanges.push(`primary image`);
+  
+  const hasVariantsImagesChanges = variantsImagesChanges.length > 0;
   const changes = [];
   if (baseDetailsChanged || !activeProductId) changes.push(`base details`);
-  if (newImageFiles.length > 0) changes.push(`${newImageFiles.length} new images`);
-  if (deletedImageIds.length > 0) changes.push(`${deletedImageIds.length} deleted images`);
-  if (newVariants.length > 0) changes.push(`${newVariants.length} new variants`);
-  if (deletedVariantIds.length > 0) changes.push(`${deletedVariantIds.length} deleted variants`);
-  if (updatedVariants.length > 0) changes.push(`${updatedVariants.length} updated variants`);
-  const initialPrimaryImageId = product.images?.find((i:any)=>i.isPrimary)?.id || null;
-  if (primaryImageId !== initialPrimaryImageId || newPrimaryIndex !== null) changes.push(`primary image`);
+  changes.push(...variantsImagesChanges);
   
   const hasChanges = changes.length > 0;
   const changesText = hasChanges ? `Unsaved changes: ${changes.join(', ')}` : "No unsaved changes";
@@ -617,6 +644,7 @@ export function ProductEditor({ product = {}, products, storeCategories, storeFa
     return () => window.removeEventListener("beforeunload", handleBeforeUnload);
   }, [hasChanges, baseDetailsChanged]);
 
+  const skipPopStateWarn = useRef(false);
   const wasDirty = useRef(false);
   const isDirty = hasChanges || baseDetailsChanged;
 
@@ -624,13 +652,12 @@ export function ProductEditor({ product = {}, products, storeCategories, storeFa
     if (onClose) return;
 
     const handlePopState = () => {
+      if (skipPopStateWarn.current) return;
       if (isDirty) {
         if (!window.confirm("You have unsaved changes. Are you sure you want to discard them?")) {
           window.history.pushState(null, "", window.location.href);
         } else {
-          setTimeout(() => {
-            router.replace('/admin');
-          }, 0);
+          router.replace('/admin?tab=list');
         }
       }
     };
@@ -775,10 +802,10 @@ export function ProductEditor({ product = {}, products, storeCategories, storeFa
         </div>
         <button 
           onClick={handleGlobalSave}
-          disabled={!hasChanges || isSavingBulk || isPending}
+          disabled={!hasChanges || isSavingBulk || isPending || isSavingBase || isRedirecting}
           className="btn-primary flex items-center justify-center gap-2 py-3 px-10 disabled:opacity-50"
         >
-          <Save size={20} /> {isSavingBulk || isPending ? "Saving..." : "Save Changes"}
+          <Save size={20} /> {isRedirecting ? "Redirecting..." : (isSavingBulk || isPending || isSavingBase ? "Saving..." : "Save Changes")}
         </button>
       </div>
     </div>

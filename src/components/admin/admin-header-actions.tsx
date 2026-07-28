@@ -149,10 +149,9 @@ export function AdminHeaderActions() {
                     </div>
                   ))}
 
-                  {/* Late Shipping Alerts */}
                   {alerts.map(order => (
                     <Link 
-                      href={`/admin/orders/user/${order.userId}`} 
+                      href={`/admin/orders/user/${order.userId}?expanded=${order.id}#${order.id}`} 
                       key={order.id}
                       className="block p-4 hover:bg-rose-50/30 transition-colors"
                       onClick={() => setShowAlerts(false)}

@@ -168,7 +168,7 @@ export function Header({ initialNavLinks, announcementBanner }: { initialNavLink
  onMouseEnter={() => setActiveMenu(link.label)}
  onMouseLeave={() => setActiveMenu(null)}
  >
- {link.submenu ? (
+ {link.submenu && link.submenu.length > 0 ? (
     <button
       onClick={(e) => {
         e.preventDefault();
@@ -197,7 +197,7 @@ export function Header({ initialNavLinks, announcementBanner }: { initialNavLink
 
  {/* Dropdown */}
  <AnimatePresence>
- {link.submenu && activeMenu === link.label && (
+ {link.submenu && link.submenu.length > 0 && activeMenu === link.label && (
  <motion.div
  initial={{ opacity: 0, y: 8 }}
  animate={{ opacity: 1, y: 0 }}
@@ -357,7 +357,7 @@ export function Header({ initialNavLinks, announcementBanner }: { initialNavLink
  >
  {link.label}
  </Link>
- {link.submenu && (
+ {link.submenu && link.submenu.length > 0 && (
  <div className="pl-4 py-1 space-y-1">
  {link.submenu.map((sub: any) => (
  <Link

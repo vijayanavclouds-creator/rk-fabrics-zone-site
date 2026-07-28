@@ -103,7 +103,7 @@ export const products: Product[] = [
   {
     "id": "12",
     "name": "A-Line Kurti — Meadow Bloom",
-    "slug": "a-line-kurti-meadow-bloom-8654",
+    "slug": "a-line-kurti-meadow-bloom-1490",
     "description": "Cheerful A-line cotton kurti with digital floral print and mirror work accents. The flattering silhouette, three-quarter sleeves, and mandarin collar make it a versatile piece for daily wear and casual outings. Machine washable.",
     "shortDescription": "Digital print cotton kurti with mirror work",
     "category": "[\"womens-kurtis\"]",
@@ -112,7 +112,7 @@ export const products: Product[] = [
     "type": "readymade",
     "basePrice": 1299,
     "salePrice": 909.3,
-    "discountPercent": 0,
+    "discountPercent": 30,
     "isOnSale": false,
     "isFreeDelivery": true,
     "fabric": "Cotton",
@@ -139,17 +139,6 @@ export const products: Product[] = [
     "isReturnable": true,
     "createdAt": "2026-07-22T20:12:26.019Z",
     "variants": [
-      {
-        "id": "12-v1",
-        "sku": "RKF-ALK-012-YLW-S",
-        "size": "XS",
-        "color": "Green",
-        "colorHex": "#3d573e",
-        "price": 1299,
-        "salePrice": 909.3,
-        "stock": 6,
-        "productId": "12"
-      },
       {
         "id": "12-v2",
         "sku": "RKF-ALK-012-YLW-M",
@@ -204,6 +193,17 @@ export const products: Product[] = [
         "salePrice": 909.3,
         "stock": 7,
         "productId": "12"
+      },
+      {
+        "id": "12-v1",
+        "sku": "RKF-ALK-012-YLW-S",
+        "size": "XS",
+        "color": "Green",
+        "colorHex": "#3d573e",
+        "price": 1299,
+        "salePrice": 909.3,
+        "stock": 5,
+        "productId": "12"
       }
     ],
     "images": [
@@ -246,18 +246,144 @@ export const products: Product[] = [
     "reviews": []
   },
   {
+    "id": "3",
+    "name": "Striped Spaghetti Strap Tiered Midi Dress",
+    "slug": "striped-spaghetti-strap-tiered-midi-dress-6256",
+    "description": "Delicate Chanderi cotton suit set featuring hand-block printed rose motifs with gold accents. Includes kurta, palazzo, and matching dupatta. The semi-sheer Chanderi fabric drapes beautifully, creating an elegant silhouette perfect for festive gatherings.",
+    "shortDescription": "Hand-block printed Chanderi cotton 3-piece set",
+    "category": "[\"dresses\"]",
+    "subcategory": "suits",
+    "gender": "women",
+    "type": "readymade",
+    "basePrice": 999,
+    "salePrice": 899.1,
+    "discountPercent": 10,
+    "isOnSale": false,
+    "isFreeDelivery": true,
+    "fabric": "chanderi",
+    "fabricDetails": null,
+    "occasion": [
+      "Festival",
+      "Casual",
+      "Puja"
+    ],
+    "tags": [
+      "chanderi",
+      "cotton",
+      "suit",
+      "block-print",
+      "festive"
+    ],
+    "rating": 4.1,
+    "reviewCount": 115,
+    "isFeatured": true,
+    "isNewArrival": true,
+    "isBestseller": false,
+    "isActive": true,
+    "isReturnable": true,
+    "createdAt": "2026-07-22T20:12:28.344Z",
+    "variants": [
+      {
+        "id": "3-v3",
+        "sku": "RKF-CCS-003-PNK-L",
+        "size": "M",
+        "color": "Blue",
+        "colorHex": "#4f2fee",
+        "price": 499,
+        "salePrice": 449.1,
+        "stock": 5,
+        "productId": "3"
+      },
+      {
+        "id": "3-v5",
+        "sku": "RKF-CCS-003-MNT-L",
+        "size": "XL",
+        "color": "Blue",
+        "colorHex": "#4f2fee",
+        "price": 499,
+        "salePrice": 449.1,
+        "stock": 3,
+        "productId": "3"
+      },
+      {
+        "id": "3-v4",
+        "sku": "RKF-CCS-003-MNT-M",
+        "size": "L",
+        "color": "Blue",
+        "colorHex": "#4f2fee",
+        "price": 499,
+        "salePrice": 449.1,
+        "stock": 4,
+        "productId": "3"
+      },
+      {
+        "id": "3-v1",
+        "sku": "RKF-CCS-003-PNK-S",
+        "size": "XS",
+        "color": "Blue",
+        "colorHex": "#4f2fee",
+        "price": 499,
+        "salePrice": 449.1,
+        "stock": 3,
+        "productId": "3"
+      },
+      {
+        "id": "3-v2",
+        "sku": "RKF-CCS-003-PNK-M",
+        "size": "S",
+        "color": "Blue",
+        "colorHex": "#4f2fee",
+        "price": 499,
+        "salePrice": 449.1,
+        "stock": 4,
+        "productId": "3"
+      }
+    ],
+    "images": [
+      {
+        "id": "cmrt2ahvl000ra0ngulah59se",
+        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1784542099/rk-fabrics/products/osb4jlokz7kp7rukikq1.jpg",
+        "alt": "blob",
+        "isPrimary": true,
+        "productId": "3"
+      },
+      {
+        "id": "cmrt20gx9000na0ngys9e2d3z",
+        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1784541632/rk-fabrics/products/t1hqy27rijd5dwptki2e.jpg",
+        "alt": "blob",
+        "isPrimary": false,
+        "productId": "3"
+      },
+      {
+        "id": "cmrt25twc000pa0ngdkxr43hx",
+        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1784541882/rk-fabrics/products/mdrnrvyhgycbr7j3sdc1.jpg",
+        "alt": "blob",
+        "isPrimary": false,
+        "productId": "3"
+      },
+      {
+        "id": "cmrt8x60i000ta0ng6wbo224a",
+        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1784553235/rk-fabrics/products/qn6xdnihuwsrqtf2nrep.jpg",
+        "alt": "blob",
+        "isPrimary": false,
+        "productId": "3"
+      }
+    ],
+    "reviews": []
+  },
+  {
     "id": "1",
     "name": "The Riviera Striped Tunic",
-    "slug": "the-riviera-striped-tunic-8011",
+    "slug": "the-riviera-striped-tunic-0339",
     "description": "Handwoven Banarasi silk saree with intricate zari work. This magnificent piece features traditional motifs woven with pure gold zari thread on a rich emerald green silk base. Perfect for weddings, festivals, and special occasions. Comes with matching blouse piece.",
     "shortDescription": "Handwoven Banarasi silk with pure gold zari work",
     "category": "[\"tops\"]",
     "subcategory": "sarees",
     "gender": "women",
     "type": "readymade",
-    "basePrice": 1299,
-    "salePrice": 909.3,
-    "discountPercent": 0,
+    "basePrice": 499,
+    "salePrice": 399.2,
+    "discountPercent": 20,
     "isOnSale": false,
     "isFreeDelivery": true,
     "fabric": "silk",
@@ -291,7 +417,7 @@ export const products: Product[] = [
         "color": "Gray",
         "colorHex": "#aa9374",
         "price": 1299,
-        "salePrice": 909.3,
+        "salePrice": 1039.2,
         "stock": 2,
         "productId": "1"
       },
@@ -302,7 +428,7 @@ export const products: Product[] = [
         "color": "Gray",
         "colorHex": "#aa9374",
         "price": 1299,
-        "salePrice": 909.3,
+        "salePrice": 1039.2,
         "stock": 5,
         "productId": "1"
       },
@@ -313,7 +439,7 @@ export const products: Product[] = [
         "color": "Gray",
         "colorHex": "#aa9374",
         "price": 1299,
-        "salePrice": 909.3,
+        "salePrice": 1039.2,
         "stock": 3,
         "productId": "1"
       },
@@ -324,7 +450,7 @@ export const products: Product[] = [
         "color": "Gray",
         "colorHex": "#aa9374",
         "price": 1299,
-        "salePrice": 909.3,
+        "salePrice": 1039.2,
         "stock": 4,
         "productId": "1"
       },
@@ -335,7 +461,7 @@ export const products: Product[] = [
         "color": "Gray",
         "colorHex": "#aa9374",
         "price": 1299,
-        "salePrice": 909.3,
+        "salePrice": 1039.2,
         "stock": 5,
         "productId": "1"
       }
@@ -349,144 +475,18 @@ export const products: Product[] = [
         "productId": "1"
       },
       {
-        "id": "cmrteishi0015a0nggcozbvyv",
-        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1784562642/rk-fabrics/products/jsq3w7ywphhkxjqpnf9u.jpg",
-        "alt": "blob",
-        "isPrimary": true,
-        "productId": "1"
-      },
-      {
         "id": "cmrtejb8q0017a0ng8dqdli0q",
         "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1784562664/rk-fabrics/products/zw8vdqcxyyg7dokyuzit.jpg",
         "alt": "blob",
         "isPrimary": false,
         "productId": "1"
-      }
-    ],
-    "reviews": []
-  },
-  {
-    "id": "3",
-    "name": "Striped Spaghetti Strap Tiered Midi Dress",
-    "slug": "striped-spaghetti-strap-tiered-midi-dress-6123",
-    "description": "Delicate Chanderi cotton suit set featuring hand-block printed rose motifs with gold accents. Includes kurta, palazzo, and matching dupatta. The semi-sheer Chanderi fabric drapes beautifully, creating an elegant silhouette perfect for festive gatherings.",
-    "shortDescription": "Hand-block printed Chanderi cotton 3-piece set",
-    "category": "[\"dresses\"]",
-    "subcategory": "suits",
-    "gender": "women",
-    "type": "readymade",
-    "basePrice": 999,
-    "salePrice": 699.3,
-    "discountPercent": 0,
-    "isOnSale": false,
-    "isFreeDelivery": true,
-    "fabric": "chanderi",
-    "fabricDetails": null,
-    "occasion": [
-      "Festival",
-      "Casual",
-      "Puja"
-    ],
-    "tags": [
-      "chanderi",
-      "cotton",
-      "suit",
-      "block-print",
-      "festive"
-    ],
-    "rating": 4.1,
-    "reviewCount": 115,
-    "isFeatured": true,
-    "isNewArrival": true,
-    "isBestseller": false,
-    "isActive": true,
-    "isReturnable": true,
-    "createdAt": "2026-07-22T20:12:28.344Z",
-    "variants": [
-      {
-        "id": "3-v2",
-        "sku": "RKF-CCS-003-PNK-M",
-        "size": "S",
-        "color": "Blue",
-        "colorHex": "#4f2fee",
-        "price": 499,
-        "salePrice": 349.3,
-        "stock": 5,
-        "productId": "3"
       },
       {
-        "id": "3-v3",
-        "sku": "RKF-CCS-003-PNK-L",
-        "size": "M",
-        "color": "Blue",
-        "colorHex": "#4f2fee",
-        "price": 499,
-        "salePrice": 349.3,
-        "stock": 5,
-        "productId": "3"
-      },
-      {
-        "id": "3-v5",
-        "sku": "RKF-CCS-003-MNT-L",
-        "size": "XL",
-        "color": "Blue",
-        "colorHex": "#4f2fee",
-        "price": 499,
-        "salePrice": 349.3,
-        "stock": 3,
-        "productId": "3"
-      },
-      {
-        "id": "3-v4",
-        "sku": "RKF-CCS-003-MNT-M",
-        "size": "L",
-        "color": "Blue",
-        "colorHex": "#4f2fee",
-        "price": 499,
-        "salePrice": 349.3,
-        "stock": 4,
-        "productId": "3"
-      },
-      {
-        "id": "3-v1",
-        "sku": "RKF-CCS-003-PNK-S",
-        "size": "XS",
-        "color": "Blue",
-        "colorHex": "#4f2fee",
-        "price": 499,
-        "salePrice": 349.3,
-        "stock": 3,
-        "productId": "3"
-      }
-    ],
-    "images": [
-      {
-        "id": "cmrt20gx9000na0ngys9e2d3z",
-        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1784541632/rk-fabrics/products/t1hqy27rijd5dwptki2e.jpg",
-        "alt": "blob",
-        "isPrimary": false,
-        "productId": "3"
-      },
-      {
-        "id": "cmrt25twc000pa0ngdkxr43hx",
-        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1784541882/rk-fabrics/products/mdrnrvyhgycbr7j3sdc1.jpg",
-        "alt": "blob",
-        "isPrimary": false,
-        "productId": "3"
-      },
-      {
-        "id": "cmrt2ahvl000ra0ngulah59se",
-        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1784542099/rk-fabrics/products/osb4jlokz7kp7rukikq1.jpg",
+        "id": "cmrteishi0015a0nggcozbvyv",
+        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1784562642/rk-fabrics/products/jsq3w7ywphhkxjqpnf9u.jpg",
         "alt": "blob",
         "isPrimary": true,
-        "productId": "3"
-      },
-      {
-        "id": "cmrt8x60i000ta0ng6wbo224a",
-        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1784553235/rk-fabrics/products/qn6xdnihuwsrqtf2nrep.jpg",
-        "alt": "blob",
-        "isPrimary": false,
-        "productId": "3"
+        "productId": "1"
       }
     ],
     "reviews": []
@@ -494,7 +494,7 @@ export const products: Product[] = [
   {
     "id": "cmrtex4wp0000cyygm2lwgihs",
     "name": "Solid Ivory Long Sleeve Ruffled Maxi Dress",
-    "slug": "solid-ivory-long-sleeve-ruffled-maxi-dress-1764",
+    "slug": "solid-ivory-long-sleeve-ruffled-maxi-dress-8851",
     "description": "New product description",
     "shortDescription": "Short description",
     "category": "[\"dresses\"]",
@@ -502,8 +502,8 @@ export const products: Product[] = [
     "gender": "women",
     "type": "readymade",
     "basePrice": 399,
-    "salePrice": 319.2,
-    "discountPercent": 0,
+    "salePrice": 279.3,
+    "discountPercent": 30,
     "isOnSale": false,
     "isFreeDelivery": true,
     "fabric": "cotton",
@@ -520,14 +520,25 @@ export const products: Product[] = [
     "createdAt": "2026-07-22T20:12:30.300Z",
     "variants": [
       {
+        "id": "cmrteydt10003cyygmiugpmrf",
+        "sku": "VAR-371108",
+        "size": "M",
+        "color": "Beige",
+        "colorHex": "#F5F4F0",
+        "price": 399,
+        "salePrice": 279.3,
+        "stock": 2,
+        "productId": "cmrtex4wp0000cyygm2lwgihs"
+      },
+      {
         "id": "cmrteydt20005cyygqqx3vvev",
         "sku": "VAR-371110",
         "size": "XL",
         "color": "Beige",
         "colorHex": "#F5F4F0",
         "price": 399,
-        "salePrice": null,
-        "stock": 0,
+        "salePrice": 279.3,
+        "stock": 2,
         "productId": "cmrtex4wp0000cyygm2lwgihs"
       },
       {
@@ -537,8 +548,8 @@ export const products: Product[] = [
         "color": "Beige",
         "colorHex": "#F5F4F0",
         "price": 399,
-        "salePrice": null,
-        "stock": 0,
+        "salePrice": 279.3,
+        "stock": 2,
         "productId": "cmrtex4wp0000cyygm2lwgihs"
       },
       {
@@ -548,19 +559,8 @@ export const products: Product[] = [
         "color": "Beige",
         "colorHex": "#F5F4F0",
         "price": 349,
-        "salePrice": null,
-        "stock": 0,
-        "productId": "cmrtex4wp0000cyygm2lwgihs"
-      },
-      {
-        "id": "cmrteydt10003cyygmiugpmrf",
-        "sku": "VAR-371108",
-        "size": "M",
-        "color": "Beige",
-        "colorHex": "#F5F4F0",
-        "price": 399,
-        "salePrice": null,
-        "stock": 0,
+        "salePrice": 244.3,
+        "stock": 4,
         "productId": "cmrtex4wp0000cyygm2lwgihs"
       }
     ],
@@ -606,7 +606,7 @@ export const products: Product[] = [
   {
     "id": "10",
     "name": "Ochre & Blue Mixed Stripe Button-Down Shirt",
-    "slug": "ochre-blue-mixed-stripe-button-down-shirt-6956",
+    "slug": "ochre-blue-mixed-stripe-button-down-shirt-1711",
     "description": "Breathtaking designer lehenga in dusty rose with heavy hand-embroidered florals using zardozi, sequins, and pearl work. The flared cancan lehenga paired with a fitted blouse and sheer net dupatta creates a bridal-worthy ensemble. Handcrafted by our master artisans.",
     "shortDescription": "Zardozi hand-embroidered designer lehenga set",
     "category": "[\"tops\"]",
@@ -614,8 +614,8 @@ export const products: Product[] = [
     "gender": "women",
     "type": "readymade",
     "basePrice": 249,
-    "salePrice": 224.1,
-    "discountPercent": 0,
+    "salePrice": 186.75,
+    "discountPercent": 25,
     "isOnSale": false,
     "isFreeDelivery": true,
     "fabric": "organza",
@@ -643,14 +643,25 @@ export const products: Product[] = [
     "createdAt": "2026-07-22T20:12:29.304Z",
     "variants": [
       {
+        "id": "10-v4",
+        "sku": "RKF-DLH-010-SAG-M",
+        "size": "XL",
+        "color": "Coral",
+        "colorHex": "#C49A52",
+        "price": 249,
+        "salePrice": 186.75,
+        "stock": 2,
+        "productId": "10"
+      },
+      {
         "id": "10-v2",
         "sku": "RKF-DLH-010-RSE-M",
         "size": "M",
         "color": "Coral",
         "colorHex": "#C49A52",
         "price": 249,
-        "salePrice": 224.1,
-        "stock": 7,
+        "salePrice": 186.75,
+        "stock": 4,
         "productId": "10"
       },
       {
@@ -660,19 +671,8 @@ export const products: Product[] = [
         "color": "Coral",
         "colorHex": "#C49A52",
         "price": 249,
-        "salePrice": 224.1,
-        "stock": 6,
-        "productId": "10"
-      },
-      {
-        "id": "10-v4",
-        "sku": "RKF-DLH-010-SAG-M",
-        "size": "XL",
-        "color": "Coral",
-        "colorHex": "#C49A52",
-        "price": 249,
-        "salePrice": 224.1,
-        "stock": 7,
+        "salePrice": 186.75,
+        "stock": 0,
         "productId": "10"
       },
       {
@@ -682,8 +682,8 @@ export const products: Product[] = [
         "color": "Coral",
         "colorHex": "#C49A52",
         "price": 249,
-        "salePrice": 224.1,
-        "stock": 0,
+        "salePrice": 186.75,
+        "stock": 1,
         "productId": "10"
       }
     ],
@@ -724,7 +724,9 @@ export const products: Product[] = [
         "rating": 5,
         "comment": "this product is having a very good fabric quality",
         "createdAt": "2026-07-25T18:51:54.292Z",
-        "productId": "10"
+        "productId": "10",
+        "userId": null,
+        "orderItemId": null
       }
     ]
   }
