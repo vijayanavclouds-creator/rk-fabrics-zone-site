@@ -170,7 +170,7 @@ export function NavigationManager() {
             </div>
 
             {expandedTab === idx && (
-              <div className="p-4 bg-slate-50 pl-16">
+              <div className="p-2 md:p-4 bg-slate-50 pl-2 md:pl-16">
                 <div className="space-y-3 mb-4">
                   {(link.submenu || []).map((sub: any, subIdx: number) => (
                     <div key={subIdx} className="flex items-center gap-3">
@@ -180,7 +180,7 @@ export function NavigationManager() {
                         placeholder="Submenu Label"
                         value={sub.label} 
                         onChange={e => updateSubmenu(idx, subIdx, "label", e.target.value)}
-                        className="w-[50%] md:w-auto md:flex-1 md:max-w-[200px] px-3 md:px-4 py-2 md:py-2.5 text-xs md:text-sm bg-cream shadow-neo-input !border-none rounded-full focus:!outline-none focus:!ring-0 text-charcoal placeholder:text-slate/60 transition-all font-semibold"
+                        className="w-[60%] md:w-auto md:flex-1 md:max-w-[200px] px-3 md:px-4 py-2 md:py-2.5 text-xs md:text-sm bg-cream shadow-neo-input !border-none rounded-full focus:!outline-none focus:!ring-0 text-charcoal placeholder:text-slate/60 transition-all font-semibold"
                       />
                       <input 
                         type="text" 
