@@ -539,17 +539,15 @@ export function DashboardOverview({ initialData, isSupport = false }: { initialD
         {/* MOBILE LAYOUT */}
         <div className="xl:hidden flex flex-col space-y-2 md:space-y-4 max-sm:space-y-[2px] max-sm:bg-charcoal/5">
           {OrderManagementCard}
-          {!isSupport && SystemStatusCard}
-          {ChartCard}
           
           {!isSupport && (
             <div className="grid grid-cols-2 gap-2">
               {/* Sales */}
               <Link href="/admin?tab=finance" className="block cursor-pointer">
-                <GlassCard className="bg-white/80 h-full !p-2">
-                  <div className="flex items-center gap-1.5 mb-1">
-                    <div className="p-1 bg-blue-50/50 text-blue-500 rounded flex justify-center">
-                      <BarChart3 size={12} strokeWidth={3} />
+                <GlassCard className="bg-white/80 h-full !p-1.5">
+                  <div className="flex items-center gap-1.5 mb-0.5">
+                    <div className="p-0.5 bg-blue-50/50 text-blue-500 rounded flex justify-center">
+                      <BarChart3 size={10} strokeWidth={3} />
                     </div>
                     <span className="text-[9px] font-bold text-charcoal uppercase tracking-widest whitespace-nowrap">Sales</span>
                   </div>
@@ -559,10 +557,10 @@ export function DashboardOverview({ initialData, isSupport = false }: { initialD
               
               {/* Users */}
               <Link href="/admin?tab=users" className="block cursor-pointer">
-                <GlassCard className="bg-emerald-50/30 h-full !p-2">
-                  <div className="flex items-center gap-1.5 mb-1">
-                    <div className="p-1 bg-emerald-50 text-emerald-500 rounded flex justify-center">
-                      <Users size={12} strokeWidth={3} />
+                <GlassCard className="bg-emerald-50/30 h-full !p-1.5">
+                  <div className="flex items-center gap-1.5 mb-0.5">
+                    <div className="p-0.5 bg-emerald-50 text-emerald-500 rounded flex justify-center">
+                      <Users size={10} strokeWidth={3} />
                     </div>
                     <span className="text-[9px] font-bold text-charcoal uppercase tracking-widest whitespace-nowrap">Users</span>
                   </div>
@@ -572,10 +570,10 @@ export function DashboardOverview({ initialData, isSupport = false }: { initialD
         
               {/* Discount */}
               <Link href="/admin?tab=finance" className="block cursor-pointer">
-                <GlassCard className="bg-amber-50/40 h-full !p-2 border-amber-100/30">
-                  <div className="flex items-center gap-1.5 mb-1">
-                    <div className="p-1 bg-amber-100/50 text-amber-500 rounded flex justify-center">
-                      <Ticket size={12} strokeWidth={3} />
+                <GlassCard className="bg-amber-50/40 h-full !p-1.5 border-amber-100/30">
+                  <div className="flex items-center gap-1.5 mb-0.5">
+                    <div className="p-0.5 bg-amber-100/50 text-amber-500 rounded flex justify-center">
+                      <Ticket size={10} strokeWidth={3} />
                     </div>
                     <span className="text-[9px] font-bold text-charcoal uppercase tracking-widest whitespace-nowrap text-ellipsis overflow-hidden">Discount</span>
                   </div>
@@ -585,10 +583,10 @@ export function DashboardOverview({ initialData, isSupport = false }: { initialD
         
               {/* Tags */}
               <Link href="/admin?tab=taxonomy" className="block cursor-pointer">
-                <GlassCard className="bg-purple-50/30 h-full !p-2 border-purple-100/30">
-                  <div className="flex items-center gap-1.5 mb-1">
-                    <div className="p-1 bg-purple-100/50 text-purple-500 rounded flex justify-center">
-                      <Tags size={12} strokeWidth={3} />
+                <GlassCard className="bg-purple-50/30 h-full !p-1.5 border-purple-100/30">
+                  <div className="flex items-center gap-1.5 mb-0.5">
+                    <div className="p-0.5 bg-purple-100/50 text-purple-500 rounded flex justify-center">
+                      <Tags size={10} strokeWidth={3} />
                     </div>
                     <span className="text-[9px] font-bold text-charcoal uppercase tracking-widest whitespace-nowrap text-ellipsis overflow-hidden">Tags</span>
                   </div>
@@ -597,10 +595,10 @@ export function DashboardOverview({ initialData, isSupport = false }: { initialD
               </Link>
 
               <Link href="/admin?tab=navigation" className="block cursor-pointer">
-                <GlassCard className="bg-slate-50 h-full !p-2">
-                  <div className="flex items-center gap-1.5 mb-1">
-                    <div className="p-1 bg-slate-200/50 text-slate-500 rounded flex justify-center">
-                      <Settings size={12} strokeWidth={3} />
+                <GlassCard className="bg-slate-50 h-full !p-1.5">
+                  <div className="flex items-center gap-1.5 mb-0.5">
+                    <div className="p-0.5 bg-slate-200/50 text-slate-500 rounded flex justify-center">
+                      <Settings size={10} strokeWidth={3} />
                     </div>
                     <span className="text-[9px] font-bold text-charcoal uppercase tracking-widest whitespace-nowrap text-ellipsis overflow-hidden">Navigation Settings</span>
                   </div>
@@ -609,10 +607,10 @@ export function DashboardOverview({ initialData, isSupport = false }: { initialD
               </Link>
               
               <Link href="/admin?tab=taxonomy" className="block cursor-pointer">
-                <GlassCard className="bg-indigo-50/50 h-full !p-2">
-                  <div className="flex items-center gap-1.5 mb-1">
-                    <div className="p-1 bg-indigo-100/50 text-indigo-500 rounded flex justify-center">
-                      <Network size={12} strokeWidth={3} />
+                <GlassCard className="bg-indigo-50/50 h-full !p-1.5">
+                  <div className="flex items-center gap-1.5 mb-0.5">
+                    <div className="p-0.5 bg-indigo-100/50 text-indigo-500 rounded flex justify-center">
+                      <Network size={10} strokeWidth={3} />
                     </div>
                     <span className="text-[9px] font-bold text-charcoal uppercase tracking-widest whitespace-nowrap">Taxonomy Settings</span>
                   </div>
@@ -621,10 +619,10 @@ export function DashboardOverview({ initialData, isSupport = false }: { initialD
               </Link>
         
               <Link href="/admin?tab=banners" className="block cursor-pointer">
-                <GlassCard className="bg-pink-50/50 h-full !p-2">
-                  <div className="flex items-center gap-1.5 mb-1">
-                    <div className="p-1 bg-pink-100/50 text-pink-500 rounded flex justify-center">
-                      <ImageIcon size={12} strokeWidth={3} />
+                <GlassCard className="bg-pink-50/50 h-full !p-1.5">
+                  <div className="flex items-center gap-1.5 mb-0.5">
+                    <div className="p-0.5 bg-pink-100/50 text-pink-500 rounded flex justify-center">
+                      <ImageIcon size={10} strokeWidth={3} />
                     </div>
                     <span className="text-[9px] font-bold text-charcoal uppercase tracking-widest whitespace-nowrap">Banner Settings</span>
                   </div>
@@ -633,10 +631,10 @@ export function DashboardOverview({ initialData, isSupport = false }: { initialD
               </Link>
         
               <Link href="/admin?tab=newsletters" className="block cursor-pointer">
-                <GlassCard className="bg-sky-50/50 h-full !p-2">
-                  <div className="flex items-center gap-1.5 mb-1">
-                    <div className="p-1 bg-sky-100/50 text-sky-500 rounded flex justify-center">
-                      <Mail size={12} strokeWidth={3} />
+                <GlassCard className="bg-sky-50/50 h-full !p-1.5">
+                  <div className="flex items-center gap-1.5 mb-0.5">
+                    <div className="p-0.5 bg-sky-100/50 text-sky-500 rounded flex justify-center">
+                      <Mail size={10} strokeWidth={3} />
                     </div>
                     <span className="text-[9px] font-bold text-charcoal uppercase tracking-widest whitespace-nowrap text-ellipsis overflow-hidden">Newsletter Studio</span>
                   </div>
@@ -646,6 +644,9 @@ export function DashboardOverview({ initialData, isSupport = false }: { initialD
             </div>
           )}
 
+          {!isSupport && SystemStatusCard}
+          {ChartCard}
+          
           {UserManagementCard}
           {!isSupport && ActivityFeedCard}
           {QueryManagementCard}
