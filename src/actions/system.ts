@@ -27,7 +27,7 @@ export async function saveAnnouncementBanner(data: { text: string; isActive: boo
       update: { value: JSON.stringify(data) },
       create: { key: "announcement_banner", value: JSON.stringify(data) }
     });
-    revalidateTag("announcement_banner", "max");
+    revalidateTag("announcement_banner");
     revalidatePath("/", "layout");
     
     const diff = generateDiffString(oldBanner || {}, data);
@@ -53,7 +53,7 @@ export async function saveNavigationLinks(links: any) {
     });
     
     // Revalidate the entire app so the header updates instantly everywhere
-    revalidateTag("navigation_links", "max");
+    revalidateTag("navigation_links");
     revalidatePath("/", "layout");
     
     const changes: string[] = [];
@@ -129,8 +129,8 @@ export async function saveStoreTaxonomy(categories: any[], fabrics: any[]) {
     ]);
     
     // Revalidate paths that use these filters
-    revalidateTag("store_taxonomy", "max");
-    revalidateTag("navigation_links", "max");
+    revalidateTag("store_taxonomy");
+    revalidateTag("navigation_links");
     revalidatePath("/shop");
     revalidatePath("/admin");
     
@@ -184,7 +184,7 @@ export async function saveCompanyProfile(profileData: any) {
       create: { key: "company_profile", value: JSON.stringify(profileData) }
     });
     
-    revalidateTag("company_profile", "max");
+    revalidateTag("company_profile");
     revalidatePath("/", "layout"); // Revalidate all pages in case footer/header uses this
     
     const diff = generateDiffString(oldProfile || {}, profileData);
