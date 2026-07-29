@@ -5,12 +5,12 @@ import { getProductBySlug } from '@/lib/data'
 export const revalidate = 3600 // ISR: Revalidate every hour
 
 type Props = {
-  params: { slug: string }
+  params: Promise<{ slug: string }>
   children: React.ReactNode
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { slug } = params
+  const { slug } = await params
   
   // Try Prisma first, fallback to mock data
   let product: any = await prisma.product.findUnique({
@@ -51,7 +51,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function ProductLayout({ params, children }: Props) {
-  const { slug } = params
+  const { slug } = await params
   
   // Try Prisma first, fallback to mock data
   let product: any = await prisma.product.findUnique({
