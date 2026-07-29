@@ -101,7 +101,7 @@ export function AdminHeaderActions() {
         </button>
 
         {showAlerts && (
-          <div className="absolute right-0 mt-2 w-80 sm:w-96 bg-white rounded-2xl shadow-neo-card border border-charcoal/10 overflow-hidden z-50">
+          <div className="absolute -right-16 sm:-right-24 mt-2 w-80 sm:w-96 bg-white rounded-2xl shadow-neo-card border border-charcoal/10 overflow-hidden z-50">
             <div className="p-4 flex items-center justify-between bg-white">
               <h3 className="font-bold text-charcoal flex items-center gap-2">
                 <AlertTriangle size={16} className="text-rose" /> 
@@ -191,7 +191,7 @@ export function AdminHeaderActions() {
         </button>
 
         {showNotifications && (
-          <div className="absolute right-0 mt-2 w-80 sm:w-96 bg-white rounded-2xl shadow-neo-card border border-charcoal/10 overflow-hidden z-50">
+          <div className="absolute -right-4 sm:-right-10 mt-2 w-80 sm:w-96 bg-white rounded-2xl shadow-neo-card border border-charcoal/10 overflow-hidden z-50">
             <div className="p-4 flex items-center justify-between bg-white">
               <h3 className="font-bold text-charcoal">System Activity</h3>
               <div className="flex gap-3">
