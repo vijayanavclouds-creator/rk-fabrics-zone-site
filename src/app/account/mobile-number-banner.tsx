@@ -7,9 +7,8 @@ import { usePathname } from "next/navigation"
 export default function MobileNumberBanner() {
   const pathname = usePathname()
 
-  // Hide this banner if the user is currently on the profile page where they can add their number,
-  // or if they are on an address form page which has its own phone number field.
-  if (pathname?.includes("/profile") || pathname?.includes("/address")) {
+  // Hide this banner if the user is currently on the profile page where they can add their number.
+  if (pathname?.includes("/profile")) {
     return null
   }
 
