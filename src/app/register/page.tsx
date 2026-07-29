@@ -23,7 +23,7 @@ export default function Register() {
     const phone = formData.get("phone") as string
     const dob = formData.get("dob") as string
 
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email)) {
       toast.error("Please enter a valid email address")
       setStatus("idle")
       return

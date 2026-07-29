@@ -19,11 +19,11 @@ export async function submitContactMessage(formData: FormData) {
       return { success: false, error: "Name, email, and message are required." };
     }
 
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email)) {
       return { success: false, error: "Please enter a valid email address." };
     }
 
-    if (phone && !/^[0-9]{10}$/.test(phone)) {
+    if (phone && !/^[6-9]\d{9}$/.test(phone)) {
       return { success: false, error: "Please enter a valid 10-digit phone number." };
     }
 

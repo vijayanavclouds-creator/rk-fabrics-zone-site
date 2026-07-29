@@ -14,7 +14,7 @@ function generateOTP() {
 export async function sendSignupOtp(email: string) {
   try {
     if (!email) return { success: false, error: "Email is required" };
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email)) {
       return { success: false, error: "Please enter a valid email address" };
     }
 
@@ -64,7 +64,7 @@ export async function registerUser(formData: FormData) {
       return { success: false, error: "All fields are required" }
     }
 
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email)) {
       return { success: false, error: "Please enter a valid email address" }
     }
 

@@ -180,7 +180,8 @@ export default function CheckoutPaymentPage() {
     const isValidPhone = (phone?: string | null) => {
       if (!phone) return false
       const digits = phone.replace(/\D/g, "")
-      return digits.length >= 10
+      // Valid Indian mobile number: 10 digits, starts with 6, 7, 8, or 9
+      return /^[6-9]\d{9}$/.test(digits)
     }
 
     const hasValidAddressPhone = isValidPhone(selectedAddress.phone)

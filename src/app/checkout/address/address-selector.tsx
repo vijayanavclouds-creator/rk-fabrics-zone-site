@@ -128,6 +128,12 @@ export default function AddressSelector({ initialAddresses, isCheckout = true }:
 
   const handleSubmitForm = async (e: React.FormEvent) => {
     e.preventDefault()
+
+    if (formData.phone && !/^[6-9]\d{9}$/.test(formData.phone.replace(/\D/g, ""))) {
+      toast.error("Please enter a valid 10-digit Indian mobile number starting with 6-9")
+      return
+    }
+
     setLoading(true)
 
     const dataToSave = editingAddress ? { ...formData, id: editingAddress.id } : formData
