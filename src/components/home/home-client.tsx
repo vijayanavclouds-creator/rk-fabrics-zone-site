@@ -426,7 +426,7 @@ function CustomCategories({ banners }: { banners: any[] }) {
                   alt={banner.title || `Category`} 
                   fill
                   sizes="(max-width: 768px) 280px, 350px"
-                  className="object-contain bg-white group-hover:scale-110 transition-transform duration-700" 
+                  className="object-cover group-hover:scale-110 transition-transform duration-700" 
                 />
                 
                 {/* 3D Glass & Shadow Overlay */}
