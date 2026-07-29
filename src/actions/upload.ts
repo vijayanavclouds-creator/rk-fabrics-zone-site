@@ -32,6 +32,8 @@ export async function uploadProductImage(formData: FormData) {
     // Upload to cloudinary with automatic compression and resizing
     const result = await cloudinary.uploader.upload(base64Data, {
       folder: "rk-fabrics/products",
+      use_filename: true,
+      unique_filename: true,
       transformation: [
         { width: 1500, crop: "limit" }, // Don't allow images wider than 1500px
         { quality: "auto:good" },       // Automatically compress without visible quality loss
@@ -92,6 +94,8 @@ export async function uploadProfileImage(formData: FormData) {
 
     const result = await cloudinary.uploader.upload(base64Data, {
       folder: "rk-fabrics/profiles",
+      use_filename: true,
+      unique_filename: true,
       transformation: [
         { width: 400, height: 400, crop: "fill", gravity: "face" },
         { quality: "auto:good" },

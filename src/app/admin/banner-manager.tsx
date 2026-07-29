@@ -118,6 +118,8 @@ export function BannerManager({ banners }: { banners: any[] }) {
       formData.append("timestamp", sigData.timestamp!.toString())
       formData.append("signature", sigData.signature)
       formData.append("folder", "rk-fabrics/banners")
+      formData.append("use_filename", "true")
+      formData.append("unique_filename", "true")
 
       const uploadRes = await fetch(`https://api.cloudinary.com/v1_1/${sigData.cloudName}/image/upload`, {
         method: "POST",

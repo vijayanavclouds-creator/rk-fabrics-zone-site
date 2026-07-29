@@ -479,6 +479,8 @@ export function ProductEditor({ product = {}, products, storeCategories, storeFa
           uploadData.append("signature", signature)
           uploadData.append("folder", "rk-fabrics/products")
           uploadData.append("transformation", "w_1500,c_limit,q_auto:good,f_auto")
+          uploadData.append("use_filename", "true")
+          uploadData.append("unique_filename", "true")
           
           const uploadRes = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
             method: "POST",

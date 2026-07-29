@@ -19,7 +19,9 @@ export async function getCloudinarySignature() {
   const params = {
     timestamp: timestamp,
     folder: 'rk-fabrics/products',
-    transformation: 'w_1500,c_limit,q_auto:good,f_auto'
+    transformation: 'w_1500,c_limit,q_auto:good,f_auto',
+    use_filename: true,
+    unique_filename: true
   }
   
   const signature = cloudinary.utils.api_sign_request(

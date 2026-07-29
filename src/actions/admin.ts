@@ -465,6 +465,8 @@ export async function getCloudinarySignature() {
       {
         timestamp,
         folder: "rk-fabrics/banners",
+        use_filename: true,
+        unique_filename: true
       },
       process.env.CLOUDINARY_API_SECRET!
     );
