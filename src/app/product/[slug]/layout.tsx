@@ -1,5 +1,5 @@
 import { Metadata } from 'next'
-import { prisma } from '@/lib/prisma'
+import prisma from '@/lib/prisma'
 import { getProductBySlug } from '@/lib/data'
 
 export const revalidate = 3600 // ISR: Revalidate every hour
