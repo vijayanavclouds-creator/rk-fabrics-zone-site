@@ -86,8 +86,8 @@ export const useCartStore = create<CartStore>()(
 
  getSubtotal: () => {
  return get().items.reduce((total, item) => {
- const price = item.variant.salePrice || item.variant.price;
- return total + price * item.quantity;
+ const price = item.variant.salePrice || item.product.salePrice || item.variant.price || item.product.basePrice;
+ return total + (price || 0) * item.quantity;
  }, 0);
  },
 
@@ -111,8 +111,8 @@ export const useCartStore = create<CartStore>()(
    
    if (subtotal > 0) {
      get().items.forEach(item => {
-       const originalPrice = item.variant.salePrice || item.variant.price;
-       const itemTotal = originalPrice * item.quantity;
+       const originalPrice = item.variant.salePrice || item.product.salePrice || item.variant.price || item.product.basePrice;
+       const itemTotal = (originalPrice || 0) * item.quantity;
        const itemWeight = itemTotal / subtotal;
        const itemDiscount = discount * itemWeight;
        const finalItemTotal = itemTotal - itemDiscount;

@@ -32,7 +32,7 @@ export default function CartPage() {
   const platformFee = getPlatformFee();
 
   const discount = couponApplied ? Math.round(subtotal * 0.1) : 0;
-  const total = subtotal + shipping + platformFee - discount;
+  const total = getTotal();
 
   const [outOfStockMap, setOutOfStockMap] = useState<Record<string, number>>({});
   
