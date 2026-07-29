@@ -9,11 +9,11 @@ export async function GET(request: Request) {
     return NextResponse.json({ message: "Invalid secret" }, { status: 401 });
   }
 
-  revalidateTag("navigation_links");
-  revalidateTag("announcement_banner");
-  revalidateTag("store_taxonomy");
-  revalidateTag("company_profile");
-  revalidateTag("banners_cache");
+  revalidateTag("navigation_links", "max");
+  revalidateTag("announcement_banner", "max");
+  revalidateTag("store_taxonomy", "max");
+  revalidateTag("company_profile", "max");
+  revalidateTag("banners_cache", "max");
   revalidatePath("/", "layout");
 
   return NextResponse.json({ revalidated: true, now: Date.now() });
