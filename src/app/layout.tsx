@@ -36,11 +36,12 @@ const cinzel = Cinzel({
 });
 
 export const metadata: Metadata = {
- title: {
- default: "RK Fabrics Zone — Premium Fabrics & Stylish Fashion | Jaipur",
- template: "%s | RK Fabrics Zone",
- },
- description:
+  metadataBase: new URL("https://www.rkfabricszone.com"),
+  title: {
+    default: "RK Fabrics Zone — Premium Fabrics & Stylish Fashion | Jaipur",
+    template: "%s | RK Fabrics Zone",
+  },
+  description:
  "Discover premium quality fabrics, designer ethnic wear, and stylish fashion for men & women at RK Fabrics Zone, Jaipur. Manufacturer & direct seller of silk, cotton, linen, and more.",
  keywords: [
  "RK Fabrics Zone",
@@ -101,12 +102,59 @@ export default async function RootLayout({
  const navLinks = await getNavigationLinksData();
  const announcementBanner = await getAnnouncementBanner();
  return (
- <html
- lang="en"
- className={`${playfair.variable} ${inter.variable} ${cinzel.variable}`}
- suppressHydrationWarning
- >
- <body className="min-h-screen flex flex-col antialiased bg-gradient-to-br from-teal-50 via-[#fdfaf6] to-blue-50/50">
+  <html
+  lang="en"
+  className={`${playfair.variable} ${inter.variable} ${cinzel.variable}`}
+  suppressHydrationWarning
+  >
+  <head>
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{
+        __html: JSON.stringify({
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "Organization",
+              "@id": "https://www.rkfabricszone.com/#organization",
+              "name": "RK Fabrics Zone",
+              "url": "https://www.rkfabricszone.com/",
+              "logo": {
+                "@type": "ImageObject",
+                "url": "https://www.rkfabricszone.com/logo.png"
+              },
+              "sameAs": [
+                "https://www.instagram.com/rkfabricszone/",
+                "https://www.facebook.com/rkfabricszone/"
+              ]
+            },
+            {
+              "@type": "LocalBusiness",
+              "@id": "https://www.rkfabricszone.com/#localbusiness",
+              "name": "RK Fabrics Zone",
+              "image": "https://www.rkfabricszone.com/logo.png",
+              "address": {
+                "@type": "PostalAddress",
+                "addressLocality": "Jaipur",
+                "addressRegion": "Rajasthan",
+                "addressCountry": "IN"
+              }
+            },
+            {
+              "@type": "WebSite",
+              "@id": "https://www.rkfabricszone.com/#website",
+              "url": "https://www.rkfabricszone.com/",
+              "name": "RK Fabrics Zone",
+              "publisher": {
+                "@id": "https://www.rkfabricszone.com/#organization"
+              }
+            }
+          ]
+        })
+      }}
+    />
+  </head>
+  <body className="min-h-screen flex flex-col antialiased bg-gradient-to-br from-teal-50 via-[#fdfaf6] to-blue-50/50">
  <ThemeProvider
  attribute="class"
  defaultTheme="light"

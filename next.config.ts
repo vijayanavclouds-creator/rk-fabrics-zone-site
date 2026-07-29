@@ -22,6 +22,21 @@ const nextConfig: NextConfig = {
     ],
   },
   serverExternalPackages: [],
+  async headers() {
+    const headers = [];
+    if (process.env.VERCEL_ENV && process.env.VERCEL_ENV !== 'production') {
+      headers.push({
+        source: '/(.*)',
+        headers: [
+          {
+            key: 'X-Robots-Tag',
+            value: 'noindex, nofollow',
+          },
+        ],
+      });
+    }
+    return headers;
+  },
   experimental: {
     serverActions: {
       bodySizeLimit: '50mb',

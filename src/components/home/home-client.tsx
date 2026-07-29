@@ -193,6 +193,7 @@ function HeroSection({ banners }: { banners: any[] }) {
               transition={{ duration: 0.7, delay: 0.3 }}
               className="font-[family-name:var(--font-playfair)] text-5xl lg:text-7xl font-bold text-charcoal leading-[1.15] mb-4"
             >
+              <span className="block text-lg lg:text-2xl text-rose font-medium mb-2 font-[family-name:var(--font-cinzel)] uppercase tracking-widest">RK Fabrics Zone</span>
               Premium <span className="text-slate-600">Fabrics</span><br />
               Stylish <span className="text-slate-600">You</span>
             </motion.h1>
@@ -202,7 +203,7 @@ function HeroSection({ banners }: { banners: any[] }) {
               transition={{ duration: 0.7, delay: 0.4 }}
               className="text-lg lg:text-xl text-slate-700 max-w-2xl mx-auto mb-8 font-medium tracking-wide"
             >
-              Curated collections for the fashion-forward you.
+              Curated collections of premium fabrics and designer ethnic wear for the fashion-forward you at RK Fabrics Zone, Jaipur.
             </motion.p>
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -299,6 +300,7 @@ function HeroSection({ banners }: { banners: any[] }) {
               transition={{ duration: 0.7, delay: 0.1 }}
               className="font-[family-name:var(--font-playfair)] text-4xl sm:text-5xl font-bold text-charcoal leading-[1.1] mb-6"
             >
+              <span className="block text-base sm:text-xl text-rose font-medium mb-2 font-[family-name:var(--font-cinzel)] uppercase tracking-widest">RK Fabrics Zone</span>
               Premium <span className="text-gradient-gold">Fabrics</span>
               <br />
               Stylish <span className="text-teal-600">You</span>
@@ -310,7 +312,7 @@ function HeroSection({ banners }: { banners: any[] }) {
               transition={{ duration: 0.7, delay: 0.2 }}
               className="text-lg text-slate max-w-lg mx-auto mb-8 leading-relaxed"
             >
-              Discover handcrafted fabrics, designer ethnic wear & contemporary fashion — direct from our looms in Jaipur to your wardrobe.
+              Discover handcrafted fabrics, designer ethnic wear & contemporary fashion — direct from RK Fabrics Zone in Jaipur to your wardrobe.
             </motion.p>
 
             <motion.div
