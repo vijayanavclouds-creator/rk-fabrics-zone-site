@@ -5,6 +5,7 @@ import { User, LayoutDashboard, ShoppingBag, Heart, Ticket, Settings, Bell, Help
 import Link from "next/link"
 import LogoutButton from "./logout-button"
 import Image from "next/image"
+import MobileNumberBanner from "./mobile-number-banner"
 import { AccountMobileNav } from "./account-mobile-nav"
 
 export default async function AccountLayout({
@@ -39,6 +40,7 @@ export default async function AccountLayout({
         <div className="flex flex-col items-center">
           {/* Main Content Area */}
           <main className="w-full">
+            {!session.user.phone && <MobileNumberBanner />}
             <AccountMobileNav />
             {children}
           </main>
