@@ -158,6 +158,34 @@ export function BannerManager({ banners }: { banners: any[] }) {
     })
   }
 
+  const handleAddUrl = async (type: "hero" | "carousel") => {
+    const url = window.prompt(`Paste the direct image URL for the ${type} banner:`);
+    if (!url) return;
+    
+    if (!url.startsWith("http")) {
+      toast.error("Please enter a valid URL starting with http");
+      return;
+    }
+
+    setUploadingType(type);
+    try {
+      const createData = new FormData();
+      createData.append("type", type);
+      createData.append("imageUrl", url);
+
+      const createRes = await createBanner(createData);
+      if (createRes.success) {
+        toast.success(`${type} image added successfully!`);
+      } else {
+        throw new Error(createRes.error || "Failed to save banner");
+      }
+    } catch (error: any) {
+      toast.error(error.message);
+    } finally {
+      setUploadingType(null);
+    }
+  };
+
   const handleDragEnd = (result: DropResult, typeBanners: any[]) => {
     if (!result.destination) return;
     const { source, destination } = result;
@@ -182,26 +210,41 @@ export function BannerManager({ banners }: { banners: any[] }) {
             {items.length} of 7 images • Recommended Size: {type === "hero" ? "1920 × 800px" : "1200 × 600px"}
           </p>
         </div>
-        <label className={`
-          flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold shadow-neo-btn transition-all cursor-pointer
-          ${uploadingType === type || isPending ? 'bg-slate-200 text-slate-400 cursor-not-allowed shadow-none' : 'bg-charcoal text-white hover:bg-black hover:shadow-neo-pressed'}
-        `}>
-          {uploadingType === type ? <Loader2 size={16} className="animate-spin" /> : <Upload size={16} />}
-          Upload Image
-          <input 
-            type="file" 
-            accept="image/*" 
-            className="hidden" 
+        <div className="flex items-center gap-2">
+          <button 
+            type="button"
             disabled={uploadingType === type || isPending}
-            onClick={(e) => {
-              if (items.length >= 7) {
-                e.preventDefault();
-                toast.error(`Maximum 7 images allowed for ${type} section.`);
-              }
-            }}
-            onChange={(e) => handleUpload(e, type)} 
-          />
-        </label>
+            onClick={() => handleAddUrl(type)}
+            className={`
+              flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold shadow-neo-btn transition-all cursor-pointer
+              ${uploadingType === type || isPending ? 'bg-slate-200 text-slate-400 cursor-not-allowed shadow-none' : 'bg-white text-charcoal border border-charcoal/20 hover:bg-slate-50 hover:shadow-neo-pressed'}
+            `}
+          >
+            <ImageIcon size={16} />
+            Add from URL
+          </button>
+          
+          <label className={`
+            flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold shadow-neo-btn transition-all cursor-pointer
+            ${uploadingType === type || isPending ? 'bg-slate-200 text-slate-400 cursor-not-allowed shadow-none' : 'bg-charcoal text-white hover:bg-black hover:shadow-neo-pressed'}
+          `}>
+            {uploadingType === type ? <Loader2 size={16} className="animate-spin" /> : <Upload size={16} />}
+            Upload Image
+            <input 
+              type="file" 
+              accept="image/*" 
+              className="hidden" 
+              disabled={uploadingType === type || isPending}
+              onClick={(e) => {
+                if (items.length >= 7) {
+                  e.preventDefault();
+                  toast.error(`Maximum 7 images allowed for ${type} section.`);
+                }
+              }}
+              onChange={(e) => handleUpload(e, type)} 
+            />
+          </label>
+        </div>
       </div>
 
       <DragDropContext onDragEnd={(res) => handleDragEnd(res, items)}>

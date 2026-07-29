@@ -130,10 +130,16 @@ export const useCartStore = create<CartStore>()(
    return Math.round(gstAmount * 100) / 100;
  },
 
- getTotal: () => {
-   const total = get().getSubtotal() + get().getShipping() + get().getPlatformFee() + get().getGSTAmount();
-   return Math.max(0, total - get().discountAmount);
- },
+  getTotal: () => {
+    const subtotal = Number(get().getSubtotal()) || 0;
+    const shipping = Number(get().getShipping()) || 0;
+    const platformFee = Number(get().getPlatformFee()) || 0;
+    const gstAmount = Number(get().getGSTAmount()) || 0;
+    const discount = Number(get().discountAmount) || 0;
+    
+    const total = subtotal + shipping + platformFee + gstAmount;
+    return Math.max(0, total - discount);
+  },
 
  getItemCount: () => {
  return get().items.reduce((count, item) => count + item.quantity, 0);
