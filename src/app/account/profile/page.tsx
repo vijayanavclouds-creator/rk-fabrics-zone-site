@@ -6,6 +6,7 @@ import PasswordForm from "./password-form"
 import DeactivateAccount from "./deactivate-account"
 import ActiveSessions from "./active-sessions"
 import TwoFactorAuth from "./two-factor-auth"
+import MobileNumberBanner from "../mobile-number-banner"
 
 export default async function AccountProfilePage() {
   const session = await getServerSession(authOptions)
@@ -15,9 +16,11 @@ export default async function AccountProfilePage() {
   }
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-stretch">
-      {/* Left Column: Account Information */}
-      <div className="lg:col-span-6 flex flex-col">
+    <div className="space-y-6">
+      {!session.user.phone && <MobileNumberBanner />}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-stretch">
+        {/* Left Column: Account Information */}
+        <div className="lg:col-span-6 flex flex-col">
         <h2 className="text-2xl font-[family-name:var(--font-playfair)] font-bold text-charcoal mb-6">
           Account Information
         </h2>
@@ -55,6 +58,7 @@ export default async function AccountProfilePage() {
           
         </div>
       </div>
+    </div>
     </div>
   )
 }
