@@ -193,7 +193,6 @@ function HeroSection({ banners }: { banners: any[] }) {
               transition={{ duration: 0.7, delay: 0.3 }}
               className="font-[family-name:var(--font-playfair)] text-5xl lg:text-7xl font-bold text-charcoal leading-[1.15] mb-4"
             >
-              <span className="block text-lg lg:text-2xl text-rose font-medium mb-2 font-[family-name:var(--font-cinzel)] uppercase tracking-widest">RK Fabrics Zone</span>
               Premium <span className="text-slate-600">Fabrics</span><br />
               Stylish <span className="text-slate-600">You</span>
             </motion.h1>
