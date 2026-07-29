@@ -1,9 +1,9 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect, useRef } from "react"
 import { toast } from "sonner"
 import { updateProfile } from "@/actions/user"
-import { useRouter } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 import { useSession } from "next-auth/react"
 import { uploadProfileImage } from "@/actions/upload"
 import Image from "next/image"
@@ -17,7 +17,16 @@ export default function ProfileForm({ user, isStaff = false }: { user: { name: s
   const [loading, setLoading] = useState(false)
   const [uploadingImage, setUploadingImage] = useState(false)
   const router = useRouter()
+  const searchParams = useSearchParams()
   const { data: session, update } = useSession()
+  const phoneInputRef = useRef<HTMLInputElement>(null)
+
+  useEffect(() => {
+    if (searchParams.get("focus") === "phone") {
+      phoneInputRef.current?.focus()
+      phoneInputRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    }
+  }, [searchParams])
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files?.[0]) return
@@ -63,7 +72,13 @@ export default function ProfileForm({ user, isStaff = false }: { user: { name: s
     if (result.success) {
       await update({ name, phone, dob, receiveOrderEmails })
       toast.success("Profile updated successfully!")
-      router.refresh()
+      
+      const callbackUrl = searchParams.get("callbackUrl")
+      if (callbackUrl) {
+        router.push(callbackUrl)
+      } else {
+        router.refresh()
+      }
     } else {
       toast.error(result.error || "Failed to update profile")
     }
@@ -106,7 +121,7 @@ export default function ProfileForm({ user, isStaff = false }: { user: { name: s
       </div>
       <div>
         <label className="block text-sm font-bold text-charcoal mb-2">Mobile Number</label>
-        <input type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} required maxLength={10} className="w-full px-4 py-3 rounded-xl border border-charcoal/20 bg-transparent focus:outline-none focus:border-teal-600 focus:ring-1 focus:ring-teal-600 text-charcoal transition-all" />
+        <input ref={phoneInputRef} type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} required maxLength={10} className="w-full px-4 py-3 rounded-xl border border-charcoal/20 bg-transparent focus:outline-none focus:border-teal-600 focus:ring-1 focus:ring-teal-600 text-charcoal transition-all" />
       </div>
       <div>
         <label className="block text-sm font-bold text-charcoal mb-2">Date of Birth</label>

@@ -60,6 +60,30 @@ export default function AddressSelector({ initialAddresses, isCheckout = true }:
 
   const [loading, setLoading] = useState(false)
 
+  useEffect(() => {
+    const editId = searchParams.get("edit")
+    if (editId && addresses.length > 0) {
+      const addrToEdit = addresses.find(a => a.id === editId)
+      if (addrToEdit) {
+        // Only call setEditingAddress and setShowForm if it isn't already open
+        if (!editingAddress || editingAddress.id !== editId) {
+          setEditingAddress(addrToEdit)
+          setFormData({
+            firstName: addrToEdit.firstName,
+            lastName: addrToEdit.lastName,
+            phone: addrToEdit.phone,
+            address: addrToEdit.address,
+            city: addrToEdit.city,
+            state: addrToEdit.state,
+            pincode: addrToEdit.pincode,
+            isDefault: addrToEdit.isDefault
+          })
+          setShowForm(true)
+        }
+      }
+    }
+  }, [searchParams, addresses])
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target
     setFormData(prev => ({
