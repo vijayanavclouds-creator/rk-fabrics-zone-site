@@ -44,13 +44,37 @@ export function SystemStatus() {
         <h2 className="font-[family-name:var(--font-playfair)] text-2xl font-bold text-charcoal flex items-center gap-3">
           <Activity className="text-teal-600" /> System Status & Usage
         </h2>
-        <button 
-          onClick={fetchData} 
-          disabled={loading}
-          className="flex items-center gap-2 px-4 py-2 bg-slate-100 text-charcoal font-bold rounded-xl hover:bg-slate-200 transition-colors disabled:opacity-50"
-        >
-          <RefreshCw size={16} className={loading ? "animate-spin" : ""} /> Refresh
-        </button>
+        <div className="flex items-center gap-3">
+          <button 
+            onClick={async () => {
+              toast.loading("Purging Vercel memory cache...", { id: "purgeCache" })
+              try {
+                const res = await fetch("/api/revalidate?secret=purge123")
+                if (res.ok) {
+                  toast.success("Cache completely wiped! Fetching fresh data.", { id: "purgeCache" })
+                  fetchData()
+                  // Reload the page to grab fresh data across the whole dashboard
+                  window.location.reload()
+                } else {
+                  toast.error("Failed to purge cache", { id: "purgeCache" })
+                }
+              } catch (e) {
+                toast.error("Error purging cache", { id: "purgeCache" })
+              }
+            }} 
+            className="flex items-center gap-2 px-4 py-2 bg-rose-100 text-rose-700 font-bold rounded-xl hover:bg-rose-200 transition-colors"
+          >
+            <RefreshCw size={16} /> Purge Server Cache
+          </button>
+          
+          <button 
+            onClick={fetchData} 
+            disabled={loading}
+            className="flex items-center gap-2 px-4 py-2 bg-slate-100 text-charcoal font-bold rounded-xl hover:bg-slate-200 transition-colors disabled:opacity-50"
+          >
+            <RefreshCw size={16} className={loading ? "animate-spin" : ""} /> Refresh
+          </button>
+        </div>
       </div>
 
       <div className="grid md:grid-cols-2 gap-6">
