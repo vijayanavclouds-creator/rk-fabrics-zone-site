@@ -10,24 +10,17 @@ import { authOptions } from "@/lib/auth";
  */
 export async function logAdminActivity(action: string, details?: string) {
   try {
-    const fs = require('fs');
-    fs.appendFileSync('./debug.log', `[logAdminActivity] called with action: ${action}\n`);
-    
     const session = await getServerSession(authOptions);
     const adminName = session?.user?.name || session?.user?.email || "System";
-    fs.appendFileSync('./debug.log', `[logAdminActivity] adminName resolved to: ${adminName}\n`);
     
-    const newAct = await prisma.adminActivity.create({
+    await prisma.adminActivity.create({
       data: {
         adminName,
         action,
         details,
       }
     });
-    fs.appendFileSync('./debug.log', `[logAdminActivity] success! inserted id: ${newAct.id}\n`);
   } catch (error: any) {
-    const fs = require('fs');
-    fs.appendFileSync('./debug.log', `[logAdminActivity] ERROR: ${error.message}\n${error.stack}\n`);
     console.error("Failed to log admin activity:", error);
     // We intentionally don't throw to prevent crashing the parent operation
   }
