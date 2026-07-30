@@ -81,24 +81,68 @@ export function AccountDropdown() {
 
   const activeLinks = session.user.role === "ADMIN" ? adminLinks : session.user.role === "SUPPORT" ? supportLinks : customerLinks
 
+  const hasPhone = !!session.user.phone
+  const isComplete = hasPhone // based on mobile number as per user request
+  const strokeWidth = 2.5
+  const radius = 20 - strokeWidth / 2
+  const circumference = 2 * Math.PI * radius
+  const offset = isComplete ? 0 : circumference * 0.4 // 60% complete
+
   return (
     <div className="relative" ref={dropdownRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="btn-icon"
+        className="relative w-10 h-10 flex items-center justify-center rounded-full hover:scale-105 transition-transform focus:outline-none bg-white shadow-sm"
         aria-label="Account Menu"
       >
-        {session.user.image ? (
-          <Image 
-            src={session.user.image} 
-            alt={session.user.name || "User"} 
-            width={40} 
-            height={40} 
-            className="rounded-full object-cover w-full h-full shadow-sm"
+        {/* Progress Ring Background */}
+        <svg className="absolute inset-0 w-full h-full -rotate-90 pointer-events-none" viewBox="0 0 40 40">
+          <circle
+            cx="20"
+            cy="20"
+            r={radius}
+            fill="none"
+            stroke="currentColor"
+            strokeWidth={strokeWidth}
+            className="text-slate-100"
           />
-        ) : (
-          <div className="w-full h-full rounded-full bg-cream shadow-neo-input flex items-center justify-center text-[13px] font-[family-name:var(--font-playfair)] text-slate-500 border border-white/50 tracking-wider">
-            {session.user.name ? getInitials(session.user.name) : <User size={18} />}
+          {/* Progress Ring Foreground */}
+          <circle
+            cx="20"
+            cy="20"
+            r={radius}
+            fill="none"
+            stroke="currentColor"
+            strokeWidth={strokeWidth}
+            strokeDasharray={circumference}
+            strokeDashoffset={offset}
+            strokeLinecap="round"
+            className={isComplete ? "text-blue-500" : "text-amber-400"}
+            style={{ transition: "stroke-dashoffset 0.5s ease-in-out, color 0.3s ease" }}
+          />
+        </svg>
+
+        {/* Profile Image / Initials */}
+        <div className="w-[33px] h-[33px] rounded-full overflow-hidden relative z-10 flex items-center justify-center bg-cream border border-white">
+          {session.user.image ? (
+            <Image 
+              src={session.user.image} 
+              alt={session.user.name || "User"} 
+              width={33} 
+              height={33} 
+              className="object-cover w-full h-full"
+            />
+          ) : (
+            <span className="text-[12px] font-[family-name:var(--font-playfair)] text-slate-500 tracking-wider">
+              {session.user.name ? getInitials(session.user.name) : <User size={16} />}
+            </span>
+          )}
+        </div>
+
+        {/* Alert Icon (if incomplete) */}
+        {!isComplete && (
+          <div className="absolute -top-1 -right-1 z-20 w-4 h-4 bg-amber-400 rounded-full border-2 border-white flex items-center justify-center shadow-sm">
+            <AlertTriangle size={8} className="text-white fill-white" />
           </div>
         )}
       </button>
