@@ -194,34 +194,12 @@ export async function sendOTPEmail(email: string, otp: string, type: 'SIGNUP' | 
     message = "An authentication request was initiated for your executive account. Use the following security code to complete 2FA verification."
   }
 
-  let html = `
-    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; color: #333;">
-      <div style="background-color: #0d9488; padding: 24px; text-align: center; color: white;">
-        <h1 style="margin: 0;">RK Fabrics Zone</h1>
-      </div>
-      
-      <div style="padding: 24px; background-color: #fdfaf6; text-align: center;">
-        <h2 style="margin-top: 0;">${title}</h2>
-        <p>${message}</p>
-        
-        <div style="margin: 32px 0; padding: 24px; background-color: white; border: 1px solid #eee; border-radius: 8px; font-size: 32px; font-weight: bold; letter-spacing: 4px; color: #0d9488;">
-          ${otp}
-        </div>
-        
-        <p style="color: #666; font-size: 14px;">
-          This code is valid for 15 minutes. If you didn't request this, you can safely ignore this email.
-        </p>
-      </div>
-    </div>
-  `
-
-  if (type === 'EXECUTIVE_LOGIN' || type === 'SUPPORT_LOGIN') {
-    html = `
+  const html = `
 <!DOCTYPE html>
 <html>
 <head>
   <meta charset="utf-8">
-  <title>Verification Code</title>
+  <title>${title}</title>
 </head>
 <body style="margin: 0; padding: 0; background-color: #E8EBEF; font-family: Arial, sans-serif;">
   <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color: #E8EBEF; padding: 40px 20px;">
@@ -241,9 +219,9 @@ export async function sendOTPEmail(email: string, otp: string, type: 'SIGNUP' | 
           <!-- Body -->
           <tr>
             <td align="center" style="padding: 40px 30px;">
-              <h2 style="margin: 0 0 15px 0; color: #0A1931; font-size: 20px;">Verification Code</h2>
+              <h2 style="margin: 0 0 15px 0; color: #0A1931; font-size: 20px;">${title}</h2>
               <p style="margin: 0 0 30px 0; color: #2F5370; font-size: 15px; line-height: 1.6;">
-                An authentication request was initiated for your executive account. Use the following security code to complete your 2FA verification.
+                ${message}
               </p>
               
               <!-- OTP Box -->
@@ -281,8 +259,7 @@ export async function sendOTPEmail(email: string, otp: string, type: 'SIGNUP' | 
   </table>
 </body>
 </html>
-`
-  }
+  `
 
   try {
     const info = await transporter.sendMail({
