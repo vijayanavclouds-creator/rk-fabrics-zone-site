@@ -143,7 +143,7 @@ export default function AddressSelector({ initialAddresses, isCheckout = true }:
   const handleSubmitForm = async (e: React.FormEvent) => {
     e.preventDefault()
 
-    if (formData.phone && !/^(?!(\d)\1{9})(?!(\d)(\d)\1\2\1\2\1\2\1\2)(?!(?:9876543210|8765432109|7654321098|6543210987|9012345678|8901234567|7890123456|6789012345))[6-9]\d{9}$/.test(formData.phone.replace(/\D/g, ""))) {
+    if (formData.phone && !/^(?!(\d)\1{9})(?!(\d)(\d)\2\3\2\3\2\3\2\3)(?!(?:9876543210|8765432109|7654321098|6543210987|9012345678|8901234567|7890123456|6789012345))[6-9]\d{9}$/.test(formData.phone.replace(/\D/g, ""))) {
       toast.error("Please enter a valid 10-digit Indian mobile number starting with 6-9")
       return
     }

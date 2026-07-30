@@ -109,7 +109,7 @@ export function ContactForm({ deliveredOrders = [] }: { deliveredOrders?: any[] 
     const formData = new FormData(e.currentTarget);
     const phone = formData.get("phone") as string;
     
-    if (phone && !/^(?!(\d)\1{9})(?!(\d)(\d)\1\2\1\2\1\2\1\2)(?!(?:9876543210|8765432109|7654321098|6543210987|9012345678|8901234567|7890123456|6789012345))[6-9]\d{9}$/.test(phone)) {
+    if (phone && !/^(?!(\d)\1{9})(?!(\d)(\d)\2\3\2\3\2\3\2\3)(?!(?:9876543210|8765432109|7654321098|6543210987|9012345678|8901234567|7890123456|6789012345))[6-9]\d{9}$/.test(phone)) {
       toast.error("Please enter a valid 10-digit phone number");
       return;
     }
