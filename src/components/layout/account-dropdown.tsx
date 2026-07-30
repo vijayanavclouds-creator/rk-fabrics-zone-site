@@ -123,13 +123,13 @@ export function AccountDropdown() {
         </svg>
 
         {/* Profile Image / Initials */}
-        <div className="w-[35px] h-[35px] rounded-full overflow-hidden relative z-10 flex items-center justify-center bg-cream">
+        <div className="w-[31px] h-[31px] rounded-full overflow-hidden relative z-10 flex items-center justify-center bg-cream">
           {session.user.image ? (
             <Image 
               src={session.user.image} 
               alt={session.user.name || "User"} 
-              width={35} 
-              height={35} 
+              width={31} 
+              height={31} 
               className="object-cover w-full h-full"
             />
           ) : (
@@ -141,9 +141,9 @@ export function AccountDropdown() {
 
         {/* Alert Icon (if incomplete) */}
         {!isComplete && (
-          <div className="absolute -bottom-0.5 -right-0.5 z-20 group">
-            <div className="w-4 h-4 bg-amber-500 rounded-full border-[1.5px] border-white flex items-center justify-center shadow-sm cursor-help">
-              <AlertTriangle size={8} className="text-white fill-white" />
+          <div className="absolute bottom-[1px] right-[1px] z-20 group">
+            <div className="w-[14px] h-[14px] bg-amber-500 rounded-full border-[1.5px] border-white flex items-center justify-center shadow-sm cursor-help">
+              <AlertTriangle size={7} className="text-white fill-white" />
             </div>
             {/* Tooltip */}
             <div className="absolute top-full mt-1 right-0 w-max px-2 py-1 bg-charcoal text-white text-[10px] rounded shadow-lg opacity-0 pointer-events-none group-hover:opacity-100 transition-opacity whitespace-nowrap z-50">
