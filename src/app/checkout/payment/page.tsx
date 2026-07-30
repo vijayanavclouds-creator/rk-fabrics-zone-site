@@ -185,6 +185,14 @@ export default function CheckoutPaymentPage() {
       return
     }
 
+    if (!hasValidAddressPhone && !hasValidProfilePhone) {
+      toast.error("For receiving OTP we need a valid mobile number. Please add this required information.", {
+        action: { label: "Click here to update", onClick: () => router.push("/account/profile?focus=phone&callbackUrl=/checkout/payment") },
+        duration: 8000,
+      })
+      return
+    }
+
     await proceedWithOrder()
   }
 
