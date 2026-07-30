@@ -18,73 +18,120 @@ export async function sendOrderConfirmationEmail(order: any) {
   const to = order.email
 
   const itemsHtml = order.items.map((item: any) => `
-    <tr>
-      <td style="padding: 12px; border-bottom: 1px solid #eee;">
-        <strong>${item.productName}</strong><br/>
-        <span style="color: #666; font-size: 12px;">${item.variantName}</span>
-      </td>
-      <td style="padding: 12px; border-bottom: 1px solid #eee; text-align: center;">${item.quantity}</td>
-      <td style="padding: 12px; border-bottom: 1px solid #eee; text-align: right;">₹${item.price.toLocaleString()}</td>
-    </tr>
+                <tr>
+                  <td style="padding: 15px 0; border-bottom: 1px solid #E6F0F9;">
+                    <strong style="color: #0A1931; display: block; margin-bottom: 4px;">${item.productName}</strong>
+                    <span style="font-size: 13px;">${item.variantName} | Qty: ${item.quantity}</span>
+                  </td>
+                  <td align="right" style="padding: 15px 0; border-bottom: 1px solid #E6F0F9; font-weight: bold; color: #0A1931;">
+                    ₹${(item.price).toLocaleString()}
+                  </td>
+                </tr>
   `).join('')
 
   const html = `
-    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; color: #333;">
-      <div style="background-color: #0d9488; padding: 24px; text-align: center; color: white;">
-        <h1 style="margin: 0;">RK Fabrics Zone</h1>
-        <p style="margin: 10px 0 0 0; opacity: 0.9;">Order Confirmation</p>
-      </div>
-      
-      <div style="padding: 24px; background-color: #fdfaf6;">
-        <h2 style="margin-top: 0;">Thank you for your order!</h2>
-        <p>Your order <strong>#${order.id.slice(-8).toUpperCase()}</strong> has been received and is currently being processed.</p>
-        
-        <h3 style="margin-top: 32px; border-bottom: 2px solid #eee; padding-bottom: 8px;">Order Details</h3>
-        <table style="width: 100%; border-collapse: collapse; margin-bottom: 24px;">
-          <thead>
-            <tr style="background-color: #f1f5f9;">
-              <th style="padding: 12px; text-align: left;">Item</th>
-              <th style="padding: 12px; text-align: center;">Qty</th>
-              <th style="padding: 12px; text-align: right;">Price</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${itemsHtml}
-          </tbody>
-          <tfoot>
-            <tr>
-              <td colspan="2" style="padding: 12px; text-align: right; font-weight: bold;">Subtotal:</td>
-              <td style="padding: 12px; text-align: right;">₹${order.subtotalAmount.toLocaleString()}</td>
-            </tr>
-            <tr>
-              <td colspan="2" style="padding: 12px; text-align: right; font-weight: bold;">Shipping:</td>
-              <td style="padding: 12px; text-align: right;">₹${order.shippingAmount.toLocaleString()}</td>
-            </tr>
-            ${order.platformFeeAmount ? `
-            <tr>
-              <td colspan="2" style="padding: 12px; text-align: right; font-weight: bold;">Platform Fee:</td>
-              <td style="padding: 12px; text-align: right;">₹${order.platformFeeAmount.toLocaleString()}</td>
-            </tr>
-            ` : ''}
-            <tr>
-              <td colspan="2" style="padding: 12px; text-align: right; font-weight: bold; font-size: 18px;">Total:</td>
-              <td style="padding: 12px; text-align: right; font-weight: bold; font-size: 18px; color: #0d9488;">₹${order.totalAmount.toLocaleString()}</td>
-            </tr>
-          </tfoot>
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Order Confirmation</title>
+</head>
+<body style="margin: 0; padding: 0; background-color: #E8EBEF; font-family: Arial, sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color: #E8EBEF; padding: 40px 20px;">
+    <tr>
+      <td align="center">
+        <!-- Main Card -->
+        <table width="100%" max-width="600" cellpadding="0" cellspacing="0" border="0" style="max-width: 600px; background-color: #F6FAFD; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid #D1CDC1;">
+          
+          <!-- Header -->
+          <tr>
+            <td align="center" style="padding: 40px 20px 20px 20px;">
+              <img src="https://www.rkfabricszone.com/logo.png" alt="RK Fabrics Zone" width="80" style="display: block; margin-bottom: 15px; border-radius: 50%;">
+              <h1 style="margin: 0; color: #0A1931; font-size: 24px; font-weight: bold; letter-spacing: 1px;">RK Fabrics Zone</h1>
+            </td>
+          </tr>
+
+          <!-- Hero -->
+          <tr>
+            <td align="center" style="padding: 0 30px 30px 30px; border-bottom: 2px dashed #D1CDC1;">
+              <h2 style="margin: 0 0 10px 0; color: #0A1931; font-size: 26px;">Order Confirmed!</h2>
+              <p style="margin: 0; color: #2F5370; font-size: 15px; line-height: 1.6;">
+                Thank you for your purchase. We are getting your order ready to be shipped. We will notify you when it has been sent.
+              </p>
+              <div style="margin-top: 20px; display: inline-block; background-color: #0A1931; color: #F6FAFD; padding: 8px 16px; border-radius: 4px; font-weight: bold; letter-spacing: 2px;">
+                ORDER #${order.id.slice(-8).toUpperCase()}
+              </div>
+            </td>
+          </tr>
+
+          <!-- Order Details -->
+          <tr>
+            <td style="padding: 30px;">
+              <h3 style="margin: 0 0 20px 0; color: #0A1931; font-size: 18px; text-transform: uppercase; letter-spacing: 1px;">Order Summary</h3>
+              
+              <table width="100%" cellpadding="0" cellspacing="0" border="0" style="font-size: 14px; color: #2F5370;">
+                <!-- Item Rows -->
+                ${itemsHtml}
+                <!-- End Item Rows -->
+
+                <!-- Totals -->
+                <tr>
+                  <td style="padding-top: 20px; text-align: right;">Subtotal:</td>
+                  <td align="right" style="padding-top: 20px;">₹${order.subtotalAmount.toLocaleString()}</td>
+                </tr>
+                <tr>
+                  <td style="padding-top: 10px; text-align: right;">Shipping:</td>
+                  <td align="right" style="padding-top: 10px;">₹${order.shippingAmount.toLocaleString()}</td>
+                </tr>
+                ${order.platformFeeAmount ? `
+                <tr>
+                  <td style="padding-top: 10px; text-align: right;">Platform Fee:</td>
+                  <td align="right" style="padding-top: 10px;">₹${order.platformFeeAmount.toLocaleString()}</td>
+                </tr>
+                ` : ''}
+                <tr>
+                  <td style="padding-top: 15px; text-align: right; font-weight: bold; font-size: 18px; color: #0A1931;">Total:</td>
+                  <td align="right" style="padding-top: 15px; font-weight: bold; font-size: 18px; color: #0A1931;">₹${order.totalAmount.toLocaleString()}</td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- Shipping Info -->
+          <tr>
+            <td style="padding: 0 30px 40px 30px;">
+              <div style="background-color: #FFFFFF; padding: 20px; border-radius: 8px; border: 1px solid #E6F0F9;">
+                <h4 style="margin: 0 0 10px 0; color: #0A1931; font-size: 14px; text-transform: uppercase; letter-spacing: 1px;">Shipping Address</h4>
+                <p style="margin: 0; color: #2F5370; font-size: 14px; line-height: 1.6;">
+                  ${order.shippingAddress.replace(/\n/g, '<br>')}
+                </p>
+              </div>
+            </td>
+          </tr>
+          
         </table>
 
-        <div style="background-color: white; padding: 16px; border: 1px solid #eee; border-radius: 8px;">
-          <h4 style="margin-top: 0;">Shipping Address</h4>
-          <p style="margin-bottom: 0; line-height: 1.5; color: #555;">
-            ${order.shippingAddress}
-          </p>
-        </div>
+        <!-- Footer -->
+        <table width="100%" max-width="600" cellpadding="0" cellspacing="0" border="0" style="max-width: 600px; margin-top: 20px;">
+          <tr>
+            <td align="center" style="padding: 20px; color: #666666; font-size: 12px; line-height: 1.5;">
+              <p style="margin: 0 0 10px 0;">
+                <strong>RK Fabrics Zone</strong><br>
+                Premium Quality Fabrics & Textiles
+              </p>
+              <p style="margin: 0 0 10px 0;">
+                <a href="https://www.rkfabricszone.com" style="color: #3D6A8C; text-decoration: none;">www.rkfabricszone.com</a> | 
+                <a href="mailto:help@rkfabricszone.com" style="color: #3D6A8C; text-decoration: none;">help@rkfabricszone.com</a>
+              </p>
+            </td>
+          </tr>
+        </table>
 
-        <p style="margin-top: 32px; text-align: center; color: #666; font-size: 14px;">
-          If you have any questions, reply to this email or contact our support team.
-        </p>
-      </div>
-    </div>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
   `
 
   try {
