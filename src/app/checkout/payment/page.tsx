@@ -430,7 +430,7 @@ export default function CheckoutPaymentPage() {
                 </span>
               </div>
 
-              {!hasValidAddressPhone && (
+              {!hasValidAddressPhone && hasValidProfilePhone && (
                 <div className="mb-4 p-4 bg-amber-50 border border-amber-200 rounded-xl text-amber-800 text-sm">
                   <AlertCircle size={16} className="inline mr-2 -mt-1" />
                   You have an invalid mobile number in your selected address.{" "}

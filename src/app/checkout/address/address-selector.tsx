@@ -6,12 +6,14 @@ import { useCheckoutStore, CheckoutAddress } from "@/store/checkout"
 import { saveAddress, deleteAddress } from "@/actions/address"
 import { toast } from "sonner"
 import Link from "next/link"
+import { useSession } from "next-auth/react"
 import { MapPin, Plus, Edit2, Trash2, ArrowRight, ArrowLeft, ShieldCheck } from "lucide-react"
 
 export default function AddressSelector({ initialAddresses, isCheckout = true }: { initialAddresses: any[], isCheckout?: boolean }) {
   const router = useRouter()
   const searchParams = useSearchParams()
   const pathname = usePathname()
+  const { data: session } = useSession()
   const { selectedAddress, setAddress } = useCheckoutStore()
   
   const [addresses, setAddresses] = useState(initialAddresses)
@@ -57,6 +59,18 @@ export default function AddressSelector({ initialAddresses, isCheckout = true }:
       isDefault: false
     }
   })
+
+  // Autofill name and phone from session for temporary addresses
+  useEffect(() => {
+    if (isCheckout && selectedAddress?.id?.startsWith("temp_") && session?.user) {
+      setFormData(prev => ({
+        ...prev,
+        firstName: prev.firstName || session.user.name?.split(" ")[0] || "",
+        lastName: prev.lastName || session.user.name?.split(" ").slice(1).join(" ") || "",
+        phone: prev.phone || session.user.phone || "",
+      }))
+    }
+  }, [session?.user, isCheckout, selectedAddress?.id])
 
   const [loading, setLoading] = useState(false)
 
