@@ -14,7 +14,7 @@ const transporter = nodemailer.createTransport({
 })
 
 export async function sendOrderConfirmationEmail(order: any) {
-  const from = process.env.SMTP_FROM || '"RK Fabrics Zone" <noreply@rkfabricszone.com>'
+  const from = process.env.SMTP_FROM || '"RK Fabrics Zone" <help@rkfabricszone.com>'
   const to = order.email
 
   const itemsHtml = order.items.map((item: any) => `
@@ -103,7 +103,7 @@ export async function sendOrderConfirmationEmail(order: any) {
 }
 
 export async function sendOrderShippedEmail(order: any) {
-  const from = process.env.SMTP_FROM || '"RK Fabrics Zone" <noreply@rkfabricszone.com>'
+  const from = process.env.SMTP_FROM || '"RK Fabrics Zone" <help@rkfabricszone.com>'
   const to = order.email
 
   const itemsHtml = order.items.map((item: any) => `
@@ -169,7 +169,7 @@ export async function sendOrderShippedEmail(order: any) {
 }
 
 export async function sendOTPEmail(email: string, otp: string, type: 'SIGNUP' | 'REACTIVATE' | 'RESET_PASSWORD' | 'EXECUTIVE_LOGIN' | 'SUPPORT_LOGIN') {
-  const from = process.env.SMTP_FROM || '"RK Fabrics Zone" <noreply@rkfabricszone.com>'
+  const from = process.env.SMTP_FROM || '"RK Fabrics Zone" <help@rkfabricszone.com>'
   const to = email
 
   let subject = "Your Verification Code"
@@ -230,7 +230,7 @@ export async function sendOTPEmail(email: string, otp: string, type: 'SIGNUP' | 
 }
 
 export async function sendCouponEmail(email: string, userName: string, couponCode: string, discountValue: number, discountType: string, expiresAt: Date) {
-  const from = process.env.SMTP_FROM || '"RK Fabrics Zone" <noreply@rkfabricszone.com>'
+  const from = process.env.SMTP_FROM || '"RK Fabrics Zone" <help@rkfabricszone.com>'
   const to = email
 
   const subject = "A Special Offer Just For You!"
@@ -281,7 +281,7 @@ export async function sendCouponEmail(email: string, userName: string, couponCod
 }
 
 export async function sendOrderDeliveredEmail(order: any) {
-  const from = process.env.SMTP_FROM || '"RK Fabrics Zone" <noreply@rkfabricszone.com>'
+  const from = process.env.SMTP_FROM || '"RK Fabrics Zone" <help@rkfabricszone.com>'
   const to = order.email
 
   const itemsHtml = order.items.map((item: any) => `
@@ -340,7 +340,7 @@ export async function sendOrderDeliveredEmail(order: any) {
 }
 
 export async function sendOrderCancelledEmail(order: any) {
-  const from = process.env.SMTP_FROM || '"RK Fabrics Zone" <noreply@rkfabricszone.com>'
+  const from = process.env.SMTP_FROM || '"RK Fabrics Zone" <help@rkfabricszone.com>'
   const to = order.email
 
   const itemsHtml = order.items.map((item: any) => `
@@ -400,7 +400,7 @@ export async function sendOrderCancelledEmail(order: any) {
 }
 
 export async function sendAbandonedCartEmail(user: any, cartItems: any[]) {
-  const from = process.env.SMTP_FROM || '"RK Fabrics Zone" <noreply@rkfabricszone.com>'
+  const from = process.env.SMTP_FROM || '"RK Fabrics Zone" <help@rkfabricszone.com>'
   const to = user.email
 
   const itemsHtml = cartItems.map((item: any) => `
