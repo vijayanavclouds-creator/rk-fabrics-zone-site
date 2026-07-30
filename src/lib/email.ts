@@ -138,7 +138,7 @@ export async function sendOrderConfirmationEmail(order: any) {
     const info = await transporter.sendMail({
       from,
       to,
-      subject: `Order Confirmation - #${order.id.slice(-8).toUpperCase()}`,
+      subject: `💖 Thank you for your order! - #${order.id.slice(-8).toUpperCase()} 🚚`,
       html,
     })
     console.log("Message sent: %s", info.messageId)
