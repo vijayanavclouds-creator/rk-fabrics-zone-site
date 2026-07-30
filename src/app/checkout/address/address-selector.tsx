@@ -169,22 +169,25 @@ export default function AddressSelector({ initialAddresses, isCheckout = true }:
         if (returnUrl) {
           setAddress(res.address)
           router.replace(returnUrl)
+          return // Keep loading state during navigation
         } else {
           router.replace(pathname)
+          setEditingAddress(null)
+          setFormData({
+            firstName: "", lastName: "", phone: "", address: "", city: "", state: "", pincode: "", isDefault: false
+          })
+          setShowForm(false)
+          setLoading(false)
         }
       } else {
         setAddress(res.address)
         router.push("/checkout/payment")
+        return // Keep loading state during navigation
       }
-      setEditingAddress(null)
-      // Reset form
-      setFormData({
-        firstName: "", lastName: "", phone: "", address: "", city: "", state: "", pincode: "", isDefault: false
-      })
     } else {
       toast.error(res.error || "Failed to save address")
+      setLoading(false)
     }
-    setLoading(false)
   }
 
   const handleContinue = () => {
