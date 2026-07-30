@@ -23,7 +23,7 @@ export async function submitContactMessage(formData: FormData) {
       return { success: false, error: "Please enter a valid email address." };
     }
 
-    if (phone && !/^[6-9]\d{9}$/.test(phone)) {
+    if (phone && !/^(?!(\d)\1{9})[6-9]\d{9}$/.test(phone)) {
       return { success: false, error: "Please enter a valid 10-digit phone number." };
     }
 

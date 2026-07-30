@@ -68,7 +68,7 @@ export async function registerUser(formData: FormData) {
       return { success: false, error: "Please enter a valid email address" }
     }
 
-    if (!/^[6-9]\d{9}$/.test(phone)) {
+    if (!/^(?!(\d)\1{9})[6-9]\d{9}$/.test(phone)) {
       return { success: false, error: "Please enter a valid 10-digit phone number starting with 6-9" }
     }
 

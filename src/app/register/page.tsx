@@ -29,7 +29,7 @@ export default function Register() {
       return
     }
 
-    if (!/^[6-9]\d{9}$/.test(phone)) {
+    if (!/^(?!(\d)\1{9})[6-9]\d{9}$/.test(phone)) {
       toast.error("Please enter a valid 10-digit phone number starting with 6-9")
       setStatus("idle")
       return

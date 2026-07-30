@@ -109,7 +109,7 @@ export function ContactForm({ deliveredOrders = [] }: { deliveredOrders?: any[] 
     const formData = new FormData(e.currentTarget);
     const phone = formData.get("phone") as string;
     
-    if (phone && !/^[6-9]\d{9}$/.test(phone)) {
+    if (phone && !/^(?!(\d)\1{9})[6-9]\d{9}$/.test(phone)) {
       toast.error("Please enter a valid 10-digit phone number");
       return;
     }

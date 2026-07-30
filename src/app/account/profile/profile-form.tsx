@@ -51,7 +51,7 @@ export default function ProfileForm({ user, isStaff = false }: { user: { name: s
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
-    if (phone && !/^[6-9]\d{9}$/.test(phone)) {
+    if (phone && !/^(?!(\d)\1{9})[6-9]\d{9}$/.test(phone)) {
       toast.error("Please enter a valid 10-digit phone number starting with 6-9")
       return
     }
