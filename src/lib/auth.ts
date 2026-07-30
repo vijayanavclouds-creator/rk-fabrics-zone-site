@@ -110,7 +110,7 @@ export const authOptions: NextAuthOptions = {
         if (!dbUser && account?.provider === "google") {
           let intent = "register";
           try {
-            const cookieStore = cookies();
+            const cookieStore = await cookies();
             intent = cookieStore.get("oauth_intent")?.value || "register";
           } catch (error) {
             console.error("Could not read oauth_intent cookie", error);
