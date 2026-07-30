@@ -117,19 +117,19 @@ export function AccountDropdown() {
             strokeDasharray={circumference}
             strokeDashoffset={offset}
             strokeLinecap="round"
-            className={isComplete ? "text-blue-500" : "text-amber-400"}
+            className={isComplete ? "text-blue-900" : "text-amber-500"}
             style={{ transition: "stroke-dashoffset 0.5s ease-in-out, color 0.3s ease" }}
           />
         </svg>
 
         {/* Profile Image / Initials */}
-        <div className="w-[33px] h-[33px] rounded-full overflow-hidden relative z-10 flex items-center justify-center bg-cream border border-white">
+        <div className="w-[35px] h-[35px] rounded-full overflow-hidden relative z-10 flex items-center justify-center bg-cream">
           {session.user.image ? (
             <Image 
               src={session.user.image} 
               alt={session.user.name || "User"} 
-              width={33} 
-              height={33} 
+              width={35} 
+              height={35} 
               className="object-cover w-full h-full"
             />
           ) : (
@@ -141,8 +141,15 @@ export function AccountDropdown() {
 
         {/* Alert Icon (if incomplete) */}
         {!isComplete && (
-          <div className="absolute -top-1 -right-1 z-20 w-4 h-4 bg-amber-400 rounded-full border-2 border-white flex items-center justify-center shadow-sm">
-            <AlertTriangle size={8} className="text-white fill-white" />
+          <div className="absolute -bottom-0.5 -right-0.5 z-20 group">
+            <div className="w-4 h-4 bg-amber-500 rounded-full border-[1.5px] border-white flex items-center justify-center shadow-sm cursor-help">
+              <AlertTriangle size={8} className="text-white fill-white" />
+            </div>
+            {/* Tooltip */}
+            <div className="absolute top-full mt-1 right-0 w-max px-2 py-1 bg-charcoal text-white text-[10px] rounded shadow-lg opacity-0 pointer-events-none group-hover:opacity-100 transition-opacity whitespace-nowrap z-50">
+              Please complete your profile information
+              <div className="absolute bottom-full right-2 border-[4px] border-transparent border-b-charcoal"></div>
+            </div>
           </div>
         )}
       </button>
