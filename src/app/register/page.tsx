@@ -270,6 +270,10 @@ function RegisterContent() {
               <div>
                 <label className="block text-sm font-bold text-charcoal mb-2">Verification Code</label>
                 <div className="relative">
+                  {/* Hidden fields to absorb aggressive browser autofill (passwords managers often target the first visible text input) */}
+                  <input type="email" name="fake_email" className="hidden" style={{ display: 'none' }} aria-hidden="true" tabIndex={-1} autoComplete="username" />
+                  <input type="password" name="fake_password" className="hidden" style={{ display: 'none' }} aria-hidden="true" tabIndex={-1} autoComplete="new-password" />
+                  
                   <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate">
                     <KeyRound size={18} />
                   </div>
@@ -278,7 +282,11 @@ function RegisterContent() {
                     name="otp"
                     required
                     maxLength={6}
-                    autoComplete="one-time-code"
+                    autoComplete="off"
+                    data-1p-ignore="true"
+                    data-lpignore="true"
+                    data-form-type="other"
+                    inputMode="numeric"
                     disabled={status !== "idle"}
                     className="w-full pl-11 pr-4 py-3 rounded-xl border border-charcoal/20 bg-transparent focus:outline-none focus:border-teal-600 focus:ring-1 focus:ring-teal-600 transition-all text-charcoal text-center tracking-widest text-lg font-bold disabled:opacity-50"
                     placeholder="000000"
