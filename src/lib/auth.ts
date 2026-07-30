@@ -4,6 +4,7 @@ import GoogleProvider from "next-auth/providers/google"
 import { PrismaAdapter } from "@next-auth/prisma-adapter"
 import prisma from "@/lib/prisma"
 import bcrypt from "bcryptjs"
+import { cookies } from "next/headers"
 
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
@@ -104,6 +105,22 @@ export const authOptions: NextAuthOptions = {
       // If it's an OAuth provider, we might want to check isActive
       if (account?.provider !== "credentials" && user.email) {
         const dbUser = await prisma.user.findUnique({ where: { email: user.email } });
+        
+        // Block Google Login if user doesn't exist and intent is strictly "login"
+        if (!dbUser && account?.provider === "google") {
+          let intent = "register";
+          try {
+            const cookieStore = cookies();
+            intent = cookieStore.get("oauth_intent")?.value || "register";
+          } catch (error) {
+            console.error("Could not read oauth_intent cookie", error);
+          }
+          
+          if (intent === "login") {
+            return `/register?error=AccountNotFound&email=${encodeURIComponent(user.email)}`;
+          }
+        }
+
         if (dbUser && dbUser.isActive === false) {
           // Returning this specific URL redirects them to the page with a custom error query
           return `/reactivate?email=${encodeURIComponent(user.email)}`;

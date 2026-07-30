@@ -23,6 +23,9 @@ function RegisterContent() {
   const [step, setStep] = useState<"DETAILS" | "OTP">("DETAILS")
   const [formDataState, setFormDataState] = useState<FormData | null>(null)
 
+  const errorParam = searchParams.get("error")
+  const emailParam = searchParams.get("email")
+
   const handleSendOtp = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setStatus("sending")
@@ -156,6 +159,12 @@ function RegisterContent() {
             </p>
           </div>
 
+          {errorParam === "AccountNotFound" && step === "DETAILS" && (
+            <div className="mb-6 p-4 bg-red-50 border border-red-200 text-red-600 text-sm font-medium rounded-xl text-center">
+              This email ID has no registered user. Please sign up below or enter a valid registered email address.
+            </div>
+          )}
+
           {step === "DETAILS" ? (
             <form onSubmit={handleSendOtp} className="space-y-5">
               <div>
@@ -184,6 +193,7 @@ function RegisterContent() {
                     type="email"
                     name="email"
                     required
+                    defaultValue={emailParam || ""}
                     className="w-full pl-11 pr-4 py-3 rounded-xl border border-charcoal/20 bg-transparent focus:outline-none focus:border-teal-600 focus:ring-1 focus:ring-teal-600 transition-all text-charcoal"
                     placeholder="you@example.com"
                   />
@@ -341,6 +351,7 @@ function RegisterContent() {
               <button
                 type="button"
                 onClick={() => {
+                  document.cookie = "oauth_intent=register; path=/; max-age=300"
                   setStatus("google")
                   signIn("google", { callbackUrl: googleCallbackUrl })
                 }}

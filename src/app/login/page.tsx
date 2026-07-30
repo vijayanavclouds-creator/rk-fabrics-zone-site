@@ -179,6 +179,7 @@ function LoginContent() {
           <button
             type="button"
             onClick={() => {
+              document.cookie = "oauth_intent=login; path=/; max-age=300"
               setStatus("google")
               signIn("google", { callbackUrl: googleCallbackUrl })
             }}
