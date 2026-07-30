@@ -194,7 +194,7 @@ export async function sendOTPEmail(email: string, otp: string, type: 'SIGNUP' | 
     message = "An authentication request was initiated for your executive account. Use the following security code to complete 2FA verification."
   }
 
-  const html = `
+  let html = `
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; color: #333;">
       <div style="background-color: #0d9488; padding: 24px; text-align: center; color: white;">
         <h1 style="margin: 0;">RK Fabrics Zone</h1>
@@ -214,6 +214,75 @@ export async function sendOTPEmail(email: string, otp: string, type: 'SIGNUP' | 
       </div>
     </div>
   `
+
+  if (type === 'EXECUTIVE_LOGIN' || type === 'SUPPORT_LOGIN') {
+    html = `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Verification Code</title>
+</head>
+<body style="margin: 0; padding: 0; background-color: #E8EBEF; font-family: Arial, sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color: #E8EBEF; padding: 40px 20px;">
+    <tr>
+      <td align="center">
+        <!-- Main Card -->
+        <table width="100%" max-width="600" cellpadding="0" cellspacing="0" border="0" style="max-width: 600px; background-color: #F6FAFD; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid #D1CDC1;">
+          
+          <!-- Header -->
+          <tr>
+            <td align="center" style="padding: 40px 20px 20px 20px; border-bottom: 1px solid #E6F0F9;">
+              <img src="https://www.rkfabricszone.com/logo.png" alt="RK Fabrics Zone" width="80" style="display: block; margin-bottom: 15px; border-radius: 50%;">
+              <h1 style="margin: 0; color: #0A1931; font-size: 24px; font-weight: bold; letter-spacing: 1px;">RK Fabrics Zone</h1>
+            </td>
+          </tr>
+
+          <!-- Body -->
+          <tr>
+            <td align="center" style="padding: 40px 30px;">
+              <h2 style="margin: 0 0 15px 0; color: #0A1931; font-size: 20px;">Verification Code</h2>
+              <p style="margin: 0 0 30px 0; color: #2F5370; font-size: 15px; line-height: 1.6;">
+                An authentication request was initiated for your executive account. Use the following security code to complete your 2FA verification.
+              </p>
+              
+              <!-- OTP Box -->
+              <div style="background-color: #FFFFFF; border: 2px dashed #3D6A8C; border-radius: 8px; padding: 20px; margin-bottom: 30px;">
+                <h1 style="margin: 0; color: #0A1931; font-size: 36px; letter-spacing: 8px;">${otp}</h1>
+              </div>
+              
+              <p style="margin: 0; color: #666666; font-size: 13px; line-height: 1.5;">
+                This code is valid for 15 minutes.<br>If you didn't request this, you can safely ignore this email.
+              </p>
+            </td>
+          </tr>
+          
+        </table>
+
+        <!-- Footer -->
+        <table width="100%" max-width="600" cellpadding="0" cellspacing="0" border="0" style="max-width: 600px; margin-top: 20px;">
+          <tr>
+            <td align="center" style="padding: 20px; color: #666666; font-size: 12px; line-height: 1.5;">
+              <p style="margin: 0 0 10px 0;">
+                <strong>RK Fabrics Zone</strong><br>
+                Premium Quality Fabrics & Textiles
+              </p>
+              <p style="margin: 0 0 10px 0;">
+                <a href="https://www.rkfabricszone.com" style="color: #3D6A8C; text-decoration: none;">www.rkfabricszone.com</a> | 
+                <a href="mailto:help@rkfabricszone.com" style="color: #3D6A8C; text-decoration: none;">help@rkfabricszone.com</a>
+              </p>
+              <p style="margin: 0;">&copy; 2026 RK Fabrics Zone. All rights reserved.</p>
+            </td>
+          </tr>
+        </table>
+
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
+`
+  }
 
   try {
     const info = await transporter.sendMail({
