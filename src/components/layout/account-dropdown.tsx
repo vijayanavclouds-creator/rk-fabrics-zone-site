@@ -84,73 +84,135 @@ export function AccountDropdown() {
   const hasPhone = !!session.user.phone
   const isComplete = hasPhone // based on mobile number as per user request
   const strokeWidth = 2.5
-  const radius = 20 - strokeWidth / 2
+  const radius = 16 // Ring diameter is 32px
   const circumference = 2 * Math.PI * radius
-  const offset = isComplete ? 0 : circumference * 0.4 // 60% complete
+  const offset = circumference * 0.4 // 60% complete (only used if incomplete)
 
   return (
     <div className="relative" ref={dropdownRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="relative w-10 h-10 flex items-center justify-center rounded-full hover:scale-105 transition-transform focus:outline-none bg-white shadow-sm"
+        className={
+          isComplete 
+            ? "btn-icon" 
+            : "relative w-10 h-10 flex items-center justify-center rounded-full hover:scale-105 transition-transform focus:outline-none bg-white shadow-sm"
+        }
         aria-label="Account Menu"
       >
-        {/* Progress Ring Background */}
-        <svg className="absolute inset-0 w-full h-full -rotate-90 pointer-events-none" viewBox="0 0 40 40">
-          <circle
-            cx="20"
-            cy="20"
-            r={radius}
-            fill="none"
-            stroke="currentColor"
-            strokeWidth={strokeWidth}
-            className="text-slate-100"
-          />
-          {/* Progress Ring Foreground */}
-          <circle
-            cx="20"
-            cy="20"
-            r={radius}
-            fill="none"
-            stroke="currentColor"
-            strokeWidth={strokeWidth}
-            strokeDasharray={circumference}
-            strokeDashoffset={offset}
-            strokeLinecap="round"
-            className={isComplete ? "text-blue-900" : "text-amber-500"}
-            style={{ transition: "stroke-dashoffset 0.5s ease-in-out, color 0.3s ease" }}
-          />
-        </svg>
-
-        {/* Profile Image / Initials */}
-        <div className="w-[31px] h-[31px] rounded-full overflow-hidden relative z-10 flex items-center justify-center bg-cream">
-          {session.user.image ? (
+        {isComplete ? (
+          /* --- COMPLETE PROFILE (No Progress Bar, Full Size) --- */
+          session.user.image ? (
             <Image 
               src={session.user.image} 
               alt={session.user.name || "User"} 
-              width={31} 
-              height={31} 
-              className="object-cover w-full h-full"
+              width={40} 
+              height={40} 
+              className="rounded-full object-cover w-full h-full shadow-sm"
             />
           ) : (
-            <span className="text-[12px] font-[family-name:var(--font-playfair)] text-slate-500 tracking-wider">
-              {session.user.name ? getInitials(session.user.name) : <User size={16} />}
-            </span>
-          )}
-        </div>
+            <div className="w-full h-full rounded-full bg-cream shadow-neo-input flex items-center justify-center text-[13px] font-[family-name:var(--font-playfair)] text-slate-500 border border-white/50 tracking-wider">
+              {session.user.name ? getInitials(session.user.name) : <User size={18} />}
+            </div>
+          )
+        ) : (
+          /* --- INCOMPLETE PROFILE (Progress Bar + 3D Alert) --- */
+          <>
+            {/* Profile Image / Initials */}
+            <div className="w-[32px] h-[32px] rounded-full overflow-hidden relative z-10 flex items-center justify-center bg-cream">
+              {session.user.image ? (
+                <Image 
+                  src={session.user.image} 
+                  alt={session.user.name || "User"} 
+                  width={32} 
+                  height={32} 
+                  className="object-cover w-full h-full"
+                />
+              ) : (
+                <span className="text-[12px] font-[family-name:var(--font-playfair)] text-slate-500 tracking-wider">
+                  {session.user.name ? getInitials(session.user.name) : <User size={16} />}
+                </span>
+              )}
+            </div>
 
-        {/* Alert Icon (if incomplete) */}
-        {!isComplete && (
-          <div className="absolute bottom-[1px] right-[1px] z-20 group">
-            <div className="w-[14px] h-[14px] bg-amber-500 rounded-full border-[1.5px] border-white flex items-center justify-center shadow-sm cursor-help">
-              <AlertTriangle size={7} className="text-white fill-white" />
+            {/* Progress Ring */}
+            <svg className="absolute inset-0 w-full h-full -rotate-90 pointer-events-none z-20" viewBox="0 0 40 40">
+              <circle
+                cx="20"
+                cy="20"
+                r={radius}
+                fill="none"
+                stroke="currentColor"
+                strokeWidth={strokeWidth}
+                className="text-slate-100"
+              />
+              <circle
+                cx="20"
+                cy="20"
+                r={radius}
+                fill="none"
+                stroke="currentColor"
+                strokeWidth={strokeWidth}
+                strokeDasharray={circumference}
+                strokeDashoffset={offset}
+                strokeLinecap="round"
+                className="text-[#F97316]" // Orange color to match the 3D icon
+                style={{ transition: "stroke-dashoffset 0.5s ease-in-out, color 0.3s ease" }}
+              />
+            </svg>
+
+            {/* 3D Alert Icon (Top Right) */}
+            <div className="absolute -top-1.5 -right-1.5 z-30 group cursor-help">
+              <div className="relative w-[18px] h-[18px] flex items-center justify-center">
+                <svg viewBox="0 0 24 24" className="w-full h-full drop-shadow-sm overflow-visible">
+                  <defs>
+                    {/* 3D White Frame */}
+                    <linearGradient id="frameGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                      <stop offset="0%" stopColor="#ffffff" />
+                      <stop offset="100%" stopColor="#e5e7eb" />
+                    </linearGradient>
+                    <linearGradient id="frameShadow" x1="0%" y1="0%" x2="0%" y2="100%">
+                      <stop offset="0%" stopColor="#d1d5db" />
+                      <stop offset="100%" stopColor="#9ca3af" />
+                    </linearGradient>
+                    
+                    {/* Inner Orange */}
+                    <linearGradient id="innerOrange" x1="0%" y1="0%" x2="0%" y2="100%">
+                      <stop offset="0%" stopColor="#ea580c" />
+                      <stop offset="100%" stopColor="#f97316" />
+                    </linearGradient>
+
+                    {/* Exclamation White */}
+                    <linearGradient id="exclamGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                      <stop offset="0%" stopColor="#ffffff" />
+                      <stop offset="100%" stopColor="#f3f4f6" />
+                    </linearGradient>
+                  </defs>
+                  
+                  {/* Outer Frame Shadow (3D depth) */}
+                  <path d="M10.29 2.86L1.82 17a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 2.86a2 2 0 0 0-3.42 0z" fill="url(#frameShadow)" transform="translate(0, 1.5)" />
+
+                  {/* Outer Frame (White) */}
+                  <path d="M10.29 2.86L1.82 17a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 2.86a2 2 0 0 0-3.42 0z" fill="url(#frameGrad)" />
+
+                  {/* Inner Orange */}
+                  <path d="M10.29 2.86L1.82 17a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 2.86a2 2 0 0 0-3.42 0z" fill="url(#innerOrange)" style={{ transformOrigin: '12px 12.5px', transform: 'scale(0.65)' }} />
+
+                  {/* Exclamation Mark Shadow */}
+                  <path d="M12 8v4.5" stroke="#9a3412" strokeWidth="2.5" strokeLinecap="round" transform="translate(0, 0.5)" />
+                  <path d="M12 15.5h.01" stroke="#9a3412" strokeWidth="2.5" strokeLinecap="round" transform="translate(0, 0.5)" />
+
+                  {/* Exclamation Mark Body */}
+                  <path d="M12 8v4.5" stroke="url(#exclamGrad)" strokeWidth="2.5" strokeLinecap="round" />
+                  <path d="M12 15.5h.01" stroke="url(#exclamGrad)" strokeWidth="2.5" strokeLinecap="round" />
+                </svg>
+              </div>
+              {/* Tooltip */}
+              <div className="absolute top-full mt-1 right-0 w-max px-2 py-1 bg-charcoal text-white text-[10px] rounded shadow-lg opacity-0 pointer-events-none group-hover:opacity-100 transition-opacity whitespace-nowrap z-50">
+                Please complete your profile information
+                <div className="absolute bottom-full right-2 border-[4px] border-transparent border-b-charcoal"></div>
+              </div>
             </div>
-            {/* Tooltip */}
-            <div className="absolute top-full mt-1 right-0 w-max px-2 py-1 bg-charcoal text-white text-[10px] rounded shadow-lg opacity-0 pointer-events-none group-hover:opacity-100 transition-opacity whitespace-nowrap z-50">
-              Please complete your profile information
-              <div className="absolute bottom-full right-2 border-[4px] border-transparent border-b-charcoal"></div>
-            </div>
-          </div>
+          </>
         )}
       </button>
 

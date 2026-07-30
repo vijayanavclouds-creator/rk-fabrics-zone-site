@@ -130,12 +130,32 @@ export const authOptions: NextAuthOptions = {
     },
     async jwt({ token, user, trigger, session }) {
       if (user) {
-        token.role = user.role || "CUSTOMER";
-        token.id = user.id;
-        token.phone = user.phone;
-        token.dob = user.dob;
-        token.image = user.image;
-        token.receiveOrderEmails = user.receiveOrderEmails;
+        // user object from OAuth providers only contains basic fields (id, name, email, image).
+        // We must fetch the full user from the database to ensure we don't lose custom fields like phone/dob in the session.
+        const dbUser = user.email ? await prisma.user.findUnique({ where: { email: user.email } }) : null;
+        
+        if (dbUser) {
+          // If user exists in DB, use ONLY the DB information. 
+          // Do not overwrite or fallback to Google's information for ANY field.
+          token.role = dbUser.role || "CUSTOMER";
+          token.id = dbUser.id;
+          token.phone = dbUser.phone;
+          token.dob = dbUser.dob;
+          token.image = dbUser.image;
+          token.receiveOrderEmails = dbUser.receiveOrderEmails;
+          token.name = dbUser.name;
+          token.email = dbUser.email;
+        } else {
+          // New user (or not found in DB)
+          token.role = user.role || "CUSTOMER";
+          token.id = user.id;
+          token.phone = user.phone;
+          token.dob = user.dob;
+          token.image = user.image;
+          token.receiveOrderEmails = user.receiveOrderEmails;
+          token.name = user.name;
+          token.email = user.email;
+        }
       }
       if (trigger === "update" && session) {
         if (session.name) token.name = session.name;
