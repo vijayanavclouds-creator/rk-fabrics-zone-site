@@ -188,7 +188,7 @@ export default function CheckoutPaymentPage() {
     if (!hasValidAddressPhone && !hasValidProfilePhone) {
       toast.error(
         <span>
-          A valid mobile number is required for OTPs.{" "}
+          A valid mobile number is required to proceed with this order.{" "}
           <button 
             type="button" 
             onClick={() => router.push("/account/profile?focus=phone&callbackUrl=/checkout/payment")} 
