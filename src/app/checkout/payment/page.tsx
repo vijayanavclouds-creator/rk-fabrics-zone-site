@@ -105,7 +105,7 @@ export default function CheckoutPaymentPage() {
     if (!phone) return false
     const digits = phone.replace(/\D/g, "")
     // Valid Indian mobile number: 10 digits, starts with 6, 7, 8, or 9
-    return /^(?!(\d)\1{9})[6-9]\d{9}$/.test(digits)
+    return /^(?!(\d)\1{9})(?!(?:9876543210|8765432109|7654321098|6543210987|9012345678|8901234567|7890123456|6789012345))[6-9]\d{9}$/.test(digits)
   }
 
   const hasValidAddressPhone = isValidPhone(selectedAddress.phone)
