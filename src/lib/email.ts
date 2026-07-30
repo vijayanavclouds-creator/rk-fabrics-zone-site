@@ -219,24 +219,24 @@ export async function sendOTPEmail(email: string, otp: string, type: 'SIGNUP' | 
   const from = process.env.SMTP_FROM || '"RK Fabrics Zone" <no-reply@rkfabricszone.com>'
   const to = email
 
-  let subject = "Your Verification Code"
+  let subject = "✅ Your Verification Code 🔢"
   let title = "Verification Code"
   let message = "Use the following OTP to complete your request."
 
   if (type === 'SIGNUP') {
-    subject = "Verify your email for RK Fabrics Zone"
+    subject = "✨ Verify your email for RK Fabrics Zone ✉️"
     title = "Welcome to RK Fabrics Zone!"
     message = "Please use the following OTP to verify your email and complete your registration."
   } else if (type === 'REACTIVATE') {
-    subject = "Reactivate your account"
+    subject = "👋 Welcome back! Reactivate your account 🔄"
     title = "Reactivate Account"
     message = "Please use the following OTP to verify your email and reactivate your account."
   } else if (type === 'RESET_PASSWORD') {
-    subject = "Reset your password"
+    subject = "🔒 Reset your password for RK Fabrics Zone 🔑"
     title = "Reset Password"
     message = "You have requested to reset your password. Please use the following OTP to proceed."
   } else if (type === 'EXECUTIVE_LOGIN' || type === 'SUPPORT_LOGIN') {
-    subject = "Executive Security OTP — RK Fabrics Zone"
+    subject = "🛡️ Executive Security OTP — RK Fabrics Zone 🔐"
     title = "Staff Verification Code"
     message = "An authentication request was initiated for your executive account. Use the following security code to complete 2FA verification."
   }
