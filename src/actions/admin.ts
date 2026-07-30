@@ -680,10 +680,7 @@ export async function updateUserRole(userId: string, newRole: "CUSTOMER" | "ADMI
 
     const currentUser = await prisma.user.findUnique({ where: { id: userId } })
     if (currentUser?.role === "ADMIN" && newRole !== "ADMIN") {
-      const adminCount = await prisma.user.count({ where: { role: "ADMIN" } })
-      if (adminCount <= 1) {
-        return { success: false, error: "Cannot demote the last admin account." }
-      }
+      return { success: false, error: "Admin accounts cannot be demoted by other admins." }
     }
 
     await prisma.user.update({

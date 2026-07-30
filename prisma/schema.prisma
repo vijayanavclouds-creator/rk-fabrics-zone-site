@@ -250,6 +250,11 @@ model Order {
   deliveredAt     DateTime?
   cancelledAt     DateTime?
   
+  // Shipping Integration
+  awbNumber          String?
+  shippingProvider   String      @default("BLUEDART")
+  waybillGenerated   Boolean     @default(false)
+  
   items           OrderItem[]
 }
 

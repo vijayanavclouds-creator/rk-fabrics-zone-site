@@ -200,7 +200,26 @@ export default async function OrderDetailsPage({ params }: { params: Promise<{ i
                         {order.shippedAt && <span className="text-sm text-slate font-medium">{new Date(order.shippedAt).toLocaleDateString('en-IN', { weekday: 'short', day: 'numeric', month: 'short', year: '2-digit' })}</span>}
                       </div>
                       {["SHIPPED", "DELIVERED", "RETURNED"].includes(order.status) && (
-                        <p className="text-sm text-slate mt-1">Your item has been shipped.{order.shippedAt && <><br/>{new Date(order.shippedAt).toLocaleDateString('en-IN', { weekday: 'short', day: 'numeric', month: 'short', year: '2-digit' })} - {new Date(order.shippedAt).toLocaleTimeString('en-IN', { hour: 'numeric', minute: '2-digit', hour12: true })}</>}</p>
+                        <div className="text-sm text-slate mt-1 space-y-2">
+                          <p>Your item has been shipped.{order.shippedAt && <><br/>{new Date(order.shippedAt).toLocaleDateString('en-IN', { weekday: 'short', day: 'numeric', month: 'short', year: '2-digit' })} - {new Date(order.shippedAt).toLocaleTimeString('en-IN', { hour: 'numeric', minute: '2-digit', hour12: true })}</>}</p>
+                          
+                          {order.waybillGenerated && order.awbNumber && (
+                            <div className="bg-white border border-charcoal/10 rounded-lg p-3 inline-block shadow-sm">
+                              <p className="text-xs font-bold text-slate uppercase tracking-wider mb-1">Tracking Number</p>
+                              <div className="flex items-center gap-3">
+                                <span className="font-mono text-charcoal font-bold text-base">{order.awbNumber}</span>
+                                <a 
+                                  href={`https://www.bluedart.com/tracking?track=${order.awbNumber}`} 
+                                  target="_blank" 
+                                  rel="noreferrer"
+                                  className="text-xs font-bold text-teal-600 bg-teal-50 px-2 py-1 rounded hover:bg-teal-100 transition-colors"
+                                >
+                                  Track Package
+                                </a>
+                              </div>
+                            </div>
+                          )}
+                        </div>
                       )}
                     </div>
                   </div>

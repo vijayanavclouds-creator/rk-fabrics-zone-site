@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react"
 import { useParams, useRouter, useSearchParams } from "next/navigation"
 import { getAdminUserOrders, updateOrderStatus, toggleUserOrdersReadStatus } from "@/actions/order"
+import { generateAWB } from "@/actions/delivery"
 import { toast } from "sonner"
 import { Package, CheckCircle, Clock, Truck, XCircle, ArrowLeft, Gift, Send, Printer, ChevronDown, Info } from "lucide-react"
 import { createCoupon } from "@/actions/coupon"
@@ -25,6 +26,7 @@ export default function UserOrdersPage() {
     sendEmail: true
   })
   const [creatingCoupon, setCreatingCoupon] = useState(false)
+  const [generatingAWB, setGeneratingAWB] = useState<string | null>(null)
 
   useEffect(() => {
     fetchOrders()
@@ -77,6 +79,21 @@ export default function UserOrdersPage() {
     } else {
       toast.error(res.error || "Failed to update status")
     }
+  }
+
+  const handleGenerateAWB = async (orderId: string) => {
+    setGeneratingAWB(orderId)
+    toast.loading("Generating BlueDart AWB...")
+    const res = await generateAWB(orderId)
+    toast.dismiss()
+    
+    if (res.success) {
+      toast.success(`Waybill Generated: ${res.awbNumber}`)
+      fetchOrders() // Refresh to show AWB number
+    } else {
+      toast.error(res.error || "Failed to generate AWB")
+    }
+    setGeneratingAWB(null)
   }
 
   const handleOfferPromotion = async (e: React.FormEvent) => {
@@ -425,6 +442,25 @@ export default function UserOrdersPage() {
                       <Printer size={16} />
                       Generate Invoice
                     </button>
+
+                    {/* BlueDart Integration Button */}
+                    {!order.waybillGenerated ? (
+                      <button
+                        onClick={() => handleGenerateAWB(order.id)}
+                        disabled={generatingAWB === order.id}
+                        className="w-full mt-3 p-2.5 rounded-xl border border-blue-200 bg-blue-50 hover:bg-blue-100 transition-colors flex items-center justify-center gap-2 text-sm font-bold text-blue-700 shadow-sm disabled:opacity-50"
+                      >
+                        <Package size={16} />
+                        {generatingAWB === order.id ? "Generating..." : "Generate BlueDart AWB"}
+                      </button>
+                    ) : (
+                      <div className="w-full mt-3 p-2.5 rounded-xl border border-emerald-200 bg-emerald-50 flex flex-col items-center justify-center gap-1 text-sm font-bold text-emerald-700 shadow-sm">
+                        <div className="flex items-center gap-2">
+                          <CheckCircle size={16} /> Waybill Generated
+                        </div>
+                        <span className="text-xs font-mono bg-white px-2 py-0.5 rounded border border-emerald-200">{order.awbNumber}</span>
+                      </div>
+                    )}
                   </div>
                 </div>
 

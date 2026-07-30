@@ -5,6 +5,7 @@ import { MapPin, Truck, ChevronRight, LocateFixed, UserCircle } from "lucide-rea
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { getUserAddresses, saveAddress } from "@/actions/address";
+import { checkDeliveryAvailability } from "@/actions/delivery";
 import { useSession } from "next-auth/react";
 import { usePathname } from "next/navigation";
 import { useCheckoutStore } from "@/store/checkout";
@@ -32,7 +33,10 @@ export function DeliveryDetails() {
         const fetchedAddresses = await getUserAddresses();
         if (fetchedAddresses && fetchedAddresses.length > 0) {
           setAddresses(fetchedAddresses);
-          const defaultAddress = fetchedAddresses.find(a => a.isDefault) || fetchedAddresses[0];
+          const defaultAddress = fetchedAddresses.find((a: any) => a.isDefault) || fetchedAddresses[0];
+          if (defaultAddress) {
+            setAddress(defaultAddress);
+          }
           if (defaultAddress?.pincode) {
             setSavedPincode(defaultAddress.pincode);
             setSelectedSource('saved');
@@ -45,13 +49,16 @@ export function DeliveryDetails() {
     fetchAddress();
   }, []);
 
-  useEffect(() => {
-    // Calculate delivery date (3 days from now)
+  const calculateDate = (days: number) => {
     const date = new Date();
-    date.setDate(date.getDate() + 3);
-    
+    date.setDate(date.getDate() + days);
     const options: Intl.DateTimeFormatOptions = { day: 'numeric', month: 'short', weekday: 'short' };
-    setDeliveryDate(date.toLocaleDateString('en-US', options));
+    return date.toLocaleDateString('en-US', options);
+  };
+
+  useEffect(() => {
+    // Default fallback if no pincode is entered yet
+    setDeliveryDate(calculateDate(5));
 
     // Countdown timer for "Order in..." (resetting every 24h at midnight)
     const updateTimer = () => {
@@ -72,27 +79,31 @@ export function DeliveryDetails() {
     return () => clearInterval(interval);
   }, []);
 
-  const handleCheck = () => {
-    if (pincode.trim().length < 3) {
-      setError("Please enter at least 3 characters.");
+  const handleCheck = async () => {
+    if (pincode.trim().length !== 6) {
+      setError("Please enter a valid 6-digit pincode.");
       setSuccessMsg("");
       return;
     }
     setError("");
     setSuccessMsg("");
     setIsChecking(true);
-    // Simulate API call to check delivery availability
-    setTimeout(() => {
-      setIsChecking(false);
-      if (pincode.toLowerCase().includes("invalid") || pincode === "000000") {
-        setError("Delivery is not available for this location.");
-        setSuccessMsg("");
-        return;
-      }
-      setSuccessMsg("Delivery is available for this location!");
-      setSavedPincode(pincode);
-      setSelectedSource('manual');
-    }, 600);
+    
+    const result = await checkDeliveryAvailability(pincode);
+    setIsChecking(false);
+    
+    if (!result.isServiceable) {
+      setError(result.message || "Delivery is not available for this location.");
+      setSuccessMsg("");
+      return;
+    }
+    
+    setSuccessMsg(result.message || "Delivery is available!");
+    if (result.expectedDeliveryDays) {
+      setDeliveryDate(calculateDate(result.expectedDeliveryDays));
+    }
+    setSavedPincode(pincode);
+    setSelectedSource('manual');
   };
 
   const handleCurrentLocation = () => {

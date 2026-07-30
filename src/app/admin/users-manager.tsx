@@ -72,7 +72,7 @@ export function UsersManager() {
         <RoleSelect
           value={user.role}
           onChange={(newRole) => handleRoleChange(user.id, newRole as any)}
-          disabled={isPending}
+          disabled={isPending || user.role === "ADMIN"}
           options={[
             { value: "ADMIN", label: "ADMIN" },
             { value: "SUPPORT", label: "SUPPORT" },
