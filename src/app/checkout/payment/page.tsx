@@ -455,7 +455,7 @@ export default function CheckoutPaymentPage() {
                 </div>
               )}
               
-              {!hasValidProfilePhone && (
+              {!hasValidProfilePhone && !hasValidAddressPhone && (
                 <div className="mb-6 p-4 bg-amber-50 border border-amber-200 rounded-xl text-amber-800 text-sm">
                   <AlertCircle size={16} className="inline mr-2 -mt-1" />
                   You do not have a valid mobile number in your profile.{" "}
