@@ -22,7 +22,6 @@ export default function CheckoutPaymentPage() {
 
   const [loading, setLoading] = useState(false)
   const [paymentMethod, setPaymentMethod] = useState("COD")
-  const [showPhoneWarningModal, setShowPhoneWarningModal] = useState(false)
   const [mounted, setMounted] = useState(false)
   const [fetchingAddress, setFetchingAddress] = useState(false)
   const [saveAddressForFuture, setSaveAddressForFuture] = useState(false)
@@ -102,9 +101,18 @@ export default function CheckoutPaymentPage() {
     return null // Will redirect in useEffect
   }
 
+  const isValidPhone = (phone?: string | null) => {
+    if (!phone) return false
+    const digits = phone.replace(/\D/g, "")
+    // Valid Indian mobile number: 10 digits, starts with 6, 7, 8, or 9
+    return /^[6-9]\d{9}$/.test(digits)
+  }
+
+  const hasValidAddressPhone = isValidPhone(selectedAddress.phone)
+  const hasValidProfilePhone = isValidPhone(session?.user?.phone)
+
   const proceedWithOrder = async () => {
     setLoading(true)
-    setShowPhoneWarningModal(false)
 
     const fullName = `${selectedAddress.firstName} ${selectedAddress.lastName}`.trim()
     const namePart = fullName ? `${fullName}, ` : ""
@@ -174,21 +182,6 @@ export default function CheckoutPaymentPage() {
       toast.error("Please login to place an order", {
         action: { label: "Login", onClick: () => router.push("/login?from=/checkout") }
       })
-      return
-    }
-
-    const isValidPhone = (phone?: string | null) => {
-      if (!phone) return false
-      const digits = phone.replace(/\D/g, "")
-      // Valid Indian mobile number: 10 digits, starts with 6, 7, 8, or 9
-      return /^[6-9]\d{9}$/.test(digits)
-    }
-
-    const hasValidAddressPhone = isValidPhone(selectedAddress.phone)
-    const hasValidProfilePhone = isValidPhone(session.user.phone)
-
-    if (!hasValidAddressPhone && !hasValidProfilePhone) {
-      setShowPhoneWarningModal(true)
       return
     }
 
@@ -437,6 +430,22 @@ export default function CheckoutPaymentPage() {
                 </span>
               </div>
 
+              {!hasValidAddressPhone && (
+                <div className="mb-4 p-4 bg-amber-50 border border-amber-200 rounded-xl text-amber-800 text-sm">
+                  <AlertCircle size={16} className="inline mr-2 -mt-1" />
+                  You have an invalid mobile number in your selected address.{" "}
+                  <button type="button" onClick={() => router.push(`/checkout/address?edit=${selectedAddress?.id}`)} className="font-bold underline text-amber-900 hover:text-amber-700">Click here to update</button>
+                </div>
+              )}
+              
+              {!hasValidProfilePhone && (
+                <div className="mb-6 p-4 bg-amber-50 border border-amber-200 rounded-xl text-amber-800 text-sm">
+                  <AlertCircle size={16} className="inline mr-2 -mt-1" />
+                  You do not have a valid mobile number in your profile.{" "}
+                  <button type="button" onClick={() => router.push("/account/profile?focus=phone&callbackUrl=/checkout/payment")} className="font-bold underline text-amber-900 hover:text-amber-700">Click here to update</button>
+                </div>
+              )}
+
               <button
                 type="button"
                 onClick={handleSubmit}
@@ -454,42 +463,6 @@ export default function CheckoutPaymentPage() {
             </div>
         </div>
       </div>
-
-      {showPhoneWarningModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-charcoal/40 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="bg-white rounded-2xl w-full max-w-md shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
-            <div className="p-6">
-              <div className="w-12 h-12 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center mb-4">
-                <AlertCircle size={24} />
-              </div>
-              <h3 className="text-xl font-[family-name:var(--font-playfair)] font-bold text-charcoal mb-2">Mobile Number Required</h3>
-              <p className="text-slate text-sm mb-6">
-                A valid mobile number (10 digits) is required to receive order updates. Please update your profile or shipping address to proceed.
-              </p>
-              <div className="space-y-3">
-                <button
-                  onClick={() => router.push("/account/profile?focus=phone&callbackUrl=/checkout/payment")}
-                  className="w-full py-3 bg-teal-600 text-white font-bold rounded-xl hover:bg-teal-700 transition-colors"
-                >
-                  Update Profile
-                </button>
-                <button
-                  onClick={() => router.push(`/checkout/address?edit=${selectedAddress?.id}`)}
-                  className="w-full py-3 bg-white border border-charcoal/20 text-charcoal font-bold rounded-xl hover:bg-slate-50 transition-colors"
-                >
-                  Update Address
-                </button>
-                <button
-                  onClick={proceedWithOrder}
-                  className="w-full py-3 text-slate hover:text-charcoal font-bold transition-colors text-sm"
-                >
-                  Ignore for Now
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
     </>
   )
 }
