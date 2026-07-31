@@ -47,8 +47,29 @@ export function CompanyProfileManager() {
     setProfile(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    
+    // Check HTML5 native validation
+    if (!e.currentTarget.checkValidity()) {
+      const invalidElements = e.currentTarget.querySelectorAll(':invalid');
+      if (invalidElements.length > 0) {
+        const firstInvalid = invalidElements[0] as HTMLInputElement;
+        const name = firstInvalid.name || "Field";
+        const label = name.replace(/([A-Z])/g, ' $1').trim().replace(/Url/i, 'URL');
+        const formattedLabel = label.charAt(0).toUpperCase() + label.slice(1);
+        
+        if (firstInvalid.type === 'url') {
+          toast.error(`Please enter a valid URL for ${formattedLabel} (must include http:// or https://)`);
+        } else {
+          toast.error(`Please enter a valid value for ${formattedLabel}`);
+        }
+        
+        firstInvalid.focus();
+        return;
+      }
+    }
+
     setSaving(true);
     toast.loading("Saving company profile...");
     
@@ -84,7 +105,7 @@ export function CompanyProfileManager() {
       </div>
 
       <div className="bg-white p-4 sm:p-6 -mx-4 sm:mx-0 rounded-none sm:rounded-3xl border-y sm:border border-charcoal/10 shadow-sm">
-      <form onSubmit={handleSubmit} className="space-y-4 md:space-y-8">
+      <form onSubmit={handleSubmit} noValidate className="space-y-4 md:space-y-8">
         {/* Social Media & Links */}
         <div className="bg-slate-50 p-4 md:p-6 rounded-2xl border border-charcoal/5">
           <h3 className="text-lg font-bold text-charcoal mb-4 flex items-center gap-2 border-b border-charcoal/10 pb-2">
