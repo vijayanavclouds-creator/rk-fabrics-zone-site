@@ -129,15 +129,15 @@ export function Header({ initialNavLinks, announcementBanner }: { initialNavLink
  <div className="flex items-center justify-between h-14 md:h-16">
  {/* Logo */}
  <Link href="/" className="flex items-center gap-2 group" onClick={closeMobileMenu}>
- <div className="relative w-10 h-10 md:w-12 md:h-12 rounded-full overflow-hidden ring-2 ring-gold/30 group-hover:ring-gold transition-all duration-300">
- <Image
- src="/logo.png?v=3"
- alt="RK Fabrics Zone"
- fill
- className="object-cover"
- unoptimized
- priority
- />
+ <div className="relative w-11 h-11 md:w-[48px] md:h-[48px] group-hover:scale-105 transition-transform duration-300 drop-shadow-sm">
+  <Image
+  src="/logo.png?v=3"
+  alt="RK Fabrics Zone"
+  fill
+  className="object-contain"
+  unoptimized
+  priority
+  />
  </div>
  <div className="hidden sm:block">
  <h1 className="font-[family-name:var(--font-playfair)] text-lg md:text-xl font-bold text-charcoal leading-none">
