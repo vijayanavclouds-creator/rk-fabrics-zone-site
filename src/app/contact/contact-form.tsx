@@ -208,6 +208,12 @@ export function ContactForm({ deliveredOrders = [], userName = "", userEmail = "
       <button disabled={isSubmitting} type="submit" className="btn-primary w-full flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed">
         <Send size={16} /> {isSubmitting ? "Sending..." : "Send Message"}
       </button>
+
+      <div className="mt-4 px-1 text-center">
+        <p className="text-[11px] leading-relaxed text-amber-700 bg-amber-50/80 border border-amber-200/60 py-2.5 px-3 rounded-lg inline-block shadow-sm">
+          <strong>Note:</strong> To maintain quality service in our free tier, our AI assistant (Mira) is limited to <strong>5 messages per user per day</strong>. If you exceed this limit, you will be automatically transferred to our human support team.
+        </p>
+      </div>
     </form>
   );
 }
