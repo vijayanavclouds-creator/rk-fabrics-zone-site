@@ -87,31 +87,31 @@ export function QueriesManager({ initialQueries, basePath = "/admin" }: { initia
                 href={`${basePath}/queries/${query.id}`}
                 className="flex items-center justify-between px-6 py-4 hover:bg-slate-50/50 transition-colors w-full text-left"
               >
-                <div className="grid grid-cols-12 gap-4 w-full items-center">
-                  <div className="col-span-3">
-                    <span className={cn("px-3 py-1 rounded-full text-xs font-semibold border", getSubjectColor(query.subject))}>
+                <div className="flex flex-col md:grid md:grid-cols-12 gap-3 md:gap-4 w-full items-start md:items-center">
+                  <div className="md:col-span-3 flex flex-wrap items-center gap-2">
+                    <span className={cn("px-3 py-1 rounded-full text-xs font-semibold border whitespace-nowrap", getSubjectColor(query.subject))}>
                       {query.subject}
                     </span>
                     {query.status === "RESOLVED" && (
-                      <span className="ml-2 text-xs text-slate font-medium">Resolved</span>
+                      <span className="text-xs text-slate font-medium">Resolved</span>
                     )}
                     {!query.isRead && query.status !== "RESOLVED" && (
-                      <span className="ml-2 text-xs text-rose-600 font-bold bg-rose-50 px-2 py-0.5 rounded border border-rose-200 animate-pulse">
+                      <span className="text-xs text-rose-600 font-bold bg-rose-50 px-2 py-0.5 rounded border border-rose-200 animate-pulse whitespace-nowrap">
                         (1) New Message!
                       </span>
                     )}
                   </div>
-                  <div className="col-span-3 text-sm text-charcoal flex items-center gap-2">
-                    <Calendar size={14} className="text-slate" />
-                    {format(new Date(query.createdAt), 'MMM dd, yyyy h:mm a')}
+                  <div className="md:col-span-3 text-sm text-charcoal flex items-center gap-2">
+                    <Calendar size={14} className="text-slate shrink-0" />
+                    <span>{format(new Date(query.createdAt), 'MMM dd, yyyy h:mm a')}</span>
                   </div>
-                  <div className="col-span-3 text-sm text-slate flex items-center gap-2">
-                    <Phone size={14} />
-                    {query.phone || 'N/A'}
+                  <div className="md:col-span-3 text-sm text-slate flex items-center gap-2">
+                    <Phone size={14} className="shrink-0" />
+                    <span>{query.phone || 'N/A'}</span>
                   </div>
-                  <div className="col-span-3 flex justify-end items-center gap-2">
-                    <span className="text-xs text-slate">{query.messages?.length || 1} messages</span>
-                    <ChevronDown size={18} className="text-slate -rotate-90" />
+                  <div className="md:col-span-3 flex justify-between md:justify-end items-center gap-2 w-full md:w-auto pt-2 md:pt-0 border-t border-charcoal/5 md:border-0 mt-1 md:mt-0">
+                    <span className="text-xs text-slate font-medium bg-slate-100 border border-slate-200 px-2.5 py-1 rounded-md">{query.messages?.length || 1} messages</span>
+                    <ChevronDown size={18} className="text-slate -rotate-90 hidden md:block" />
                   </div>
                 </div>
               </Link>
