@@ -138,28 +138,30 @@ export function ActivitiesManager() {
             <div className="w-8 h-8 border-4 border-teal-500/30 border-t-teal-600 rounded-full animate-spin"></div>
           </div>
         ) : activities.length > 0 ? (
-          <div className="space-y-6">
-            {activities.map((activity) => (
-              <div key={activity.id} className="flex gap-4 relative group">
-                <div className="w-3 h-3 rounded-full bg-teal-500 mt-1.5 shrink-0 relative z-10 shadow-[0_0_8px_rgba(20,184,166,0.6)] group-hover:scale-125 transition-transform"></div>
-                <div className="absolute left-[5px] top-5 w-[2px] h-full bg-slate-200 -z-0"></div>
-                <div className="pb-4 w-full">
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                    <p className="text-base text-charcoal">
-                      <span className="font-bold text-lg">{activity.adminName}</span> <span dangerouslySetInnerHTML={{ __html: activity.action + (activity.details ? ` - ${activity.details}` : '') }} />
-                    </p>
-                    <div className="flex items-center gap-1.5 text-xs text-slate bg-slate-50 px-2.5 py-1 rounded-md shrink-0 border border-slate-100">
-                      <Clock size={12} />
-                      <span>{new Date(activity.createdAt).toLocaleDateString('en-GB', { weekday: 'long', day: '2-digit', month: '2-digit', year: 'numeric' })} at {new Date(activity.createdAt).toLocaleTimeString('en-US', {hour: '2-digit', minute:'2-digit', hour12: true})}</span>
+          <div>
+            <div className="space-y-6 max-h-[650px] overflow-y-auto pr-2 md:pr-4 custom-scrollbar">
+              {activities.map((activity) => (
+                <div key={activity.id} className="flex gap-4 relative group">
+                  <div className="w-3 h-3 rounded-full bg-teal-500 mt-1.5 shrink-0 relative z-10 shadow-[0_0_8px_rgba(20,184,166,0.6)] group-hover:scale-125 transition-transform"></div>
+                  <div className="absolute left-[5px] top-5 w-[2px] h-full bg-slate-200 -z-0"></div>
+                  <div className="pb-4 w-full">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                      <p className="text-base text-charcoal">
+                        <span className="font-bold text-lg">{activity.adminName}</span> <span dangerouslySetInnerHTML={{ __html: activity.action + (activity.details ? ` - ${activity.details}` : '') }} />
+                      </p>
+                      <div className="flex items-center gap-1.5 text-xs text-slate bg-slate-50 px-2.5 py-1 rounded-md shrink-0 border border-slate-100">
+                        <Clock size={12} />
+                        <span>{new Date(activity.createdAt).toLocaleDateString('en-GB', { weekday: 'long', day: '2-digit', month: '2-digit', year: 'numeric' })} at {new Date(activity.createdAt).toLocaleTimeString('en-US', {hour: '2-digit', minute:'2-digit', hour12: true})}</span>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
             
             {/* Pagination */}
             {totalPages > 1 && (
-              <div className="flex justify-center gap-2 mt-8 pt-6 border-t border-charcoal/10">
+              <div className="flex justify-center gap-2 mt-6 pt-6 border-t border-charcoal/10">
                 <button 
                   disabled={page === 1}
                   onClick={() => setPage(p => p - 1)}
