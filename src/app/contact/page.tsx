@@ -41,15 +41,15 @@ export default async function ContactPage() {
   }
 
  return (
- <div className="w-full mx-auto px-4 md:px-6 lg:px-8 py-2 md:py-16">
- <div className="text-center mb-2 md:mb-12">
- <span className="font-[family-name:var(--font-cinzel)] text-xs tracking-[0.3em] text-gold-dark uppercase">
+ <div className="w-full mx-auto px-4 md:px-6 lg:px-8 pt-2 pb-0 md:py-16">
+ <div className="text-center mb-3 md:mb-12">
+ <span className="font-[family-name:var(--font-cinzel)] text-[10px] md:text-xs tracking-[0.3em] text-gold-dark uppercase">
  Get In Touch
  </span>
- <h1 className="font-[family-name:var(--font-playfair)] text-3xl md:text-5xl font-bold text-charcoal mt-2">
+ <h1 className="font-[family-name:var(--font-playfair)] text-2xl md:text-5xl font-bold text-charcoal mt-0 md:mt-2">
  Contact Us
  </h1>
- <p className="text-slate mt-3 max-w-lg mx-auto">
+ <p className="text-slate text-sm md:text-base mt-1 md:mt-3 max-w-lg mx-auto">
  Questions about fabrics? Need help with an order? We&apos;re here for you.
  </p>
  </div>
