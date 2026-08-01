@@ -55,39 +55,44 @@ export default async function ContactPage() {
  </div>
 
  <div className="grid md:grid-cols-2 gap-8 lg:gap-12">
- {/* Contact Info */}
- <div className="space-y-6">
- <div className="bg-white rounded-2xl border border-charcoal/5 p-6 space-y-5">
- {[
- { icon: MapPin, label: "Visit Our Store", value: companyProfile?.address || "Johari Bazaar, Jaipur, Rajasthan 302003, India", color: "text-teal-600" },
- { icon: Phone, label: "Call Us", value: companyProfile?.contactNumber || "+91 98765 43210", color: "text-teal-600" },
- { icon: Mail, label: "Email", value: companyProfile?.supportEmail || "hello@rkfabricszone.com", color: "text-teal-600" },
- { icon: Clock, label: "Working Hours", value: "Mon — Sat: 10:00 AM — 8:00 PM", color: "text-gold-dark" },
- ].map((item) => (
- <div key={item.label} className="flex items-start gap-4">
- <div className="w-10 h-10 rounded-full bg-teal-50 flex items-center justify-center shrink-0">
- <item.icon size={18} className={item.color} />
- </div>
- <div>
- <p className="text-xs font-medium text-slate uppercase tracking-wider">{item.label}</p>
- <p className="text-sm font-medium text-charcoal mt-0.5">{item.value}</p>
- </div>
- </div>
- ))}
- </div>
+  {/* Contact Info */}
+  <div className="bg-white rounded-2xl border border-charcoal/5 p-6 flex flex-col h-full">
+    <div className="space-y-5 flex-1">
+      {[
+        { icon: MapPin, label: "Visit Our Store", value: companyProfile?.address || "Johari Bazaar, Jaipur, Rajasthan 302003, India", color: "text-teal-600" },
+        { icon: Phone, label: "Call Us", value: companyProfile?.contactNumber || "+91 98765 43210", color: "text-teal-600" },
+        { icon: Mail, label: "Email", value: companyProfile?.supportEmail || "hello@rkfabricszone.com", color: "text-teal-600" },
+        { icon: Clock, label: "Working Hours", value: "Mon — Sat: 10:00 AM — 8:00 PM", color: "text-gold-dark" },
+      ].map((item) => (
+        <div key={item.label} className="flex items-start gap-4">
+          <div className="w-10 h-10 rounded-full bg-teal-50 flex items-center justify-center shrink-0">
+            <item.icon size={18} className={item.color} />
+          </div>
+          <div>
+            <p className="text-xs font-medium text-slate uppercase tracking-wider">{item.label}</p>
+            <p className="text-sm font-medium text-charcoal mt-0.5">{item.value}</p>
+          </div>
+        </div>
+      ))}
+    </div>
 
- <a
- href={`https://wa.me/${(companyProfile?.contactNumber || '+919876543210').replace(/[^0-9]/g, '')}`}
- target="_blank"
- rel="noopener noreferrer"
- className="btn-primary !bg-green-500 hover:!bg-green-600 !text-white flex items-center justify-center gap-2 w-1/2 mx-auto mt-6 shadow-neo-btn"
- >
- <MessageCircle size={20} /> Chat on WhatsApp
- </a>
- 
- <div className="mt-4 px-2 text-center">
- </div>
- </div>
+    <div className="mt-8 pt-6 border-t border-charcoal/5">
+      <a
+        href={`https://wa.me/${(companyProfile?.contactNumber || '+919876543210').replace(/[^0-9]/g, '')}`}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="btn-primary !bg-green-500 hover:!bg-green-600 !text-white flex items-center justify-center gap-2 w-full md:w-3/4 mx-auto shadow-neo-btn"
+      >
+        <MessageCircle size={20} /> Chat on WhatsApp
+      </a>
+      
+      <div className="mt-3 text-center">
+        <p className="text-[11px] text-slate-500 leading-relaxed max-w-[280px] mx-auto">
+          Please note: Response times on WhatsApp may vary during peak hours. For faster automated help, use the message form.
+        </p>
+      </div>
+    </div>
+  </div>
 
         {/* Contact Form */}
         <Suspense fallback={null}>
