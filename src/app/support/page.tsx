@@ -6,6 +6,12 @@ import { AdminMobileHeader } from "@/components/layout/admin-mobile-header"
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
 import { redirect } from "next/navigation"
+import { Metadata } from "next"
+
+export const metadata: Metadata = {
+  title: "Support Portal | RK Fabrics",
+  description: "RK Fabrics Support Administration",
+};
 
 export default async function SupportPage() {
   const session = await getServerSession(authOptions)

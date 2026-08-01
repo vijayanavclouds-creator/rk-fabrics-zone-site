@@ -17,7 +17,7 @@ import { useCheckoutStore } from "@/store/checkout"
 export default function CheckoutPaymentPage() {
   const router = useRouter()
   const { data: session, status } = useSession()
-  const { items, getTotal, getSubtotal, getShipping, getPlatformFee, clearCart, gstRates } = useCartStore()
+  const { items, getTotal, getSubtotal, getShipping, getPlatformFee, clearCart, gstRates, shippingMode, setShippingMode } = useCartStore()
   const { selectedAddress, setAddress, clearCheckout } = useCheckoutStore()
 
   const [loading, setLoading] = useState(false)
@@ -132,6 +132,7 @@ export default function CheckoutPaymentPage() {
       paymentMethod,
       couponCode,
       discountAmount,
+      shippingMode,
     }
 
     // In a real app, if paymentMethod is CARD, we would integrate Razorpay/Stripe here.
@@ -409,6 +410,34 @@ export default function CheckoutPaymentPage() {
                 )}
               </div>
 
+              {/* Express Shipping Option */}
+              <div className="bg-slate-50 border border-charcoal/10 rounded-xl p-4 mb-6">
+                <label className="flex items-start gap-3 cursor-pointer group">
+                  <div className="relative flex items-center justify-center mt-0.5">
+                    <input 
+                      type="checkbox" 
+                      checked={shippingMode === "Express"}
+                      onChange={(e) => setShippingMode(e.target.checked ? "Express" : "Surface")}
+                      className="peer sr-only" 
+                    />
+                    <div className="w-5 h-5 rounded-md border-2 border-slate-300 bg-white peer-checked:bg-teal-600 peer-checked:border-teal-600 transition-all flex items-center justify-center group-hover:border-teal-400">
+                      <svg className="w-3.5 h-3.5 text-white opacity-0 peer-checked:opacity-100 transition-opacity" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                      </svg>
+                    </div>
+                  </div>
+                  <div className="flex-1">
+                    <div className="flex justify-between items-center">
+                      <span className="font-bold text-charcoal text-sm">Express Delivery</span>
+                      {gstRates?.expressShippingFee && (
+                        <span className="font-bold text-charcoal text-sm">+₹{gstRates.expressShippingFee}</span>
+                      )}
+                    </div>
+                    <p className="text-xs text-slate mt-0.5">Get your order faster with priority shipping</p>
+                  </div>
+                </label>
+              </div>
+
               <div className="space-y-3 py-4 border-t border-b border-charcoal/10 mb-6">
                 <div className="flex justify-between text-charcoal">
                   <span className="text-sm font-bold">Total MRP ({items.reduce((acc, item) => acc + item.quantity, 0)} items)</span>
@@ -431,7 +460,9 @@ export default function CheckoutPaymentPage() {
                   <span className="font-bold">₹{getPlatformFee().toLocaleString()}</span>
                 </div>
                 <div className="flex justify-between text-charcoal">
-                  <span className="text-sm font-bold">Shipping</span>
+                  <span className="text-sm font-bold">
+                    Shipping {shippingMode === "Express" && <span className="text-teal-600 font-normal">(Express)</span>}
+                  </span>
                   <span className="font-bold">{getShipping() === 0 ? <span className="text-teal-600">Free</span> : `₹${getShipping()}`}</span>
                 </div>
                 <div className="flex justify-between text-charcoal">

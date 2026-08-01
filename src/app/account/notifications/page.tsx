@@ -6,6 +6,13 @@ import Link from "next/link"
 import { markNotificationAsRead, markAllNotificationsAsRead, clearAllNotifications } from "@/actions/notification"
 import { revalidatePath } from "next/cache"
 import prisma from "@/lib/prisma"
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Notifications",
+};
+
+
 
 export default async function CustomerNotificationsPage() {
   const session = await getServerSession(authOptions)

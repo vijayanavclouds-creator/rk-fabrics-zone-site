@@ -1,7 +1,7 @@
 "use client";
 
 import { Send, ChevronDown } from "lucide-react";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useState, useEffect, useRef } from "react";
 import { toast } from "sonner";
 import { submitContactMessage } from "@/actions/contact";
@@ -64,7 +64,8 @@ const SubjectSelect = ({ value, onChange, name }: { value: string, onChange: (v:
   );
 };
 
-export function ContactForm({ deliveredOrders = [] }: { deliveredOrders?: any[] }) {
+export function ContactForm({ deliveredOrders = [], userName = "", userEmail = "" }: { deliveredOrders?: any[], userName?: string, userEmail?: string }) {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const [subject, setSubject] = useState(
     searchParams.get("subject") === "wholesale" ? "Wholesale Inquiry" : "General Inquiry"
@@ -107,12 +108,6 @@ export function ContactForm({ deliveredOrders = [] }: { deliveredOrders?: any[] 
     }
 
     const formData = new FormData(e.currentTarget);
-    const phone = formData.get("phone") as string;
-    
-    if (phone && !/^(?!(\d)\1{9})(?!(\d)(\d)\2\3\2\3\2\3\2\3)(?!(?:9876543210|8765432109|7654321098|6543210987|9012345678|8901234567|7890123456|6789012345))[6-9]\d{9}$/.test(phone)) {
-      toast.error("Please enter a valid 10-digit phone number");
-      return;
-    }
 
     setIsSubmitting(true);
     toast.loading("Sending message...");
@@ -126,6 +121,10 @@ export function ContactForm({ deliveredOrders = [] }: { deliveredOrders?: any[] 
       (e.target as HTMLFormElement).reset();
       setSubject("General Inquiry"); // Reset subject after success
       generateCaptcha();
+      
+      if (result.userId && result.queryId) {
+        router.push(`/account/queries/${result.queryId}`);
+      }
     } else {
       toast.error(result.error || "Failed to send message. Please try again.");
     }
@@ -139,20 +138,14 @@ export function ContactForm({ deliveredOrders = [] }: { deliveredOrders?: any[] 
         Send Us a Message
       </h2>
 
-      <div className="grid grid-cols-2 gap-4">
-        <div>
-          <label className="block text-xs font-medium text-slate mb-1.5">Name *</label>
-          <input name="name" type="text" required placeholder="Your name" className="w-full px-4 py-3 bg-cream border border-charcoal/10 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-teal-500 text-charcoal placeholder:text-slate/40" />
-        </div>
-        <div>
-          <label className="block text-xs font-medium text-slate mb-1.5">Phone</label>
-          <input name="phone" type="tel" placeholder="+91" className="w-full px-4 py-3 bg-cream border border-charcoal/10 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-teal-500 text-charcoal placeholder:text-slate/40" />
-        </div>
+      <div>
+        <label className="block text-xs font-medium text-slate mb-1.5">Name *</label>
+        <input name="name" type="text" required defaultValue={userName} placeholder="Your name" className="w-full px-4 py-3 bg-cream border border-charcoal/10 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-teal-500 text-charcoal placeholder:text-slate/40" />
       </div>
 
       <div>
         <label className="block text-xs font-medium text-slate mb-1.5">Email *</label>
-        <input name="email" type="email" required placeholder="you@email.com" className="w-full px-4 py-3 bg-cream border border-charcoal/10 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-teal-500 text-charcoal placeholder:text-slate/40" />
+        <input name="email" type="email" required defaultValue={userEmail} placeholder="you@email.com" className="w-full px-4 py-3 bg-cream border border-charcoal/10 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-teal-500 text-charcoal placeholder:text-slate/40" />
       </div>
 
       <div>
@@ -200,7 +193,8 @@ export function ContactForm({ deliveredOrders = [] }: { deliveredOrders?: any[] 
       </div>
 
       <div>
-        <label className="block text-xs font-medium text-slate mb-1.5">Security Question: {captchaText}</label>
+        <label className="block text-xs font-medium text-slate mb-1">Anti-Spam Verification: {captchaText}</label>
+        <p className="text-[10.5px] text-slate-500 mb-2">Please solve this simple math problem to prove you are human.</p>
         <input 
           type="number" 
           required 

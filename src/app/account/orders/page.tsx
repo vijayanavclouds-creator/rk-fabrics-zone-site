@@ -3,8 +3,14 @@ import { authOptions } from "@/lib/auth"
 import { redirect } from "next/navigation"
 import { ShoppingBag, ArrowRight, Package } from "lucide-react"
 import Link from "next/link"
+import { Metadata } from "next"
 import { getUserOrders } from "@/actions/order"
 import Image from "next/image"
+
+export const metadata: Metadata = {
+  title: "My Orders | RK Fabrics",
+  description: "View and track your RK Fabrics orders.",
+};
 
 export default async function AccountOrdersPage() {
   const session = await getServerSession(authOptions)

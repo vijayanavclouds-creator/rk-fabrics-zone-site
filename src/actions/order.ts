@@ -28,6 +28,7 @@ export async function createOrder(data: any) {
       paymentMethod,
       couponCode,
       discountAmount,
+      shippingMode = "Surface",
     } = data
 
     // Required payment methods validation
@@ -130,6 +131,7 @@ export async function createOrder(data: any) {
           paymentMethod,
           couponCode,
           discountAmount: validatedDiscount,
+          shippingMode,
           paymentStatus: paymentMethod === "PHONEPE" || paymentMethod === "COD" ? "PENDING" : "PAID", 
           items: {
             create: items.map((item: any) => ({
@@ -271,6 +273,68 @@ export async function getAdminUserOrders(userIdOrEmail: string) {
     return { success: true, orders }
   } catch (error: any) {
     return { success: false, error: "Failed to fetch orders" }
+  }
+}
+
+export async function deleteOrder(orderId: string) {
+  try {
+    const session = await getServerSession(authOptions)
+    if (!session || session.user.role !== "ADMIN") {
+      return { success: false, error: "Unauthorized" }
+    }
+
+    await prisma.order.delete({
+      where: { id: orderId }
+    })
+
+    revalidatePath("/admin")
+    return { success: true }
+  } catch (error: any) {
+    return { success: false, error: error.message }
+  }
+}
+
+export async function updateOrderShippingMode(orderId: string, shippingMode: "Surface" | "Express") {
+  try {
+    const session = await getServerSession(authOptions)
+    if (!session || session.user.role !== "ADMIN") {
+      return { success: false, error: "Unauthorized" }
+    }
+
+    const existingOrder = await prisma.order.findUnique({
+      where: { id: orderId }
+    })
+
+    if (!existingOrder) {
+      return { success: false, error: "Order not found" }
+    }
+
+    const rates = await getGSTRates()
+    
+    // Recalculate shipping amount
+    let newShippingAmount = 0
+    if (shippingMode === "Express") {
+      newShippingAmount = rates.expressShippingFee ?? 150
+    } else {
+      newShippingAmount = existingOrder.subtotalAmount >= 999 ? 0 : (rates.shippingFee ?? 79)
+    }
+
+    const shippingDiff = newShippingAmount - existingOrder.shippingAmount
+    const newTotalAmount = existingOrder.totalAmount + shippingDiff
+
+    const order = await prisma.order.update({
+      where: { id: orderId },
+      data: { 
+        shippingMode,
+        shippingAmount: newShippingAmount,
+        totalAmount: newTotalAmount
+      }
+    })
+
+    revalidatePath("/admin")
+    return { success: true, order }
+  } catch (error: any) {
+    return { success: false, error: error.message }
   }
 }
 

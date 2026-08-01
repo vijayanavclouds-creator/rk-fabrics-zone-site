@@ -1,6 +1,6 @@
 "use server"
 
-import { checkPincodeServiceability, generateBlueDartWaybill } from "@/lib/bluedart"
+import { checkPincodeServiceability, generateDelhiveryWaybill } from "@/lib/delhivery"
 import prisma from "@/lib/prisma"
 import { revalidatePath } from "next/cache"
 
@@ -26,7 +26,7 @@ export async function generateAWB(orderId: string) {
       return { success: false, error: "Waybill already generated" }
     }
 
-    const result = await generateBlueDartWaybill(order)
+    const result = await generateDelhiveryWaybill(order)
     
     if (result.success && result.awbNumber) {
       await prisma.order.update({
@@ -34,7 +34,7 @@ export async function generateAWB(orderId: string) {
         data: {
           waybillGenerated: true,
           awbNumber: result.awbNumber,
-          shippingProvider: "BLUEDART",
+          shippingProvider: "DELHIVERY",
           status: order.status === "CONFIRMED" ? "PROCESSING" : order.status // Optionally auto-update status
         }
       })

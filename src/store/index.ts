@@ -22,9 +22,11 @@ interface CartStore {
  applyCoupon: (code: string, discount: number) => void;
  removeCoupon: () => void;
  setItems: (items: CartItem[]) => void;
- gstRates: { below1000: number, above1000: number, shippingFee: number, platformFeePercent: number } | null;
- setGSTRates: (rates: { below1000: number, above1000: number, shippingFee: number, platformFeePercent: number }) => void;
+ gstRates: { below1000: number, above1000: number, shippingFee: number, expressShippingFee?: number, platformFeePercent: number } | null;
+ setGSTRates: (rates: { below1000: number, above1000: number, shippingFee: number, expressShippingFee?: number, platformFeePercent: number }) => void;
  getGSTAmount: () => number;
+ shippingMode: "Surface" | "Express";
+ setShippingMode: (mode: "Surface" | "Express") => void;
 }
 
 export const useCartStore = create<CartStore>()(
@@ -35,6 +37,7 @@ export const useCartStore = create<CartStore>()(
  couponCode: null,
  discountAmount: 0,
  gstRates: null,
+ shippingMode: "Surface",
 
  addItem: (product, variant, quantity = 1) => {
  set((state) => {
@@ -75,7 +78,7 @@ export const useCartStore = create<CartStore>()(
  }));
  },
 
- clearCart: () => set({ items: [], couponCode: null, discountAmount: 0 }),
+ clearCart: () => set({ items: [], couponCode: null, discountAmount: 0, shippingMode: "Surface" }),
  setItems: (items) => set({ items }),
  toggleCart: () => set((state) => ({ isOpen: !state.isOpen })),
  openCart: () => set({ isOpen: true }),
@@ -83,6 +86,7 @@ export const useCartStore = create<CartStore>()(
  applyCoupon: (code, discount) => set({ couponCode: code, discountAmount: discount }),
  removeCoupon: () => set({ couponCode: null, discountAmount: 0 }),
  setGSTRates: (rates) => set({ gstRates: rates }),
+ setShippingMode: (mode) => set({ shippingMode: mode }),
 
  getSubtotal: () => {
  return get().items.reduce((total, item) => {
@@ -93,6 +97,10 @@ export const useCartStore = create<CartStore>()(
 
  getShipping: () => {
     const subtotal = get().getSubtotal();
+    const mode = get().shippingMode;
+    if (mode === "Express") {
+      return get().gstRates?.expressShippingFee ?? 150;
+    }
     const shippingFee = get().gstRates?.shippingFee ?? 79;
     return subtotal >= 999 ? 0 : shippingFee;
   },

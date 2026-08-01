@@ -1,6 +1,13 @@
 import { getCompanyProfile } from "@/actions/system";
 import Image from "next/image";
 import { Heart, Shield } from "lucide-react";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Our Story",
+};
+
+
 
 export default async function OurStoryPage() {
   const companyProfile = await getCompanyProfile();

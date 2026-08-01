@@ -3,9 +3,10 @@ import { authOptions } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import prisma from "@/lib/prisma";
 import Link from "next/link";
-import { ChevronLeft, Send, User, Building2 } from "lucide-react";
+import { ChevronLeft, Send, User, Building2, Paperclip, ExternalLink } from "lucide-react";
 import { format } from "date-fns";
 import { revalidatePath } from "next/cache";
+import { QueryThread } from "@/components/queries/query-thread";
 
 export default async function CustomerQueryThreadPage({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = await params;
@@ -31,16 +32,26 @@ export default async function CustomerQueryThreadPage({ params }: { params: Prom
     redirect("/account/reviews?tab=queries");
   }
 
+  // Mark as read by user if opened by customer
+  if (!query.isReadByUser) {
+    await prisma.contactQuery.update({
+      where: { id: query.id },
+      data: { isReadByUser: true }
+    });
+  }
+
   async function replyToQuery(formData: FormData) {
     "use server";
     const message = formData.get("message") as string;
-    if (!message) return;
+    const attachment = formData.get("attachment") as string;
+    if (!message && !attachment) return;
 
     await prisma.queryMessage.create({
       data: {
         queryId: query!.id,
         senderType: "CUSTOMER",
-        message
+        message: message || "",
+        attachment
       }
     });
 
@@ -49,11 +60,78 @@ export default async function CustomerQueryThreadPage({ params }: { params: Prom
       data: {
         type: "QUERY",
         message: `New reply from ${query!.name} on ${query!.subject}`,
-        link: `/account/admin/queries/${query!.id}`,
+        link: `/admin/queries/${query!.id}`,
       }
     });
 
+    // Mark query as unread for admin
+    await prisma.contactQuery.update({
+      where: { id: query!.id },
+      data: { isRead: false }
+    });
+
+    // Trigger Bot Reply for thread messages
+    if (session?.user?.id) {
+      const { generateBotReply } = await import("@/lib/gemini");
+      let orderDetails = null;
+      if (query!.orderId) {
+        const orderInfo = await prisma.order.findUnique({
+          where: { id: query!.orderId },
+          include: { items: true }
+        });
+        if (orderInfo) {
+          orderDetails = `Order ID: ${orderInfo.id}\nStatus: ${orderInfo.status}\nTotal: ₹${orderInfo.totalAmount}\nItems: ${orderInfo.items.map((i: any) => i.productName).join(", ")}`;
+        }
+      }
+      
+      const userEmail = session?.user?.email || query!.email;
+      const userName = session?.user?.name || query!.name;
+
+      const user = await prisma.user.findUnique({
+        where: { id: session.user.id },
+        select: { phone: true, cartData: true }
+      });
+      const userPhone = user?.phone || null;
+      
+      let cartDetails = null;
+      if (user?.cartData) {
+        try {
+          const cart = JSON.parse(user.cartData);
+          if (Array.isArray(cart) && cart.length > 0) {
+            cartDetails = cart.map((item: any) => `${item.quantity}x ${item.name} (${item.size}, ${item.color}) - ₹${item.price}`).join(", ");
+          }
+        } catch(e) {}
+      }
+
+      // Check if conversation was escalated to human agent
+      const previousMessages = await prisma.queryMessage.findMany({
+        where: { queryId: query!.id }
+      });
+      
+      const isEscalated = previousMessages.some(m => 
+        (m.senderType === "ADMIN" || m.senderType === "BOT") && 
+        m.message && m.message.includes("I will transfer this to a human agent")
+      );
+
+      if (!isEscalated) {
+        generateBotReply(query!.id, message || "Attached an image.", userEmail, userName, orderDetails, attachment || null, cartDetails, userPhone).catch(e => console.error("Bot reply failed in thread:", e));
+      }
+    }
+
     revalidatePath(`/account/queries/${query!.id}`);
+  }
+
+  async function refreshMessages() {
+    "use server";
+    const updatedQuery = await prisma.contactQuery.findUnique({
+      where: { id: resolvedParams.id },
+      include: { messages: { orderBy: { createdAt: "asc" } } }
+    });
+    if (!updatedQuery) return null;
+    return {
+      messages: updatedQuery.messages,
+      status: updatedQuery.status
+    };
   }
 
   return (
@@ -77,48 +155,13 @@ export default async function CustomerQueryThreadPage({ params }: { params: Prom
         )}
       </div>
 
-      {/* Messages Thread */}
-      <div className="flex-1 overflow-y-auto space-y-6 pr-4 custom-scrollbar mb-6">
-        {query.messages.map((msg) => {
-          const isCustomer = msg.senderType === "CUSTOMER";
-          return (
-            <div key={msg.id} className={`flex gap-4 ${isCustomer ? 'flex-row-reverse' : ''}`}>
-              <div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${isCustomer ? 'bg-charcoal text-white' : 'bg-teal-100 text-teal-700'}`}>
-                {isCustomer ? <User size={18} /> : <Building2 size={18} />}
-              </div>
-              <div className={`max-w-[75%] ${isCustomer ? 'text-right' : 'text-left'}`}>
-                <div className={`inline-block px-5 py-3 rounded-2xl text-sm whitespace-pre-wrap text-left ${isCustomer ? 'bg-charcoal text-white rounded-tr-sm' : 'bg-slate-50 border border-charcoal/5 text-charcoal rounded-tl-sm'}`}>
-                  {msg.message}
-                </div>
-                <p className="text-xs text-slate mt-1 px-1">
-                  {format(new Date(msg.createdAt), "MMM d, h:mm a")}
-                </p>
-              </div>
-            </div>
-          )
-        })}
-      </div>
-
-      {/* Reply Box */}
-      {query.status === "OPEN" && (
-        <form action={replyToQuery} className="shrink-0 mt-auto bg-slate-50 p-4 rounded-2xl border border-charcoal/10 flex gap-4">
-          <textarea 
-            name="message"
-            required
-            placeholder="Type your reply here..."
-            className="flex-1 bg-white border border-charcoal/10 rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-charcoal resize-none h-14"
-          />
-          <button type="submit" className="w-14 h-14 bg-charcoal hover:bg-black text-white rounded-xl flex items-center justify-center transition-colors shrink-0">
-            <Send size={20} />
-          </button>
-        </form>
-      )}
-      
-      {query.status === "RESOLVED" && (
-        <div className="shrink-0 mt-auto bg-slate-50 p-4 rounded-2xl border border-charcoal/10 text-center text-sm text-slate">
-          This query has been resolved by our support team.
-        </div>
-      )}
+      <QueryThread 
+        initialMessages={query.messages} 
+        status={query.status} 
+        onReply={replyToQuery} 
+        userImage={session?.user?.image || null}
+        refreshMessages={refreshMessages}
+      />
     </div>
   );
 }

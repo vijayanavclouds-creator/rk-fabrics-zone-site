@@ -8,6 +8,12 @@ import { AdminMobileHeader } from "@/components/layout/admin-mobile-header"
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
 import { redirect } from "next/navigation"
+import { Metadata } from "next"
+
+export const metadata: Metadata = {
+  title: "Admin Dashboard | RK Fabrics",
+  description: "RK Fabrics Administration Panel",
+};
 
 export default async function AdminPage() {
   const session = await getServerSession(authOptions)

@@ -4,6 +4,13 @@ import { redirect } from "next/navigation"
 import { Mail, X } from "lucide-react"
 import { getUserNewsletters, deleteUserNewsletter } from "@/actions/newsletter"
 import Link from "next/link"
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Newsletters",
+};
+
+
 
 export default async function CustomerNewslettersPage() {
   const session = await getServerSession(authOptions)

@@ -1,4 +1,5 @@
 import { Metadata } from 'next'
+import Script from 'next/script'
 import prisma from '@/lib/prisma'
 import { getProductBySlug } from '@/lib/data'
 
@@ -123,11 +124,13 @@ export default async function ProductLayout({ params, children }: Props) {
 
   return (
     <>
-      <script
+      <Script
+        id="product-schema"
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(productSchema) }}
       />
-      <script
+      <Script
+        id="breadcrumb-schema"
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
       />

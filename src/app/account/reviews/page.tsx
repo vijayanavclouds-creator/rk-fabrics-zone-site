@@ -2,6 +2,12 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import prisma from "@/lib/prisma";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "My Queries & Reviews | RK Fabrics",
+  description: "View your product reviews and support queries.",
+};
 import Link from "next/link";
 import { MessageSquare, Star, ChevronRight, Calendar, User, HelpCircle } from "lucide-react";
 import { format } from "date-fns";
@@ -118,6 +124,11 @@ export default async function ReviewsAndQueriesPage({ searchParams }: { searchPa
                         </span>
                         {query.status === "RESOLVED" && (
                           <span className="text-xs text-slate font-medium bg-slate-100 px-2 py-0.5 rounded border border-slate-200">Resolved</span>
+                        )}
+                        {!query.isReadByUser && query.status !== "RESOLVED" && (
+                          <span className="text-xs text-teal-700 font-bold bg-teal-100 px-2 py-0.5 rounded border border-teal-200 animate-pulse">
+                            (1) New Message!
+                          </span>
                         )}
                       </div>
                       <p className="text-sm text-charcoal line-clamp-1 mb-2 font-medium">

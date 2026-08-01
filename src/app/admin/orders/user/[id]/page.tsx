@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { useParams, useRouter, useSearchParams } from "next/navigation"
-import { getAdminUserOrders, updateOrderStatus, toggleUserOrdersReadStatus } from "@/actions/order"
+import { getAdminUserOrders, updateOrderStatus, toggleUserOrdersReadStatus, updateOrderShippingMode } from "@/actions/order"
 import { generateAWB } from "@/actions/delivery"
 import { toast } from "sonner"
 import { Package, CheckCircle, Clock, Truck, XCircle, ArrowLeft, Gift, Send, Printer, ChevronDown, Info } from "lucide-react"
@@ -73,17 +73,31 @@ export default function UserOrdersPage() {
     toast.dismiss()
     
     if (res.success) {
-      toast.success("Order status updated!")
+      toast.success("Order status updated successfully!")
       fetchOrders()
       window.dispatchEvent(new CustomEvent('orderStatusUpdated'))
     } else {
-      toast.error(res.error || "Failed to update status")
+      toast.error(res.error || "Failed to update order status")
+    }
+  }
+
+  const handleShippingModeChange = async (orderId: string, currentMode: string) => {
+    const newMode = currentMode === "Express" ? "Surface" : "Express"
+    toast.loading(`Updating shipping to ${newMode}...`)
+    const res = await updateOrderShippingMode(orderId, newMode)
+    toast.dismiss()
+    
+    if (res.success) {
+      toast.success(`Shipping mode updated to ${newMode}!`)
+      fetchOrders()
+    } else {
+      toast.error(res.error || "Failed to update shipping mode")
     }
   }
 
   const handleGenerateAWB = async (orderId: string) => {
     setGeneratingAWB(orderId)
-    toast.loading("Generating BlueDart AWB...")
+    toast.loading("Generating Delhivery AWB...")
     const res = await generateAWB(orderId)
     toast.dismiss()
     
@@ -385,7 +399,7 @@ export default function UserOrdersPage() {
                       <span className="text-charcoal font-bold">₹{order.subtotalAmount.toLocaleString()}</span>
                     </div>
                     <div className="flex justify-between text-sm">
-                      <span className="text-slate font-medium">Shipping</span>
+                      <span className="text-slate font-medium">Shipping {order.shippingMode === "Express" && <span className="text-teal-600 font-bold">(Express)</span>}</span>
                       <span className="text-charcoal font-bold">{order.shippingAmount === 0 ? "Free" : `₹${order.shippingAmount.toLocaleString()}`}</span>
                     </div>
                     {order.platformFeeAmount > 0 && (
@@ -421,6 +435,30 @@ export default function UserOrdersPage() {
                   </div>
 
                   <div>
+                    {!order.waybillGenerated && order.status !== "CANCELLED" && (
+                      <div className="mb-4 bg-slate-50 border border-charcoal/10 rounded-xl p-3">
+                        <label className="flex items-start gap-3 cursor-pointer group">
+                          <div className="relative flex items-center justify-center mt-0.5">
+                            <input 
+                              type="checkbox" 
+                              checked={order.shippingMode === "Express"}
+                              onChange={() => handleShippingModeChange(order.id, order.shippingMode || "Surface")}
+                              className="peer sr-only" 
+                            />
+                            <div className="w-5 h-5 rounded-md border-2 border-slate-300 bg-white peer-checked:bg-teal-600 peer-checked:border-teal-600 transition-all flex items-center justify-center group-hover:border-teal-400">
+                              <svg className="w-3.5 h-3.5 text-white opacity-0 peer-checked:opacity-100 transition-opacity" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                              </svg>
+                            </div>
+                          </div>
+                          <div className="flex-1">
+                            <span className="font-bold text-charcoal text-sm block">Express Delivery</span>
+                            <p className="text-[10px] text-slate mt-0.5">Overrides standard delivery</p>
+                          </div>
+                        </label>
+                      </div>
+                    )}
+
                     <h4 className="text-xs font-bold text-slate uppercase tracking-wider mb-2">Update Status</h4>
                     <select 
                       value={order.status}
@@ -443,7 +481,7 @@ export default function UserOrdersPage() {
                       Generate Invoice
                     </button>
 
-                    {/* BlueDart Integration Button */}
+                    {/* Delhivery Integration Button */}
                     {!order.waybillGenerated ? (
                       <button
                         onClick={() => handleGenerateAWB(order.id)}
@@ -451,7 +489,7 @@ export default function UserOrdersPage() {
                         className="w-full mt-3 p-2.5 rounded-xl border border-blue-200 bg-blue-50 hover:bg-blue-100 transition-colors flex items-center justify-center gap-2 text-sm font-bold text-blue-700 shadow-sm disabled:opacity-50"
                       >
                         <Package size={16} />
-                        {generatingAWB === order.id ? "Generating..." : "Generate BlueDart AWB"}
+                        {generatingAWB === order.id ? "Generating..." : "Generate Delhivery AWB"}
                       </button>
                     ) : (
                       <div className="w-full mt-3 p-2.5 rounded-xl border border-emerald-200 bg-emerald-50 flex flex-col items-center justify-center gap-1 text-sm font-bold text-emerald-700 shadow-sm">

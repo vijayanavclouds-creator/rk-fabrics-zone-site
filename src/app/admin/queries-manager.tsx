@@ -95,6 +95,11 @@ export function QueriesManager({ initialQueries, basePath = "/admin" }: { initia
                     {query.status === "RESOLVED" && (
                       <span className="ml-2 text-xs text-slate font-medium">Resolved</span>
                     )}
+                    {!query.isRead && query.status !== "RESOLVED" && (
+                      <span className="ml-2 text-xs text-rose-600 font-bold bg-rose-50 px-2 py-0.5 rounded border border-rose-200 animate-pulse">
+                        (1) New Message!
+                      </span>
+                    )}
                   </div>
                   <div className="col-span-3 text-sm text-charcoal flex items-center gap-2">
                     <Calendar size={14} className="text-slate" />

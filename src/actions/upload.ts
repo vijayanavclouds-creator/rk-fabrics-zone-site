@@ -138,7 +138,38 @@ export async function deleteProductImage(imageId: string) {
     return { success: true }
   } catch (error: any) {
     console.error("Delete error:", error)
-    return { success: false, error: "Failed to delete image" }
+    return { success: false, error: error.message }
+  }
+}
+
+export async function uploadQueryAttachment(formData: FormData) {
+  try {
+    const session = await getServerSession(authOptions)
+    if (!session) {
+      return { success: false, error: "Unauthorized" }
+    }
+
+    const file = formData.get("file") as File
+    if (!file) return { success: false, error: "No file provided" }
+
+    // Convert file to base64
+    const bytes = await file.arrayBuffer()
+    const buffer = Buffer.from(bytes)
+    const base64Data = `data:${file.type};base64,${buffer.toString("base64")}`
+
+    const result = await cloudinary.uploader.upload(base64Data, {
+      folder: "rk-fabrics/queries",
+      transformation: [
+        { width: 800, crop: "limit" },
+        { quality: "auto:good" },
+        { fetch_format: "auto" }
+      ]
+    })
+
+    return { success: true, url: result.secure_url }
+  } catch (error: any) {
+    console.error("Query attachment upload error:", error)
+    return { success: false, error: error.message || "Upload failed" }
   }
 }
 

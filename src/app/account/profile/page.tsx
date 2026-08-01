@@ -1,11 +1,17 @@
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
 import { redirect } from "next/navigation"
+import { Metadata } from "next"
 import ProfileForm from "./profile-form"
 import PasswordForm from "./password-form"
 import DeactivateAccount from "./deactivate-account"
 import ActiveSessions from "./active-sessions"
 import TwoFactorAuth from "./two-factor-auth"
+
+export const metadata: Metadata = {
+  title: "My Profile | RK Fabrics",
+  description: "Manage your personal profile and account settings.",
+};
 
 export default async function AccountProfilePage() {
   const session = await getServerSession(authOptions)

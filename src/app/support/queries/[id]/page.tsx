@@ -3,10 +3,11 @@ import { authOptions } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import prisma from "@/lib/prisma";
 import Link from "next/link";
-import { ChevronLeft, Send, User, Building2 } from "lucide-react";
+import { ChevronLeft, Send, User, Building2, Paperclip, ExternalLink } from "lucide-react";
 import { logAdminActivity } from "@/actions/admin-activity";
 import { format } from "date-fns";
 import { revalidatePath } from "next/cache";
+import { QueryChatInput } from "@/components/queries/query-chat-input";
 
 export default async function AdminQueryThreadPage({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = await params;
@@ -41,13 +42,15 @@ export default async function AdminQueryThreadPage({ params }: { params: Promise
   async function replyToQuery(formData: FormData) {
     "use server";
     const message = formData.get("message") as string;
-    if (!message) return;
+    const attachment = formData.get("attachment") as string;
+    if (!message && !attachment) return;
 
     await prisma.queryMessage.create({
       data: {
         queryId: query!.id,
         senderType: "ADMIN",
-        message
+        message: message || "",
+        attachment
       }
     });
 
@@ -140,6 +143,16 @@ export default async function AdminQueryThreadPage({ params }: { params: Promise
                     msg.message
                   )}
                 </div>
+                {msg.attachment && (
+                  <div className={`mt-2 inline-block rounded-2xl overflow-hidden border border-charcoal/10 ${isAdmin ? 'rounded-tr-sm' : 'rounded-tl-sm'}`}>
+                    <a href={msg.attachment} target="_blank" rel="noopener noreferrer" className="block relative group">
+                      <img src={msg.attachment} alt="Attachment" className="max-w-[250px] max-h-[300px] object-cover" />
+                      <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+                        <ExternalLink className="text-white" size={24} />
+                      </div>
+                    </a>
+                  </div>
+                )}
                 <p className="text-xs text-slate mt-1 px-1">
                   {format(new Date(msg.createdAt), "MMM d, h:mm a")}
                 </p>
@@ -151,17 +164,7 @@ export default async function AdminQueryThreadPage({ params }: { params: Promise
 
       {/* Reply Box */}
       {query.status === "OPEN" && (
-        <form action={replyToQuery} className="shrink-0 mt-auto bg-slate-50 p-4 rounded-2xl border border-charcoal/10 flex gap-4">
-          <textarea 
-            name="message"
-            required
-            placeholder="Type your reply here..."
-            className="flex-1 bg-white border border-charcoal/10 rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500 resize-none h-14"
-          />
-          <button type="submit" className="w-14 h-14 bg-teal-600 hover:bg-teal-700 text-white rounded-xl flex items-center justify-center transition-colors shrink-0">
-            <Send size={20} />
-          </button>
-        </form>
+        <QueryChatInput onReply={replyToQuery} />
       )}
       
       {query.status === "RESOLVED" && (

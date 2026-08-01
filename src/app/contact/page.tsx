@@ -6,6 +6,12 @@ import { Suspense } from "react";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Contact Us | RK Fabrics",
+  description: "Get in touch with RK Fabrics for any inquiries.",
+};
 
 export default async function ContactPage() {
   const companyProfile = await getCompanyProfile();
@@ -82,7 +88,11 @@ export default async function ContactPage() {
 
         {/* Contact Form */}
         <Suspense fallback={null}>
-          <ContactForm deliveredOrders={deliveredOrders} />
+          <ContactForm 
+            deliveredOrders={deliveredOrders} 
+            userName={session?.user?.name || ""}
+            userEmail={session?.user?.email || ""}
+          />
         </Suspense>
       </div>
  </div>

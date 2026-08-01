@@ -221,6 +221,7 @@ model AdminActivity {
 model AdminSettings {
   id                         String   @id @default("singleton")
   lateShippingThresholdHours Int      @default(6)
+  expressShippingFee         Float    @default(150)
   updatedAt                  DateTime @updatedAt
 }
 
@@ -252,7 +253,8 @@ model Order {
   
   // Shipping Integration
   awbNumber          String?
-  shippingProvider   String      @default("BLUEDART")
+  shippingProvider   String      @default("BLUEDART") // Legacy, but using DELHIVERY now
+  shippingMode       String      @default("Surface") // "Surface" or "Express"
   waybillGenerated   Boolean     @default(false)
   
   items           OrderItem[]
@@ -305,10 +307,11 @@ model ContactQuery {
   phone     String?
   subject   String
   orderId   String?  // Optional relation to an order for returns
-  status    String   @default("OPEN") // OPEN, RESOLVED
-  isRead    Boolean  @default(false)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  status       String   @default("OPEN") // OPEN, RESOLVED
+  isRead       Boolean  @default(false)
+  isReadByUser Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
   messages  QueryMessage[]
 }
@@ -319,6 +322,7 @@ model QueryMessage {
   query       ContactQuery @relation(fields: [queryId], references: [id], onDelete: Cascade)
   senderType  String       // CUSTOMER or ADMIN
   message     String
+  attachment  String?
   createdAt   DateTime     @default(now())
 }
 

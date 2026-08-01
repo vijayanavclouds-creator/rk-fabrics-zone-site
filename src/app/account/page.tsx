@@ -1,6 +1,13 @@
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
 import { redirect } from "next/navigation"
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "My Account",
+};
+
+
 
 
 export default async function AccountDashboard() {

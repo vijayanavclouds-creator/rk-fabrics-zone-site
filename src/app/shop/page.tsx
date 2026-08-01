@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+import Script from "next/script";
 import prisma from "@/lib/prisma";
 import { getStoreTaxonomyData } from "@/lib/data/system";
 import { ShopContent } from "./shop-content";
@@ -56,7 +57,8 @@ export default async function ShopPage() {
 
   return (
     <>
-      <script
+      <Script
+        id="shop-schema"
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
       />

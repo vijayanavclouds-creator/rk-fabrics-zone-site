@@ -1,4 +1,11 @@
 import { Ticket } from "lucide-react"
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "My Coupons",
+};
+
+
 
 export default function CouponsPage() {
   return (

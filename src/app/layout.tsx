@@ -3,7 +3,9 @@ import { Playfair_Display, Inter, Cinzel } from "next/font/google";
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
+import { ConditionalFooter } from "@/components/layout/conditional-footer";
 import { MobileNav } from "@/components/layout/mobile-nav";
+import Script from "next/script";
 
 import { AuthHydration } from "@/components/layout/auth-hydration";
 import { CartSync } from "@/components/cart-sync";
@@ -108,7 +110,8 @@ export default async function RootLayout({
   suppressHydrationWarning
   >
   <head>
-    <script
+    <Script
+      id="ld-json"
       type="application/ld+json"
       dangerouslySetInnerHTML={{
         __html: JSON.stringify({
@@ -174,7 +177,9 @@ export default async function RootLayout({
     {children}
   </PortalMainWrapper>
   
-  <Footer />
+  <ConditionalFooter>
+    <Footer />
+  </ConditionalFooter>
   
   <HideOnAllPortal>
     <MobileNav />

@@ -23,19 +23,17 @@ export async function submitContactMessage(formData: FormData) {
       return { success: false, error: "Please enter a valid email address." };
     }
 
-    if (phone && !/^(?!(\d)\1{9})(?!(\d)(\d)\2\3\2\3\2\3\2\3)(?!(?:9876543210|8765432109|7654321098|6543210987|9012345678|8901234567|7890123456|6789012345))[6-9]\d{9}$/.test(phone)) {
-      return { success: false, error: "Please enter a valid 10-digit phone number." };
-    }
-
     // 1. Save the query to the database
     const session = await getServerSession(authOptions);
     const userId = session?.user?.id || null;
+    const userEmail = session?.user?.email || email;
+    const userName = session?.user?.name || name;
 
     const query = await prisma.contactQuery.create({
       data: {
         name,
         email,
-        phone,
+        phone: "", // No phone field anymore
         subject,
         orderId: subject === "Returns & Exchange" ? orderId : null,
         userId,
@@ -53,13 +51,33 @@ export async function submitContactMessage(formData: FormData) {
       data: {
         type: "QUERY",
         message: `New ${subject} from ${name} (${email})`,
-        link: `/account/admin/queries/${query.id}`,
+        link: `/admin/queries/${query.id}`,
       }
     });
 
+    // 3. Trigger Bot Reply (Non-blocking)
+    if (userId) {
+      // Import dynamically to avoid circular dependencies or server component issues
+      const { generateBotReply } = await import("@/lib/gemini");
+      
+      let orderDetails = null;
+      if (query.orderId) {
+        const orderInfo = await prisma.order.findUnique({
+          where: { id: query.orderId },
+          include: { items: true }
+        });
+        if (orderInfo) {
+          orderDetails = `Order ID: ${orderInfo.id}\nStatus: ${orderInfo.status}\nTotal: ₹${orderInfo.totalAmount}\nItems: ${orderInfo.items.map((i: any) => i.productName).join(", ")}`;
+        }
+      }
+      
+      // Fire and forget
+      generateBotReply(query.id, message, userEmail, userName, orderDetails, null).catch(e => console.error("Bot reply failed:", e));
+    }
+
     revalidatePath("/admin");
 
-    return { success: true };
+    return { success: true, queryId: query.id, userId: query.userId };
   } catch (error) {
     console.error("Failed to submit contact message:", error);
     return { success: false, error: "An unexpected error occurred. Please try again later." };

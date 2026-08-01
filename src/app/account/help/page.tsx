@@ -2,6 +2,13 @@ import { HelpCircle, Mail, Phone, MessageCircle } from "lucide-react"
 import { InteractiveFaq } from "@/components/help-center/interactive-faq"
 import { PolicySections } from "@/components/help-center/policy-sections"
 import { getCompanyProfile } from "@/actions/system"
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Help Center",
+};
+
+
 
 export default async function HelpPage() {
   const companyProfile = await getCompanyProfile()

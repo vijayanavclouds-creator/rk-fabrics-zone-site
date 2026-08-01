@@ -28,6 +28,7 @@ export function CompanyProfileManager() {
     gstPercentBelow1000: 5,
     gstPercentAbove1000: 12,
     shippingFee: 79,
+    expressShippingFee: 150,
     platformFeePercent: 2
   });
 
@@ -366,6 +367,21 @@ export function CompanyProfileManager() {
                 value={profile.shippingFee ?? ""}
                 onChange={handleChange}
                 placeholder="79"
+                step="1"
+                min="0"
+                className="w-full px-4 py-2.5 md:py-3 text-base bg-cream shadow-neo-input !border-none rounded-full focus:!outline-none focus:!ring-0 focus:!border-none text-charcoal placeholder:text-slate/60 transition-all"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-bold text-charcoal mb-1 md:mb-2">
+                Express Shipping Fee (₹)
+              </label>
+              <input
+                type="number"
+                name="expressShippingFee"
+                value={profile.expressShippingFee ?? ""}
+                onChange={handleChange}
+                placeholder="150"
                 step="1"
                 min="0"
                 className="w-full px-4 py-2.5 md:py-3 text-base bg-cream shadow-neo-input !border-none rounded-full focus:!outline-none focus:!ring-0 focus:!border-none text-charcoal placeholder:text-slate/60 transition-all"

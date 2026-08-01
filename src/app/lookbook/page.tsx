@@ -1,5 +1,12 @@
 import Image from "next/image";
 import Link from "next/link";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Lookbook",
+};
+
+
 
 const lookbookItems = [
   { id: 1, title: "Summer Cottons", url: "https://images.unsplash.com/photo-1584447128309-b66b7a4d1b63?q=80&w=1964&auto=format&fit=crop" },

@@ -3,7 +3,7 @@ import { authOptions } from "@/lib/auth"
 import { redirect } from "next/navigation"
 import prisma from "@/lib/prisma"
 import Link from "next/link"
-import { ArrowLeft, Package, Clock, Truck, CheckCircle, XCircle } from "lucide-react"
+import { ArrowLeft, Package, Clock, Truck, CheckCircle, XCircle, ExternalLink } from "lucide-react"
 import Image from "next/image"
 import CancelOrderButton from "./cancel-order-button"
 import { OrderItemsList } from "./order-items-list"
@@ -208,14 +208,14 @@ export default async function OrderDetailsPage({ params }: { params: Promise<{ i
                               <p className="text-xs font-bold text-slate uppercase tracking-wider mb-1">Tracking Number</p>
                               <div className="flex items-center gap-3">
                                 <span className="font-mono text-charcoal font-bold text-base">{order.awbNumber}</span>
-                                <a 
-                                  href={`https://www.bluedart.com/tracking?track=${order.awbNumber}`} 
+                                <Link 
+                                  href={`https://www.delhivery.com/track/package/${order.awbNumber}`} 
                                   target="_blank" 
                                   rel="noreferrer"
-                                  className="text-xs font-bold text-teal-600 bg-teal-50 px-2 py-1 rounded hover:bg-teal-100 transition-colors"
+                                  className="text-xs font-bold text-teal-600 bg-teal-50 px-2 py-1 rounded hover:bg-teal-100 transition-colors flex items-center gap-1"
                                 >
-                                  Track Package
-                                </a>
+                                  Track Package <ExternalLink size={12} />
+                                </Link>
                               </div>
                             </div>
                           )}
@@ -241,6 +241,18 @@ export default async function OrderDetailsPage({ params }: { params: Promise<{ i
               )}
             </div>
           </div>
+
+          {!order.waybillGenerated && order.status !== "CANCELLED" && (
+            <div className="bg-blue-50/50 border border-blue-100 p-4 rounded-xl mb-8 flex items-start gap-3">
+              <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center shrink-0 mt-0.5">
+                <Truck size={16} className="text-blue-600" />
+              </div>
+              <div className="text-sm text-blue-800 leading-relaxed">
+                <p className="font-bold mb-0.5">Change your shipping method</p>
+                <p>Note: You can upgrade or change your shipping method before the order has been processed for dispatch. Please contact our support team to request a shipping method change.</p>
+              </div>
+            </div>
+          )}
 
           <div className="grid md:grid-cols-2 gap-8 mb-8">
             <div className="space-y-6">
@@ -268,7 +280,7 @@ export default async function OrderDetailsPage({ params }: { params: Promise<{ i
                     <span className="font-bold text-charcoal">₹{order.subtotalAmount.toLocaleString()}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-slate">Shipping</span>
+                    <span className="text-slate">Shipping {(order as any).shippingMode === "Express" && <span className="text-teal-600 font-bold">(Express)</span>}</span>
                     <span className="font-bold text-charcoal">{order.shippingAmount === 0 ? "Free" : `₹${order.shippingAmount.toLocaleString()}`}</span>
                   </div>
                   {order.platformFeeAmount > 0 && (

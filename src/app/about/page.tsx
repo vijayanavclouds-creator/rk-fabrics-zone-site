@@ -2,6 +2,13 @@ import { getCompanyProfile } from "@/actions/system";
 import Link from "next/link";
 import { Heart, Shield, Sparkles, MapPin, Phone, Mail, Building2, Truck, RefreshCw } from "lucide-react";
 import Image from "next/image";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "About Us",
+};
+
+
 
 export default async function AboutPage() {
   const companyProfile = await getCompanyProfile();
