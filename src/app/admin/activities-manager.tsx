@@ -65,8 +65,8 @@ export function ActivitiesManager() {
         description="A complete history of all administrative actions." 
       />
 
-      <div className="-mx-6 -my-6 md:m-0 bg-white md:rounded-3xl border-y md:border border-charcoal/10 overflow-hidden shadow-sm p-4 md:p-6 lg:p-8">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 md:mb-8 pb-4 border-b border-charcoal/10">
+      <div className="-mx-6 -my-6 md:m-0 bg-white md:rounded-3xl border-y md:border border-charcoal/10 overflow-hidden shadow-sm p-4 md:p-6 lg:p-8 h-[calc(100vh-64px)] md:h-auto flex flex-col">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 md:mb-8 pb-4 border-b border-charcoal/10 shrink-0">
           <div className="flex items-center gap-3">
             <div className="p-3 bg-teal-50 text-teal-600 rounded-xl">
               <Activity size={24} />
@@ -87,7 +87,7 @@ export function ActivitiesManager() {
         </div>
 
         {showClearHistory && (
-          <div className="mb-8 p-5 bg-red-50/50 border border-red-100 rounded-2xl">
+          <div className="mb-8 p-5 bg-red-50/50 border border-red-100 rounded-2xl shrink-0">
             <div className="flex items-center gap-2 text-red-600 font-bold mb-4">
               <AlertTriangle size={18} />
               <h4>Delete Activity History</h4>
@@ -134,12 +134,12 @@ export function ActivitiesManager() {
         )}
 
         {loading ? (
-          <div className="flex justify-center p-12">
+          <div className="flex justify-center p-12 flex-1 items-center">
             <div className="w-8 h-8 border-4 border-teal-500/30 border-t-teal-600 rounded-full animate-spin"></div>
           </div>
         ) : activities.length > 0 ? (
-          <div>
-            <div className="space-y-6 max-h-[650px] overflow-y-auto pr-2 md:pr-4 custom-scrollbar">
+          <div className="flex flex-col flex-1 min-h-0">
+            <div className="space-y-6 flex-1 overflow-y-auto pr-2 md:pr-4 custom-scrollbar">
               {activities.map((activity) => (
                 <div key={activity.id} className="flex gap-4 relative group">
                   <div className="w-3 h-3 rounded-full bg-teal-500 mt-1.5 shrink-0 relative z-10 shadow-[0_0_8px_rgba(20,184,166,0.6)] group-hover:scale-125 transition-transform"></div>
@@ -161,7 +161,7 @@ export function ActivitiesManager() {
             
             {/* Pagination */}
             {totalPages > 1 && (
-              <div className="flex justify-center gap-2 mt-6 pt-6 border-t border-charcoal/10">
+              <div className="flex justify-center gap-2 mt-6 pt-6 border-t border-charcoal/10 shrink-0">
                 <button 
                   disabled={page === 1}
                   onClick={() => setPage(p => p - 1)}
