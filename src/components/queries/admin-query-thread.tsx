@@ -5,6 +5,7 @@ import { format } from "date-fns";
 import { Building2, User, ExternalLink, Bot } from "lucide-react";
 import { QueryChatInput } from "./query-chat-input";
 import Link from "next/link";
+import ReactMarkdown from "react-markdown";
 
 type Message = {
   id: string;
@@ -146,6 +147,10 @@ export function AdminQueryThread({ initialMessages, query, onReply, refreshMessa
                         )}
                       </div>
                       {msg.message}
+                    </div>
+                  ) : isBot ? (
+                    <div className="prose prose-sm prose-invert max-w-none [&>p]:mb-2 [&>p:last-child]:mb-0 [&_a]:text-teal-300 [&_a]:underline [&_a:hover]:opacity-80">
+                      <ReactMarkdown>{msg.message || ""}</ReactMarkdown>
                     </div>
                   ) : (
                     msg.message

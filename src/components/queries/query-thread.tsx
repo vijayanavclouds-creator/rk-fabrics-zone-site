@@ -5,6 +5,7 @@ import { User, Building2, ExternalLink } from "lucide-react"
 import { format } from "date-fns"
 import { QueryChatInput } from "./query-chat-input"
 import Link from "next/link"
+import ReactMarkdown from "react-markdown"
 
 type Message = {
   id: string
@@ -147,28 +148,36 @@ export function QueryThread({
                 )}
                 {msg.message && (
                   <div className={`inline-block px-5 py-3.5 rounded-2xl text-sm whitespace-pre-wrap text-left shadow-sm ${isCustomer ? 'bg-gradient-to-br from-teal-600 to-teal-700 text-white rounded-tr-sm border border-teal-800/20' : 'bg-white border border-slate-100/80 text-charcoal rounded-tl-sm shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)]'}`}>
-                    {(() => {
-                      const text = msg.message;
-                      const linkRegex = /\[([^\]]+)\]\(([^)]+)\)/g;
-                      const parts = [];
-                      let lastIndex = 0;
-                      let match;
-                      while ((match = linkRegex.exec(text)) !== null) {
-                        if (match.index > lastIndex) {
-                          parts.push(text.substring(lastIndex, match.index));
-                        }
-                        parts.push(
-                          <Link key={match.index} href={match[2]} className={`underline font-semibold hover:opacity-80 transition-opacity ${isCustomer ? 'text-teal-100' : 'text-teal-600'}`}>
-                            {match[1]}
-                          </Link>
-                        );
-                        lastIndex = linkRegex.lastIndex;
-                      }
-                      if (lastIndex < text.length) {
-                        parts.push(text.substring(lastIndex));
-                      }
-                      return parts.length > 0 ? parts : text;
-                    })()}
+                    {isBot ? (
+                      <div className="prose prose-sm prose-teal max-w-none dark:prose-invert [&>p]:mb-2 [&>p:last-child]:mb-0 [&_a]:text-teal-600 [&_a]:underline [&_a:hover]:opacity-80">
+                        <ReactMarkdown>{msg.message}</ReactMarkdown>
+                      </div>
+                    ) : (
+                      <div className="whitespace-pre-wrap">
+                        {(() => {
+                          const text = msg.message;
+                          const linkRegex = /\[([^\]]+)\]\(([^)]+)\)/g;
+                          const parts = [];
+                          let lastIndex = 0;
+                          let match;
+                          while ((match = linkRegex.exec(text)) !== null) {
+                            if (match.index > lastIndex) {
+                              parts.push(text.substring(lastIndex, match.index));
+                            }
+                            parts.push(
+                              <Link key={match.index} href={match[2]} className={`underline font-semibold hover:opacity-80 transition-opacity ${isCustomer ? 'text-teal-100' : 'text-teal-600'}`}>
+                                {match[1]}
+                              </Link>
+                            );
+                            lastIndex = linkRegex.lastIndex;
+                          }
+                          if (lastIndex < text.length) {
+                            parts.push(text.substring(lastIndex));
+                          }
+                          return parts.length > 0 ? parts : text;
+                        })()}
+                      </div>
+                    )}
                   </div>
                 )}
                 {msg.attachment && (
