@@ -178,6 +178,21 @@ body {
  background: var(--color-teal-500);
 }
 
+/* ── Thin Gray Scrollbar for Specific Areas ── */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #cbd5e1; /* slate-300 */
+  border-radius: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: #94a3b8; /* slate-400 */
+}
+
 /* ── Glassmorphism Utilities ── */
 .glass {
  background: rgba(255, 255, 255, 0.72);
