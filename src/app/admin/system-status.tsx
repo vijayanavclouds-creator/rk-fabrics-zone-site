@@ -4,6 +4,7 @@ import { useEffect, useState } from "react"
 import { getSystemUsage } from "@/actions/admin"
 import { HardDrive, Cloud, Server, Activity, AlertCircle, RefreshCw, ArrowRight } from "lucide-react"
 import { toast } from "sonner"
+import { cn } from "@/lib/utils"
 
 export function SystemStatus() {
   const [loading, setLoading] = useState(true)
@@ -41,11 +42,11 @@ export function SystemStatus() {
 
   return (
     <div className="space-y-6 animate-in fade-in duration-300">
-      <div className="flex justify-between items-end border-b border-charcoal/10 pb-4 mb-6">
-        <h2 className="font-[family-name:var(--font-playfair)] text-2xl font-bold text-charcoal flex items-center gap-3">
-          <Activity className="text-teal-600" /> System Status & Usage
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4 border-b border-charcoal/10 pb-4 mb-6">
+        <h2 className="font-[family-name:var(--font-playfair)] text-xl sm:text-2xl font-bold text-charcoal flex items-center gap-2 sm:gap-3">
+          <Activity className="text-teal-600 shrink-0" /> System Status & Usage
         </h2>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 sm:gap-3">
           <button 
             onClick={async () => {
               toast.loading("Purging Vercel memory cache...", { id: "purgeCache" })
@@ -63,17 +64,20 @@ export function SystemStatus() {
                 toast.error("Error purging cache", { id: "purgeCache" })
               }
             }} 
-            className="flex items-center gap-2 px-4 py-2 bg-rose-100 text-rose-700 font-bold rounded-xl hover:bg-rose-200 transition-colors"
+            className="flex items-center gap-1.5 sm:gap-2 px-3 py-1.5 sm:px-4 sm:py-2 bg-rose-100 text-rose-700 font-bold rounded-lg sm:rounded-xl hover:bg-rose-200 transition-colors text-xs sm:text-base"
           >
-            <RefreshCw size={16} /> Purge Server Cache
+            <RefreshCw size={14} className="sm:w-4 sm:h-4" />
+            <span className="hidden sm:inline">Purge Server Cache</span>
+            <span className="sm:hidden">Purge Cache</span>
           </button>
           
           <button 
             onClick={fetchData} 
             disabled={loading}
-            className="flex items-center gap-2 px-4 py-2 bg-slate-100 text-charcoal font-bold rounded-xl hover:bg-slate-200 transition-colors disabled:opacity-50"
+            className="flex items-center gap-1.5 sm:gap-2 px-3 py-1.5 sm:px-4 sm:py-2 bg-slate-100 text-charcoal font-bold rounded-lg sm:rounded-xl hover:bg-slate-200 transition-colors disabled:opacity-50 text-xs sm:text-base"
           >
-            <RefreshCw size={16} className={loading ? "animate-spin" : ""} /> Refresh
+            <RefreshCw size={14} className={cn("sm:w-4 sm:h-4", loading ? "animate-spin" : "")} />
+            <span className="hidden sm:inline">Refresh</span>
           </button>
         </div>
       </div>
