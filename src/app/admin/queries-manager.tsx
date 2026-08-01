@@ -64,7 +64,7 @@ export function QueriesManager({ initialQueries, basePath = "/admin" }: { initia
   return (
     <div className="space-y-8">
       {Object.entries(groupedQueries).map(([email, userQueries]) => (
-        <div key={email} className="bg-white rounded-2xl border border-charcoal/10 shadow-sm overflow-hidden">
+        <div key={email} className="-mx-6 md:mx-0 bg-white rounded-none md:rounded-2xl border-y md:border-x border-charcoal/10 shadow-sm overflow-hidden">
           <div className="bg-slate-50 px-6 py-4 border-b border-charcoal/10 flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-full bg-teal-100 flex items-center justify-center text-teal-700 font-bold">

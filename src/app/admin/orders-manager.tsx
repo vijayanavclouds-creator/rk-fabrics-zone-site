@@ -232,7 +232,7 @@ export function OrdersManager({ readOnly = false, basePath = "/admin" }: { readO
         )}
       </div>
 
-      <div className="bg-white rounded-none md:rounded-3xl border-y md:border border-charcoal/10 border-x-0 md:border-x shadow-sm -mx-4 md:mx-0">
+      <div className="bg-white rounded-none md:rounded-3xl border-y md:border border-charcoal/10 border-x-0 md:border-x shadow-sm -mx-6 md:mx-0">
 
 
         {loading ? (
