@@ -29,6 +29,7 @@ export async function submitContactMessage(formData: FormData) {
     let userId = session?.user?.id || null;
     const userEmail = session?.user?.email || email;
     const userName = session?.user?.name || name;
+    let finalPhone = phone || "";
 
     // Verify user actually exists in the database to prevent foreign key constraint violations
     // if the user's session is stale (e.g., account was deleted or DB was reset)
@@ -36,6 +37,8 @@ export async function submitContactMessage(formData: FormData) {
       const existingUser = await prisma.user.findUnique({ where: { id: userId } });
       if (!existingUser) {
         userId = null;
+      } else if (!finalPhone && existingUser.phone) {
+        finalPhone = existingUser.phone;
       }
     }
 
@@ -43,7 +46,7 @@ export async function submitContactMessage(formData: FormData) {
       data: {
         name,
         email,
-        phone: "", // No phone field anymore
+        phone: finalPhone,
         subject,
         orderId: subject === "Returns & Exchange" ? orderId : null,
         userId,
