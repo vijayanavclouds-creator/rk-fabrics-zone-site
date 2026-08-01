@@ -87,6 +87,12 @@ export default async function ContactPage() {
  </div>
 
         {/* Contact Form */}
+        <div className="bg-teal-50 border border-teal-100 rounded-xl p-4 mb-6 flex items-start gap-3">
+          <MessageCircle className="text-teal-600 shrink-0 mt-0.5" size={20} />
+          <div className="text-sm text-teal-900">
+            <strong>AI Assistant Notice:</strong> To ensure fast responses for everyone, our AI virtual assistant (Mira) is limited to 5 messages per user per day. If you need more help, Mira will automatically forward your chat to our human support team!
+          </div>
+        </div>
         <Suspense fallback={null}>
           <ContactForm 
             deliveredOrders={deliveredOrders} 
