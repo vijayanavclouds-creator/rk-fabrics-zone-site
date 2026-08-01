@@ -112,7 +112,7 @@ export function QueryThread({
   return (
     <>
       {/* Messages Thread */}
-      <div ref={scrollRef} className="flex-1 overflow-y-auto space-y-6 pr-4 custom-scrollbar mb-6 scroll-smooth">
+      <div ref={scrollRef} className="flex-1 overflow-y-auto space-y-6 pr-2 md:pr-4 mb-6 scroll-smooth [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
         {messages.map((msg, index) => {
           const isCustomer = msg.senderType === "CUSTOMER";
           const isBot = msg.senderType === "BOT" || (msg.senderType === "ADMIN" && msg.message && msg.message.includes("I will transfer this to a human agent")); // for backward compat
