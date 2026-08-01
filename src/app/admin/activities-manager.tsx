@@ -59,7 +59,7 @@ export function ActivitiesManager() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="w-full">
       <PortalHeader 
         title="Activity Log" 
         description="A complete history of all administrative actions." 
