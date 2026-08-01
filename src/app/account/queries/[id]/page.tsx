@@ -83,7 +83,21 @@ export default async function CustomerQueryThreadPage({ params }: { params: Prom
           include: { items: true }
         });
         if (orderInfo) {
-          orderDetails = `Order ID: ${orderInfo.id}\nStatus: ${orderInfo.status}\nTotal: ₹${orderInfo.totalAmount}\nItems: ${orderInfo.items.map((i: any) => i.productName).join(", ")}`;
+          orderDetails = `Specific Order Context:\nOrder ID: ${orderInfo.id}\nStatus: ${orderInfo.status}\nTotal: ₹${orderInfo.totalAmount}\nItems: ${orderInfo.items.map((i: any) => i.productName).join(", ")}`;
+        }
+      } else if (session?.user?.id) {
+        const recentOrders = await prisma.order.findMany({
+          where: { userId: session.user.id },
+          orderBy: { createdAt: 'desc' },
+          take: 3,
+          include: { items: true }
+        });
+        if (recentOrders.length > 0) {
+          orderDetails = "Recent Orders History:\n" + recentOrders.map(o => 
+            `- Order ID: ${o.id} | Status: ${o.status} | Total: ₹${o.totalAmount} | Items: ${o.items.map((i: any) => i.productName).join(", ")}`
+          ).join("\n");
+        } else {
+          orderDetails = "User has no past orders.";
         }
       }
       
