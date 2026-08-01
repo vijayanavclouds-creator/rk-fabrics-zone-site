@@ -171,10 +171,10 @@ export function AdminDashboard({
               </h2>
               <p className="text-slate mt-1 text-sm">Manage your products and inventory in real-time.</p>
             </div>
-            <div>
+            <div className="w-full flex justify-center md:w-auto md:block mt-2 md:mt-0">
               <Link 
                 href="/admin/products/new" 
-                className="btn-primary flex items-center justify-center gap-2 py-2 px-6 shadow-sm"
+                className="btn-primary flex items-center justify-center gap-2 py-2.5 px-8 shadow-sm"
               >
                 <Plus size={18} /> Add Product
               </Link>
