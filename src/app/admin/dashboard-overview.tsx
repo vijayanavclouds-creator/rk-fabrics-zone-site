@@ -257,7 +257,7 @@ export function DashboardOverview({ initialData, isSupport = false }: { initialD
           />
         </div>
       </div>
-      <div className="h-[280px] w-full relative z-0">
+      <div className="h-[224px] md:h-[280px] w-full relative z-0">
         <ResponsiveContainer width="100%" height="100%">
           <ComposedChart data={data.chartData} margin={{ top: 10, right: 10, left: -10, bottom: 0 }}>
             <defs>
