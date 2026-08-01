@@ -54,9 +54,9 @@ export default async function ContactPage() {
  </p>
  </div>
 
- <div className="grid md:grid-cols-2 gap-8 lg:gap-12">
+  <div className="grid md:grid-cols-2 gap-8 lg:gap-12">
   {/* Contact Info */}
-  <div className="bg-white rounded-2xl border border-charcoal/5 p-6 flex flex-col h-full">
+  <div className="bg-white rounded-2xl border border-charcoal/5 p-6 flex flex-col h-full order-last md:order-first">
     <div className="space-y-5 flex-1">
       {[
         { icon: MapPin, label: "Visit Our Store", value: companyProfile?.address || "Johari Bazaar, Jaipur, Rajasthan 302003, India", color: "text-teal-600" },
