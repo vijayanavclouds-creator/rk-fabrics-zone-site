@@ -25,9 +25,18 @@ export async function submitContactMessage(formData: FormData) {
 
     // 1. Save the query to the database
     const session = await getServerSession(authOptions);
-    const userId = session?.user?.id || null;
+    let userId = session?.user?.id || null;
     const userEmail = session?.user?.email || email;
     const userName = session?.user?.name || name;
+
+    // Verify user actually exists in the database to prevent foreign key constraint violations
+    // if the user's session is stale (e.g., account was deleted or DB was reset)
+    if (userId) {
+      const existingUser = await prisma.user.findUnique({ where: { id: userId } });
+      if (!existingUser) {
+        userId = null;
+      }
+    }
 
     const query = await prisma.contactQuery.create({
       data: {
