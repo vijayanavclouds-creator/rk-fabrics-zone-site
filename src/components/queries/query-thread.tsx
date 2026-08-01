@@ -150,7 +150,7 @@ export function QueryThread({
                   <div className={`inline-block px-5 py-3.5 rounded-2xl text-sm whitespace-pre-wrap text-left shadow-sm ${isCustomer ? 'bg-gradient-to-br from-teal-600 to-teal-700 text-white rounded-tr-sm border border-teal-800/20' : 'bg-white border border-slate-100/80 text-charcoal rounded-tl-sm shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)]'}`}>
                     {isBot ? (
                       <div className="prose prose-sm prose-teal max-w-none dark:prose-invert [&>p]:mb-2 [&>p:last-child]:mb-0 [&_a]:text-teal-600 [&_a]:underline [&_a:hover]:opacity-80">
-                        <ReactMarkdown>{msg.message}</ReactMarkdown>
+                        <ReactMarkdown>{msg.message.replace(/\[TRANSFER_TO_HUMAN\]/g, "")}</ReactMarkdown>
                       </div>
                     ) : (
                       <div className="whitespace-pre-wrap">

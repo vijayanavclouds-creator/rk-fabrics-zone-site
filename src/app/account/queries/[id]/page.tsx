@@ -127,7 +127,7 @@ export default async function CustomerQueryThreadPage({ params }: { params: Prom
       
       const isEscalated = previousMessages.some(m => 
         (m.senderType === "ADMIN" || m.senderType === "BOT") && 
-        m.message && m.message.includes("I will transfer this to a human agent")
+        m.message && m.message.includes("[TRANSFER_TO_HUMAN]")
       );
 
       if (!isEscalated) {

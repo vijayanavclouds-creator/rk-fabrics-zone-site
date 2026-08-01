@@ -150,7 +150,7 @@ export function AdminQueryThread({ initialMessages, query, onReply, refreshMessa
                     </div>
                   ) : isBot ? (
                     <div className="prose prose-sm prose-invert max-w-none [&>p]:mb-2 [&>p:last-child]:mb-0 [&_a]:text-teal-300 [&_a]:underline [&_a:hover]:opacity-80">
-                      <ReactMarkdown>{msg.message || ""}</ReactMarkdown>
+                      <ReactMarkdown>{(msg.message || "").replace(/\[TRANSFER_TO_HUMAN\]/g, "")}</ReactMarkdown>
                     </div>
                   ) : (
                     msg.message
