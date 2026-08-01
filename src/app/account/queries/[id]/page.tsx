@@ -9,6 +9,7 @@ import { revalidatePath } from "next/cache";
 import { after } from "next/server";
 import { generateBotReply } from "@/lib/gemini";
 import { QueryThread } from "@/components/queries/query-thread";
+import { ChatContainer } from "@/components/queries/chat-container";
 
 export default async function CustomerQueryThreadPage({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = await params;
@@ -139,7 +140,7 @@ export default async function CustomerQueryThreadPage({ params }: { params: Prom
   }
 
   return (
-    <div className="bg-white md:rounded-3xl border-t border-b md:border border-charcoal/10 p-4 pb-0 md:p-8 md:pb-8 md:shadow-sm fixed inset-x-0 top-[64px] bottom-[64px] md:relative md:top-auto md:bottom-auto md:h-[calc(100vh-200px)] md:min-h-[500px] flex flex-col z-30 md:z-auto">
+    <ChatContainer>
       {/* Header */}
       <div className="flex items-center justify-between border-b border-charcoal/10 pb-4 mb-4 md:mb-6 shrink-0">
         <div className="flex items-center gap-4">
@@ -166,6 +167,6 @@ export default async function CustomerQueryThreadPage({ params }: { params: Prom
         userImage={session?.user?.image || null}
         refreshMessages={refreshMessages}
       />
-    </div>
+    </ChatContainer>
   );
 }
