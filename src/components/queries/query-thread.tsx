@@ -205,7 +205,7 @@ export function QueryThread({
           )
         })}
         {currentStatus === "OPEN" && messages.length > 0 && messages[messages.length - 1].senderType === "CUSTOMER" && (
-          (messages.some(m => (m.senderType === "BOT" || m.senderType === "ADMIN") && m.message && m.message.includes("I will transfer this to a human agent")) ||
+          (messages.some(m => (m.senderType === "BOT" || m.senderType === "ADMIN") && m.message && m.message.includes("[TRANSFER_TO_HUMAN]")) ||
            (Date.now() - new Date(messages[messages.length - 1].createdAt).getTime() > 120000)) ? (
             <div className="flex justify-center mt-6 mb-2 animate-in fade-in duration-500">
               <span className="inline-block px-4 py-2 bg-slate-50 border border-slate-200 text-slate-500 text-xs font-medium rounded-full shadow-sm text-center">
