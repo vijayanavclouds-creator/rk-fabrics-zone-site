@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { format } from "date-fns";
-import { ChevronDown, Mail, Phone, User, Calendar, MessageSquare } from "lucide-react";
+import { ChevronDown, Mail, Phone, User, Calendar, MessageSquare, AlertCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 import Link from "next/link";
@@ -81,26 +81,40 @@ export function QueriesManager({ initialQueries, basePath = "/admin" }: { initia
           </div>
           
           <div className="divide-y divide-charcoal/5">
-            {userQueries.map((query) => (
-              <Link 
-                key={query.id} 
-                href={`${basePath}/queries/${query.id}`}
-                className="flex items-center justify-between px-6 py-4 hover:bg-slate-50/50 transition-colors w-full text-left"
-              >
-                <div className="flex flex-col md:grid md:grid-cols-12 gap-3 md:gap-4 w-full items-start md:items-center">
-                  <div className="md:col-span-3 flex flex-wrap items-center gap-2">
-                    <span className={cn("px-3 py-1 rounded-full text-xs font-semibold border whitespace-nowrap", getSubjectColor(query.subject))}>
-                      {query.subject}
-                    </span>
-                    {query.status === "RESOLVED" && (
-                      <span className="text-xs text-slate font-medium">Resolved</span>
-                    )}
-                    {!query.isRead && query.status !== "RESOLVED" && (
-                      <span className="text-xs text-rose-600 font-bold bg-rose-50 px-2 py-0.5 rounded border border-rose-200 animate-pulse whitespace-nowrap">
-                        (1) New Message!
+            {userQueries.map((query) => {
+              const isForwardedByMira = query.messages?.some(m => m.senderType === 'BOT' && m.message.includes('[TRANSFER_TO_HUMAN]'));
+              
+              return (
+                <Link 
+                  key={query.id} 
+                  href={`${basePath}/queries/${query.id}`}
+                  className="flex items-center justify-between px-6 py-4 hover:bg-slate-50/50 transition-colors w-full text-left"
+                >
+                  <div className="flex flex-col md:grid md:grid-cols-12 gap-3 md:gap-4 w-full items-start md:items-center">
+                    <div className="md:col-span-3 flex flex-wrap items-center gap-2">
+                      <span className={cn("px-3 py-1 rounded-full text-xs font-semibold border whitespace-nowrap", getSubjectColor(query.subject))}>
+                        {query.subject}
                       </span>
-                    )}
-                  </div>
+                      
+                      {isForwardedByMira && (
+                        <div className="relative group/tooltip inline-flex items-center justify-center">
+                          <AlertCircle size={16} className="text-amber-500 fill-amber-50" />
+                          <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2.5 py-1.5 bg-charcoal text-white text-[10px] rounded-md opacity-0 group-hover/tooltip:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-10 shadow-lg font-medium">
+                            Escalated by AI Assistant
+                            <div className="absolute top-full left-1/2 -translate-x-1/2 -mt-px border-4 border-transparent border-t-charcoal"></div>
+                          </div>
+                        </div>
+                      )}
+
+                      {query.status === "RESOLVED" && (
+                        <span className="text-xs text-slate font-medium">Resolved</span>
+                      )}
+                      {!query.isRead && query.status !== "RESOLVED" && (
+                        <span className="text-xs text-rose-600 font-bold bg-rose-50 px-2 py-0.5 rounded border border-rose-200 animate-pulse whitespace-nowrap">
+                          (1) New Message!
+                        </span>
+                      )}
+                    </div>
                   <div className="md:col-span-3 text-sm text-charcoal flex items-center gap-2">
                     <Calendar size={14} className="text-slate shrink-0" />
                     <span>{format(new Date(query.createdAt), 'MMM dd, yyyy h:mm a')}</span>
@@ -115,7 +129,8 @@ export function QueriesManager({ initialQueries, basePath = "/admin" }: { initia
                   </div>
                 </div>
               </Link>
-            ))}
+            );
+          })}
           </div>
         </div>
       ))}
