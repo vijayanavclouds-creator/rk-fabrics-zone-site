@@ -257,7 +257,7 @@ export function AdminHeaderActions() {
             </div>
 
             <div className="p-3 bg-white text-center">
-              <Link href="/account/admin/notifications" onClick={() => setShowNotifications(false)} className="text-sm font-semibold text-teal-600 hover:text-teal-800 transition-colors inline-block w-full">
+              <Link href="/admin?tab=activities" onClick={() => setShowNotifications(false)} className="text-sm font-semibold text-teal-600 hover:text-teal-800 transition-colors inline-block w-full">
                 View All Activity
               </Link>
             </div>
