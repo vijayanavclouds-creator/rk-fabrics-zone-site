@@ -78,7 +78,7 @@ export async function submitContactMessage(formData: FormData) {
             include: { items: true }
           });
           if (orderInfo) {
-            orderDetails = `Specific Order Context:\nOrder ID: ${orderInfo.id}\nStatus: ${orderInfo.status}\nTotal: ₹${orderInfo.totalAmount}\nItems: ${orderInfo.items.map((i: any) => i.productName).join(", ")}`;
+            orderDetails = `Specific Order Context:\nOrder ID: ${orderInfo.id}\nOrder Date: ${orderInfo.createdAt.toISOString()}\nStatus: ${orderInfo.status}\nTotal: ₹${orderInfo.totalAmount}\nItems: ${orderInfo.items.map((i: any) => i.productName).join(", ")}`;
           }
         } else if (userId) {
           const recentOrders = await prisma.order.findMany({
@@ -89,7 +89,7 @@ export async function submitContactMessage(formData: FormData) {
           });
           if (recentOrders.length > 0) {
             orderDetails = "Recent Orders History:\n" + recentOrders.map(o => 
-              `- Order ID: ${o.id} | Status: ${o.status} | Total: ₹${o.totalAmount} | Items: ${o.items.map((i: any) => i.productName).join(", ")}`
+              `- Order ID: ${o.id} | Date: ${o.createdAt.toISOString()} | Status: ${o.status} | Total: ₹${o.totalAmount} | Items: ${o.items.map((i: any) => i.productName).join(", ")}`
             ).join("\n");
           } else {
             orderDetails = "User has no past orders.";
