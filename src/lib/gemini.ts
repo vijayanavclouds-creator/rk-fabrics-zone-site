@@ -18,43 +18,33 @@ export async function generateBotReply(
       return;
     }
 
-    const startOfDay = new Date();
-    startOfDay.setHours(0, 0, 0, 0);
+    // Check daily limit for this user
+    const query = await prisma.contactQuery.findUnique({ where: { id: queryId } });
+    if (query?.userId) {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
 
-    const queryInfo = await prisma.contactQuery.findUnique({
-      where: { id: queryId },
-      select: { userId: true, email: true }
-    });
-
-    const orConditions: any[] = [];
-    if (queryInfo?.userId) {
-      orConditions.push({ userId: queryInfo.userId });
-    }
-    if (queryInfo?.email || userEmail) {
-      orConditions.push({ email: queryInfo?.email || userEmail });
-    }
-
-    if (orConditions.length > 0) {
-      const botMessagesToday = await prisma.queryMessage.count({
+      const botRepliesToday = await prisma.queryMessage.count({
         where: {
           senderType: "BOT",
-          createdAt: { gte: startOfDay },
-          query: { OR: orConditions }
+          createdAt: { gte: today },
+          query: { userId: query.userId }
         }
       });
 
-      if (botMessagesToday >= 5) {
+      if (botRepliesToday >= 5) {
         await prisma.queryMessage.create({
           data: {
             queryId: queryId,
             senderType: "BOT",
-            message: "My daily chat limit has been exceeded. I will forward this chat to our human support team, and they will respond to your message shortly. [TRANSFER_TO_HUMAN]",
+            message: "You have reached your daily limit of 5 AI assistant messages for today. I will forward this chat to our human support team and they will respond to your message shortly. [TRANSFER_TO_HUMAN]",
           }
         });
         await prisma.contactQuery.update({
           where: { id: queryId },
           data: { isReadByUser: false }
         });
+        console.log(`User ${query.userId} exceeded daily AI limit in query ${queryId}`);
         return;
       }
     }

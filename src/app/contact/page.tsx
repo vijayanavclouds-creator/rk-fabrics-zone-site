@@ -84,15 +84,15 @@ export default async function ContactPage() {
  >
  <MessageCircle size={20} /> Chat on WhatsApp
  </a>
+ 
+ <div className="mt-4 px-2 text-center">
+   <p className="text-[11px] md:text-xs text-amber-700 bg-amber-50/80 border border-amber-200/60 py-2.5 px-4 rounded-lg inline-block max-w-sm mx-auto shadow-sm">
+     <strong>Note:</strong> To maintain quality service in our free tier, our AI assistant (Mira) is limited to <strong>5 messages per user per day</strong>. If you exceed this limit, you will be automatically transferred to our human support team.
+   </p>
+ </div>
  </div>
 
         {/* Contact Form */}
-        <div className="bg-teal-50 border border-teal-100 rounded-xl p-4 mb-6 flex items-start gap-3">
-          <MessageCircle className="text-teal-600 shrink-0 mt-0.5" size={20} />
-          <div className="text-sm text-teal-900">
-            <strong>AI Assistant Notice:</strong> To ensure fast responses for everyone, our AI virtual assistant (Mira) is limited to 5 messages per user per day. If you need more help, Mira will automatically forward your chat to our human support team!
-          </div>
-        </div>
         <Suspense fallback={null}>
           <ContactForm 
             deliveredOrders={deliveredOrders} 
