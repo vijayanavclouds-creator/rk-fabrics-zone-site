@@ -139,7 +139,7 @@ export default async function CustomerQueryThreadPage({ params }: { params: Prom
   }
 
   return (
-    <div className="bg-white md:rounded-3xl border-t border-b md:border border-charcoal/10 p-4 pb-0 md:p-8 md:pb-8 md:shadow-sm h-[calc(100dvh-70px)] md:h-[calc(100vh-200px)] min-h-[500px] flex flex-col -mx-4 -mt-10 -mb-20 md:mx-0 md:mt-0 md:mb-0">
+    <div className="bg-white md:rounded-3xl border-t border-b md:border border-charcoal/10 p-4 pb-0 md:p-8 md:pb-8 md:shadow-sm fixed inset-x-0 top-[64px] bottom-[64px] md:relative md:top-auto md:bottom-auto md:h-[calc(100vh-200px)] md:min-h-[500px] flex flex-col z-30 md:z-auto">
       {/* Header */}
       <div className="flex items-center justify-between border-b border-charcoal/10 pb-4 mb-4 md:mb-6 shrink-0">
         <div className="flex items-center gap-4">
