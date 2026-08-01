@@ -6,6 +6,8 @@ import Link from "next/link";
 import { ChevronLeft, Send, User, Building2, Paperclip, ExternalLink } from "lucide-react";
 import { format } from "date-fns";
 import { revalidatePath } from "next/cache";
+import { after } from "next/server";
+import { generateBotReply } from "@/lib/gemini";
 import { QueryThread } from "@/components/queries/query-thread";
 
 export default async function CustomerQueryThreadPage({ params }: { params: Promise<{ id: string }> }) {
@@ -114,7 +116,9 @@ export default async function CustomerQueryThreadPage({ params }: { params: Prom
       );
 
       if (!isEscalated) {
-        generateBotReply(query!.id, message || "Attached an image.", userEmail, userName, orderDetails, attachment || null, cartDetails, userPhone).catch(e => console.error("Bot reply failed in thread:", e));
+        after(() => {
+          generateBotReply(query!.id, message || "Attached an image.", userEmail, userName, orderDetails, attachment || null, cartDetails, userPhone).catch(e => console.error("Bot reply failed in thread:", e));
+        });
       }
     }
 

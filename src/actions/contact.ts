@@ -3,6 +3,7 @@
 import prisma from "@/lib/prisma";
 import { getCompanyProfile } from "./system";
 import { revalidatePath } from "next/cache";
+import { after } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 
@@ -66,22 +67,24 @@ export async function submitContactMessage(formData: FormData) {
 
     // 3. Trigger Bot Reply (Non-blocking)
     if (userId) {
-      // Import dynamically to avoid circular dependencies or server component issues
-      const { generateBotReply } = await import("@/lib/gemini");
-      
-      let orderDetails = null;
-      if (query.orderId) {
-        const orderInfo = await prisma.order.findUnique({
-          where: { id: query.orderId },
-          include: { items: true }
-        });
-        if (orderInfo) {
-          orderDetails = `Order ID: ${orderInfo.id}\nStatus: ${orderInfo.status}\nTotal: ₹${orderInfo.totalAmount}\nItems: ${orderInfo.items.map((i: any) => i.productName).join(", ")}`;
+      after(async () => {
+        // Import dynamically to avoid circular dependencies or server component issues
+        const { generateBotReply } = await import("@/lib/gemini");
+        
+        let orderDetails = null;
+        if (query.orderId) {
+          const orderInfo = await prisma.order.findUnique({
+            where: { id: query.orderId },
+            include: { items: true }
+          });
+          if (orderInfo) {
+            orderDetails = `Order ID: ${orderInfo.id}\nStatus: ${orderInfo.status}\nTotal: ₹${orderInfo.totalAmount}\nItems: ${orderInfo.items.map((i: any) => i.productName).join(", ")}`;
+          }
         }
-      }
-      
-      // Fire and forget
-      generateBotReply(query.id, message, userEmail, userName, orderDetails, null).catch(e => console.error("Bot reply failed:", e));
+        
+        // Fire and forget
+        await generateBotReply(query.id, message, userEmail, userName, orderDetails, null).catch(e => console.error("Bot reply failed:", e));
+      });
     }
 
     revalidatePath("/admin");
