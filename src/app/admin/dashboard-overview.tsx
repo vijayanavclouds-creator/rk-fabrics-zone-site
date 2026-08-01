@@ -591,50 +591,46 @@ export function DashboardOverview({ initialData, isSupport = false }: { initialD
               </Link>
 
               <Link href="/admin?tab=navigation" className="block cursor-pointer">
-                <GlassCard className="bg-slate-50 h-full !p-1.5">
-                  <div className="flex items-center gap-1.5 mb-0.5">
+                <GlassCard className="bg-slate-50 h-full !p-1.5 flex items-center">
+                  <div className="flex items-center gap-1.5">
                     <div className="p-0.5 bg-slate-200/50 text-slate-500 rounded flex justify-center">
                       <Settings size={10} strokeWidth={3} />
                     </div>
                     <span className="text-[9px] font-bold text-charcoal uppercase tracking-widest whitespace-nowrap text-ellipsis overflow-hidden">Navigation Settings</span>
                   </div>
-                  <h3 className="text-sm font-black text-charcoal tracking-tight mt-0.5">Menus</h3>
                 </GlassCard>
               </Link>
               
               <Link href="/admin?tab=taxonomy" className="block cursor-pointer">
-                <GlassCard className="bg-indigo-50/50 h-full !p-1.5">
-                  <div className="flex items-center gap-1.5 mb-0.5">
+                <GlassCard className="bg-indigo-50/50 h-full !p-1.5 flex items-center">
+                  <div className="flex items-center gap-1.5">
                     <div className="p-0.5 bg-indigo-100/50 text-indigo-500 rounded flex justify-center">
                       <Network size={10} strokeWidth={3} />
                     </div>
                     <span className="text-[9px] font-bold text-charcoal uppercase tracking-widest whitespace-nowrap">Taxonomy Settings</span>
                   </div>
-                  <h3 className="text-sm font-black text-charcoal tracking-tight mt-0.5">Structure</h3>
                 </GlassCard>
               </Link>
         
               <Link href="/admin?tab=banners" className="block cursor-pointer">
-                <GlassCard className="bg-pink-50/50 h-full !p-1.5">
-                  <div className="flex items-center gap-1.5 mb-0.5">
+                <GlassCard className="bg-pink-50/50 h-full !p-1.5 flex items-center">
+                  <div className="flex items-center gap-1.5">
                     <div className="p-0.5 bg-pink-100/50 text-pink-500 rounded flex justify-center">
                       <ImageIcon size={10} strokeWidth={3} />
                     </div>
                     <span className="text-[9px] font-bold text-charcoal uppercase tracking-widest whitespace-nowrap">Banner Settings</span>
                   </div>
-                  <h3 className="text-sm font-black text-charcoal tracking-tight mt-0.5">Graphics</h3>
                 </GlassCard>
               </Link>
         
               <Link href="/admin?tab=newsletters" className="block cursor-pointer">
-                <GlassCard className="bg-sky-50/50 h-full !p-1.5">
-                  <div className="flex items-center gap-1.5 mb-0.5">
+                <GlassCard className="bg-sky-50/50 h-full !p-1.5 flex items-center">
+                  <div className="flex items-center gap-1.5">
                     <div className="p-0.5 bg-sky-100/50 text-sky-500 rounded flex justify-center">
                       <Mail size={10} strokeWidth={3} />
                     </div>
                     <span className="text-[9px] font-bold text-charcoal uppercase tracking-widest whitespace-nowrap text-ellipsis overflow-hidden">Newsletter Studio</span>
                   </div>
-                  <h3 className="text-sm font-black text-charcoal tracking-tight mt-0.5">Subscribers</h3>
                 </GlassCard>
               </Link>
             </div>
