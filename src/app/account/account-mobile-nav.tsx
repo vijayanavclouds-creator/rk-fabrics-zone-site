@@ -18,6 +18,10 @@ const sidebarLinks = [
 export function AccountMobileNav() {
   const pathname = usePathname();
 
+  if (pathname.includes("/queries/")) {
+    return null;
+  }
+
   return (
     <div className="md:hidden w-full overflow-x-auto pb-4 mb-2 -mx-4 px-4 [&::-webkit-scrollbar]:hidden" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
       <div className="flex items-center gap-2 min-w-max">

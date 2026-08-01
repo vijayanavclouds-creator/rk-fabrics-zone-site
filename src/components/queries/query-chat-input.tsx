@@ -92,7 +92,7 @@ export function QueryChatInput({ onReply }: QueryChatInputProps) {
   }
 
   return (
-    <div className="shrink-0 mt-auto bg-white pt-6 md:pt-8 pb-0 border-t border-charcoal/10 flex flex-col justify-center">
+    <div className="shrink-0 mt-auto bg-white pt-3 pb-2 md:pt-6 md:pb-0 border-t border-charcoal/10 flex flex-col justify-center">
       {file && (
         <div className="mb-3 mx-2 flex items-center gap-3 bg-slate-50 p-2 rounded-xl border border-charcoal/10 w-max">
           <div className="w-10 h-10 bg-white flex items-center justify-center rounded-lg overflow-hidden shrink-0 border border-charcoal/10">

@@ -139,9 +139,9 @@ export default async function CustomerQueryThreadPage({ params }: { params: Prom
   }
 
   return (
-    <div className="bg-white rounded-3xl border border-charcoal/10 p-6 md:p-8 shadow-sm h-[calc(100vh-200px)] min-h-[600px] flex flex-col">
+    <div className="bg-white md:rounded-3xl border-t border-b md:border border-charcoal/10 p-4 pb-0 md:p-8 md:shadow-sm h-[calc(100dvh-120px)] md:h-[calc(100vh-200px)] min-h-[500px] flex flex-col -mx-4 md:mx-0">
       {/* Header */}
-      <div className="flex items-center justify-between border-b border-charcoal/10 pb-4 mb-6 shrink-0">
+      <div className="flex items-center justify-between border-b border-charcoal/10 pb-4 mb-4 md:mb-6 shrink-0">
         <div className="flex items-center gap-4">
           <Link href="/account/reviews?tab=queries" className="w-10 h-10 rounded-full border border-charcoal/10 flex items-center justify-center text-charcoal hover:bg-slate-50 transition-colors">
             <ChevronLeft size={20} />

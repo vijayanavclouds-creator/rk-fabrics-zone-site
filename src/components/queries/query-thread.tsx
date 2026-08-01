@@ -120,21 +120,21 @@ export function QueryThread({
           const isRead = isCustomer && messages.slice(index + 1).some(m => m.senderType === "ADMIN" || m.senderType === "BOT");
 
           return (
-            <div key={msg.id} className={`flex gap-4 ${isCustomer ? 'flex-row-reverse' : ''}`}>
-              <div className="w-10 h-10 shrink-0">
+            <div key={msg.id} className={`flex gap-3 md:gap-4 ${isCustomer ? 'flex-row-reverse' : ''}`}>
+              <div className="w-8 h-8 md:w-10 md:h-10 shrink-0 mt-1">
                 {isCustomer ? (
                   userImage ? (
-                    <img src={userImage} alt="User" className="w-10 h-10 rounded-full object-cover shadow-sm border border-charcoal/10" />
+                    <img src={userImage} alt="User" className="w-8 h-8 md:w-10 md:h-10 rounded-full object-cover shadow-sm border border-charcoal/10" />
                   ) : (
-                    <div className="w-10 h-10 rounded-full flex items-center justify-center bg-slate-50 border border-slate-200">
-                      <User size={18} className="text-slate-500 stroke-[1.5]" />
+                    <div className="w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center bg-slate-50 border border-slate-200">
+                      <User size={16} className="text-slate-500 stroke-[1.5]" />
                     </div>
                   )
                 ) : isBot ? (
-                  <img src="/mira-avatar.png" alt="Mira" className="w-10 h-10 rounded-full object-cover shadow-sm border border-charcoal/10" />
+                  <img src="/mira-avatar.png" alt="Mira" className="w-8 h-8 md:w-10 md:h-10 rounded-full object-cover shadow-sm border border-charcoal/10" />
                 ) : (
-                  <div className="w-10 h-10 rounded-full flex items-center justify-center bg-teal-100 border border-teal-200">
-                    <span className="text-teal-700 font-bold text-sm">RK</span>
+                  <div className="w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center bg-teal-100 border border-teal-200">
+                    <span className="text-teal-700 font-bold text-xs md:text-sm">RK</span>
                   </div>
                 )}
               </div>
@@ -204,9 +204,9 @@ export function QueryThread({
               </span>
             </div>
           ) : (
-            <div className="flex gap-4 animate-in fade-in slide-in-from-bottom-2 duration-300">
-              <div className="w-10 h-10 shrink-0">
-                <img src="/mira-avatar.png" alt="Mira" className="w-10 h-10 rounded-full object-cover shadow-sm border border-slate-100" />
+            <div className="flex gap-3 md:gap-4 animate-in fade-in slide-in-from-bottom-2 duration-300">
+              <div className="w-8 h-8 md:w-10 md:h-10 shrink-0 mt-1">
+                <img src="/mira-avatar.png" alt="Mira" className="w-8 h-8 md:w-10 md:h-10 rounded-full object-cover shadow-sm border border-slate-100" />
               </div>
               <div className="max-w-[75%] text-left">
                 <p className="text-[11px] text-slate-500 font-semibold mb-1 pl-1">✨ Mira (Virtual Assistant)</p>
