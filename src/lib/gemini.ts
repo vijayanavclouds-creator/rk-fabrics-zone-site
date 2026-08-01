@@ -114,5 +114,22 @@ Please write your reply to the user's latest message based on the entire convers
     }
   } catch (error) {
     console.error("Error generating bot reply:", error);
+    
+    // Fallback: If the API fails (e.g., rate limits, 429), gracefully escalate to a human.
+    try {
+      await prisma.queryMessage.create({
+        data: {
+          queryId: queryId,
+          senderType: "BOT",
+          message: "I am currently experiencing high traffic and cannot process your request. I will transfer this to a human agent who can assist you further. [TRANSFER_TO_HUMAN]",
+        }
+      });
+      await prisma.contactQuery.update({
+        where: { id: queryId },
+        data: { isReadByUser: false }
+      });
+    } catch (dbError) {
+      console.error("Failed to save fallback escalation message:", dbError);
+    }
   }
 }
