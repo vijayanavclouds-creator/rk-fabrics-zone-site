@@ -78,9 +78,9 @@ export async function submitContactMessage(formData: FormData) {
     revalidatePath("/admin");
 
     return { success: true, queryId: query.id, userId: query.userId };
-  } catch (error) {
+  } catch (error: any) {
     console.error("Failed to submit contact message:", error);
-    return { success: false, error: "An unexpected error occurred. Please try again later." };
+    return { success: false, error: error?.message || "An unexpected error occurred. Please try again later." };
   }
 }
 
