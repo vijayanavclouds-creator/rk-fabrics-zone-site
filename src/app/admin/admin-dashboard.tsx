@@ -21,6 +21,7 @@ import { DashboardOverview } from "./dashboard-overview"
 import { CompanyProfileManager } from "./company-profile-manager"
 import { FinanceManager } from "./finance-manager"
 import { QueriesManager } from "./queries-manager"
+import { ReturnsManager } from "./returns-manager"
 import { NewsletterManager } from "./newsletter-manager"
 import { ActivitiesManager } from "./activities-manager"
 import { AdminProfile } from "./admin-profile"
@@ -32,6 +33,7 @@ export function AdminDashboard({
   storeCategories = [],
   storeFabrics = [],
   queries = [],
+  returnRequests = [],
   analyticsData = null
 }: { 
   products: any[], 
@@ -39,11 +41,12 @@ export function AdminDashboard({
   storeCategories?: { value: string, label: string }[],
   storeFabrics?: { value: string, label: string }[],
   queries?: any[],
+  returnRequests?: any[],
   analyticsData?: any
 }) {
   const searchParams = useSearchParams()
   const tabParam = searchParams.get("tab") as any
-  const targetView = ["overview", "list", "new", "edit", "banners", "system", "users", "orders", "navigation", "taxonomy", "company_profile", "finance", "queries", "newsletters", "activities", "profile"].includes(tabParam) ? tabParam : "overview"
+  const targetView = ["overview", "list", "new", "edit", "banners", "system", "users", "orders", "navigation", "taxonomy", "company_profile", "finance", "queries", "returns", "newsletters", "activities", "profile"].includes(tabParam) ? tabParam : "overview"
   
   const [activeView, setActiveView] = useState<any>(targetView)
   const [prevTabParam, setPrevTabParam] = useState(tabParam)
@@ -124,6 +127,7 @@ export function AdminDashboard({
       {activeView === "company_profile" && <CompanyProfileManager />}
       {activeView === "finance" && <FinanceManager />}
       {activeView === "queries" && <QueriesManager initialQueries={queries || []} />}
+      {activeView === "returns" && <ReturnsManager initialReturns={returnRequests || []} />}
       {activeView === "newsletters" && <NewsletterManager />}
 
       {activeView === "list" && (

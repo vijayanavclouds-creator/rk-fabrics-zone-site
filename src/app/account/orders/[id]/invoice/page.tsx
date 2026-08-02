@@ -246,8 +246,17 @@ export default async function InvoicePage({ params }: { params: Promise<{ id: st
             <p className="mt-2">Contact: {companyProfile?.supportEmail || "contact@rkfabricszone.com"}</p>
           </div>
           
-          <div className="text-center">
-            <div className="h-16 w-48 border-b border-charcoal/20 mb-2"></div>
+          <div className="text-center flex flex-col items-center">
+            <div className="h-16 w-48 border-b border-charcoal/20 mb-2 relative flex items-end justify-center">
+              {companyProfile?.signatureUrl && (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img 
+                  src={companyProfile.signatureUrl} 
+                  alt="Authorized Signature" 
+                  className="max-h-full max-w-full object-contain mb-1 mix-blend-multiply" 
+                />
+              )}
+            </div>
             <p className="text-sm font-bold text-charcoal uppercase tracking-wider">Authorized Signature</p>
             <p className="text-xs text-slate mt-1">For {companyProfile?.ownerName || "RK Fabrics Zone"}</p>
           </div>

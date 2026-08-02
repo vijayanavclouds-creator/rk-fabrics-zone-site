@@ -7,6 +7,7 @@ import { ArrowLeft, Package, Clock, Truck, CheckCircle, XCircle, ExternalLink } 
 import Image from "next/image"
 import CancelOrderButton from "./cancel-order-button"
 import { OrderItemsList } from "./order-items-list"
+import ReturnOrderModal from "./return-order-modal"
 
 export default async function OrderDetailsPage({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = await params
@@ -18,7 +19,7 @@ export default async function OrderDetailsPage({ params }: { params: Promise<{ i
 
   const order = await prisma.order.findFirst({
     where: { id: resolvedParams.id, userId: session.user.id },
-    include: { items: { include: { review: true } } }
+    include: { items: { include: { review: true } }, returnRequest: true }
   })
 
   if (!order) {
@@ -87,7 +88,7 @@ export default async function OrderDetailsPage({ params }: { params: Promise<{ i
               <CancelOrderButton orderId={order.id} />
             )}
             {order.status === "DELIVERED" && (
-              <Link href={`/account/orders/${order.id}/invoice`} target="_blank" className="btn-primary flex items-center justify-center px-4 md:px-8 py-2.5 md:py-3.5 text-sm whitespace-nowrap bg-white text-charcoal border-2 border-charcoal/20 hover:bg-charcoal/5">
+              <Link href={`/account/orders/${order.id}/invoice`} target="_blank" rel="noopener noreferrer" className="btn-primary flex items-center justify-center px-4 md:px-8 py-2.5 md:py-3.5 text-sm whitespace-nowrap bg-white text-charcoal border-2 border-charcoal/20 hover:bg-charcoal/5">
                 Download Invoice
               </Link>
             )}
@@ -103,10 +104,20 @@ export default async function OrderDetailsPage({ params }: { params: Promise<{ i
                 const hasReturnableItems = order.items.some((item: any) => item.isReturnable);
 
                 if (isWithinReturnWindow && hasReturnableItems) {
+                  const modalItems = order.items.map((item: any) => ({
+                    id: item.id,
+                    productName: item.productName,
+                    variantName: item.variantName,
+                    price: item.price,
+                    image: item.image,
+                    isReturnable: item.isReturnable,
+                  }));
                   return (
-                    <Link href={`/contact?subject=Return+%26+Exchange&orderId=${order.id}`} className="btn-primary flex items-center justify-center px-4 md:px-8 py-2.5 md:py-3.5 text-sm whitespace-nowrap">
-                      Return Order
-                    </Link>
+                    <ReturnOrderModal 
+                      orderId={order.id} 
+                      paymentMethod={order.paymentMethod || 'PREPAID'} 
+                      items={modalItems} 
+                    />
                   );
                 }
               }
@@ -225,18 +236,67 @@ export default async function OrderDetailsPage({ params }: { params: Promise<{ i
                   </div>
 
                   {/* Delivered Node */}
-                  <div className="relative pl-8">
-                    <div className={`absolute left-0 top-1 w-6 h-6 rounded-full flex items-center justify-center border-4 border-white shadow-sm ${["DELIVERED", "RETURNED"].includes(order.status) ? 'bg-teal-500' : 'bg-slate-200'}`} />
+                  <div className={`relative pl-8 ${order.returnRequest ? 'pb-8' : ''}`}>
+                    {order.returnRequest && (
+                      <div className={`absolute left-[11px] top-6 bottom-[-8px] w-0.5 bg-teal-500`} />
+                    )}
+                    <div className={`absolute left-0 top-1 w-6 h-6 rounded-full flex items-center justify-center border-4 border-white shadow-sm ${["DELIVERED", "RETURN_REQUESTED", "RETURNED"].includes(order.status) || order.returnRequest ? 'bg-teal-500' : 'bg-slate-200'}`} />
                     <div className="flex flex-col">
                       <div className="flex items-center gap-2">
-                        <h4 className={`font-bold ${["DELIVERED", "RETURNED"].includes(order.status) ? 'text-charcoal' : 'text-slate-400'}`}>Delivered</h4>
+                        <h4 className={`font-bold ${["DELIVERED", "RETURN_REQUESTED", "RETURNED"].includes(order.status) || order.returnRequest ? 'text-charcoal' : 'text-slate-400'}`}>Delivered</h4>
                         {order.deliveredAt && <span className="text-sm text-slate font-medium">{new Date(order.deliveredAt).toLocaleDateString('en-IN', { weekday: 'short', day: 'numeric', month: 'short', year: '2-digit' })}</span>}
                       </div>
-                      {["DELIVERED", "RETURNED"].includes(order.status) && (
+                      {(["DELIVERED", "RETURN_REQUESTED", "RETURNED"].includes(order.status) || order.returnRequest) && (
                         <p className="text-sm text-slate mt-1">Your item has been delivered.{order.deliveredAt && <><br/>{new Date(order.deliveredAt).toLocaleDateString('en-IN', { weekday: 'short', day: 'numeric', month: 'short', year: '2-digit' })} - {new Date(order.deliveredAt).toLocaleTimeString('en-IN', { hour: 'numeric', minute: '2-digit', hour12: true })}</>}</p>
                       )}
                     </div>
                   </div>
+
+                  {order.returnRequest && (
+                    <>
+                      {/* Return Requested Node */}
+                      <div className={`relative pl-8 ${order.returnRequest.status !== 'PENDING' ? 'pb-8' : ''}`}>
+                        {order.returnRequest.status !== 'PENDING' && (
+                          <div className={`absolute left-[11px] top-6 bottom-[-8px] w-0.5 bg-teal-500`} />
+                        )}
+                        <div className="absolute left-0 top-1 w-6 h-6 rounded-full flex items-center justify-center border-4 border-white shadow-sm bg-teal-500" />
+                        <div className="flex flex-col">
+                          <div className="flex items-center gap-2">
+                            <h4 className="font-bold text-charcoal">Return Requested</h4>
+                            <span className="text-sm text-slate font-medium">{new Date(order.returnRequest.createdAt).toLocaleDateString('en-IN', { weekday: 'short', day: 'numeric', month: 'short', year: '2-digit' })}</span>
+                          </div>
+                          <p className="text-sm text-slate mt-1">Return request initiated for {order.returnRequest.items.length} item(s).<br/>{new Date(order.returnRequest.createdAt).toLocaleDateString('en-IN', { weekday: 'short', day: 'numeric', month: 'short', year: '2-digit' })} - {new Date(order.returnRequest.createdAt).toLocaleTimeString('en-IN', { hour: 'numeric', minute: '2-digit', hour12: true })}</p>
+                        </div>
+                      </div>
+
+                      {/* Return Final Node */}
+                      {order.returnRequest.status === "RETURNED" && (
+                        <div className="relative pl-8">
+                          <div className="absolute left-0 top-1 w-6 h-6 rounded-full flex items-center justify-center border-4 border-white shadow-sm bg-teal-500" />
+                          <div className="flex flex-col">
+                            <div className="flex items-center gap-2">
+                              <h4 className="font-bold text-charcoal">Return Accepted & Refunded</h4>
+                              <span className="text-sm text-slate font-medium">{new Date(order.returnRequest.updatedAt).toLocaleDateString('en-IN', { weekday: 'short', day: 'numeric', month: 'short', year: '2-digit' })}</span>
+                            </div>
+                            <p className="text-sm text-slate mt-1">Your return has been processed and refund is initiated to {order.returnRequest.refundMethod}.<br/>{new Date(order.returnRequest.updatedAt).toLocaleDateString('en-IN', { weekday: 'short', day: 'numeric', month: 'short', year: '2-digit' })} - {new Date(order.returnRequest.updatedAt).toLocaleTimeString('en-IN', { hour: 'numeric', minute: '2-digit', hour12: true })}</p>
+                          </div>
+                        </div>
+                      )}
+
+                      {order.returnRequest.status === "RETURN_REJECTED" && (
+                        <div className="relative pl-8">
+                          <div className="absolute left-0 top-1 w-6 h-6 rounded-full flex items-center justify-center border-4 border-white shadow-sm bg-rose-500" />
+                          <div className="flex flex-col">
+                            <div className="flex items-center gap-2">
+                              <h4 className="font-bold text-rose-600">Return Rejected</h4>
+                              <span className="text-sm text-slate font-medium">{new Date(order.returnRequest.updatedAt).toLocaleDateString('en-IN', { weekday: 'short', day: 'numeric', month: 'short', year: '2-digit' })}</span>
+                            </div>
+                            <p className="text-sm text-slate mt-1">Your return request was rejected.<br/>{new Date(order.returnRequest.updatedAt).toLocaleDateString('en-IN', { weekday: 'short', day: 'numeric', month: 'short', year: '2-digit' })} - {new Date(order.returnRequest.updatedAt).toLocaleTimeString('en-IN', { hour: 'numeric', minute: '2-digit', hour12: true })}</p>
+                          </div>
+                        </div>
+                      )}
+                    </>
+                  )}
                 </>
               )}
             </div>

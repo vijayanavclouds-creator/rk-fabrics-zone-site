@@ -117,7 +117,7 @@ export async function sendOrderConfirmationEmail(order: any) {
             <td align="center" style="padding: 20px;">
               
               <!-- Rich Signature -->
-              <table cellpadding="0" cellspacing="0" border="0" style="border: none; border-radius: 12px; background-color: #FFFFFF; font-family: Arial, sans-serif; color: #0A1931; padding: 20px 25px; border: 1px solid #D1CDC1; width: 100%; max-width: 450px; text-align: left;">
+              <table cellpadding="0" cellspacing="0" border="0" style="border: none; border-radius: 12px; background-color: #FFFFFF; font-family: Arial, sans-serif; color: #0A1931; padding: 20px 25px; border: 1px solid #D1CDC1; width: 100%; max-width: 100%; text-align: left;">
                 <tr>
                   <!-- Left Column: Logo -->
                   <td valign="middle" style="padding-right: 25px; border-right: 1px solid #D1CDC1; width: 80px;">
@@ -139,10 +139,6 @@ export async function sendOrderConfirmationEmail(order: any) {
                       <tr>
                         <td style="padding-right: 10px; font-size: 14px;">✉️</td>
                         <td><a href="mailto:support@rkfabricszone.com" style="color: #0A1931; text-decoration: none; white-space: nowrap;">support@rkfabricszone.com</a></td>
-                      </tr>
-                      <tr>
-                        <td style="padding-right: 10px; font-size: 14px;">🇮🇳 📞</td>
-                        <td style="color: #0A1931; white-space: nowrap;">+91 82094 89552</td>
                       </tr>
                     </table>
                   </td>
@@ -254,7 +250,7 @@ export async function sendOrderShippedEmail(order: any) {
             <td align="center" style="padding: 20px;">
               
               <!-- Rich Signature -->
-              <table cellpadding="0" cellspacing="0" border="0" style="border: none; border-radius: 12px; background-color: #FFFFFF; font-family: Arial, sans-serif; color: #0A1931; padding: 20px 25px; border: 1px solid #D1CDC1; width: 100%; max-width: 450px; text-align: left;">
+              <table cellpadding="0" cellspacing="0" border="0" style="border: none; border-radius: 12px; background-color: #FFFFFF; font-family: Arial, sans-serif; color: #0A1931; padding: 20px 25px; border: 1px solid #D1CDC1; width: 100%; max-width: 100%; text-align: left;">
                 <tr>
                   <!-- Left Column: Logo -->
                   <td valign="middle" style="padding-right: 25px; border-right: 1px solid #D1CDC1; width: 80px;">
@@ -276,10 +272,6 @@ export async function sendOrderShippedEmail(order: any) {
                       <tr>
                         <td style="padding-right: 10px; font-size: 14px;">✉️</td>
                         <td><a href="mailto:support@rkfabricszone.com" style="color: #0A1931; text-decoration: none; white-space: nowrap;">support@rkfabricszone.com</a></td>
-                      </tr>
-                      <tr>
-                        <td style="padding-right: 10px; font-size: 14px;">🇮🇳 📞</td>
-                        <td style="color: #0A1931; white-space: nowrap;">+91 82094 89552</td>
                       </tr>
                     </table>
                   </td>
@@ -387,7 +379,7 @@ export async function sendOTPEmail(email: string, otp: string, type: 'SIGNUP' | 
             <td align="center" style="padding: 20px;">
               
               <!-- Rich Signature -->
-              <table cellpadding="0" cellspacing="0" border="0" style="border: none; border-radius: 12px; background-color: #FFFFFF; font-family: Arial, sans-serif; color: #0A1931; padding: 20px 25px; border: 1px solid #D1CDC1; width: 100%; max-width: 450px; text-align: left;">
+              <table cellpadding="0" cellspacing="0" border="0" style="border: none; border-radius: 12px; background-color: #FFFFFF; font-family: Arial, sans-serif; color: #0A1931; padding: 20px 25px; border: 1px solid #D1CDC1; width: 100%; max-width: 100%; text-align: left;">
                 <tr>
                   <!-- Left Column: Logo -->
                   <td valign="middle" style="padding-right: 25px; border-right: 1px solid #D1CDC1; width: 80px;">
@@ -409,10 +401,6 @@ export async function sendOTPEmail(email: string, otp: string, type: 'SIGNUP' | 
                       <tr>
                         <td style="padding-right: 10px; font-size: 14px;">✉️</td>
                         <td><a href="mailto:support@rkfabricszone.com" style="color: #0A1931; text-decoration: none; white-space: nowrap;">support@rkfabricszone.com</a></td>
-                      </tr>
-                      <tr>
-                        <td style="padding-right: 10px; font-size: 14px;">🇮🇳 📞</td>
-                        <td style="color: #0A1931; white-space: nowrap;">+91 82094 89552</td>
                       </tr>
                     </table>
                   </td>
@@ -562,7 +550,7 @@ export async function sendOrderDeliveredEmail(order: any) {
             <td align="center" style="padding: 20px;">
               
               <!-- Rich Signature -->
-              <table cellpadding="0" cellspacing="0" border="0" style="border: none; border-radius: 12px; background-color: #FFFFFF; font-family: Arial, sans-serif; color: #0A1931; padding: 20px 25px; border: 1px solid #D1CDC1; width: 100%; max-width: 450px; text-align: left;">
+              <table cellpadding="0" cellspacing="0" border="0" style="border: none; border-radius: 12px; background-color: #FFFFFF; font-family: Arial, sans-serif; color: #0A1931; padding: 20px 25px; border: 1px solid #D1CDC1; width: 100%; max-width: 100%; text-align: left;">
                 <tr>
                   <!-- Left Column: Logo -->
                   <td valign="middle" style="padding-right: 25px; border-right: 1px solid #D1CDC1; width: 80px;">
@@ -584,10 +572,6 @@ export async function sendOrderDeliveredEmail(order: any) {
                       <tr>
                         <td style="padding-right: 10px; font-size: 14px;">✉️</td>
                         <td><a href="mailto:support@rkfabricszone.com" style="color: #0A1931; text-decoration: none; white-space: nowrap;">support@rkfabricszone.com</a></td>
-                      </tr>
-                      <tr>
-                        <td style="padding-right: 10px; font-size: 14px;">🇮🇳 📞</td>
-                        <td style="color: #0A1931; white-space: nowrap;">+91 82094 89552</td>
                       </tr>
                     </table>
                   </td>
@@ -686,7 +670,7 @@ export async function sendOrderCancelledEmail(order: any) {
             <td align="center" style="padding: 20px;">
               
               <!-- Rich Signature -->
-              <table cellpadding="0" cellspacing="0" border="0" style="border: none; border-radius: 12px; background-color: #FFFFFF; font-family: Arial, sans-serif; color: #0A1931; padding: 20px 25px; border: 1px solid #D1CDC1; width: 100%; max-width: 450px; text-align: left;">
+              <table cellpadding="0" cellspacing="0" border="0" style="border: none; border-radius: 12px; background-color: #FFFFFF; font-family: Arial, sans-serif; color: #0A1931; padding: 20px 25px; border: 1px solid #D1CDC1; width: 100%; max-width: 100%; text-align: left;">
                 <tr>
                   <!-- Left Column: Logo -->
                   <td valign="middle" style="padding-right: 25px; border-right: 1px solid #D1CDC1; width: 80px;">
@@ -708,10 +692,6 @@ export async function sendOrderCancelledEmail(order: any) {
                       <tr>
                         <td style="padding-right: 10px; font-size: 14px;">✉️</td>
                         <td><a href="mailto:support@rkfabricszone.com" style="color: #0A1931; text-decoration: none; white-space: nowrap;">support@rkfabricszone.com</a></td>
-                      </tr>
-                      <tr>
-                        <td style="padding-right: 10px; font-size: 14px;">🇮🇳 📞</td>
-                        <td style="color: #0A1931; white-space: nowrap;">+91 82094 89552</td>
                       </tr>
                     </table>
                   </td>
@@ -803,6 +783,252 @@ export async function sendAbandonedCartEmail(user: any, cartItems: any[]) {
     return { success: true }
   } catch (error) {
     console.error("Error sending abandoned cart email:", error)
+    return { success: false, error }
+  }
+}
+
+export async function sendReturnRequestedEmail(order: any, returnRequest: any) {
+  const from = process.env.SMTP_FROM || '"RK Fabrics Zone" <no-reply@rkfabricszone.com>'
+  const to = order.email
+
+  const itemsHtml = order.items
+    .filter((item: any) => returnRequest.items.includes(item.id) || returnRequest.items.includes(item.productName))
+    .map((item: any) => `
+                <tr>
+                  <td style="padding: 15px 0; border-bottom: 1px solid #E6F0F9;">
+                    <strong style="color: #0A1931; display: block; margin-bottom: 4px;">${item.productName}</strong>
+                    <span style="font-size: 13px;">${item.variantName} | Qty: ${item.quantity}</span>
+                  </td>
+                </tr>
+  `).join('')
+
+  const html = `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Return Request Received</title>
+</head>
+<body style="margin: 0; padding: 0; background-color: #E8EBEF; font-family: Arial, sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color: #E8EBEF; padding: 40px 20px;">
+    <tr>
+      <td align="center">
+        <!-- Main Card -->
+        <table width="100%" max-width="600" cellpadding="0" cellspacing="0" border="0" style="max-width: 600px; background-color: #F6FAFD; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid #D1CDC1;">
+          
+          <!-- Header -->
+          <tr>
+            <td align="center" style="padding: 40px 20px 20px 20px;">
+              <img src="https://www.rkfabricszone.com/logo.png" alt="RK Fabrics Zone" width="80" style="display: block; margin-bottom: 15px; border-radius: 50%;">
+              <h1 style="margin: 0; color: #0A1931; font-size: 24px; font-weight: bold; letter-spacing: 1px;">RK Fabrics Zone</h1>
+            </td>
+          </tr>
+
+          <!-- Hero -->
+          <tr>
+            <td align="center" style="padding: 0 30px 30px 30px; border-bottom: 2px dashed #D1CDC1;">
+              <h2 style="margin: 0 0 10px 0; color: #b91c1c; font-size: 26px;">Return Request Received</h2>
+              <p style="margin: 0; color: #2F5370; font-size: 15px; line-height: 1.6;">
+                We have received your return request for the following items. Our support team is reviewing it and will process your refund via <strong>${returnRequest.refundMethod}</strong> shortly.
+              </p>
+              <div style="margin-top: 20px; display: inline-block; background-color: #b91c1c; color: #F6FAFD; padding: 8px 16px; border-radius: 4px; font-weight: bold; letter-spacing: 2px;">
+                ORDER #${order.id.slice(-8).toUpperCase()}
+              </div>
+            </td>
+          </tr>
+
+          <!-- Order Details -->
+          <tr>
+            <td style="padding: 30px;">
+              <h3 style="margin: 0 0 20px 0; color: #0A1931; font-size: 18px; text-transform: uppercase; letter-spacing: 1px;">Returned Items</h3>
+              <table width="100%" cellpadding="0" cellspacing="0" border="0" style="font-size: 14px; color: #2F5370;">
+                ${itemsHtml}
+              </table>
+              <div style="margin-top: 20px; padding: 15px; background-color: #FFF; border: 1px solid #E6F0F9; border-radius: 8px;">
+                 <p style="margin: 0 0 5px 0;"><strong>Reason:</strong> ${returnRequest.reasons.join(", ")}</p>
+                 ${returnRequest.description ? `<p style="margin: 0;"><strong>Details:</strong> ${returnRequest.description}</p>` : ''}
+              </div>
+            </td>
+          </tr>
+          
+        </table>
+
+        <!-- Footer / Signature -->
+        <table width="100%" max-width="600" cellpadding="0" cellspacing="0" border="0" style="max-width: 600px; margin-top: 20px;">
+          <tr>
+            <td align="center" style="padding: 20px;">
+              <!-- Rich Signature -->
+              <table cellpadding="0" cellspacing="0" border="0" style="border: none; border-radius: 12px; background-color: #FFFFFF; font-family: Arial, sans-serif; color: #0A1931; padding: 20px 25px; border: 1px solid #D1CDC1; width: 100%; max-width: 100%; text-align: left;">
+                <tr>
+                  <td valign="middle" style="padding-right: 25px; border-right: 1px solid #D1CDC1; width: 80px;">
+                    <img src="https://www.rkfabricszone.com/logo.png" width="80" height="80" style="display: block; border-radius: 50%; border: 3px solid #D4AF37; object-fit: contain;" alt="RK Fabrics Zone">
+                  </td>
+                  <td valign="middle" style="padding-left: 25px;">
+                    <h2 style="margin: 0 0 4px 0; color: #0A1931; font-size: 20px; font-weight: bold; white-space: nowrap;">Customer Support</h2>
+                    <p style="margin: 0 0 12px 0; color: #0A1931; font-size: 13px; line-height: 1.4; white-space: nowrap;">Always Here To Help</p>
+                    <table cellpadding="0" cellspacing="0" border="0" style="font-size: 13px; line-height: 22px; color: #0A1931;">
+                      <tr>
+                        <td style="padding-right: 10px; font-size: 14px;">🌐</td>
+                        <td><a href="https://www.rkfabricszone.com/contact" style="color: #0A1931; text-decoration: none; white-space: nowrap;">www.rkfabricszone.com</a></td>
+                      </tr>
+                      <tr>
+                        <td style="padding-right: 10px; font-size: 14px;">✉️</td>
+                        <td><a href="mailto:support@rkfabricszone.com" style="color: #0A1931; text-decoration: none; white-space: nowrap;">support@rkfabricszone.com</a></td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+              <p style="margin: 20px 0 0 0; color: #666666; font-size: 12px;">&copy; 2026 RK Fabrics Zone. All rights reserved.</p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
+  `
+
+  try {
+    const info = await transporter.sendMail({
+      from,
+      to,
+      subject: `🔁 Return Request Received - #${order.id.slice(-8).toUpperCase()}`,
+      html,
+    })
+    return { success: true }
+  } catch (error) {
+    console.error("Error sending return email:", error)
+    return { success: false, error }
+  }
+}
+
+export async function sendAdminReturnNotification(order: any, returnRequest: any) {
+  const from = process.env.SMTP_FROM || '"RK Fabrics Zone" <no-reply@rkfabricszone.com>'
+  const to = process.env.ADMIN_EMAIL || 'support@rkfabricszone.com'
+
+  const subject = `⚠️ New Return Request - Order #${order.id.slice(-8).toUpperCase()}`
+  const html = `
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+      <h2>New Return Request</h2>
+      <p><strong>Order ID:</strong> #${order.id.slice(-8).toUpperCase()}</p>
+      <p><strong>Customer:</strong> ${order.user?.name || 'Customer'} (${order.email})</p>
+      <p><strong>Refund Method:</strong> ${returnRequest.refundMethod}</p>
+      ${returnRequest.refundDetails ? `<p><strong>Refund Details:</strong> ${returnRequest.refundDetails}</p>` : ''}
+      <p><strong>Reason:</strong> ${returnRequest.reasons.join(", ")}</p>
+      ${returnRequest.description ? `<p><strong>Description:</strong> ${returnRequest.description}</p>` : ''}
+      <hr />
+      <p><a href="${process.env.NEXTAUTH_URL || 'https://www.rkfabricszone.com'}/admin">View in Admin Dashboard</a></p>
+    </div>
+  `
+
+  try {
+    await transporter.sendMail({ from, to, subject, html })
+    return { success: true }
+  } catch (error) {
+    console.error("Error sending admin return notification:", error)
+    return { success: false, error }
+  }
+}
+
+export async function sendReturnAcceptedEmail(order: any) {
+  const from = process.env.SMTP_FROM || '"RK Fabrics Zone" <no-reply@rkfabricszone.com>'
+  const to = order.email
+
+  const subject = `✅ Return Accepted - Order #${order.id.slice(-8).toUpperCase()}`
+  const html = `
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+      <h2>Return Request Accepted!</h2>
+      <p>Hello ${order.user?.name || 'Customer'},</p>
+      <p>Good news! Your return request for Order #${order.id.slice(-8).toUpperCase()} has been accepted.</p>
+      <p>We will initiate your refund to your selected refund method shortly. Please expect the funds to be credited within 5-7 business days.</p>
+      <p>If you have any questions, feel free to reply to this email.</p>
+      <br/>
+      <table cellpadding="0" cellspacing="0" border="0" style="border: none; border-radius: 12px; background-color: #FFFFFF; font-family: Arial, sans-serif; color: #0A1931; padding: 20px 25px; border: 1px solid #D1CDC1; width: 100%; max-width: 100%; text-align: left;">
+        <tr>
+          <!-- Left Column: Logo -->
+          <td valign="middle" style="padding-right: 25px; border-right: 1px solid #D1CDC1; width: 80px;">
+            <img src="https://www.rkfabricszone.com/logo.png" width="80" height="80" style="display: block; border-radius: 50%; border: 3px solid #D4AF37; object-fit: contain;" alt="RK Fabrics Zone">
+          </td>
+          <!-- Right Column: Details -->
+          <td valign="middle" style="padding-left: 25px;">
+            <!-- Name & Role -->
+            <h2 style="margin: 0 0 4px 0; color: #0A1931; font-size: 20px; font-weight: bold; white-space: nowrap;">Customer Support</h2>
+            <p style="margin: 0 0 12px 0; color: #0A1931; font-size: 13px; line-height: 1.4; white-space: nowrap;">Always Here To Help</p>
+            <!-- Contact Info -->
+            <table cellpadding="0" cellspacing="0" border="0" style="font-size: 13px; line-height: 22px; color: #0A1931;">
+              <tr>
+                <td style="padding-right: 10px; font-size: 14px;">🌐</td>
+                <td><a href="https://www.rkfabricszone.com/contact" style="color: #0A1931; text-decoration: none; white-space: nowrap;">www.rkfabricszone.com</a></td>
+              </tr>
+              <tr>
+                <td style="padding-right: 10px; font-size: 14px;">✉️</td>
+                <td><a href="mailto:support@rkfabricszone.com" style="color: #0A1931; text-decoration: none; white-space: nowrap;">support@rkfabricszone.com</a></td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+      </table>
+    </div>
+  `
+
+  try {
+    await transporter.sendMail({ from, to, subject, html })
+    return { success: true }
+  } catch (error) {
+    console.error("Error sending return accepted email:", error)
+    return { success: false, error }
+  }
+}
+
+export async function sendReturnRejectedEmail(order: any, reason: string = "") {
+  const from = process.env.SMTP_FROM || '"RK Fabrics Zone" <no-reply@rkfabricszone.com>'
+  const to = order.email
+
+  const subject = `❌ Return Update - Order #${order.id.slice(-8).toUpperCase()}`
+  const html = `
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+      <h2>Return Request Update</h2>
+      <p>Hello ${order.user?.name || 'Customer'},</p>
+      <p>We are writing to inform you about your return request for Order #${order.id.slice(-8).toUpperCase()}.</p>
+      <p>Unfortunately, your return request could not be accepted at this time.</p>
+      ${reason ? `<p><strong>Reason:</strong> ${reason}</p>` : ''}
+      <p>If you have any questions or believe this was a mistake, please reply to this email and our support team will assist you.</p>
+      <br/>
+      <table cellpadding="0" cellspacing="0" border="0" style="border: none; border-radius: 12px; background-color: #FFFFFF; font-family: Arial, sans-serif; color: #0A1931; padding: 20px 25px; border: 1px solid #D1CDC1; width: 100%; max-width: 100%; text-align: left;">
+        <tr>
+          <!-- Left Column: Logo -->
+          <td valign="middle" style="padding-right: 25px; border-right: 1px solid #D1CDC1; width: 80px;">
+            <img src="https://www.rkfabricszone.com/logo.png" width="80" height="80" style="display: block; border-radius: 50%; border: 3px solid #D4AF37; object-fit: contain;" alt="RK Fabrics Zone">
+          </td>
+          <!-- Right Column: Details -->
+          <td valign="middle" style="padding-left: 25px;">
+            <!-- Name & Role -->
+            <h2 style="margin: 0 0 4px 0; color: #0A1931; font-size: 20px; font-weight: bold; white-space: nowrap;">Customer Support</h2>
+            <p style="margin: 0 0 12px 0; color: #0A1931; font-size: 13px; line-height: 1.4; white-space: nowrap;">Always Here To Help</p>
+            <!-- Contact Info -->
+            <table cellpadding="0" cellspacing="0" border="0" style="font-size: 13px; line-height: 22px; color: #0A1931;">
+              <tr>
+                <td style="padding-right: 10px; font-size: 14px;">🌐</td>
+                <td><a href="https://www.rkfabricszone.com/contact" style="color: #0A1931; text-decoration: none; white-space: nowrap;">www.rkfabricszone.com</a></td>
+              </tr>
+              <tr>
+                <td style="padding-right: 10px; font-size: 14px;">✉️</td>
+                <td><a href="mailto:support@rkfabricszone.com" style="color: #0A1931; text-decoration: none; white-space: nowrap;">support@rkfabricszone.com</a></td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+      </table>
+    </div>
+  `
+
+  try {
+    await transporter.sendMail({ from, to, subject, html })
+    return { success: true }
+  } catch (error) {
+    console.error("Error sending return rejected email:", error)
     return { success: false, error }
   }
 }

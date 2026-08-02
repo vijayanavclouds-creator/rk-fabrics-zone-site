@@ -474,7 +474,7 @@ export default function UserOrdersPage() {
                     </select>
                     
                     <button
-                      onClick={() => window.open(`/account/orders/${order.id}/invoice`, '_blank')}
+                      onClick={() => window.open(`/account/orders/${order.id}/invoice`, '_blank', 'noopener,noreferrer')}
                       className="w-full mt-3 p-2.5 rounded-xl border border-charcoal/20 bg-white hover:bg-slate-50 transition-colors flex items-center justify-center gap-2 text-sm font-bold text-charcoal shadow-sm"
                     >
                       <Printer size={16} />

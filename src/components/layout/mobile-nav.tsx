@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Home, LayoutGrid, Heart, ShoppingBag, User, LogOut, Ticket, MessageSquare, Mail, Bell, HelpCircle, LayoutDashboard, Package, Scissors, DollarSign, Users, Building2, Menu, Image as ImageIcon, Settings, Smartphone } from "lucide-react";
+import { Home, LayoutGrid, Heart, ShoppingBag, User, LogOut, Ticket, MessageSquare, Mail, Bell, HelpCircle, LayoutDashboard, Package, Scissors, DollarSign, Users, Building2, Menu, Image as ImageIcon, Settings, Smartphone, Undo2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useCartStore, useWishlistStore, useUIStore } from "@/store";
 import { useCheckoutStore } from "@/store/checkout"
@@ -59,6 +59,7 @@ export function MobileNav() {
     { href: "/admin?tab=orders", label: "Orders Management", icon: ShoppingBag },
     { href: "/admin?tab=finance", label: "Finance Management", icon: DollarSign },
     { href: "/admin?tab=queries", label: "Queries Management", icon: MessageSquare },
+    { href: "/admin?tab=returns", label: "Returns", icon: Undo2 },
     { href: "/admin?tab=newsletters", label: "Newsletter Studio", icon: Mail },
     { href: "/admin?tab=users", label: "User Management", icon: Users },
     { href: "/admin?tab=company_profile", label: "Company Profile", icon: Building2 },
@@ -71,6 +72,7 @@ export function MobileNav() {
     { href: "/support?tab=overview", label: "Dashboard Overview", icon: LayoutDashboard },
     { href: "/support?tab=orders", label: "Orders Management", icon: ShoppingBag },
     { href: "/support?tab=queries", label: "Queries Management", icon: MessageSquare },
+    { href: "/support?tab=returns", label: "Returns", icon: Undo2 },
   ];
 
   const activeLinks = session?.user?.role === "ADMIN" ? adminLinks : session?.user?.role === "SUPPORT" ? supportLinks : customerLinks;

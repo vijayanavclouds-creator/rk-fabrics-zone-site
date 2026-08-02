@@ -363,9 +363,9 @@ export default function CheckoutPaymentPage() {
                       <div className="flex items-end justify-between mt-1">
                         <span className="text-xs font-bold text-charcoal">Qty: {item.quantity}</span>
                         <div className="flex flex-col items-end">
-                          <span className="text-sm font-bold text-teal-600">₹{price * item.quantity}</span>
+                          <span className="text-sm font-bold text-teal-600">{formatPrice(price * item.quantity)}</span>
                           {hasDiscount && (
-                            <span className="text-[10px] text-slate line-through">₹{originalPrice * item.quantity}</span>
+                            <span className="text-[10px] text-slate line-through">{formatPrice(originalPrice * item.quantity)}</span>
                           )}
                         </div>
                       </div>
@@ -380,7 +380,7 @@ export default function CheckoutPaymentPage() {
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-sm font-bold text-teal-700">Promo Applied: {couponCode}</p>
-                      <p className="text-xs text-slate">You saved ₹{discountAmount.toLocaleString()}</p>
+                      <p className="text-xs text-slate">You saved {formatPrice(discountAmount)}</p>
                     </div>
                     <button 
                       type="button"
@@ -497,7 +497,7 @@ export default function CheckoutPaymentPage() {
                 disabled={loading}
                 className="w-full py-4 bg-teal-600 text-white font-bold rounded-xl shadow-neo-btn hover:bg-teal-700 hover:shadow-neo-pressed transition-all flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
               >
-                {loading ? "Processing Order..." : `Pay ₹${getTotal().toLocaleString()}`}
+                {loading ? "Processing Order..." : `Pay ${formatPrice(getTotal())}`}
                 {!loading && <ArrowRight size={18} />}
               </button>
               

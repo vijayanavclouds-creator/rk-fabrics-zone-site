@@ -474,13 +474,13 @@ export async function getBanners() {
   return getBannersData();
 }
 
-export async function getCloudinarySignature() {
+export async function getCloudinarySignature(folder: string = "rk-fabrics/banners") {
   try {
     const timestamp = Math.round(new Date().getTime() / 1000);
     const signature = cloudinary.utils.api_sign_request(
       {
         timestamp,
-        folder: "rk-fabrics/banners",
+        folder,
         use_filename: true,
         unique_filename: true
       },

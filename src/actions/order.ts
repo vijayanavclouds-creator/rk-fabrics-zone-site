@@ -83,7 +83,7 @@ export async function createOrder(data: any) {
           const finalItemTotal = itemTotal - itemDiscount
           const finalItemPrice = finalItemTotal / item.quantity
           
-          const rate = finalItemPrice <= 1000 ? rates.below1000 : rates.above1000
+          const rate = finalItemPrice <= (rates.threshold ?? 2500) ? rates.belowThreshold : rates.aboveThreshold
           calculatedGst += finalItemTotal - (finalItemTotal / (1 + (rate / 100)))
         })
       }

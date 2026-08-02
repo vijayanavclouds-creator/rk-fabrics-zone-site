@@ -106,6 +106,10 @@ export async function getCompanyProfileData() {
         address: "",
         companyDescription: "",
         gstNumber: "",
+        signatureUrl: "",
+        gstPriceThreshold: 2500,
+        gstPercentBelowThreshold: 5,
+        gstPercentAboveThreshold: 12,
         shippingFee: 79,
         platformFeePercent: 2
       };

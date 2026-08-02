@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { getCompanyProfile, saveCompanyProfile } from "@/actions/system";
 import { toast } from "sonner";
-import { Save, Link as LinkIcon, Phone, Mail, User, Globe, MapPin, Building2 } from "lucide-react";
+import { Save, Link as LinkIcon, Phone, Mail, User, Globe, MapPin, Building2, Upload, Loader2, Image as ImageIcon } from "lucide-react";
 import { InstagramIcon, FacebookIcon, TwitterIcon, LinkedinIcon, PinterestIcon, ThreadsIcon, WhatsAppIcon } from "@/components/icons/social";
 
 export function CompanyProfileManager() {
@@ -25,12 +25,16 @@ export function CompanyProfileManager() {
     address: "",
     companyDescription: "",
     gstNumber: "",
-    gstPercentBelow1000: 5,
-    gstPercentAbove1000: 12,
+    signatureUrl: "",
+    gstPriceThreshold: 2500,
+    gstPercentBelowThreshold: 5,
+    gstPercentAboveThreshold: 18,
     shippingFee: 79,
     expressShippingFee: 150,
     platformFeePercent: 2
   });
+
+  const [uploadingSignature, setUploadingSignature] = useState(false);
 
   useEffect(() => {
     async function fetchProfile() {
@@ -42,6 +46,48 @@ export function CompanyProfileManager() {
     }
     fetchProfile();
   }, []);
+
+  const handleSignatureUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files || e.target.files.length === 0) return;
+    const file = e.target.files[0];
+    
+    setUploadingSignature(true);
+    toast.loading("Uploading signature...");
+    
+    try {
+      const { getCloudinarySignature } = await import('@/actions/admin');
+      const sigData = await getCloudinarySignature("rk-fabrics/signatures");
+      if (!sigData.success || !sigData.signature || !sigData.apiKey || !sigData.cloudName) {
+        throw new Error("Failed to get upload signature from server");
+      }
+
+      const createData = new FormData();
+      createData.append("file", file);
+      createData.append("api_key", sigData.apiKey);
+      createData.append("timestamp", sigData.timestamp!.toString());
+      createData.append("signature", sigData.signature);
+      createData.append("folder", "rk-fabrics/signatures");
+      createData.append("use_filename", "true");
+      createData.append("unique_filename", "true");
+
+      const uploadRes = await fetch(`https://api.cloudinary.com/v1_1/${sigData.cloudName}/image/upload`, {
+        method: "POST",
+        body: createData,
+      });
+
+      const uploadData = await uploadRes.json();
+      if (!uploadRes.ok) throw new Error(uploadData.error?.message || "Upload failed");
+
+      setProfile(prev => ({ ...prev, signatureUrl: uploadData.secure_url }));
+      toast.dismiss();
+      toast.success("Signature uploaded! Remember to save the profile.");
+    } catch (error: any) {
+      toast.dismiss();
+      toast.error(error.message || "Failed to upload signature");
+    } finally {
+      setUploadingSignature(false);
+    }
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -316,8 +362,52 @@ export function CompanyProfileManager() {
                 placeholder="Short description about the company for the footer..."
                 className="w-full px-4 py-3 text-base bg-cream shadow-neo-input !border-none rounded-2xl focus:!outline-none focus:!ring-0 focus:!border-none text-charcoal placeholder:text-slate/60 transition-all custom-scrollbar"
               />
+            </div>
+            <div className="md:col-span-2">
+              <label className="block text-sm font-bold text-charcoal mb-1 md:mb-2 flex items-center gap-2">
+                <ImageIcon size={16} /> Authorized Signature (For Invoice)
+              </label>
+              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 bg-white border border-charcoal/10 rounded-2xl p-4">
+                {profile.signatureUrl ? (
+                  <div className="w-48 h-24 bg-slate-50 border border-slate-200 rounded-lg flex items-center justify-center p-2 relative overflow-hidden shrink-0">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={profile.signatureUrl} alt="Signature" className="max-w-full max-h-full object-contain mix-blend-multiply" />
+                  </div>
+                ) : (
+                  <div className="w-48 h-24 bg-slate-50 border border-dashed border-slate-300 rounded-lg flex flex-col items-center justify-center text-slate-400 shrink-0">
+                    <ImageIcon size={24} className="mb-2 opacity-50" />
+                    <span className="text-xs">No Signature</span>
+                  </div>
+                )}
+                
+                <div className="flex-1">
+                  <p className="text-xs text-slate-500 mb-3">
+                    Upload a signature image with a transparent background (PNG) for best results on the invoice.
+                  </p>
+                  <label className="relative inline-flex items-center justify-center gap-2 px-4 py-2 bg-charcoal text-white text-sm font-bold rounded-full cursor-pointer hover:bg-black hover:shadow-neo-pressed transition-all">
+                    {uploadingSignature ? <Loader2 size={16} className="animate-spin" /> : <Upload size={16} />}
+                    {uploadingSignature ? "Uploading..." : "Upload Signature"}
+                    <input 
+                      type="file" 
+                      accept="image/*" 
+                      className="hidden" 
+                      onChange={handleSignatureUpload}
+                      disabled={uploadingSignature}
+                    />
+                  </label>
+                  {profile.signatureUrl && (
+                    <button 
+                      type="button"
+                      onClick={() => setProfile(prev => ({ ...prev, signatureUrl: "" }))}
+                      className="ml-3 text-xs font-bold text-rose-600 hover:text-rose-700 transition-colors"
+                    >
+                      Remove
+                    </button>
+                  )}
+                </div>
+              </div>
+            </div>
           </div>
-        </div>
         </div>
 
         {/* Fees & Taxes Configuration */}
@@ -329,12 +419,27 @@ export function CompanyProfileManager() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
             <div>
               <label className="block text-sm font-bold text-charcoal mb-1 md:mb-2">
-                Items ≤ ₹1,000 (%)
+                GST Threshold Price (₹)
               </label>
               <input
                 type="number"
-                name="gstPercentBelow1000"
-                value={profile.gstPercentBelow1000 ?? ""}
+                name="gstPriceThreshold"
+                value={profile.gstPriceThreshold ?? ""}
+                onChange={handleChange}
+                placeholder="2500"
+                step="1"
+                min="0"
+                className="w-full px-4 py-2.5 md:py-3 text-base bg-cream shadow-neo-input !border-none rounded-full focus:!outline-none focus:!ring-0 focus:!border-none text-charcoal placeholder:text-slate/60 transition-all"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-bold text-charcoal mb-1 md:mb-2">
+                Items ≤ ₹{profile.gstPriceThreshold || 2500} (%)
+              </label>
+              <input
+                type="number"
+                name="gstPercentBelowThreshold"
+                value={profile.gstPercentBelowThreshold ?? ""}
                 onChange={handleChange}
                 placeholder="5"
                 step="0.1"
@@ -344,14 +449,14 @@ export function CompanyProfileManager() {
             </div>
             <div>
               <label className="block text-sm font-bold text-charcoal mb-1 md:mb-2">
-                Items &gt; ₹1,000 (%)
+                Items &gt; ₹{profile.gstPriceThreshold || 2500} (%)
               </label>
               <input
                 type="number"
-                name="gstPercentAbove1000"
-                value={profile.gstPercentAbove1000 ?? ""}
+                name="gstPercentAboveThreshold"
+                value={profile.gstPercentAboveThreshold ?? ""}
                 onChange={handleChange}
-                placeholder="12"
+                placeholder="18"
                 step="0.1"
                 min="0"
                 className="w-full px-4 py-2.5 md:py-3 text-base bg-cream shadow-neo-input !border-none rounded-full focus:!outline-none focus:!ring-0 focus:!border-none text-charcoal placeholder:text-slate/60 transition-all"

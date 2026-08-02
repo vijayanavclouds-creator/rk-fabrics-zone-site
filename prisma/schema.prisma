@@ -147,6 +147,7 @@ model User {
   queries       ContactQuery[]
   newsletters   UserNewsletter[]
   reviews       Review[]
+  returnRequests ReturnRequest[]
   cartData      String?   // JSON string of the cart
   cartUpdatedAt DateTime?
 }
@@ -259,6 +260,7 @@ model Order {
   waybillGenerated   Boolean     @default(false)
   
   items           OrderItem[]
+  returnRequest   ReturnRequest?
 }
 
 model OrderItem {
@@ -352,4 +354,21 @@ model UserNewsletter {
   createdAt    DateTime   @default(now())
   
   @@unique([userId, newsletterId])
+}
+
+model ReturnRequest {
+  id            String   @id @default(cuid())
+  orderId       String   @unique
+  order         Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  userId        String
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items         String[] // Array of order item IDs returned
+  reasons       String[] // e.g. "Size Issue", "Defective Product"
+  description   String?  // custom description if "Other"
+  refundMethod  String   // e.g. "UPI", "BANK_TRANSFER", "STORE_CREDIT", "ORIGINAL_METHOD"
+  refundDetails String?  // Stores UPI ID or Bank details
+  status        String   @default("PENDING") // PENDING, RETURNED, RETURN_REJECTED
+  isReadByAdmin Boolean  @default(false)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 }

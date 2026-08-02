@@ -27,7 +27,8 @@ export default async function AdminPage() {
     banners,
     { categories, fabrics },
     queries,
-    analyticsRes
+    analyticsRes,
+    returnRequests
   ] = await Promise.all([
     prisma.product.findMany({
       include: { variants: true, images: true }
@@ -37,7 +38,14 @@ export default async function AdminPage() {
     }),
     getStoreTaxonomy(),
     getContactQueries(),
-    getDashboardAnalytics()
+    getDashboardAnalytics(),
+    prisma.returnRequest.findMany({
+      include: { 
+        order: { include: { items: true } }, 
+        user: true 
+      },
+      orderBy: { createdAt: 'desc' }
+    })
   ]);
   const analyticsData = analyticsRes.success ? analyticsRes.data : null
 
@@ -51,6 +59,7 @@ export default async function AdminPage() {
           storeCategories={categories}
           storeFabrics={fabrics}
           queries={queries}
+          returnRequests={returnRequests}
           analyticsData={analyticsData}
         />
       </Suspense>

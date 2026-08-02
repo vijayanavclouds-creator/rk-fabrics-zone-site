@@ -5,7 +5,7 @@ import Link from "next/link"
 import Image from "next/image"
 import { useSession, signOut } from "next-auth/react"
 import { motion, AnimatePresence } from "framer-motion"
-import { User, LayoutDashboard, ShoppingBag, Heart, Ticket, Settings, Bell, HelpCircle, MessageSquare, LogOut, Package, Image as ImageIcon, Users, Menu, Scissors, AlertTriangle, Building2, DollarSign, Mail, Smartphone } from "lucide-react"
+import { User, LayoutDashboard, ShoppingBag, Heart, Ticket, Settings, Bell, HelpCircle, MessageSquare, LogOut, Package, Image as ImageIcon, Users, Menu, Scissors, AlertTriangle, Building2, DollarSign, Mail, Smartphone, Undo2 } from "lucide-react"
 import { useCartStore, useWishlistStore } from "@/store"
 import { useCheckoutStore } from "@/store/checkout"
 import { handlePwaInstallFallback } from "@/lib/pwa"
@@ -63,6 +63,7 @@ export function AccountDropdown() {
     
     // Engagement
     { href: "/admin?tab=queries", label: "Queries Management", icon: MessageSquare },
+    { href: "/admin?tab=returns", label: "Returns", icon: Undo2 },
     { href: "/admin?tab=newsletters", label: "Newsletter Studio", icon: Mail },
     { href: "/admin?tab=users", label: "User Management", icon: Users },
     
@@ -77,6 +78,7 @@ export function AccountDropdown() {
     { href: "/support?tab=overview", label: "Dashboard Overview", icon: LayoutDashboard },
     { href: "/support?tab=orders", label: "Orders Management", icon: ShoppingBag },
     { href: "/support?tab=queries", label: "Queries Management", icon: MessageSquare },
+    { href: "/support?tab=returns", label: "Returns", icon: Undo2 },
   ]
 
   const activeLinks = session.user.role === "ADMIN" ? adminLinks : session.user.role === "SUPPORT" ? supportLinks : customerLinks

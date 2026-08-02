@@ -203,8 +203,9 @@ export async function saveCompanyProfile(profileData: any) {
 export async function getGSTRates() {
   const profile = await getCompanyProfileData();
   return {
-    below1000: profile?.gstPercentBelow1000 ?? 5,
-    above1000: profile?.gstPercentAbove1000 ?? 12,
+    threshold: profile?.gstPriceThreshold ?? 2500,
+    belowThreshold: profile?.gstPercentBelowThreshold ?? 5,
+    aboveThreshold: profile?.gstPercentAboveThreshold ?? 18,
     shippingFee: profile?.shippingFee ?? 79,
     expressShippingFee: profile?.expressShippingFee ?? 150,
     platformFeePercent: profile?.platformFeePercent ?? 2
