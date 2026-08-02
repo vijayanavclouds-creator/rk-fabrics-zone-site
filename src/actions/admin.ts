@@ -34,7 +34,8 @@ export async function updateProduct(formData: FormData) {
     const fabric = formData.get("fabric") as string
     const fabricDetails = formData.get("fabricDetails") as string || null
     const rawDescription = formData.get("description") as string || "";
-    const description = DOMPurify.sanitize(rawDescription);
+    // Allow <style> tags so you can write custom CSS media queries right in the description
+    const description = DOMPurify.sanitize(rawDescription, { ADD_TAGS: ['style'], FORCE_BODY: true });
 
     if (!id || !name || !category || isNaN(basePrice)) {
       return { success: false, error: `Invalid input. ID: ${id}, Name: ${name}, Category: ${category}, Price: ${basePrice}` }
@@ -112,7 +113,8 @@ export async function createProduct(formData: FormData) {
     const isOnSale = formData.get("isOnSale") === "true"
     const isReturnable = formData.get("isReturnable") !== "false"
     const rawDescription = formData.get("description") as string || "";
-    const description = DOMPurify.sanitize(rawDescription);
+    // Allow <style> tags so you can write custom CSS media queries right in the description
+    const description = DOMPurify.sanitize(rawDescription, { ADD_TAGS: ['style'], FORCE_BODY: true });
 
     if (!name || !category || isNaN(basePrice)) {
       return { success: false, error: "Invalid input" }
