@@ -5,7 +5,7 @@ import { signIn } from "next-auth/react"
 import { useRouter } from "next/navigation"
 import { toast } from "sonner"
 import { ArrowRight, Lock, Mail, KeyRound, Loader2, CheckCircle2, Sparkles, Headphones, Send } from "lucide-react"
-import { sendStaffLoginOtp } from "@/actions/auth"
+// import { sendStaffLoginOtp } from "@/actions/auth"
 
 export default function ServiceDeskPage() {
   const router = useRouter()
@@ -32,7 +32,12 @@ export default function ServiceDeskPage() {
     setSendingOtp(true)
     setError(null)
     try {
-      const res = await sendStaffLoginOtp(emailInput, "SUPPORT")
+      const response = await fetch("/api/auth/otp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: emailInput, requiredRole: "SUPPORT" })
+      })
+      const res = await response.json()
       if (!res.success) {
         toast.error(res.error || "Failed to send verification code.")
         setError(res.error || "Failed to send verification code.")
