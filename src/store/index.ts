@@ -111,41 +111,17 @@ export const useCartStore = create<CartStore>()(
     return Math.round(subtotal * (percent / 100) * 100) / 100;
   },
 
- getGSTAmount: () => {
-    const rates = get().gstRates || { below1000: 5, above1000: 12, shippingFee: 79, platformFeePercent: 2 };
-   let gstAmount = 0;
-   const subtotal = get().getSubtotal();
-   const discount = get().discountAmount;
-   
-   if (subtotal > 0) {
-     get().items.forEach(item => {
-       const originalPrice = item.variant.salePrice || item.product.salePrice || item.variant.price || item.product.basePrice;
-       const itemTotal = (originalPrice || 0) * item.quantity;
-       const itemWeight = itemTotal / subtotal;
-       const itemDiscount = discount * itemWeight;
-       const finalItemTotal = itemTotal - itemDiscount;
-       const finalItemPrice = finalItemTotal / item.quantity;
-       
-       const rate = finalItemPrice <= 1000 ? rates.below1000 : rates.above1000;
-       gstAmount += finalItemTotal * (rate / 100);
-     });
-   }
-   
-   const platformFee = get().getPlatformFee();
-   const shipping = get().getShipping();
-    gstAmount += (platformFee + shipping) * (18 / 100);
-   
-   return Math.round(gstAmount * 100) / 100;
- },
+  getGSTAmount: () => {
+   return 0;
+  },
 
   getTotal: () => {
     const subtotal = Number(get().getSubtotal()) || 0;
     const shipping = Number(get().getShipping()) || 0;
     const platformFee = Number(get().getPlatformFee()) || 0;
-    const gstAmount = Number(get().getGSTAmount()) || 0;
     const discount = Number(get().discountAmount) || 0;
     
-    const total = subtotal + shipping + platformFee + gstAmount;
+    const total = subtotal + shipping + platformFee;
     return Math.max(0, total - discount);
   },
 
