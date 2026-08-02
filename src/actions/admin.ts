@@ -10,6 +10,7 @@ import { logAdminActivity } from "./admin-activity"
 import { generateDiffString } from "@/lib/utils"
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
+import DOMPurify from 'isomorphic-dompurify';
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -32,6 +33,8 @@ export async function updateProduct(formData: FormData) {
     const isReturnable = formData.get("isReturnable") !== "false" // default true unless explicitly false
     const fabric = formData.get("fabric") as string
     const fabricDetails = formData.get("fabricDetails") as string || null
+    const rawDescription = formData.get("description") as string || "";
+    const description = DOMPurify.sanitize(rawDescription);
 
     if (!id || !name || !category || isNaN(basePrice)) {
       return { success: false, error: `Invalid input. ID: ${id}, Name: ${name}, Category: ${category}, Price: ${basePrice}` }
@@ -46,6 +49,7 @@ export async function updateProduct(formData: FormData) {
       name,
       category,
       slug,
+      description,
       basePrice,
       salePrice,
       discountPercent,
@@ -107,6 +111,8 @@ export async function createProduct(formData: FormData) {
     const isFeatured = formData.get("isFeatured") === "true"
     const isOnSale = formData.get("isOnSale") === "true"
     const isReturnable = formData.get("isReturnable") !== "false"
+    const rawDescription = formData.get("description") as string || "";
+    const description = DOMPurify.sanitize(rawDescription);
 
     if (!name || !category || isNaN(basePrice)) {
       return { success: false, error: "Invalid input" }
@@ -119,7 +125,7 @@ export async function createProduct(formData: FormData) {
       data: {
         name,
         slug,
-        description: "New product description",
+        description,
         shortDescription: "Short description",
         category,
         gender: "women",

@@ -606,10 +606,11 @@ function ProductDetail({ product }: { product: NonNullable<ReturnType<typeof get
  transition={{ duration: 0.2 }}
  >
  {activeTab === "description" && (
- <div className="prose prose-sm max-w-none text-slate ">
- <p className="text-base leading-relaxed">{product.description}</p>
- </div>
- )}
+              <div 
+                className="text-base leading-relaxed prose prose-sm md:prose-base max-w-none prose-a:text-teal-600 hover:prose-a:text-teal-700" 
+                dangerouslySetInnerHTML={{ __html: product.description || '' }} 
+              />
+            )}
 
  {activeTab === "details" && (
  <div className="grid grid-cols-2 md:grid-cols-3 gap-4">

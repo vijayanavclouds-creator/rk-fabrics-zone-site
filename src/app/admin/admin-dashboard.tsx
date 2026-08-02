@@ -790,6 +790,16 @@ export function ProductEditor({ product = {}, products, storeCategories, storeFa
               <input name="fabricDetails" type="text" value={updatedFabricDetails} onChange={(e) => { setUpdatedFabricDetails(e.target.value); setBaseDetailsChanged(true); }} className="w-full p-2 md:p-3 rounded-lg md:rounded-xl border border-charcoal/10 focus:outline-none focus:border-teal-600 focus:ring-1 md:focus:ring-2 focus:ring-teal-600/20 shadow-inner bg-slate-50 transition-all text-xs md:text-sm" placeholder="e.g. 100% Pure, Handwoven" />
             </div>
           </div>
+          <div className="mt-4 pt-4 border-t border-charcoal/10">
+            <h3 className="text-lg font-semibold text-charcoal mb-2">Advanced Description (HTML)</h3>
+            <p className="text-xs text-slate mb-2">You can write raw HTML here to create stylish descriptions (e.g., &lt;b&gt;Bold&lt;/b&gt;, &lt;img src=&quot;...&quot; /&gt;, &lt;br&gt;). All scripts are safely removed.</p>
+            <textarea 
+              name="description" 
+              defaultValue={product.description || ""} 
+              className="w-full p-2 md:p-3 rounded-lg md:rounded-xl border border-charcoal/10 focus:outline-none focus:border-teal-600 focus:ring-1 md:focus:ring-2 focus:ring-teal-600/20 shadow-inner bg-slate-50 transition-all text-xs md:text-sm font-mono min-h-[150px]" 
+              placeholder="<p>Beautiful stylish description goes here...</p>" 
+            />
+          </div>
           </form>
         </div>
 
