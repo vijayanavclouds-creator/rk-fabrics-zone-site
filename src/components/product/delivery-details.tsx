@@ -177,15 +177,16 @@ export function DeliveryDetails() {
       <div className="flex flex-col rounded-3xl neumorphic-surface overflow-hidden">
         {/* Location Section */}
         <div className="flex flex-col p-5 sm:p-6 transition-colors">
-          <div className="flex items-start gap-4 sm:gap-5">
-            <div className="w-11 h-11 rounded-full neumorphic-surface flex items-center justify-center text-teal-600 shrink-0 shadow-sm mt-0.5">
+          <div className="flex items-center gap-4 sm:gap-5 mb-5">
+            <div className="w-11 h-11 rounded-full neumorphic-surface flex items-center justify-center text-teal-600 shrink-0 shadow-sm">
               <MapPin size={18} />
             </div>
-            <div className="flex flex-col flex-1 gap-3 w-full">
-              <span className="font-bold text-charcoal mt-1 text-lg">Check delivery availability</span>
-              
+            <span className="font-bold text-charcoal text-lg">Check delivery availability</span>
+          </div>
+          
+          <div className="flex flex-col flex-1 w-full">
               {(!session) || (addresses.length > 0 && defaultAddress) || detectedAddress ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-3 w-full">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
                   {/* Left: Saved Address / Login */}
                   <div className="flex flex-col gap-4">
                     {!session && (
@@ -364,7 +365,6 @@ export function DeliveryDetails() {
                 </div>
               )}
             </div>
-          </div>
         </div>
 
         {/* Divider */}
