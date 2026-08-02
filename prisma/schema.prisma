@@ -12,6 +12,7 @@ model Product {
   name             String
   slug             String   @unique
   description      String
+  detailsHtml      String?  @db.Text
   shortDescription String
   category         String
   subcategory      String?

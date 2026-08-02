@@ -613,27 +613,36 @@ function ProductDetail({ product }: { product: NonNullable<ReturnType<typeof get
             )}
 
  {activeTab === "details" && (
- <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
- {[
- { label: "Fabric", value: product.fabric },
- { label: "Category", value: (() => {
-    try {
-      const cats = JSON.parse(product.category);
-      if (Array.isArray(cats)) return cats.map(c => c.replace("-", " ").replace(/\b\w/g, (char: string) => char.toUpperCase())).join(", ");
-    } catch(e) {}
-    return product.category.replace("-", " ").replace(/\b\w/g, (char: string) => char.toUpperCase());
-  })() },
- { label: "Type", value: product.type.charAt(0).toUpperCase() + product.type.slice(1) },
- { label: "Occasion", value: product.occasion?.join(", ") || "All" },
- { label: "SKU", value: selectedVariant?.sku || "N/A" },
- { label: "Gender", value: product.gender.charAt(0).toUpperCase() + product.gender.slice(1) },
- ].map((detail) => (
- <div key={detail.label} className="p-4 rounded-xl bg-cream-dark/50 border border-charcoal/5 ">
- <p className="text-xs text-slate font-medium uppercase tracking-wider">{detail.label}</p>
- <p className="text-sm font-semibold text-charcoal mt-1">{detail.value}</p>
- </div>
- ))}
- </div>
+  <div className="animate-in fade-in slide-in-from-bottom-2 duration-500">
+    {product.detailsHtml ? (
+      <div 
+        className="text-base leading-relaxed prose prose-sm md:prose-base max-w-none prose-a:text-teal-600 hover:prose-a:text-teal-700" 
+        dangerouslySetInnerHTML={{ __html: product.detailsHtml }} 
+      />
+    ) : (
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+        {[
+          { label: "Fabric", value: product.fabric },
+          { label: "Category", value: (() => {
+              try {
+                const cats = JSON.parse(product.category);
+                if (Array.isArray(cats)) return cats.map(c => c.replace("-", " ").replace(/\b\w/g, (char: string) => char.toUpperCase())).join(", ");
+              } catch(e) {}
+              return product.category.replace("-", " ").replace(/\b\w/g, (char: string) => char.toUpperCase());
+            })() },
+          { label: "Type", value: product.type.charAt(0).toUpperCase() + product.type.slice(1) },
+          { label: "Occasion", value: product.occasion?.join(", ") || "All" },
+          { label: "SKU", value: selectedVariant?.sku || "N/A" },
+          { label: "Gender", value: product.gender.charAt(0).toUpperCase() + product.gender.slice(1) },
+        ].map((detail) => (
+          <div key={detail.label} className="p-4 rounded-xl bg-cream-dark/50 border border-charcoal/5 ">
+            <p className="text-xs text-slate font-medium uppercase tracking-wider">{detail.label}</p>
+            <p className="text-sm font-semibold text-charcoal mt-1">{detail.value}</p>
+          </div>
+        ))}
+      </div>
+    )}
+  </div>
  )}
 
  {activeTab === "reviews" && (

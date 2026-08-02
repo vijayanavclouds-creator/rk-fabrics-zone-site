@@ -358,122 +358,6 @@ export const products: Product[] = [
     "reviews": []
   },
   {
-    "id": "10",
-    "name": "Ochre & Blue Mixed Stripe Button-Down Shirt",
-    "slug": "ochre-blue-mixed-stripe-button-down-shirt-0770",
-    "description": "Breathtaking designer lehenga in dusty rose with heavy hand-embroidered florals using zardozi, sequins, and pearl work. The flared cancan lehenga paired with a fitted blouse and sheer net dupatta creates a bridal-worthy ensemble. Handcrafted by our master artisans.",
-    "shortDescription": "Zardozi hand-embroidered designer lehenga set",
-    "category": "[\"tops\"]",
-    "subcategory": "lehengas",
-    "gender": "women",
-    "type": "readymade",
-    "basePrice": 249,
-    "salePrice": 224.1,
-    "discountPercent": 10,
-    "isOnSale": false,
-    "isFreeDelivery": true,
-    "fabric": "organza",
-    "fabricDetails": null,
-    "occasion": [
-      "Wedding",
-      "Engagement",
-      "Reception"
-    ],
-    "tags": [
-      "lehenga",
-      "designer",
-      "bridal",
-      "zardozi",
-      "handcrafted",
-      "premium"
-    ],
-    "rating": 5,
-    "reviewCount": 1,
-    "isFeatured": true,
-    "isNewArrival": true,
-    "isBestseller": false,
-    "isActive": true,
-    "isReturnable": true,
-    "createdAt": "2026-07-29T10:50:46.471Z",
-    "variants": [
-      {
-        "id": "10-v2",
-        "sku": "RKF-DLH-010-RSE-M",
-        "size": "M",
-        "color": "Coral",
-        "colorHex": "#C49A52",
-        "price": 249,
-        "salePrice": 224.1,
-        "stock": 4,
-        "productId": "10"
-      },
-      {
-        "id": "10-v3",
-        "sku": "RKF-DLH-010-RSE-L",
-        "size": "L",
-        "color": "Coral",
-        "colorHex": "#C49A52",
-        "price": 249,
-        "salePrice": 224.1,
-        "stock": 0,
-        "productId": "10"
-      },
-      {
-        "id": "10-v1",
-        "sku": "RKF-DLH-010-RSE-S",
-        "size": "S",
-        "color": "Coral",
-        "colorHex": "#C49A52",
-        "price": 249,
-        "salePrice": 224.1,
-        "stock": 1,
-        "productId": "10"
-      },
-      {
-        "id": "10-v4",
-        "sku": "RKF-DLH-010-SAG-M",
-        "size": "XL",
-        "color": "Coral",
-        "colorHex": "#C49A52",
-        "price": 249,
-        "salePrice": 224.1,
-        "stock": 0,
-        "productId": "10"
-      }
-    ],
-    "images": [
-      {
-        "id": "cmrtdn731000va0ng76mi34tb",
-        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1784561168/rk-fabrics/products/yyhgc4bdwy3xvbmqxvja.jpg",
-        "alt": "blob",
-        "isPrimary": false,
-        "productId": "10"
-      },
-      {
-        "id": "cmrtdp876000xa0ng6xpo4thl",
-        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1784561263/rk-fabrics/products/kfdwxmmknzeuaawktexq.jpg",
-        "alt": "blob",
-        "isPrimary": false,
-        "productId": "10"
-      },
-      {
-        "id": "cmrtdqn06000za0ng4h91qct0",
-        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1784561329/rk-fabrics/products/id4ipaerd99abix7kjfe.jpg",
-        "alt": "blob",
-        "isPrimary": false,
-        "productId": "10"
-      },
-      {
-        "id": "cmrtdsrbw0011a0ng56a8hvhv",
-        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1784561427/rk-fabrics/products/jztpjifob52wilurdkbr.jpg",
-        "alt": "blob",
-        "isPrimary": true,
-        "productId": "10"
-      }
-    ],
-    "reviews": []
-  },
-  {
     "id": "3",
     "name": "Striped Spaghetti Strap Tiered Midi Dress",
     "slug": "striped-spaghetti-strap-tiered-midi-dress-8849",
@@ -715,6 +599,122 @@ export const products: Product[] = [
         "alt": "blob",
         "isPrimary": true,
         "productId": "1"
+      }
+    ],
+    "reviews": []
+  },
+  {
+    "id": "10",
+    "name": "Ochre & Blue Mixed Stripe Button-Down Shirt",
+    "slug": "ochre-blue-mixed-stripe-button-down-shirt-7269",
+    "description": "<style>\n  /* =====================================================\n     OCHRE & BLUE MIXED STRIPE BUTTON-DOWN SHIRT\n     Compact 3-image editorial layout\n     Soft powder-blue + teal gradient glow\n     ===================================================== */\n\n  .ochre-lookbook {\n    --navy: #10233f;\n    --blue: #527d9e;\n    --sky: #eef7fc;\n    --white: #ffffff;\n    --teal: #129d8b;\n    --glow-blue: #9fcde8;\n    --glow-teal: #a8e7dc;\n\n    width: 100% !important;\n    max-width: none !important;\n    margin: 0 !important;\n    padding: 0 !important;\n    overflow: hidden;\n    color: var(--navy);\n    background: var(--sky);\n    font-family: Arial, \"Helvetica Neue\", sans-serif;\n    line-height: 1.4;\n  }\n\n  .ochre-lookbook,\n  .ochre-lookbook * {\n    box-sizing: border-box;\n  }\n\n  /* ---------- Product Heading ---------- */\n\n  .ochre-lookbook-header {\n    padding: 42px 8vw 24px;\n    text-align: center;\n    background:\n      radial-gradient(circle at 84% 8%, rgba(91, 143, 177, 0.16), transparent 26%),\n      linear-gradient(135deg, #e9f4fb 0%, #f9fcff 60%, #e9f5fb 100%);\n  }\n\n  .ochre-lookbook-label {\n    margin: 0 0 10px;\n    color: var(--blue);\n    font-size: 11px;\n    font-weight: 700;\n    letter-spacing: 2.4px;\n    text-transform: uppercase;\n  }\n\n  .ochre-lookbook-title {\n    margin: 0;\n    color: var(--navy);\n    font-family: Georgia, \"Times New Roman\", serif;\n    font-size: clamp(30px, 4vw, 52px);\n    font-weight: 600;\n    letter-spacing: -0.8px;\n    line-height: 1.1;\n  }\n\n  /* ---------- Compact Three Image Grid ---------- */\n\n  .ochre-three-images {\n    display: grid;\n    grid-template-columns: 1.15fr 0.85fr;\n    grid-template-rows: 225px 225px;\n    gap: 22px;\n    width: 100%;\n    padding: 24px 7vw 40px;\n    background: var(--sky);\n  }\n\n  .ochre-image-card {\n    position: relative;\n    min-height: 0;\n    overflow: visible;\n    border-radius: 16px;\n  }\n\n  /* Main image uses both rows */\n  .ochre-image-card-main {\n    grid-row: 1 / 3;\n  }\n\n  /*\n    Soft blurred gradient outside every card:\n    This creates a glow rather than a hard visible border.\n  */\n  .ochre-image-card::before {\n    content: \"\";\n    position: absolute;\n    z-index: 0;\n    inset: -7px;\n    border-radius: 22px;\n    background: linear-gradient(\n      135deg,\n      rgba(115, 189, 226, 0.90) 0%,\n      rgba(178, 235, 224, 0.92) 48%,\n      rgba(144, 194, 224, 0.86) 100%\n    );\n    filter: blur(9px);\n    opacity: 0.76;\n    pointer-events: none;\n  }\n\n  /* Clean inner image card */\n  .ochre-image-frame {\n    position: relative;\n    z-index: 1;\n    width: 100%;\n    height: 100%;\n    overflow: hidden;\n    background: #dcebf5;\n    border: 1px solid rgba(255, 255, 255, 0.92);\n    border-radius: 16px;\n    box-shadow: 0 12px 28px rgba(35, 87, 120, 0.12);\n  }\n\n  .ochre-image-frame img {\n    display: block;\n    width: 100%;\n    height: 100%;\n    object-fit: cover;\n    object-position: center top;\n    transition: transform 0.6s ease;\n  }\n\n  .ochre-image-card:hover .ochre-image-frame img {\n    transform: scale(1.035);\n  }\n\n  /* Text readability gradient: only lower part of image */\n  .ochre-image-frame::after {\n    content: \"\";\n    position: absolute;\n    z-index: 1;\n    right: 0;\n    bottom: 0;\n    left: 0;\n    height: 54%;\n    background: linear-gradient(\n      to top,\n      rgba(16, 35, 63, 0.88) 0%,\n      rgba(16, 35, 63, 0.45) 58%,\n      rgba(16, 35, 63, 0) 100%\n    );\n    pointer-events: none;\n  }\n\n  .ochre-image-caption {\n    position: absolute;\n    z-index: 2;\n    right: 0;\n    bottom: 0;\n    left: 0;\n    padding: 24px 28px;\n    color: var(--white);\n    text-shadow: 0 2px 12px rgba(0, 20, 43, 0.5);\n  }\n\n  .ochre-image-caption span {\n    display: block;\n    margin-bottom: 7px;\n    color: #a9e5dc;\n    font-size: 10px;\n    font-weight: 700;\n    letter-spacing: 2px;\n    text-transform: uppercase;\n  }\n\n  .ochre-image-caption h3 {\n    max-width: 16ch;\n    margin: 0;\n    color: var(--white);\n    font-family: Georgia, \"Times New Roman\", serif;\n    font-size: clamp(22px, 2.5vw, 35px);\n    font-weight: 500;\n    line-height: 1.12;\n  }\n\n  .ochre-image-card-small .ochre-image-caption {\n    padding: 18px 22px;\n  }\n\n  .ochre-image-card-small .ochre-image-caption h3 {\n    max-width: 25ch;\n    font-size: clamp(17px, 1.75vw, 25px);\n  }\n\n  /* ---------- Mobile ---------- */\n\n  @media (max-width: 767px) {\n    .ochre-lookbook-header {\n      padding: 38px 20px 22px;\n    }\n\n    .ochre-three-images {\n      grid-template-columns: 1fr;\n      grid-template-rows: 360px 250px 250px;\n      gap: 18px;\n      padding: 20px 20px 34px;\n    }\n\n    .ochre-image-card-main {\n      grid-row: auto;\n    }\n\n    .ochre-image-caption {\n      padding: 22px 20px;\n    }\n\n    .ochre-image-card-small .ochre-image-caption {\n      padding: 18px 20px;\n    }\n  }\n</style>\n\n<div class=\"ochre-lookbook\">\n\n  \n  <header class=\"ochre-lookbook-header\">\n    <p class=\"ochre-lookbook-label\">Everyday Elevated Dressing</p>\n\n    <h2 class=\"ochre-lookbook-title\">\n      Ochre &amp; Blue Mixed Stripe<br>\n      Button-Down Shirt\n    </h2>\n  </header>\n\n  \n  <section class=\"ochre-three-images\">\n\n    \n    <article class=\"ochre-image-card ochre-image-card-main\">\n      <div class=\"ochre-image-frame\">\n        <img src=\"http://localhost:3000/_next/image?url=https%3A%2F%2Fres.cloudinary.com%2Fdodcvilgs%2Fimage%2Fupload%2Fv1784561329%2Frk-fabrics%2Fproducts%2Fid4ipaerd99abix7kjfe.jpg&amp;w=3840&amp;q=75\" alt=\"Full-length view of the ochre and blue mixed stripe button-down shirt\" loading=\"lazy\">\n\n        <div class=\"ochre-image-caption\">\n          <span>The statement piece</span>\n          <h3>Mixed stripes. Effortless polish.</h3>\n        </div>\n      </div>\n    </article>\n\n    \n    <article class=\"ochre-image-card ochre-image-card-small\">\n      <div class=\"ochre-image-frame\">\n        <img src=\"http://localhost:3000/_next/image?url=https%3A%2F%2Fres.cloudinary.com%2Fdodcvilgs%2Fimage%2Fupload%2Fv1784561427%2Frk-fabrics%2Fproducts%2Fjztpjifob52wilurdkbr.jpg&amp;w=3840&amp;q=75\" alt=\"Ochre and blue mixed stripe button-down shirt styled with white pants\" loading=\"lazy\">\n\n        <div class=\"ochre-image-caption\">\n          <span>Button-down ease</span>\n          <h3>Classic shape, modern character.</h3>\n        </div>\n      </div>\n    </article>\n\n    \n    <article class=\"ochre-image-card ochre-image-card-small\">\n      <div class=\"ochre-image-frame\">\n        <img src=\"http://localhost:3000/_next/image?url=https%3A%2F%2Fres.cloudinary.com%2Fdodcvilgs%2Fimage%2Fupload%2Fv1784561168%2Frk-fabrics%2Fproducts%2Fyyhgc4bdwy3xvbmqxvja.jpg&amp;w=3840&amp;q=75\" alt=\"Detail view of the ochre and blue mixed stripe shirt\" loading=\"lazy\">\n\n        <div class=\"ochre-image-caption\">\n          <span>Thoughtful finish</span>\n          <h3>Details that make the difference.</h3>\n        </div>\n      </div>\n    </article>\n\n  </section>\n\n</div>",
+    "shortDescription": "Zardozi hand-embroidered designer lehenga set",
+    "category": "[\"tops\"]",
+    "subcategory": "lehengas",
+    "gender": "women",
+    "type": "readymade",
+    "basePrice": 249,
+    "salePrice": 224.1,
+    "discountPercent": 10,
+    "isOnSale": false,
+    "isFreeDelivery": true,
+    "fabric": "organza",
+    "fabricDetails": null,
+    "occasion": [
+      "Wedding",
+      "Engagement",
+      "Reception"
+    ],
+    "tags": [
+      "lehenga",
+      "designer",
+      "bridal",
+      "zardozi",
+      "handcrafted",
+      "premium"
+    ],
+    "rating": 5,
+    "reviewCount": 1,
+    "isFeatured": true,
+    "isNewArrival": true,
+    "isBestseller": false,
+    "isActive": true,
+    "isReturnable": true,
+    "createdAt": "2026-07-29T10:50:46.471Z",
+    "variants": [
+      {
+        "id": "10-v2",
+        "sku": "RKF-DLH-010-RSE-M",
+        "size": "M",
+        "color": "Coral",
+        "colorHex": "#C49A52",
+        "price": 249,
+        "salePrice": 224.1,
+        "stock": 4,
+        "productId": "10"
+      },
+      {
+        "id": "10-v3",
+        "sku": "RKF-DLH-010-RSE-L",
+        "size": "L",
+        "color": "Coral",
+        "colorHex": "#C49A52",
+        "price": 249,
+        "salePrice": 224.1,
+        "stock": 0,
+        "productId": "10"
+      },
+      {
+        "id": "10-v1",
+        "sku": "RKF-DLH-010-RSE-S",
+        "size": "S",
+        "color": "Coral",
+        "colorHex": "#C49A52",
+        "price": 249,
+        "salePrice": 224.1,
+        "stock": 1,
+        "productId": "10"
+      },
+      {
+        "id": "10-v4",
+        "sku": "RKF-DLH-010-SAG-M",
+        "size": "XL",
+        "color": "Coral",
+        "colorHex": "#C49A52",
+        "price": 249,
+        "salePrice": 224.1,
+        "stock": 0,
+        "productId": "10"
+      }
+    ],
+    "images": [
+      {
+        "id": "cmrtdn731000va0ng76mi34tb",
+        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1784561168/rk-fabrics/products/yyhgc4bdwy3xvbmqxvja.jpg",
+        "alt": "blob",
+        "isPrimary": false,
+        "productId": "10"
+      },
+      {
+        "id": "cmrtdp876000xa0ng6xpo4thl",
+        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1784561263/rk-fabrics/products/kfdwxmmknzeuaawktexq.jpg",
+        "alt": "blob",
+        "isPrimary": false,
+        "productId": "10"
+      },
+      {
+        "id": "cmrtdqn06000za0ng4h91qct0",
+        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1784561329/rk-fabrics/products/id4ipaerd99abix7kjfe.jpg",
+        "alt": "blob",
+        "isPrimary": false,
+        "productId": "10"
+      },
+      {
+        "id": "cmrtdsrbw0011a0ng56a8hvhv",
+        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1784561427/rk-fabrics/products/jztpjifob52wilurdkbr.jpg",
+        "alt": "blob",
+        "isPrimary": true,
+        "productId": "10"
       }
     ],
     "reviews": []

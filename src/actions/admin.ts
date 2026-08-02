@@ -36,6 +36,9 @@ export async function updateProduct(formData: FormData) {
     const rawDescription = formData.get("description") as string || "";
     // Allow <style> tags so you can write custom CSS media queries right in the description
     const description = DOMPurify.sanitize(rawDescription, { ADD_TAGS: ['style'], FORCE_BODY: true });
+    
+    const rawDetailsHtml = formData.get("detailsHtml") as string || "";
+    const detailsHtml = rawDetailsHtml ? DOMPurify.sanitize(rawDetailsHtml, { ADD_TAGS: ['style'], FORCE_BODY: true }) : null;
 
     if (!id || !name || !category || isNaN(basePrice)) {
       return { success: false, error: `Invalid input. ID: ${id}, Name: ${name}, Category: ${category}, Price: ${basePrice}` }
@@ -51,6 +54,7 @@ export async function updateProduct(formData: FormData) {
       category,
       slug,
       description,
+      detailsHtml,
       basePrice,
       salePrice,
       discountPercent,
@@ -115,6 +119,9 @@ export async function createProduct(formData: FormData) {
     const rawDescription = formData.get("description") as string || "";
     // Allow <style> tags so you can write custom CSS media queries right in the description
     const description = DOMPurify.sanitize(rawDescription, { ADD_TAGS: ['style'], FORCE_BODY: true });
+    
+    const rawDetailsHtml = formData.get("detailsHtml") as string || "";
+    const detailsHtml = rawDetailsHtml ? DOMPurify.sanitize(rawDetailsHtml, { ADD_TAGS: ['style'], FORCE_BODY: true }) : null;
 
     if (!name || !category || isNaN(basePrice)) {
       return { success: false, error: "Invalid input" }
@@ -128,6 +135,7 @@ export async function createProduct(formData: FormData) {
         name,
         slug,
         description,
+        detailsHtml,
         shortDescription: "Short description",
         category,
         gender: "women",
