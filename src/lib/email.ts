@@ -111,18 +111,45 @@ export async function sendOrderConfirmationEmail(order: any) {
           
         </table>
 
-        <!-- Footer -->
+        <!-- Footer / Signature -->
         <table width="100%" max-width="600" cellpadding="0" cellspacing="0" border="0" style="max-width: 600px; margin-top: 20px;">
           <tr>
-            <td align="center" style="padding: 20px; color: #666666; font-size: 12px; line-height: 1.5;">
-              <p style="margin: 0 0 10px 0;">
-                <strong>RK Fabrics Zone</strong><br>
-                Premium Quality Fabrics & Textiles
-              </p>
-              <p style="margin: 0 0 10px 0;">
-                <a href="https://www.rkfabricszone.com" style="color: #3D6A8C; text-decoration: none;">www.rkfabricszone.com</a> | 
-                <a href="mailto:support@rkfabricszone.com" style="color: #3D6A8C; text-decoration: none;">support@rkfabricszone.com</a>
-              </p>
+            <td align="center" style="padding: 20px;">
+              
+              <!-- Rich Signature -->
+              <table cellpadding="0" cellspacing="0" border="0" style="border: none; border-radius: 12px; background-color: #FFFFFF; font-family: Arial, sans-serif; color: #0A1931; padding: 20px 25px; border: 1px solid #D1CDC1; width: 100%; max-width: 450px; text-align: left;">
+                <tr>
+                  <!-- Left Column: Logo -->
+                  <td valign="middle" style="padding-right: 25px; border-right: 1px solid #D1CDC1; width: 80px;">
+                    <img src="https://www.rkfabricszone.com/logo.png" width="80" height="80" style="display: block; border-radius: 50%; border: 3px solid #D4AF37; object-fit: contain;" alt="RK Fabrics Zone">
+                  </td>
+                  
+                  <!-- Right Column: Details -->
+                  <td valign="middle" style="padding-left: 25px;">
+                    <!-- Name & Role -->
+                    <h2 style="margin: 0 0 4px 0; color: #0A1931; font-size: 20px; font-weight: bold; white-space: nowrap;">Customer Support</h2>
+                    <p style="margin: 0 0 12px 0; color: #0A1931; font-size: 13px; line-height: 1.4; white-space: nowrap;">Always Here To Help</p>
+                    
+                    <!-- Contact Info -->
+                    <table cellpadding="0" cellspacing="0" border="0" style="font-size: 13px; line-height: 22px; color: #0A1931;">
+                      <tr>
+                        <td style="padding-right: 10px; font-size: 14px;">🌐</td>
+                        <td><a href="https://www.rkfabricszone.com/contact" style="color: #0A1931; text-decoration: none; white-space: nowrap;">www.rkfabricszone.com</a></td>
+                      </tr>
+                      <tr>
+                        <td style="padding-right: 10px; font-size: 14px;">✉️</td>
+                        <td><a href="mailto:support@rkfabricszone.com" style="color: #0A1931; text-decoration: none; white-space: nowrap;">support@rkfabricszone.com</a></td>
+                      </tr>
+                      <tr>
+                        <td style="padding-right: 10px; font-size: 14px;">🇮🇳 📞</td>
+                        <td style="color: #0A1931; white-space: nowrap;">+91 82094 89552</td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+
+              <p style="margin: 20px 0 0 0; color: #666666; font-size: 12px;">&copy; 2026 RK Fabrics Zone. All rights reserved.</p>
             </td>
           </tr>
         </table>
@@ -221,18 +248,45 @@ export async function sendOrderShippedEmail(order: any) {
           
         </table>
 
-        <!-- Footer -->
+        <!-- Footer / Signature -->
         <table width="100%" max-width="600" cellpadding="0" cellspacing="0" border="0" style="max-width: 600px; margin-top: 20px;">
           <tr>
-            <td align="center" style="padding: 20px; color: #666666; font-size: 12px; line-height: 1.5;">
-              <p style="margin: 0 0 10px 0;">
-                <strong>RK Fabrics Zone</strong><br>
-                Premium Quality Fabrics & Textiles
-              </p>
-              <p style="margin: 0 0 10px 0;">
-                <a href="https://www.rkfabricszone.com" style="color: #3D6A8C; text-decoration: none;">www.rkfabricszone.com</a> | 
-                <a href="mailto:support@rkfabricszone.com" style="color: #3D6A8C; text-decoration: none;">support@rkfabricszone.com</a>
-              </p>
+            <td align="center" style="padding: 20px;">
+              
+              <!-- Rich Signature -->
+              <table cellpadding="0" cellspacing="0" border="0" style="border: none; border-radius: 12px; background-color: #FFFFFF; font-family: Arial, sans-serif; color: #0A1931; padding: 20px 25px; border: 1px solid #D1CDC1; width: 100%; max-width: 450px; text-align: left;">
+                <tr>
+                  <!-- Left Column: Logo -->
+                  <td valign="middle" style="padding-right: 25px; border-right: 1px solid #D1CDC1; width: 80px;">
+                    <img src="https://www.rkfabricszone.com/logo.png" width="80" height="80" style="display: block; border-radius: 50%; border: 3px solid #D4AF37; object-fit: contain;" alt="RK Fabrics Zone">
+                  </td>
+                  
+                  <!-- Right Column: Details -->
+                  <td valign="middle" style="padding-left: 25px;">
+                    <!-- Name & Role -->
+                    <h2 style="margin: 0 0 4px 0; color: #0A1931; font-size: 20px; font-weight: bold; white-space: nowrap;">Customer Support</h2>
+                    <p style="margin: 0 0 12px 0; color: #0A1931; font-size: 13px; line-height: 1.4; white-space: nowrap;">Always Here To Help</p>
+                    
+                    <!-- Contact Info -->
+                    <table cellpadding="0" cellspacing="0" border="0" style="font-size: 13px; line-height: 22px; color: #0A1931;">
+                      <tr>
+                        <td style="padding-right: 10px; font-size: 14px;">🌐</td>
+                        <td><a href="https://www.rkfabricszone.com/contact" style="color: #0A1931; text-decoration: none; white-space: nowrap;">www.rkfabricszone.com</a></td>
+                      </tr>
+                      <tr>
+                        <td style="padding-right: 10px; font-size: 14px;">✉️</td>
+                        <td><a href="mailto:support@rkfabricszone.com" style="color: #0A1931; text-decoration: none; white-space: nowrap;">support@rkfabricszone.com</a></td>
+                      </tr>
+                      <tr>
+                        <td style="padding-right: 10px; font-size: 14px;">🇮🇳 📞</td>
+                        <td style="color: #0A1931; white-space: nowrap;">+91 82094 89552</td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+
+              <p style="margin: 20px 0 0 0; color: #666666; font-size: 12px;">&copy; 2026 RK Fabrics Zone. All rights reserved.</p>
             </td>
           </tr>
         </table>
@@ -327,19 +381,45 @@ export async function sendOTPEmail(email: string, otp: string, type: 'SIGNUP' | 
           
         </table>
 
-        <!-- Footer -->
+        <!-- Footer / Signature -->
         <table width="100%" max-width="600" cellpadding="0" cellspacing="0" border="0" style="max-width: 600px; margin-top: 20px;">
           <tr>
-            <td align="center" style="padding: 20px; color: #666666; font-size: 12px; line-height: 1.5;">
-              <p style="margin: 0 0 10px 0;">
-                <strong>RK Fabrics Zone</strong><br>
-                Premium Quality Fabrics & Textiles
-              </p>
-              <p style="margin: 0 0 10px 0;">
-                <a href="https://www.rkfabricszone.com" style="color: #3D6A8C; text-decoration: none;">www.rkfabricszone.com</a> | 
-                <a href="mailto:support@rkfabricszone.com" style="color: #3D6A8C; text-decoration: none;">support@rkfabricszone.com</a>
-              </p>
-              <p style="margin: 0;">&copy; 2026 RK Fabrics Zone. All rights reserved.</p>
+            <td align="center" style="padding: 20px;">
+              
+              <!-- Rich Signature -->
+              <table cellpadding="0" cellspacing="0" border="0" style="border: none; border-radius: 12px; background-color: #FFFFFF; font-family: Arial, sans-serif; color: #0A1931; padding: 20px 25px; border: 1px solid #D1CDC1; width: 100%; max-width: 450px; text-align: left;">
+                <tr>
+                  <!-- Left Column: Logo -->
+                  <td valign="middle" style="padding-right: 25px; border-right: 1px solid #D1CDC1; width: 80px;">
+                    <img src="https://www.rkfabricszone.com/logo.png" width="80" height="80" style="display: block; border-radius: 50%; border: 3px solid #D4AF37; object-fit: contain;" alt="RK Fabrics Zone">
+                  </td>
+                  
+                  <!-- Right Column: Details -->
+                  <td valign="middle" style="padding-left: 25px;">
+                    <!-- Name & Role -->
+                    <h2 style="margin: 0 0 4px 0; color: #0A1931; font-size: 20px; font-weight: bold; white-space: nowrap;">Customer Support</h2>
+                    <p style="margin: 0 0 12px 0; color: #0A1931; font-size: 13px; line-height: 1.4; white-space: nowrap;">Always Here To Help</p>
+                    
+                    <!-- Contact Info -->
+                    <table cellpadding="0" cellspacing="0" border="0" style="font-size: 13px; line-height: 22px; color: #0A1931;">
+                      <tr>
+                        <td style="padding-right: 10px; font-size: 14px;">🌐</td>
+                        <td><a href="https://www.rkfabricszone.com/contact" style="color: #0A1931; text-decoration: none; white-space: nowrap;">www.rkfabricszone.com</a></td>
+                      </tr>
+                      <tr>
+                        <td style="padding-right: 10px; font-size: 14px;">✉️</td>
+                        <td><a href="mailto:support@rkfabricszone.com" style="color: #0A1931; text-decoration: none; white-space: nowrap;">support@rkfabricszone.com</a></td>
+                      </tr>
+                      <tr>
+                        <td style="padding-right: 10px; font-size: 14px;">🇮🇳 📞</td>
+                        <td style="color: #0A1931; white-space: nowrap;">+91 82094 89552</td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+
+              <p style="margin: 20px 0 0 0; color: #666666; font-size: 12px;">&copy; 2026 RK Fabrics Zone. All rights reserved.</p>
             </td>
           </tr>
         </table>
@@ -476,18 +556,45 @@ export async function sendOrderDeliveredEmail(order: any) {
           
         </table>
 
-        <!-- Footer -->
+        <!-- Footer / Signature -->
         <table width="100%" max-width="600" cellpadding="0" cellspacing="0" border="0" style="max-width: 600px; margin-top: 20px;">
           <tr>
-            <td align="center" style="padding: 20px; color: #666666; font-size: 12px; line-height: 1.5;">
-              <p style="margin: 0 0 10px 0;">
-                <strong>RK Fabrics Zone</strong><br>
-                Premium Quality Fabrics & Textiles
-              </p>
-              <p style="margin: 0 0 10px 0;">
-                <a href="https://www.rkfabricszone.com" style="color: #3D6A8C; text-decoration: none;">www.rkfabricszone.com</a> | 
-                <a href="mailto:support@rkfabricszone.com" style="color: #3D6A8C; text-decoration: none;">support@rkfabricszone.com</a>
-              </p>
+            <td align="center" style="padding: 20px;">
+              
+              <!-- Rich Signature -->
+              <table cellpadding="0" cellspacing="0" border="0" style="border: none; border-radius: 12px; background-color: #FFFFFF; font-family: Arial, sans-serif; color: #0A1931; padding: 20px 25px; border: 1px solid #D1CDC1; width: 100%; max-width: 450px; text-align: left;">
+                <tr>
+                  <!-- Left Column: Logo -->
+                  <td valign="middle" style="padding-right: 25px; border-right: 1px solid #D1CDC1; width: 80px;">
+                    <img src="https://www.rkfabricszone.com/logo.png" width="80" height="80" style="display: block; border-radius: 50%; border: 3px solid #D4AF37; object-fit: contain;" alt="RK Fabrics Zone">
+                  </td>
+                  
+                  <!-- Right Column: Details -->
+                  <td valign="middle" style="padding-left: 25px;">
+                    <!-- Name & Role -->
+                    <h2 style="margin: 0 0 4px 0; color: #0A1931; font-size: 20px; font-weight: bold; white-space: nowrap;">Customer Support</h2>
+                    <p style="margin: 0 0 12px 0; color: #0A1931; font-size: 13px; line-height: 1.4; white-space: nowrap;">Always Here To Help</p>
+                    
+                    <!-- Contact Info -->
+                    <table cellpadding="0" cellspacing="0" border="0" style="font-size: 13px; line-height: 22px; color: #0A1931;">
+                      <tr>
+                        <td style="padding-right: 10px; font-size: 14px;">🌐</td>
+                        <td><a href="https://www.rkfabricszone.com/contact" style="color: #0A1931; text-decoration: none; white-space: nowrap;">www.rkfabricszone.com</a></td>
+                      </tr>
+                      <tr>
+                        <td style="padding-right: 10px; font-size: 14px;">✉️</td>
+                        <td><a href="mailto:support@rkfabricszone.com" style="color: #0A1931; text-decoration: none; white-space: nowrap;">support@rkfabricszone.com</a></td>
+                      </tr>
+                      <tr>
+                        <td style="padding-right: 10px; font-size: 14px;">🇮🇳 📞</td>
+                        <td style="color: #0A1931; white-space: nowrap;">+91 82094 89552</td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+
+              <p style="margin: 20px 0 0 0; color: #666666; font-size: 12px;">&copy; 2026 RK Fabrics Zone. All rights reserved.</p>
             </td>
           </tr>
         </table>
@@ -573,18 +680,45 @@ export async function sendOrderCancelledEmail(order: any) {
           
         </table>
 
-        <!-- Footer -->
+        <!-- Footer / Signature -->
         <table width="100%" max-width="600" cellpadding="0" cellspacing="0" border="0" style="max-width: 600px; margin-top: 20px;">
           <tr>
-            <td align="center" style="padding: 20px; color: #666666; font-size: 12px; line-height: 1.5;">
-              <p style="margin: 0 0 10px 0;">
-                <strong>RK Fabrics Zone</strong><br>
-                Premium Quality Fabrics & Textiles
-              </p>
-              <p style="margin: 0 0 10px 0;">
-                <a href="https://www.rkfabricszone.com" style="color: #3D6A8C; text-decoration: none;">www.rkfabricszone.com</a> | 
-                <a href="mailto:support@rkfabricszone.com" style="color: #3D6A8C; text-decoration: none;">support@rkfabricszone.com</a>
-              </p>
+            <td align="center" style="padding: 20px;">
+              
+              <!-- Rich Signature -->
+              <table cellpadding="0" cellspacing="0" border="0" style="border: none; border-radius: 12px; background-color: #FFFFFF; font-family: Arial, sans-serif; color: #0A1931; padding: 20px 25px; border: 1px solid #D1CDC1; width: 100%; max-width: 450px; text-align: left;">
+                <tr>
+                  <!-- Left Column: Logo -->
+                  <td valign="middle" style="padding-right: 25px; border-right: 1px solid #D1CDC1; width: 80px;">
+                    <img src="https://www.rkfabricszone.com/logo.png" width="80" height="80" style="display: block; border-radius: 50%; border: 3px solid #D4AF37; object-fit: contain;" alt="RK Fabrics Zone">
+                  </td>
+                  
+                  <!-- Right Column: Details -->
+                  <td valign="middle" style="padding-left: 25px;">
+                    <!-- Name & Role -->
+                    <h2 style="margin: 0 0 4px 0; color: #0A1931; font-size: 20px; font-weight: bold; white-space: nowrap;">Customer Support</h2>
+                    <p style="margin: 0 0 12px 0; color: #0A1931; font-size: 13px; line-height: 1.4; white-space: nowrap;">Always Here To Help</p>
+                    
+                    <!-- Contact Info -->
+                    <table cellpadding="0" cellspacing="0" border="0" style="font-size: 13px; line-height: 22px; color: #0A1931;">
+                      <tr>
+                        <td style="padding-right: 10px; font-size: 14px;">🌐</td>
+                        <td><a href="https://www.rkfabricszone.com/contact" style="color: #0A1931; text-decoration: none; white-space: nowrap;">www.rkfabricszone.com</a></td>
+                      </tr>
+                      <tr>
+                        <td style="padding-right: 10px; font-size: 14px;">✉️</td>
+                        <td><a href="mailto:support@rkfabricszone.com" style="color: #0A1931; text-decoration: none; white-space: nowrap;">support@rkfabricszone.com</a></td>
+                      </tr>
+                      <tr>
+                        <td style="padding-right: 10px; font-size: 14px;">🇮🇳 📞</td>
+                        <td style="color: #0A1931; white-space: nowrap;">+91 82094 89552</td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+
+              <p style="margin: 20px 0 0 0; color: #666666; font-size: 12px;">&copy; 2026 RK Fabrics Zone. All rights reserved.</p>
             </td>
           </tr>
         </table>
