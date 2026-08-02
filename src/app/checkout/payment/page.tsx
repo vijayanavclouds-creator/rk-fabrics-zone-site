@@ -11,6 +11,7 @@ import Image from "next/image"
 import { ArrowLeft, ArrowRight, Banknote, Smartphone, ShieldCheck, AlertCircle, X } from "lucide-react"
 import Link from "next/link"
 import { validateCoupon } from "@/actions/coupon"
+import { formatPrice } from "@/lib/utils"
 
 import { useCheckoutStore } from "@/store/checkout"
 
@@ -441,36 +442,36 @@ export default function CheckoutPaymentPage() {
               <div className="space-y-3 py-4 border-t border-b border-charcoal/10 mb-6">
                 <div className="flex justify-between text-charcoal">
                   <span className="text-sm font-bold">Total MRP ({items.reduce((acc, item) => acc + item.quantity, 0)} items)</span>
-                  <span className="font-bold">₹{totalMrp.toLocaleString()}</span>
+                  <span className="font-bold">{formatPrice(totalMrp)}</span>
                 </div>
                 {productDiscount > 0 && (
                   <div className="flex justify-between text-teal-700">
                     <span className="text-sm font-bold">Discount on MRP</span>
-                    <span className="font-bold">-₹{productDiscount.toLocaleString()}</span>
+                    <span className="font-bold">-{formatPrice(productDiscount)}</span>
                   </div>
                 )}
                 {discountAmount > 0 && (
                   <div className="flex justify-between text-teal-700">
                     <span className="text-sm font-bold">Coupon Discount ({couponCode})</span>
-                    <span className="font-bold">-₹{discountAmount.toLocaleString()}</span>
+                    <span className="font-bold">-{formatPrice(discountAmount)}</span>
                   </div>
                 )}
                 <div className="flex justify-between text-charcoal">
                   <span className="text-sm font-bold">Platform Fee ({gstRates?.platformFeePercent ?? 2}%)</span>
-                  <span className="font-bold">₹{getPlatformFee().toLocaleString()}</span>
+                  <span className="font-bold">{formatPrice(getPlatformFee())}</span>
                 </div>
                 <div className="flex justify-between text-charcoal">
                   <span className="text-sm font-bold">
                     Shipping {shippingMode === "Express" && <span className="text-teal-600 font-normal">(Express)</span>}
                   </span>
-                  <span className="font-bold">{getShipping() === 0 ? <span className="text-teal-600">Free</span> : `₹${getShipping()}`}</span>
+                  <span className="font-bold">{getShipping() === 0 ? <span className="text-teal-600">Free</span> : formatPrice(getShipping())}</span>
                 </div>
               </div>
 
               <div className="flex justify-between items-center mb-8">
                 <span className="text-lg font-bold text-charcoal">Total AMOUNT <span className="text-xs font-normal ml-1">(PRICES INCLUDE GST)</span></span>
                 <span className="text-2xl font-[family-name:var(--font-playfair)] font-bold text-charcoal">
-                  ₹{getTotal().toLocaleString()}
+                  {formatPrice(getTotal())}
                 </span>
               </div>
 
