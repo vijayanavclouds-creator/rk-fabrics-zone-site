@@ -41,7 +41,8 @@ export default function ServiceDeskPage() {
         setCooldown(60)
       }
     } catch (err: any) {
-      toast.error("Something went wrong generating OTP.")
+      console.error("OTP Generation Exception:", err)
+      toast.error(err.message || String(err) || "Something went wrong generating OTP.")
     } finally {
       setSendingOtp(false)
     }
