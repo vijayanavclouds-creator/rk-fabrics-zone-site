@@ -777,85 +777,100 @@ export function ProductEditor({ product = {}, products, storeCategories, storeFa
               <label htmlFor="isReturnableEdit" className="text-sm font-bold text-charcoal cursor-pointer">Return Available</label>
             </div>
           </div>
-          <div className="mt-4 pt-4 border-t border-charcoal/10">
-            <h3 className="text-lg font-semibold text-charcoal mb-2">Fabric Details</h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="flex gap-2 relative">
-                <div className="hidden md:block absolute -left-12 top-2 text-teal-600/20">
-                  <Scissors size={40} />
+          <div className="mt-4 pt-4 border-t border-charcoal/10 grid grid-cols-1 md:grid-cols-2 gap-4 md:col-span-2">
+            
+            {/* Left Column: Fabric Details & Advanced Details */}
+            <div className="flex flex-col gap-4 md:border-r md:border-charcoal/10 md:pr-4">
+              
+              {/* Fabric Details */}
+              <div>
+                <h3 className="text-lg font-semibold text-charcoal mb-2">Fabric Details</h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="flex gap-2 relative">
+                    <div className="hidden md:block absolute -left-12 top-2 text-teal-600/20">
+                      <Scissors size={40} />
+                    </div>
+                    <FabricSelect 
+                      value={updatedFabric} 
+                      onChange={(v:any) => { setUpdatedFabric(v); setBaseDetailsChanged(true); }} 
+                      options={storeFabrics}
+                      name="fabric"
+                    />
+                  </div>
+                  <input name="fabricDetails" type="text" value={updatedFabricDetails} onChange={(e) => { setUpdatedFabricDetails(e.target.value); setBaseDetailsChanged(true); }} className="w-full p-2 md:p-3 rounded-lg md:rounded-xl border border-charcoal/10 focus:outline-none focus:border-teal-600 focus:ring-1 md:focus:ring-2 focus:ring-teal-600/20 shadow-inner bg-slate-50 transition-all text-xs md:text-sm" placeholder="e.g. 100% Pure, Handwoven" />
                 </div>
-                <FabricSelect 
-                  value={updatedFabric} 
-                  onChange={(v:any) => { setUpdatedFabric(v); setBaseDetailsChanged(true); }} 
-                  options={storeFabrics}
-                  name="fabric"
-                />
               </div>
-              <input name="fabricDetails" type="text" value={updatedFabricDetails} onChange={(e) => { setUpdatedFabricDetails(e.target.value); setBaseDetailsChanged(true); }} className="w-full p-2 md:p-3 rounded-lg md:rounded-xl border border-charcoal/10 focus:outline-none focus:border-teal-600 focus:ring-1 md:focus:ring-2 focus:ring-teal-600/20 shadow-inner bg-slate-50 transition-all text-xs md:text-sm" placeholder="e.g. 100% Pure, Handwoven" />
+              
+              {/* Advanced Details (HTML) */}
+              <div className="pt-4 border-t border-charcoal/10 mt-auto md:mt-0">
+                <div className="flex justify-between items-center mb-2">
+                  <h3 className="text-lg font-semibold text-charcoal">Advanced Details (HTML)</h3>
+                  <button 
+                    type="button" 
+                    onClick={() => setShowDetailsPreview(!showDetailsPreview)} 
+                    className="text-xs font-semibold px-3 py-1 bg-teal-600 text-white rounded-md hover:bg-teal-700 transition-colors shadow-sm"
+                  >
+                    {showDetailsPreview ? "Edit HTML" : "Live Preview"}
+                  </button>
+                </div>
+                <p className="text-xs text-slate mb-2">Leave blank to use the default Technical Details grid, or write custom HTML to override the Details tab entirely.</p>
+                
+                {showDetailsPreview ? (
+                  <div 
+                    className="w-full p-4 rounded-lg md:rounded-xl border border-charcoal/10 bg-white prose prose-sm md:prose-base max-w-none min-h-[150px] overflow-auto max-h-[500px]"
+                    dangerouslySetInnerHTML={{ __html: updatedDetailsHtml }}
+                  />
+                ) : (
+                  <textarea 
+                    name="detailsHtml" 
+                    value={updatedDetailsHtml} 
+                    onChange={(e) => { setUpdatedDetailsHtml(e.target.value); setBaseDetailsChanged(true); }}
+                    className="w-full p-2 md:p-3 rounded-lg md:rounded-xl border border-charcoal/10 focus:outline-none focus:border-teal-600 focus:ring-1 md:focus:ring-2 focus:ring-teal-600/20 shadow-inner bg-slate-50 transition-all text-xs md:text-sm font-mono min-h-[150px]" 
+                    placeholder="<p>Custom details layout goes here...</p>" 
+                  />
+                )}
+                {showDetailsPreview && (
+                   <input type="hidden" name="detailsHtml" value={updatedDetailsHtml} />
+                )}
+              </div>
             </div>
-          </div>
-          <div className="mt-4 pt-4 border-t border-charcoal/10">
-            <div className="flex justify-between items-center mb-2">
-              <h3 className="text-lg font-semibold text-charcoal">Advanced Description (HTML)</h3>
-              <button 
-                type="button" 
-                onClick={() => setShowPreview(!showPreview)} 
-                className="text-xs font-semibold px-3 py-1 bg-teal-600 text-white rounded-md hover:bg-teal-700 transition-colors shadow-sm"
-              >
-                {showPreview ? "Edit HTML" : "Live Preview"}
-              </button>
+
+            {/* Right Column: Advanced Description */}
+            <div className="flex flex-col gap-4 pt-4 border-t border-charcoal/10 md:pt-0 md:border-t-0 md:pl-2">
+              <div>
+                <div className="flex justify-between items-center mb-2">
+                  <h3 className="text-lg font-semibold text-charcoal">Advanced Description (HTML)</h3>
+                  <button 
+                    type="button" 
+                    onClick={() => setShowPreview(!showPreview)} 
+                    className="text-xs font-semibold px-3 py-1 bg-teal-600 text-white rounded-md hover:bg-teal-700 transition-colors shadow-sm"
+                  >
+                    {showPreview ? "Edit HTML" : "Live Preview"}
+                  </button>
+                </div>
+                <p className="text-xs text-slate mb-2">You can write raw HTML here to create stylish descriptions (e.g., &lt;b&gt;Bold&lt;/b&gt;, &lt;img src=&quot;...&quot; /&gt;, &lt;br&gt;). All scripts are safely removed.</p>
+                
+                {showPreview ? (
+                  <div 
+                    className="w-full p-4 rounded-lg md:rounded-xl border border-charcoal/10 bg-white prose prose-sm md:prose-base max-w-none min-h-[150px] overflow-auto max-h-[500px]"
+                    dangerouslySetInnerHTML={{ __html: updatedDescription }}
+                  />
+                ) : (
+                  <textarea 
+                    name="description" 
+                    value={updatedDescription} 
+                    onChange={(e) => { setUpdatedDescription(e.target.value); setBaseDetailsChanged(true); }}
+                    className="w-full p-2 md:p-3 rounded-lg md:rounded-xl border border-charcoal/10 focus:outline-none focus:border-teal-600 focus:ring-1 md:focus:ring-2 focus:ring-teal-600/20 shadow-inner bg-slate-50 transition-all text-xs md:text-sm font-mono min-h-[300px]" 
+                    placeholder="<p>Beautiful stylish description goes here...</p>" 
+                  />
+                )}
+                {/* When preview is open, textarea is unmounted, so we need a hidden input to submit the value */}
+                {showPreview && (
+                   <input type="hidden" name="description" value={updatedDescription} />
+                )}
+              </div>
             </div>
-            <p className="text-xs text-slate mb-2">You can write raw HTML here to create stylish descriptions (e.g., &lt;b&gt;Bold&lt;/b&gt;, &lt;img src=&quot;...&quot; /&gt;, &lt;br&gt;). All scripts are safely removed.</p>
             
-            {showPreview ? (
-              <div 
-                className="w-full p-4 rounded-lg md:rounded-xl border border-charcoal/10 bg-white prose prose-sm md:prose-base max-w-none min-h-[150px] overflow-auto max-h-[500px]"
-                dangerouslySetInnerHTML={{ __html: updatedDescription }}
-              />
-            ) : (
-              <textarea 
-                name="description" 
-                value={updatedDescription} 
-                onChange={(e) => { setUpdatedDescription(e.target.value); setBaseDetailsChanged(true); }}
-                className="w-full p-2 md:p-3 rounded-lg md:rounded-xl border border-charcoal/10 focus:outline-none focus:border-teal-600 focus:ring-1 md:focus:ring-2 focus:ring-teal-600/20 shadow-inner bg-slate-50 transition-all text-xs md:text-sm font-mono min-h-[150px]" 
-                placeholder="<p>Beautiful stylish description goes here...</p>" 
-              />
-            )}
-            {/* When preview is open, textarea is unmounted, so we need a hidden input to submit the value */}
-            {showPreview && (
-               <input type="hidden" name="description" value={updatedDescription} />
-            )}
-          </div>
-          <div className="mt-4 pt-4 border-t border-charcoal/10">
-            <div className="flex justify-between items-center mb-2">
-              <h3 className="text-lg font-semibold text-charcoal">Advanced Details (HTML)</h3>
-              <button 
-                type="button" 
-                onClick={() => setShowDetailsPreview(!showDetailsPreview)} 
-                className="text-xs font-semibold px-3 py-1 bg-teal-600 text-white rounded-md hover:bg-teal-700 transition-colors shadow-sm"
-              >
-                {showDetailsPreview ? "Edit HTML" : "Live Preview"}
-              </button>
-            </div>
-            <p className="text-xs text-slate mb-2">Leave blank to use the default Technical Details grid, or write custom HTML to override the Details tab entirely.</p>
-            
-            {showDetailsPreview ? (
-              <div 
-                className="w-full p-4 rounded-lg md:rounded-xl border border-charcoal/10 bg-white prose prose-sm md:prose-base max-w-none min-h-[150px] overflow-auto max-h-[500px]"
-                dangerouslySetInnerHTML={{ __html: updatedDetailsHtml }}
-              />
-            ) : (
-              <textarea 
-                name="detailsHtml" 
-                value={updatedDetailsHtml} 
-                onChange={(e) => { setUpdatedDetailsHtml(e.target.value); setBaseDetailsChanged(true); }}
-                className="w-full p-2 md:p-3 rounded-lg md:rounded-xl border border-charcoal/10 focus:outline-none focus:border-teal-600 focus:ring-1 md:focus:ring-2 focus:ring-teal-600/20 shadow-inner bg-slate-50 transition-all text-xs md:text-sm font-mono min-h-[150px]" 
-                placeholder="<p>Custom details layout goes here...</p>" 
-              />
-            )}
-            {showDetailsPreview && (
-               <input type="hidden" name="detailsHtml" value={updatedDetailsHtml} />
-            )}
           </div>
           </form>
         </div>
