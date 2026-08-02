@@ -101,126 +101,6 @@ export const categories: CategoryInfo[] = [
 
 export const products: Product[] = [
   {
-    "id": "1",
-    "name": "The Riviera Striped Tunic",
-    "slug": "the-riviera-striped-tunic-2078",
-    "description": "Handwoven Banarasi silk saree with intricate zari work. This magnificent piece features traditional motifs woven with pure gold zari thread on a rich emerald green silk base. Perfect for weddings, festivals, and special occasions. Comes with matching blouse piece.",
-    "shortDescription": "Handwoven Banarasi silk with pure gold zari work",
-    "category": "[\"tops\"]",
-    "subcategory": "sarees",
-    "gender": "women",
-    "type": "readymade",
-    "basePrice": 499,
-    "salePrice": 399.2,
-    "discountPercent": 20,
-    "isOnSale": false,
-    "isFreeDelivery": true,
-    "fabric": "silk",
-    "fabricDetails": null,
-    "occasion": [
-      "Wedding",
-      "Festival",
-      "Party"
-    ],
-    "tags": [
-      "banarasi",
-      "silk",
-      "saree",
-      "zari",
-      "handwoven",
-      "premium"
-    ],
-    "rating": 4.3,
-    "reviewCount": 82,
-    "isFeatured": true,
-    "isNewArrival": true,
-    "isBestseller": false,
-    "isActive": true,
-    "isReturnable": true,
-    "createdAt": "2026-07-29T10:50:43.566Z",
-    "variants": [
-      {
-        "id": "1-v1",
-        "sku": "RKF-BSS-001-GRN",
-        "size": "S",
-        "color": "Gray",
-        "colorHex": "#aa9374",
-        "price": 1299,
-        "salePrice": 1039.2,
-        "stock": 2,
-        "productId": "1"
-      },
-      {
-        "id": "1-v2",
-        "sku": "RKF-BSS-001-MAR",
-        "size": "M",
-        "color": "Gray",
-        "colorHex": "#aa9374",
-        "price": 1299,
-        "salePrice": 1039.2,
-        "stock": 5,
-        "productId": "1"
-      },
-      {
-        "id": "1-v3",
-        "sku": "RKF-BSS-001-NAV",
-        "size": "L",
-        "color": "Gray",
-        "colorHex": "#aa9374",
-        "price": 1299,
-        "salePrice": 1039.2,
-        "stock": 3,
-        "productId": "1"
-      },
-      {
-        "id": "cmrt015di000ba0ngappledy2",
-        "sku": "VAR-305910",
-        "size": "XL",
-        "color": "Gray",
-        "colorHex": "#aa9374",
-        "price": 1299,
-        "salePrice": 1039.2,
-        "stock": 4,
-        "productId": "1"
-      },
-      {
-        "id": "cmrt0bygc000da0ngmlrh2uk1",
-        "sku": "VAR-810156",
-        "size": "XS",
-        "color": "Gray",
-        "colorHex": "#aa9374",
-        "price": 1299,
-        "salePrice": 1039.2,
-        "stock": 5,
-        "productId": "1"
-      }
-    ],
-    "images": [
-      {
-        "id": "cmrteipr00013a0ng27lzpqsb",
-        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1784562638/rk-fabrics/products/ij7zyin2dqn5zcrpvh9u.jpg",
-        "alt": "blob",
-        "isPrimary": false,
-        "productId": "1"
-      },
-      {
-        "id": "cmrtejb8q0017a0ng8dqdli0q",
-        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1784562664/rk-fabrics/products/zw8vdqcxyyg7dokyuzit.jpg",
-        "alt": "blob",
-        "isPrimary": false,
-        "productId": "1"
-      },
-      {
-        "id": "cmrteishi0015a0nggcozbvyv",
-        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1784562642/rk-fabrics/products/jsq3w7ywphhkxjqpnf9u.jpg",
-        "alt": "blob",
-        "isPrimary": true,
-        "productId": "1"
-      }
-    ],
-    "reviews": []
-  },
-  {
     "id": "cmrtex4wp0000cyygm2lwgihs",
     "name": "Solid Ivory Long Sleeve Ruffled Maxi Dress",
     "slug": "solid-ivory-long-sleeve-ruffled-maxi-dress-6612",
@@ -517,17 +397,6 @@ export const products: Product[] = [
     "createdAt": "2026-07-29T10:50:46.471Z",
     "variants": [
       {
-        "id": "10-v4",
-        "sku": "RKF-DLH-010-SAG-M",
-        "size": "XL",
-        "color": "Coral",
-        "colorHex": "#C49A52",
-        "price": 249,
-        "salePrice": 224.1,
-        "stock": 2,
-        "productId": "10"
-      },
-      {
         "id": "10-v2",
         "sku": "RKF-DLH-010-RSE-M",
         "size": "M",
@@ -558,6 +427,17 @@ export const products: Product[] = [
         "price": 249,
         "salePrice": 224.1,
         "stock": 1,
+        "productId": "10"
+      },
+      {
+        "id": "10-v4",
+        "sku": "RKF-DLH-010-SAG-M",
+        "size": "XL",
+        "color": "Coral",
+        "colorHex": "#C49A52",
+        "price": 249,
+        "salePrice": 224.1,
+        "stock": 0,
         "productId": "10"
       }
     ],
@@ -632,17 +512,6 @@ export const products: Product[] = [
     "createdAt": "2026-07-29T10:50:42.125Z",
     "variants": [
       {
-        "id": "3-v3",
-        "sku": "RKF-CCS-003-PNK-L",
-        "size": "M",
-        "color": "Blue",
-        "colorHex": "#4f2fee",
-        "price": 499,
-        "salePrice": 349.3,
-        "stock": 5,
-        "productId": "3"
-      },
-      {
         "id": "3-v5",
         "sku": "RKF-CCS-003-MNT-L",
         "size": "XL",
@@ -685,6 +554,17 @@ export const products: Product[] = [
         "salePrice": 349.3,
         "stock": 4,
         "productId": "3"
+      },
+      {
+        "id": "3-v3",
+        "sku": "RKF-CCS-003-PNK-L",
+        "size": "M",
+        "color": "Blue",
+        "colorHex": "#4f2fee",
+        "price": 499,
+        "salePrice": 349.3,
+        "stock": 1,
+        "productId": "3"
       }
     ],
     "images": [
@@ -715,6 +595,126 @@ export const products: Product[] = [
         "alt": "blob",
         "isPrimary": false,
         "productId": "3"
+      }
+    ],
+    "reviews": []
+  },
+  {
+    "id": "1",
+    "name": "The Riviera Striped Tunic",
+    "slug": "the-riviera-striped-tunic-5483",
+    "description": "<style>\n  .riviera-description {\n    --ink: #2f2925;\n    --muted: #74685e;\n    --sand: #f4eee7;\n    --cream: #fcfaf7;\n    --clay: #b48261;\n    --line: rgba(70, 55, 44, 0.13);\n    --shadow: 0 18px 45px rgba(71, 51, 35, 0.10);\n\n    max-width: 1180px;\n    margin: 30px auto;\n    overflow: hidden;\n    color: var(--ink);\n    background: var(--cream);\n    border: 1px solid var(--line);\n    border-radius: 22px;\n    font-family: \"Helvetica Neue\", Arial, sans-serif;\n    line-height: 1.65;\n  }\n\n  .riviera-description * {\n    box-sizing: border-box;\n  }\n\n  .riviera-description img {\n    display: block;\n    width: 100%;\n    height: 100%;\n    object-fit: cover;\n  }\n\n  .riviera-hero {\n    padding: 62px 34px 35px;\n    text-align: center;\n    background:\n      radial-gradient(circle at 85% 10%, rgba(180, 130, 97, 0.13), transparent 26%),\n      linear-gradient(135deg, #f2e9df 0%, #fcfaf7 60%, #f7f0e9 100%);\n  }\n\n  .riviera-kicker {\n    margin: 0 0 12px;\n    color: var(--clay);\n    font-size: 12px;\n    font-weight: 700;\n    letter-spacing: 2.5px;\n    text-transform: uppercase;\n  }\n\n  .riviera-title {\n    margin: 0;\n    color: var(--ink);\n    font-family: Georgia, \"Times New Roman\", serif;\n    font-size: clamp(30px, 4vw, 48px);\n    font-weight: 500;\n    letter-spacing: -0.7px;\n    line-height: 1.12;\n  }\n\n  .riviera-intro {\n    max-width: 680px;\n    margin: 18px auto 0;\n    color: var(--muted);\n    font-size: 17px;\n  }\n\n  .riviera-gallery {\n    display: grid;\n    grid-template-columns: 1.15fr 0.85fr;\n    gap: 14px;\n    padding: 14px;\n    background: var(--cream);\n  }\n\n  .riviera-image {\n    min-height: 440px;\n    overflow: hidden;\n    background: #e8dfd5;\n    border-radius: 14px;\n  }\n\n  .riviera-image img {\n    transition: transform 0.7s ease;\n  }\n\n  .riviera-image:hover img {\n    transform: scale(1.035);\n  }\n\n  .riviera-copy {\n    display: grid;\n    grid-template-columns: 1fr 0.9fr;\n    gap: 46px;\n    align-items: center;\n    padding: 62px 48px;\n    background: #ffffff;\n  }\n\n  .riviera-section-label {\n    display: inline-block;\n    margin-bottom: 11px;\n    color: var(--clay);\n    font-size: 12px;\n    font-weight: 700;\n    letter-spacing: 2px;\n    text-transform: uppercase;\n  }\n\n  .riviera-heading {\n    margin: 0 0 16px;\n    color: var(--ink);\n    font-family: Georgia, \"Times New Roman\", serif;\n    font-size: clamp(26px, 3vw, 36px);\n    font-weight: 500;\n    line-height: 1.2;\n  }\n\n  .riviera-text {\n    margin: 0 0 14px;\n    color: var(--muted);\n    font-size: 16px;\n  }\n\n  .riviera-details {\n    padding: 27px 28px;\n    background: var(--sand);\n    border-radius: 14px;\n  }\n\n  .riviera-details h4 {\n    margin: 0 0 16px;\n    color: var(--ink);\n    font-size: 16px;\n    letter-spacing: 0.3px;\n  }\n\n  .riviera-details ul {\n    margin: 0;\n    padding: 0;\n    list-style: none;\n  }\n\n  .riviera-details li {\n    position: relative;\n    padding: 10px 0 10px 24px;\n    color: #5f534a;\n    font-size: 15px;\n    border-bottom: 1px solid rgba(70, 55, 44, 0.12);\n  }\n\n  .riviera-details li:last-child {\n    border-bottom: 0;\n  }\n\n  .riviera-details li::before {\n    content: \"—\";\n    position: absolute;\n    left: 0;\n    color: var(--clay);\n    font-weight: 700;\n  }\n\n  .riviera-features {\n    padding: 0 24px 58px;\n    background: #ffffff;\n  }\n\n  .riviera-features-title {\n    margin: 0 0 22px;\n    text-align: center;\n    color: var(--ink);\n    font-family: Georgia, \"Times New Roman\", serif;\n    font-size: 28px;\n    font-weight: 500;\n  }\n\n  .riviera-feature-grid {\n    display: grid;\n    grid-template-columns: repeat(3, 1fr);\n    gap: 15px;\n  }\n\n  .riviera-feature {\n    padding: 26px 22px;\n    background: var(--cream);\n    border: 1px solid var(--line);\n    border-radius: 14px;\n    transition: transform 0.25s ease, box-shadow 0.25s ease;\n  }\n\n  .riviera-feature:hover {\n    transform: translateY(-5px);\n    box-shadow: var(--shadow);\n  }\n\n  .riviera-feature-number {\n    display: block;\n    margin-bottom: 17px;\n    color: var(--clay);\n    font-family: Georgia, \"Times New Roman\", serif;\n    font-size: 25px;\n  }\n\n  .riviera-feature h4 {\n    margin: 0 0 8px;\n    color: var(--ink);\n    font-size: 17px;\n  }\n\n  .riviera-feature p {\n    margin: 0;\n    color: var(--muted);\n    font-size: 15px;\n  }\n\n  .riviera-style-note {\n    padding: 44px 34px;\n    text-align: center;\n    color: #fff;\n    background: #4b4038;\n  }\n\n  .riviera-style-note p {\n    max-width: 720px;\n    margin: 0 auto;\n    font-family: Georgia, \"Times New Roman\", serif;\n    font-size: clamp(21px, 2.5vw, 29px);\n    font-style: italic;\n    line-height: 1.35;\n  }\n\n  @media (max-width: 767px) {\n    .riviera-description {\n      margin: 18px 0;\n      border-radius: 14px;\n    }\n\n    .riviera-hero {\n      padding: 42px 20px 26px;\n    }\n\n    .riviera-intro {\n      font-size: 16px;\n    }\n\n    .riviera-gallery,\n    .riviera-copy,\n    .riviera-feature-grid {\n      grid-template-columns: 1fr;\n    }\n\n    .riviera-gallery {\n      gap: 10px;\n      padding: 10px;\n    }\n\n    .riviera-image {\n      min-height: 360px;\n    }\n\n    .riviera-copy {\n      gap: 26px;\n      padding: 42px 22px;\n    }\n\n    .riviera-features {\n      padding: 0 16px 42px;\n    }\n\n    .riviera-style-note {\n      padding: 34px 22px;\n    }\n  }\n</style>\n\n<div class=\"riviera-description\">\n\n  \n  <section class=\"riviera-hero\">\n    <p class=\"riviera-kicker\">Effortless resort dressing</p>\n    <h2 class=\"riviera-title\">The Riviera Striped Tunic</h2>\n    <p class=\"riviera-intro\">\n      A breezy, polished essential designed for unhurried days, elegant escapes,\n      and everyday moments that call for effortless sophistication.\n    </p>\n  </section>\n\n  \n  <section class=\"riviera-gallery\">\n    <div class=\"riviera-image\">\n      <img src=\"YOUR_IMAGE_URL_1\" alt=\"The Riviera Striped Tunic styled in a warm Mediterranean-inspired setting\" loading=\"lazy\">\n    </div>\n\n    <div class=\"riviera-image\">\n      <img src=\"YOUR_IMAGE_URL_2\" alt=\"The Riviera Striped Tunic styled in a bright modern outdoor setting\" loading=\"lazy\">\n    </div>\n  </section>\n\n  \n  <section class=\"riviera-copy\">\n    <div>\n      <span class=\"riviera-section-label\">Relaxed refinement</span>\n      <h3 class=\"riviera-heading\">Made for light-filled days</h3>\n\n      <p class=\"riviera-text\">\n        The Riviera Striped Tunic blends a relaxed silhouette with a thoughtfully\n        tailored appearance. Its soft neutral stripes create an elevated look that\n        feels easy to wear and simple to style.\n      </p>\n\n      <p class=\"riviera-text\">\n        Pair it with crisp white trousers and flats for a refined daytime look, or\n        style it with denim and minimal accessories for effortless everyday elegance.\n      </p>\n    </div>\n\n    <aside class=\"riviera-details\">\n      <h4>Signature details</h4>\n      <ul>\n        <li>Soft vertical stripe design for a lengthened silhouette</li>\n        <li>Relaxed tunic fit with an elegant, polished finish</li>\n        <li>Versatile neutral palette for effortless styling</li>\n        <li>Ideal for travel, brunch, workwear, and weekend dressing</li>\n      </ul>\n    </aside>\n  </section>\n\n  \n  <section class=\"riviera-features\">\n    <h3 class=\"riviera-features-title\">Designed to become a favorite</h3>\n\n    <div class=\"riviera-feature-grid\">\n      <article class=\"riviera-feature\">\n        <span class=\"riviera-feature-number\">01</span>\n        <h4>Flattering stripes</h4>\n        <p>\n          Refined vertical lines create a clean, graceful visual effect that feels timeless.\n        </p>\n      </article>\n\n      <article class=\"riviera-feature\">\n        <span class=\"riviera-feature-number\">02</span>\n        <h4>Easy elegance</h4>\n        <p>\n          A relaxed shape delivers comfort without compromising on a put-together look.\n        </p>\n      </article>\n\n      <article class=\"riviera-feature\">\n        <span class=\"riviera-feature-number\">03</span>\n        <h4>Style it your way</h4>\n        <p>\n          Wear it with tailored trousers, denim, or slim-fit pants for multiple occasions.\n        </p>\n      </article>\n    </div>\n  </section>\n\n  \n  <section class=\"riviera-style-note\">\n    <p>\n      “A softly tailored essential for calm mornings, coastal escapes, and every elegant in-between.”\n    </p>\n  </section>\n\n</div>",
+    "shortDescription": "Handwoven Banarasi silk with pure gold zari work",
+    "category": "[\"tops\"]",
+    "subcategory": "sarees",
+    "gender": "women",
+    "type": "readymade",
+    "basePrice": 499,
+    "salePrice": 399.2,
+    "discountPercent": 20,
+    "isOnSale": false,
+    "isFreeDelivery": true,
+    "fabric": "silk",
+    "fabricDetails": null,
+    "occasion": [
+      "Wedding",
+      "Festival",
+      "Party"
+    ],
+    "tags": [
+      "banarasi",
+      "silk",
+      "saree",
+      "zari",
+      "handwoven",
+      "premium"
+    ],
+    "rating": 4.3,
+    "reviewCount": 82,
+    "isFeatured": true,
+    "isNewArrival": true,
+    "isBestseller": false,
+    "isActive": true,
+    "isReturnable": true,
+    "createdAt": "2026-07-29T10:50:43.566Z",
+    "variants": [
+      {
+        "id": "1-v1",
+        "sku": "RKF-BSS-001-GRN",
+        "size": "S",
+        "color": "Gray",
+        "colorHex": "#aa9374",
+        "price": 1299,
+        "salePrice": 1039.2,
+        "stock": 2,
+        "productId": "1"
+      },
+      {
+        "id": "1-v2",
+        "sku": "RKF-BSS-001-MAR",
+        "size": "M",
+        "color": "Gray",
+        "colorHex": "#aa9374",
+        "price": 1299,
+        "salePrice": 1039.2,
+        "stock": 5,
+        "productId": "1"
+      },
+      {
+        "id": "1-v3",
+        "sku": "RKF-BSS-001-NAV",
+        "size": "L",
+        "color": "Gray",
+        "colorHex": "#aa9374",
+        "price": 1299,
+        "salePrice": 1039.2,
+        "stock": 3,
+        "productId": "1"
+      },
+      {
+        "id": "cmrt015di000ba0ngappledy2",
+        "sku": "VAR-305910",
+        "size": "XL",
+        "color": "Gray",
+        "colorHex": "#aa9374",
+        "price": 1299,
+        "salePrice": 1039.2,
+        "stock": 4,
+        "productId": "1"
+      },
+      {
+        "id": "cmrt0bygc000da0ngmlrh2uk1",
+        "sku": "VAR-810156",
+        "size": "XS",
+        "color": "Gray",
+        "colorHex": "#aa9374",
+        "price": 1299,
+        "salePrice": 1039.2,
+        "stock": 5,
+        "productId": "1"
+      }
+    ],
+    "images": [
+      {
+        "id": "cmrteipr00013a0ng27lzpqsb",
+        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1784562638/rk-fabrics/products/ij7zyin2dqn5zcrpvh9u.jpg",
+        "alt": "blob",
+        "isPrimary": false,
+        "productId": "1"
+      },
+      {
+        "id": "cmrtejb8q0017a0ng8dqdli0q",
+        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1784562664/rk-fabrics/products/zw8vdqcxyyg7dokyuzit.jpg",
+        "alt": "blob",
+        "isPrimary": false,
+        "productId": "1"
+      },
+      {
+        "id": "cmrteishi0015a0nggcozbvyv",
+        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1784562642/rk-fabrics/products/jsq3w7ywphhkxjqpnf9u.jpg",
+        "alt": "blob",
+        "isPrimary": true,
+        "productId": "1"
       }
     ],
     "reviews": []

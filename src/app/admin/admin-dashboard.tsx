@@ -399,6 +399,8 @@ export function ProductEditor({ product = {}, products, storeCategories, storeFa
   })
   const [updatedFabric, setUpdatedFabric] = useState<string>(product.fabric || "")
   const [updatedFabricDetails, setUpdatedFabricDetails] = useState<string>(product.fabricDetails || "")
+  const [updatedDescription, setUpdatedDescription] = useState<string>(product.description || "")
+  const [showPreview, setShowPreview] = useState<boolean>(false)
   const [baseDetailsChanged, setBaseDetailsChanged] = useState(false)
 
   const [variants, setVariants] = useState<any[]>(product.variants || [])
@@ -791,14 +793,36 @@ export function ProductEditor({ product = {}, products, storeCategories, storeFa
             </div>
           </div>
           <div className="mt-4 pt-4 border-t border-charcoal/10">
-            <h3 className="text-lg font-semibold text-charcoal mb-2">Advanced Description (HTML)</h3>
+            <div className="flex justify-between items-center mb-2">
+              <h3 className="text-lg font-semibold text-charcoal">Advanced Description (HTML)</h3>
+              <button 
+                type="button" 
+                onClick={() => setShowPreview(!showPreview)} 
+                className="text-xs font-semibold px-3 py-1 bg-teal-600 text-white rounded-md hover:bg-teal-700 transition-colors shadow-sm"
+              >
+                {showPreview ? "Edit HTML" : "Live Preview"}
+              </button>
+            </div>
             <p className="text-xs text-slate mb-2">You can write raw HTML here to create stylish descriptions (e.g., &lt;b&gt;Bold&lt;/b&gt;, &lt;img src=&quot;...&quot; /&gt;, &lt;br&gt;). All scripts are safely removed.</p>
-            <textarea 
-              name="description" 
-              defaultValue={product.description || ""} 
-              className="w-full p-2 md:p-3 rounded-lg md:rounded-xl border border-charcoal/10 focus:outline-none focus:border-teal-600 focus:ring-1 md:focus:ring-2 focus:ring-teal-600/20 shadow-inner bg-slate-50 transition-all text-xs md:text-sm font-mono min-h-[150px]" 
-              placeholder="<p>Beautiful stylish description goes here...</p>" 
-            />
+            
+            {showPreview ? (
+              <div 
+                className="w-full p-4 rounded-lg md:rounded-xl border border-charcoal/10 bg-white prose prose-sm md:prose-base max-w-none min-h-[150px] overflow-auto max-h-[500px]"
+                dangerouslySetInnerHTML={{ __html: updatedDescription }}
+              />
+            ) : (
+              <textarea 
+                name="description" 
+                value={updatedDescription} 
+                onChange={(e) => { setUpdatedDescription(e.target.value); setBaseDetailsChanged(true); }}
+                className="w-full p-2 md:p-3 rounded-lg md:rounded-xl border border-charcoal/10 focus:outline-none focus:border-teal-600 focus:ring-1 md:focus:ring-2 focus:ring-teal-600/20 shadow-inner bg-slate-50 transition-all text-xs md:text-sm font-mono min-h-[150px]" 
+                placeholder="<p>Beautiful stylish description goes here...</p>" 
+              />
+            )}
+            {/* When preview is open, textarea is unmounted, so we need a hidden input to submit the value */}
+            {showPreview && (
+               <input type="hidden" name="description" value={updatedDescription} />
+            )}
           </div>
           </form>
         </div>
