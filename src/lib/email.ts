@@ -121,7 +121,7 @@ export async function sendOrderConfirmationEmail(order: any) {
               </p>
               <p style="margin: 0 0 10px 0;">
                 <a href="https://www.rkfabricszone.com" style="color: #3D6A8C; text-decoration: none;">www.rkfabricszone.com</a> | 
-                <a href="mailto:help@rkfabricszone.com" style="color: #3D6A8C; text-decoration: none;">help@rkfabricszone.com</a>
+                <a href="mailto:support@rkfabricszone.com" style="color: #3D6A8C; text-decoration: none;">support@rkfabricszone.com</a>
               </p>
             </td>
           </tr>
@@ -231,7 +231,7 @@ export async function sendOrderShippedEmail(order: any) {
               </p>
               <p style="margin: 0 0 10px 0;">
                 <a href="https://www.rkfabricszone.com" style="color: #3D6A8C; text-decoration: none;">www.rkfabricszone.com</a> | 
-                <a href="mailto:help@rkfabricszone.com" style="color: #3D6A8C; text-decoration: none;">help@rkfabricszone.com</a>
+                <a href="mailto:support@rkfabricszone.com" style="color: #3D6A8C; text-decoration: none;">support@rkfabricszone.com</a>
               </p>
             </td>
           </tr>
@@ -337,7 +337,7 @@ export async function sendOTPEmail(email: string, otp: string, type: 'SIGNUP' | 
               </p>
               <p style="margin: 0 0 10px 0;">
                 <a href="https://www.rkfabricszone.com" style="color: #3D6A8C; text-decoration: none;">www.rkfabricszone.com</a> | 
-                <a href="mailto:help@rkfabricszone.com" style="color: #3D6A8C; text-decoration: none;">help@rkfabricszone.com</a>
+                <a href="mailto:support@rkfabricszone.com" style="color: #3D6A8C; text-decoration: none;">support@rkfabricszone.com</a>
               </p>
               <p style="margin: 0;">&copy; 2026 RK Fabrics Zone. All rights reserved.</p>
             </td>
@@ -486,7 +486,7 @@ export async function sendOrderDeliveredEmail(order: any) {
               </p>
               <p style="margin: 0 0 10px 0;">
                 <a href="https://www.rkfabricszone.com" style="color: #3D6A8C; text-decoration: none;">www.rkfabricszone.com</a> | 
-                <a href="mailto:help@rkfabricszone.com" style="color: #3D6A8C; text-decoration: none;">help@rkfabricszone.com</a>
+                <a href="mailto:support@rkfabricszone.com" style="color: #3D6A8C; text-decoration: none;">support@rkfabricszone.com</a>
               </p>
             </td>
           </tr>
@@ -583,7 +583,7 @@ export async function sendOrderCancelledEmail(order: any) {
               </p>
               <p style="margin: 0 0 10px 0;">
                 <a href="https://www.rkfabricszone.com" style="color: #3D6A8C; text-decoration: none;">www.rkfabricszone.com</a> | 
-                <a href="mailto:help@rkfabricszone.com" style="color: #3D6A8C; text-decoration: none;">help@rkfabricszone.com</a>
+                <a href="mailto:support@rkfabricszone.com" style="color: #3D6A8C; text-decoration: none;">support@rkfabricszone.com</a>
               </p>
             </td>
           </tr>
