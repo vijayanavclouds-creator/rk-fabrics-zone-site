@@ -22,8 +22,8 @@ interface CartStore {
  applyCoupon: (code: string, discount: number) => void;
  removeCoupon: () => void;
  setItems: (items: CartItem[]) => void;
- gstRates: { below1000: number, above1000: number, shippingFee: number, expressShippingFee?: number, platformFeePercent: number } | null;
- setGSTRates: (rates: { below1000: number, above1000: number, shippingFee: number, expressShippingFee?: number, platformFeePercent: number }) => void;
+ gstRates: { threshold: number, belowThreshold: number, aboveThreshold: number, shippingFee: number, expressShippingFee?: number, platformFeePercent: number } | null;
+ setGSTRates: (rates: { threshold: number, belowThreshold: number, aboveThreshold: number, shippingFee: number, expressShippingFee?: number, platformFeePercent: number }) => void;
  getGSTAmount: () => number;
  shippingMode: "Surface" | "Express";
  setShippingMode: (mode: "Surface" | "Express") => void;
@@ -112,7 +112,7 @@ export const useCartStore = create<CartStore>()(
   },
 
  getGSTAmount: () => {
-    const rates = get().gstRates || { below1000: 5, above1000: 12, shippingFee: 79, platformFeePercent: 2 };
+    const rates = get().gstRates || { threshold: 2500, belowThreshold: 5, aboveThreshold: 12, shippingFee: 79, platformFeePercent: 2 };
    let gstAmount = 0;
    const subtotal = get().getSubtotal();
    const discount = get().discountAmount;
@@ -125,7 +125,7 @@ export const useCartStore = create<CartStore>()(
         const finalItemTotal = itemTotal - itemDiscount;
         const finalItemPrice = finalItemTotal / item.quantity;
         
-        const rate = finalItemPrice <= 1000 ? rates.below1000 : rates.above1000;
+        const rate = finalItemPrice <= rates.threshold ? rates.belowThreshold : rates.aboveThreshold;
         // Inclusive GST formula: GST = Total - (Total / (1 + (Rate/100)))
         gstAmount += finalItemTotal - (finalItemTotal / (1 + (rate / 100)));
       });
