@@ -70,7 +70,27 @@ export async function createOrder(data: any) {
       }
     }
 
-      // Securely recalculate the total
+      // Calculate GST based on the latest rates
+      let calculatedGst = 0
+      const rates = await getGSTRates()
+      
+      if (subtotalAmount > 0) {
+        items.forEach((item: any) => {
+          const originalPrice = item.variant.salePrice || item.variant.price
+          const itemTotal = originalPrice * item.quantity
+          const itemWeight = itemTotal / subtotalAmount
+          const itemDiscount = validatedDiscount * itemWeight
+          const finalItemTotal = itemTotal - itemDiscount
+          const finalItemPrice = finalItemTotal / item.quantity
+          
+          const rate = finalItemPrice <= 1000 ? rates.below1000 : rates.above1000
+          calculatedGst += finalItemTotal - (finalItemTotal / (1 + (rate / 100)))
+        })
+      }
+      calculatedGst += ((platformFeeAmount || 0) + shippingAmount) - (((platformFeeAmount || 0) + shippingAmount) / 1.18)
+      calculatedGst = Math.round(calculatedGst * 100) / 100
+
+      // Securely recalculate the total (inclusive GST is already in subtotal/shipping/platformFee)
       const secureTotalAmount = Math.max(0, subtotalAmount + shippingAmount + (platformFeeAmount || 0) - validatedDiscount)
       
       // Make sure the frontend isn't lying about the total amount
@@ -103,7 +123,7 @@ export async function createOrder(data: any) {
           totalAmount: secureTotalAmount,
           shippingAmount,
           platformFeeAmount: platformFeeAmount || 0,
-          gstAmount: 0,
+          gstAmount: calculatedGst,
           subtotalAmount,
           shippingAddress,
           phone,

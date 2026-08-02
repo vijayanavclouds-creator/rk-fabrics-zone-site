@@ -408,12 +408,10 @@ export default function UserOrdersPage() {
                         <span className="text-charcoal font-bold">₹{order.platformFeeAmount.toLocaleString()}</span>
                       </div>
                     )}
-                    {!!order.gstAmount && order.gstAmount > 0 && (
-                      <div className="flex justify-between text-sm">
-                        <span className="text-slate font-medium">GST</span>
-                        <span className="text-charcoal font-bold">₹{order.gstAmount.toLocaleString()}</span>
-                      </div>
-                    )}
+                    <div className="flex justify-between text-sm">
+                      <span className="text-slate font-medium">GST</span>
+                      <span className="text-charcoal font-bold">₹{(order.gstAmount || 0).toLocaleString()}</span>
+                    </div>
                     {order.discountAmount > 0 && (
                       <div className="flex justify-between text-sm text-emerald-600">
                         <span className="font-medium">Discount</span>

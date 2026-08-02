@@ -465,14 +465,10 @@ export default function CheckoutPaymentPage() {
                   </span>
                   <span className="font-bold">{getShipping() === 0 ? <span className="text-teal-600">Free</span> : `₹${getShipping()}`}</span>
                 </div>
-                <div className="flex justify-between text-charcoal">
-                  <span className="text-sm font-bold">GST</span>
-                  <span className="font-bold">₹{useCartStore.getState().getGSTAmount().toLocaleString()}</span>
-                </div>
               </div>
 
               <div className="flex justify-between items-center mb-8">
-                <span className="text-lg font-bold text-charcoal">Total</span>
+                <span className="text-lg font-bold text-charcoal">Total AMOUNT <span className="text-xs font-normal ml-1">(PRICES INCLUDE GST)</span></span>
                 <span className="text-2xl font-[family-name:var(--font-playfair)] font-bold text-charcoal">
                   ₹{getTotal().toLocaleString()}
                 </span>

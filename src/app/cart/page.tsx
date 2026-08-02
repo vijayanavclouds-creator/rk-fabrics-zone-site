@@ -345,13 +345,10 @@ export default function CartPage() {
  {shipping === 0 ? "FREE 🎉" : formatPrice(shipping)}
  </span>
  </div>
-  <div className="h-px bg-charcoal/10 " />
-  <div className="flex justify-between items-end">
-    <div className="flex items-baseline gap-2">
-      <span className="text-lg font-bold text-charcoal">Total Amount</span>
-      <span className="text-[10px] md:text-xs font-bold text-slate-500 tracking-wide uppercase">Prices include GST</span>
-    </div>
-    <span className="text-lg font-bold text-teal-600">{formatPrice(total)}</span>
+ <div className="h-px bg-charcoal/10 " />
+  <div className="flex justify-between text-lg font-bold text-charcoal ">
+  <span>Total AMOUNT <span className="text-xs font-normal ml-1">(PRICES INCLUDE GST)</span></span>
+  <span className="text-teal-600 ">{formatPrice(total)}</span>
   </div>
  </div>
 

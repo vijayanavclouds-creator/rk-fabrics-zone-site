@@ -195,7 +195,7 @@ export function CartDrawer() {
  </span>
  </div>
  <div className="flex justify-between text-base font-bold text-charcoal pt-2 border-t border-charcoal/10 ">
- <span>Total</span>
+ <span>Total AMOUNT <span className="text-xs font-normal ml-1">(PRICES INCLUDE GST)</span></span>
  <span className="text-teal-600 ">{formatPrice(total)}</span>
  </div>
 
