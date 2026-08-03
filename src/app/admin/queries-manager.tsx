@@ -52,33 +52,31 @@ function UserQueryGroup({ group, basePath }: { group: any; basePath: string }) {
     <div className="w-full bg-white">
       <button 
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full bg-slate-50 px-4 md:px-6 py-2 border-b border-charcoal/10 flex items-start sm:items-center justify-between hover:bg-slate-100 transition-colors text-left"
+        className="w-full bg-slate-50 px-4 md:px-6 py-2 border-b border-charcoal/10 flex items-center justify-between hover:bg-slate-100 transition-colors text-left gap-2"
       >
-        <div className="flex flex-col sm:flex-row sm:items-center gap-3 w-full sm:w-auto">
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-full bg-teal-100 flex items-center justify-center text-teal-700 font-bold shrink-0 text-sm">
-              {group.name.charAt(0).toUpperCase()}
+        <div className="flex items-center gap-3 w-full truncate">
+          <div className="w-8 h-8 rounded-full bg-teal-100 flex items-center justify-center text-teal-700 font-bold shrink-0 text-sm">
+            {group.name.charAt(0).toUpperCase()}
+          </div>
+          <div className="truncate w-full">
+            <div className="flex items-center gap-2 truncate">
+              <h3 className="font-bold text-charcoal text-sm truncate">{group.name}</h3>
+              {group.unreadCount > 0 && (
+                <span className="text-[10px] font-bold text-rose-600 bg-rose-50 border border-rose-200 px-1.5 py-0.5 rounded shadow-sm shrink-0 whitespace-nowrap">
+                  {group.unreadCount} New
+                </span>
+              )}
             </div>
-            <div>
-              <div className="flex flex-wrap items-center gap-2">
-                <h3 className="font-bold text-charcoal text-sm">{group.name}</h3>
-                {group.unreadCount > 0 && (
-                  <span className="text-[10px] font-bold text-rose-600 bg-rose-50 border border-rose-200 px-1.5 py-0.5 rounded shadow-sm">
-                    {group.unreadCount} New Unread!
-                  </span>
-                )}
-              </div>
-              <p className="text-xs text-slate">{group.email}</p>
-            </div>
+            <p className="text-xs text-slate truncate">{group.email}</p>
           </div>
         </div>
         
-        <div className="flex flex-col sm:flex-row items-end sm:items-center gap-2 sm:gap-4 shrink-0">
+        <div className="flex flex-row items-center gap-2 md:gap-4 shrink-0">
           <div className="flex flex-col items-end">
-            <span className="text-[10px] md:text-xs font-medium text-slate">{format(new Date(group.lastUpdated), 'MMM dd, h:mm a')}</span>
-            <span className="text-[10px] text-slate">{group.queries.length} {group.queries.length === 1 ? 'Query' : 'Queries'}</span>
+            <span className="text-[10px] md:text-xs font-medium text-slate whitespace-nowrap">{format(new Date(group.lastUpdated), 'MMM dd, h:mm a')}</span>
+            <span className="text-[10px] text-slate whitespace-nowrap">{group.queries.length} {group.queries.length === 1 ? 'Query' : 'Queries'}</span>
           </div>
-          <ChevronDown className={cn("text-slate transition-transform shrink-0 mt-1 sm:mt-0", isOpen && "rotate-180")} size={16} />
+          <ChevronDown className={cn("text-slate transition-transform shrink-0", isOpen && "rotate-180")} size={16} />
         </div>
       </button>
 
