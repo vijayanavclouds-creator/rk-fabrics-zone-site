@@ -17,6 +17,7 @@ export function OrdersManager({ readOnly = false, basePath = "/admin" }: { readO
   const [searchTerm, setSearchTerm] = useState("")
   const [activeTab, setActiveTab] = useState<"orders" | "abandoned" | "settings">("orders")
   const [sentReminders, setSentReminders] = useState<string[]>([])
+  const [selectedUsers, setSelectedUsers] = useState<string[]>([])
   const [threshold, setThreshold] = useState<number>(6)
   const [filterStatuses, setFilterStatuses] = useState<string[]>([])
   const [showFilters, setShowFilters] = useState(false)
@@ -82,6 +83,40 @@ export function OrdersManager({ readOnly = false, basePath = "/admin" }: { readO
     } else {
       toast.error(res.error || "Failed to send reminder")
     }
+  }
+
+  const handleBulkSendReminders = async () => {
+    if (selectedUsers.length === 0) return;
+    toast.loading(`Sending ${selectedUsers.length} reminders...`)
+    
+    let successCount = 0;
+    let failCount = 0;
+    
+    for (const userId of selectedUsers) {
+      const res = await sendAbandonedCartReminder(userId);
+      if (res.success) {
+        successCount++;
+        setSentReminders(prev => {
+          if (!prev.includes(userId)) {
+            const next = [...prev, userId];
+            localStorage.setItem("sentReminders", JSON.stringify(next));
+            return next;
+          }
+          return prev;
+        });
+      } else {
+        failCount++;
+      }
+    }
+    
+    toast.dismiss();
+    if (successCount > 0) {
+      toast.success(`Sent ${successCount} reminders successfully!`);
+    }
+    if (failCount > 0) {
+      toast.error(`Failed to send ${failCount} reminders.`);
+    }
+    setSelectedUsers([]);
   }
 
   const handleStatusChange = async (orderId: string, newStatus: string) => {
@@ -390,66 +425,113 @@ export function OrdersManager({ readOnly = false, basePath = "/admin" }: { readO
               <p>There are currently no users with pending carts.</p>
             </div>
           ) : (
-            <div className="overflow-x-auto w-full">
-              <table className="w-full text-left border-collapse">
-                <thead>
-                  <tr className="bg-cream-dark/30 border-b border-charcoal/10">
-                    <th className="p-3 md:p-5 font-bold text-charcoal text-[10px] md:text-xs uppercase tracking-wider min-w-[140px] md:min-w-[200px]">Customer Name</th>
-                    <th className="p-3 md:p-5 font-bold text-charcoal text-[10px] md:text-xs uppercase tracking-wider whitespace-nowrap">Cart Value</th>
-                    <th className="p-3 md:p-5 font-bold text-charcoal text-[10px] md:text-xs uppercase tracking-wider whitespace-nowrap">Items</th>
-                    <th className="p-3 md:p-5 font-bold text-charcoal text-[10px] md:text-xs uppercase tracking-wider whitespace-nowrap hidden md:table-cell">Last Updated</th>
-                    <th className="p-3 md:p-5 font-bold text-charcoal text-[10px] md:text-xs uppercase tracking-wider whitespace-nowrap text-right">Action</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {abandonedCarts.map((user: any) => (
-                    <tr key={user.id} className="border-b border-charcoal/5 hover:bg-slate-50 transition-colors">
-                      <td className="p-3 md:p-5 align-middle">
-                        <div className="flex items-center gap-2 md:gap-3">
-                          <div>
-                            <p className="font-semibold text-charcoal text-xs md:text-base flex items-center gap-2">
-                              {user.name}
-                            </p>
-                            <p className="text-[10px] md:text-sm text-slate">{user.email}</p>
-                          </div>
-                        </div>
-                      </td>
-                      <td className="p-3 md:p-5 align-middle">
-                        <span className="font-medium text-charcoal text-sm md:text-lg whitespace-nowrap">₹{user.totalAmount?.toLocaleString() || 0}</span>
-                      </td>
-                      <td className="p-3 md:p-5 align-middle">
-                        <div className="flex flex-col gap-1">
-                          {user.items?.map((item: any, idx: number) => (
-                            <span key={idx} className="text-[10px] md:text-sm text-slate flex items-center gap-1 md:gap-2">
-                              <span className="w-5 h-5 md:w-6 md:h-6 rounded bg-slate-100 flex items-center justify-center text-[9px] md:text-xs font-bold text-charcoal">{item.quantity}x</span>
-                              <span className="truncate max-w-[120px] md:max-w-[200px]" title={item.product?.name || item.productName || 'Product'}>
-                                {item.product?.name || item.productName || 'Product'}
-                              </span>
-                            </span>
-                          ))}
-                        </div>
-                      </td>
-                      <td className="p-3 md:p-5 align-middle hidden md:table-cell">
-                        <span className="text-[10px] md:text-base text-slate whitespace-nowrap">{new Date(user.cartUpdatedAt).toLocaleString()}</span>
-                      </td>
-                      <td className="p-3 md:p-5 align-middle text-right">
-                        <button
-                          type="button"
-                          onClick={(e) => {
-                            e.preventDefault();
-                            e.stopPropagation();
-                            handleSendReminder(user.id);
-                          }}
-                          className={`text-sm font-bold px-4 py-2 rounded-lg text-white transition-colors shadow-sm flex items-center justify-center gap-2 ml-auto ${
-                            sentReminders.includes(user.id) ? "bg-amber-500 hover:bg-amber-600" : "bg-teal-600 hover:bg-teal-700"
-                          }`}
-                        >
-                          <Bell size={16} /> {sentReminders.includes(user.id) ? "Send again" : "Send Reminder"}
-                        </button>
-                      </td>
+            <div className="w-full">
+              <div className="p-4 border-b border-charcoal/10 flex items-center justify-between bg-slate-50">
+                <button
+                  onClick={() => {
+                    if (selectedUsers.length === abandonedCarts.length) {
+                      setSelectedUsers([]);
+                    } else {
+                      setSelectedUsers(abandonedCarts.map(c => c.id));
+                    }
+                  }}
+                  className="text-sm font-medium text-teal-700 flex items-center gap-2 px-3 py-1.5 rounded-lg hover:bg-teal-50 transition-colors"
+                >
+                  <div className={`w-4 h-4 rounded flex items-center justify-center border ${selectedUsers.length === abandonedCarts.length ? 'bg-teal-600 border-teal-600' : 'border-slate-300'}`}>
+                    {selectedUsers.length === abandonedCarts.length && <Check size={12} className="text-white" />}
+                  </div>
+                  Select All
+                </button>
+                {selectedUsers.length > 0 && (
+                  <button
+                    onClick={handleBulkSendReminders}
+                    className="text-sm font-bold bg-teal-600 hover:bg-teal-700 text-white px-4 py-1.5 rounded-lg shadow-sm flex items-center gap-2 transition-all"
+                  >
+                    <Bell size={14} /> Send Reminders ({selectedUsers.length})
+                  </button>
+                )}
+              </div>
+              <div className="overflow-x-hidden md:overflow-x-auto w-full">
+                <table className="w-full text-left border-collapse table-fixed md:table-auto">
+                  <thead>
+                    <tr className="bg-cream-dark/30 border-b border-charcoal/10">
+                      <th className="p-3 md:p-5 font-bold text-charcoal text-[10px] md:text-xs uppercase tracking-wider w-1/3 md:w-auto">Customer Name</th>
+                      <th className="p-3 md:p-5 font-bold text-charcoal text-[10px] md:text-xs uppercase tracking-wider w-1/4 md:w-auto">Cart Value</th>
+                      <th className="p-3 md:p-5 font-bold text-charcoal text-[10px] md:text-xs uppercase tracking-wider hidden md:table-cell">Items</th>
+                      <th className="p-3 md:p-5 font-bold text-charcoal text-[10px] md:text-xs uppercase tracking-wider w-1/4 md:w-auto">Last Reminder</th>
+                      <th className="p-3 md:p-5 font-bold text-charcoal text-[10px] md:text-xs uppercase tracking-wider text-right w-[80px] md:w-auto">Action</th>
                     </tr>
-                  ))}
-                </tbody>
+                  </thead>
+                  <tbody>
+                    {abandonedCarts.map((user: any) => {
+                      const isSelected = selectedUsers.includes(user.id);
+                      return (
+                      <tr 
+                        key={user.id} 
+                        onClick={() => {
+                          setSelectedUsers(prev => prev.includes(user.id) ? prev.filter(id => id !== user.id) : [...prev, user.id]);
+                        }}
+                        className={`border-b border-charcoal/5 hover:bg-slate-50 transition-colors cursor-pointer relative ${isSelected ? 'bg-blue-50/50' : ''}`}
+                      >
+                        {isSelected && (
+                          <div className="absolute top-1 left-1 text-blue-500 bg-transparent">
+                            <Check size={16} strokeWidth={3} />
+                          </div>
+                        )}
+                        <td className="p-3 md:p-5 align-middle break-words">
+                          <div className="flex items-center gap-2 md:gap-3 ml-2 md:ml-0">
+                            <div>
+                              <p className="font-semibold text-charcoal text-xs md:text-base flex items-center gap-2">
+                                {user.name}
+                              </p>
+                              <p className="text-[9px] md:text-sm text-slate truncate max-w-[100px] md:max-w-full">{user.email}</p>
+                            </div>
+                          </div>
+                        </td>
+                        <td className="p-3 md:p-5 align-middle">
+                          <span className="font-medium text-charcoal text-xs md:text-lg whitespace-nowrap">₹{user.totalAmount?.toLocaleString() || 0}</span>
+                          {/* Show items count below cart value on mobile only */}
+                          <div className="md:hidden text-[9px] text-slate mt-1">{user.items?.length || 0} item(s)</div>
+                        </td>
+                        <td className="p-3 md:p-5 align-middle hidden md:table-cell">
+                          <div className="flex flex-col gap-1">
+                            {user.items?.map((item: any, idx: number) => (
+                              <span key={idx} className="text-sm text-slate flex items-center gap-2">
+                                <span className="w-6 h-6 rounded bg-slate-100 flex items-center justify-center text-xs font-bold text-charcoal">{item.quantity}x</span>
+                                <span className="truncate max-w-[200px]" title={item.product?.name || item.productName || 'Product'}>
+                                  {item.product?.name || item.productName || 'Product'}
+                                </span>
+                              </span>
+                            ))}
+                          </div>
+                        </td>
+                        <td className="p-3 md:p-5 align-middle">
+                          <span className="text-[9px] md:text-base text-slate whitespace-nowrap">
+                            {sentReminders.includes(user.id) ? "Recently Sent" : "Never"}
+                          </span>
+                        </td>
+                        <td className="p-2 md:p-5 align-middle text-right">
+                          <button
+                            type="button"
+                            disabled={selectedUsers.length > 0}
+                            onClick={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                              handleSendReminder(user.id);
+                            }}
+                            className={`text-[9px] md:text-sm font-bold px-2 py-1 md:px-4 md:py-2 rounded md:rounded-lg text-white transition-colors shadow-sm flex items-center justify-center gap-1 md:gap-2 ml-auto ${
+                              selectedUsers.length > 0 ? "bg-slate-300 cursor-not-allowed opacity-50" :
+                              sentReminders.includes(user.id) ? "bg-amber-500 hover:bg-amber-600" : "bg-teal-600 hover:bg-teal-700"
+                            }`}
+                          >
+                            <Bell size={12} className="md:w-4 md:h-4" /> 
+                            <span className="hidden md:inline">{sentReminders.includes(user.id) ? "Send again" : "Send Reminder"}</span>
+                            <span className="md:hidden">{sentReminders.includes(user.id) ? "Again" : "Send"}</span>
+                          </button>
+                        </td>
+                      </tr>
+                    )})}
+                  </tbody>
               </table>
             </div>
           )
