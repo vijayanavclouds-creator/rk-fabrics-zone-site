@@ -90,7 +90,15 @@ export async function updateProduct(formData: FormData) {
     
     const diff = generateDiffString(oldProduct || {}, updateData, ['slug']);
     if (diff) {
-      await logAdminActivity(`updated product <b>${name}</b>`, diff);
+      const diffLines = diff.split('<br>');
+      if (diffLines.length > 3 || diff.length > 200) {
+        const changedKeys = Object.keys(updateData).filter(
+          key => oldProduct && oldProduct[key as keyof typeof oldProduct] !== updateData[key as keyof typeof updateData] && key !== 'slug'
+        );
+        await logAdminActivity(`updated product <b>${name}</b> - ${changedKeys.join(', ')}`);
+      } else {
+        await logAdminActivity(`updated product <b>${name}</b>`, diff);
+      }
     } else {
       await logAdminActivity(`updated product <b>${name}</b>`);
     }
@@ -394,7 +402,6 @@ export async function bulkUpdateImagesAndVariants(formData: FormData) {
 
     if (deletedImageIds && deletedImageIds.length > 0) {
       await prisma.productImage.deleteMany({ where: { id: { in: deletedImageIds } } })
-      await logAdminActivity(`deleted <b>${deletedImageIds.length} image(s)</b> from <b>${product?.name}</b>`);
     }
 
     // Clear out existing primary flags if a new one is selected
@@ -404,7 +411,6 @@ export async function bulkUpdateImagesAndVariants(formData: FormData) {
 
     const imagesToUpload = uploadedImagesUrls || []
     if (imagesToUpload && imagesToUpload.length > 0) {
-      await logAdminActivity(`uploaded <b>${imagesToUpload.length} new image(s)</b> to <b>${product?.name}</b>`);
       for (let i = 0; i < imagesToUpload.length; i++) {
         const imgData = imagesToUpload[i]
         
@@ -446,6 +452,11 @@ export async function bulkUpdateImagesAndVariants(formData: FormData) {
     // Assign existing primary image if selected
     if (primaryImageId && typeof primaryImageId === "string") {
       await prisma.productImage.update({ where: { id: primaryImageId }, data: { isPrimary: true } })
+    }
+
+    const imagesUpdated = (deletedImageIds?.length > 0) || (imagesToUpload?.length > 0) || (primaryImageId) || (newPrimaryIndex !== null && newPrimaryIndex !== undefined);
+    if (imagesUpdated) {
+      await logAdminActivity(`updated product <b>${product?.name}</b> - images`);
     }
 
     syncDatabaseToStatic()
