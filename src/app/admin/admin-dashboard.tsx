@@ -57,6 +57,7 @@ export function AdminDashboard({
   // State for new product
   const [newCategory, setNewCategory] = useState<string[]>([])
   const [newFabric, setNewFabric] = useState<string>("")
+  const [productPage, setProductPage] = useState(1)
 
   // Sync state synchronously during render when URL changes to prevent flashing old tab
   if (tabParam !== prevTabParam) {
@@ -119,6 +120,11 @@ export function AdminDashboard({
       />
     )
   }
+
+  // Pagination for products
+  const productsPerPage = 10;
+  const totalProductPages = Math.ceil(products.length / productsPerPage);
+  const paginatedProducts = products.slice((productPage - 1) * productsPerPage, productPage * productsPerPage);
 
   // LIST VIEW
   return (
@@ -202,7 +208,7 @@ export function AdminDashboard({
             </tr>
           </thead>
           <tbody className="block md:table-row-group">
-            {products.map((product) => {
+            {paginatedProducts.map((product) => {
               const isNew = new Date(product.createdAt).getTime() >= Date.now() - 16 * 24 * 60 * 60 * 1000;
               const isOutOfStock = product.variants?.length > 0 && product.variants.every((v:any) => v.stock <= 0);
               
@@ -376,6 +382,29 @@ export function AdminDashboard({
             )})}
             </tbody>
             </table>
+            
+            {totalProductPages > 1 && (
+              <div className="p-4 flex items-center justify-center gap-2 bg-white border-t border-charcoal/10">
+                <button 
+                  onClick={() => setProductPage(p => Math.max(1, p - 1))}
+                  disabled={productPage === 1}
+                  className="px-3 py-1.5 border border-charcoal/10 rounded-lg text-xs font-medium bg-white hover:bg-slate-50 disabled:opacity-50 transition-colors"
+                >
+                  Previous
+                </button>
+                <div className="flex items-center px-3 font-medium text-xs text-charcoal">
+                  Page {productPage} of {totalProductPages}
+                </div>
+                <button 
+                  onClick={() => setProductPage(p => Math.min(totalProductPages, p + 1))}
+                  disabled={productPage === totalProductPages}
+                  className="px-3 py-1.5 border border-charcoal/10 rounded-lg text-xs font-medium bg-white hover:bg-slate-50 disabled:opacity-50 transition-colors"
+                >
+                  Next
+                </button>
+              </div>
+            )}
+            
           </div>
           </div>
         </>
