@@ -464,7 +464,7 @@ export async function sendCouponEmail(email: string, userName: string, couponCod
         </p>
         
         <div style="margin-top: 32px;">
-          <a href="${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/shop" style="display: inline-block; padding: 12px 24px; background-color: #0d9488; color: white; text-decoration: none; border-radius: 8px; font-weight: bold;">Shop Now</a>
+          <a href="${process.env.NEXT_PUBLIC_APP_URL || 'https://www.rkfabricszone.com'}/shop" style="display: inline-block; padding: 12px 24px; background-color: #0d9488; color: #ffffff !important; text-decoration: none; border-radius: 8px; font-weight: bold;">Shop Now</a>
         </div>
       </div>
     </div>
@@ -767,7 +767,7 @@ export async function sendAbandonedCartEmail(user: any, cartItems: any[]) {
         </div>
 
         <div style="text-align: center; margin-top: 32px;">
-          <a href="${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/cart" style="display: inline-block; padding: 14px 28px; background-color: #0d9488; color: white; text-decoration: none; border-radius: 8px; font-weight: bold;">Complete Your Purchase</a>
+          <a href="${process.env.NEXT_PUBLIC_APP_URL || 'https://www.rkfabricszone.com'}/cart" style="display: inline-block; padding: 14px 28px; background-color: #0d9488; color: #ffffff !important; text-decoration: none; border-radius: 8px; font-weight: bold;">Complete Your Purchase</a>
         </div>
       </div>
     </div>
@@ -919,7 +919,7 @@ export async function sendAdminReturnNotification(order: any, returnRequest: any
       <p><strong>Reason:</strong> ${returnRequest.reasons.join(", ")}</p>
       ${returnRequest.description ? `<p><strong>Description:</strong> ${returnRequest.description}</p>` : ''}
       <hr />
-      <p><a href="${process.env.NEXTAUTH_URL || 'https://www.rkfabricszone.com'}/admin">View in Admin Dashboard</a></p>
+      <p><a href="${process.env.NEXT_PUBLIC_APP_URL || 'https://www.rkfabricszone.com'}/admin">View in Admin Dashboard</a></p>
     </div>
   `
 
