@@ -25,6 +25,7 @@ export function CompanyProfileManager() {
     address: "",
     companyDescription: "",
     gstNumber: "",
+    panNumber: "",
     signatureUrl: "",
     gstPriceThreshold: 2500,
     gstPercentBelowThreshold: 5,
@@ -334,6 +335,19 @@ export function CompanyProfileManager() {
                 value={profile.gstNumber || ""}
                 onChange={handleChange}
                 placeholder="08XXXXX1234X1ZX"
+                className="w-full px-4 py-2.5 md:py-3 text-base bg-cream shadow-neo-input !border-none rounded-full focus:!outline-none focus:!ring-0 focus:!border-none text-charcoal placeholder:text-slate/60 transition-all"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-bold text-charcoal mb-1 md:mb-2 flex items-center gap-2">
+                <Building2 size={16} /> PAN Number
+              </label>
+              <input
+                type="text"
+                name="panNumber"
+                value={profile.panNumber || ""}
+                onChange={handleChange}
+                placeholder="ABCDE1234F"
                 className="w-full px-4 py-2.5 md:py-3 text-base bg-cream shadow-neo-input !border-none rounded-full focus:!outline-none focus:!ring-0 focus:!border-none text-charcoal placeholder:text-slate/60 transition-all"
               />
             </div>

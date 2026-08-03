@@ -37,8 +37,10 @@ export default async function InvoicePage({ params }: { params: Promise<{ id: st
   let totalTaxableValue = 0
   let totalCGST = 0
   let totalSGST = 0
+  let totalQty = 0
 
   const itemsWithTax = order.items.map((item) => {
+    totalQty += item.quantity
     // Determine the rate
     const finalItemPrice = item.price
     const rate = finalItemPrice <= 1000 ? below1000Rate : above1000Rate
@@ -103,6 +105,30 @@ export default async function InvoicePage({ params }: { params: Promise<{ id: st
     totalSGST -= discountSGST
   }
 
+  // Basic state extraction from address
+  const getAddressState = (address: string) => {
+    const states = ["Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", "Chhattisgarh", "Goa", "Gujarat", "Haryana", "Himachal Pradesh", "Jharkhand", "Karnataka", "Kerala", "Madhya Pradesh", "Maharashtra", "Manipur", "Meghalaya", "Mizoram", "Nagaland", "Odisha", "Punjab", "Rajasthan", "Sikkim", "Tamil Nadu", "Telangana", "Tripura", "Uttar Pradesh", "Uttarakhand", "West Bengal", "Delhi", "Chandigarh", "Puducherry"];
+    const lowerAddress = address.toLowerCase();
+    for (const state of states) {
+      if (lowerAddress.includes(state.toLowerCase())) {
+        return state;
+      }
+    }
+    return "Rajasthan"; // Default fallback
+  }
+
+  const getStateCode = (state: string) => {
+    const codes: Record<string, string> = {
+      "Rajasthan": "RJ", "Maharashtra": "MH", "Delhi": "DL", "Karnataka": "KA", "Gujarat": "GJ", "Tamil Nadu": "TN", "Uttar Pradesh": "UP", "West Bengal": "WB"
+    };
+    return codes[state] || state.substring(0, 2).toUpperCase();
+  }
+
+  const shippingState = getAddressState(order.shippingAddress);
+  const shippingStateCode = getStateCode(shippingState);
+  const sellerState = getAddressState(companyProfile?.address || "Jaipur, Rajasthan");
+  const sellerStateCode = getStateCode(sellerState);
+
   return (
     <div className="min-h-screen bg-transparent py-8 px-4 sm:px-6 lg:px-8 font-[family-name:var(--font-inter)] print:bg-white print:py-0 print:px-0">
       <div className="max-w-5xl mx-auto flex justify-end mb-8 print:hidden">
@@ -131,6 +157,8 @@ export default async function InvoicePage({ params }: { params: Promise<{ id: st
             {companyProfile?.gstNumber && (
               <p className="mt-2 font-bold text-charcoal">GSTIN: {companyProfile.gstNumber}</p>
             )}
+            <p className="font-bold text-charcoal">PAN: {companyProfile?.panNumber || "ABCDE1234F"}</p>
+            <p className="text-xs mt-1 font-bold text-slate">State: <span className="font-normal text-charcoal">{sellerState}</span> | Code: <span className="font-normal text-charcoal">IN-{sellerStateCode}</span></p>
           </div>
 
           {/* Invoice Info */}
@@ -148,10 +176,13 @@ export default async function InvoicePage({ params }: { params: Promise<{ id: st
             <p className="font-bold text-charcoal mb-1">{order.user.name}</p>
             <p>{order.email}</p>
             <p>{order.phone}</p>
+            <p className="text-xs mt-2 font-bold text-charcoal">State: <span className="font-normal">{shippingState}</span> | Code: <span className="font-normal">IN-{shippingStateCode}</span></p>
           </div>
           <div>
             <h3 className="font-bold text-slate uppercase tracking-wider mb-2">Shipped To</h3>
             <p className="whitespace-pre-wrap">{order.shippingAddress}</p>
+            <p className="text-xs mt-2 font-bold text-charcoal">State: <span className="font-normal">{shippingState}</span> | Code: <span className="font-normal">IN-{shippingStateCode}</span></p>
+            <p className="text-xs mt-1 font-bold text-charcoal">Place of Supply: <span className="font-normal">{shippingState.toUpperCase()}</span></p>
           </div>
         </div>
 
@@ -182,7 +213,8 @@ export default async function InvoicePage({ params }: { params: Promise<{ id: st
                 <tr key={i} className="border-b border-slate-100">
                   <td className="py-3 px-2">
                     <p className="font-bold text-charcoal">{item.productName}</p>
-                    <p className="text-xs text-slate">{item.variantName}</p>
+                    <p className="text-[10px] text-slate font-medium mb-1">{item.variantName}</p>
+                    <p className="text-[9px] text-slate/70 uppercase">HSN: 61142000 | IGST: {item.rate}%</p>
                   </td>
                   <td className="py-3 px-2 text-right text-charcoal">{item.quantity}</td>
                   <td className="py-3 px-2 text-right text-charcoal">₹{item.grossAmount.toFixed(2)}</td>
@@ -227,7 +259,8 @@ export default async function InvoicePage({ params }: { params: Promise<{ id: st
             </tbody>
             <tfoot>
               <tr className="border-t-2 border-slate-200 bg-slate-50">
-                <td colSpan={3} className="py-4 px-2 font-bold text-right text-slate uppercase">Totals:</td>
+                <td colSpan={2} className="py-4 px-2 font-bold text-charcoal uppercase tracking-wider text-xs">TOTAL QTY: {totalQty}</td>
+                <td className="py-4 px-2 font-bold text-right text-slate uppercase">Totals:</td>
                 <td className="py-4 px-2 font-bold text-right text-charcoal">₹{totalTaxableValue.toFixed(2)}</td>
                 <td className="py-4 px-2 border-l border-slate-200"></td>
                 <td className="py-4 px-2 font-bold text-right text-charcoal">₹{totalCGST.toFixed(2)}</td>
@@ -237,16 +270,27 @@ export default async function InvoicePage({ params }: { params: Promise<{ id: st
               </tr>
             </tfoot>
           </table>
+          <div className="text-right text-[10px] font-medium text-slate mt-2 italic pr-2">
+            All values are in INR
+          </div>
         </div>
 
         <div className="flex justify-between items-end mt-16">
-          <div className="text-slate text-xs max-w-sm">
-            <p className="font-bold uppercase tracking-wider mb-2">Terms & Conditions</p>
-            <p>Returns accepted within 7 days of delivery for eligible items. Items must be in original condition with tags attached.</p>
-            <p className="mt-2">Contact: {companyProfile?.supportEmail || "contact@rkfabricszone.com"}</p>
+          <div className="text-slate text-xs max-w-sm space-y-4">
+            <div>
+              <p className="font-bold uppercase text-[10px] text-charcoal tracking-wider mb-1">Declaration</p>
+              <p className="text-[10px] leading-relaxed">The goods sold are intended for end user consumption and not for resale.</p>
+              <p className="text-[10px] leading-relaxed mt-1">Is the supply subject to reverse charge: <strong>No</strong></p>
+            </div>
+            
+            <div>
+              <p className="font-bold uppercase text-[10px] text-charcoal tracking-wider mb-1">Terms & Conditions</p>
+              <p className="text-[10px]">Returns accepted within 7 days of delivery for eligible items. Items must be in original condition with tags attached.</p>
+              <p className="mt-1 text-[10px]">Contact: {companyProfile?.supportEmail || "contact@rkfabricszone.com"}</p>
+            </div>
           </div>
           
-          <div className="text-center flex flex-col items-center">
+          <div className="text-center flex flex-col items-end">
             <div className="h-16 w-48 border-b border-charcoal/20 mb-2 relative flex items-end justify-center">
               {companyProfile?.signatureUrl && (
                 // eslint-disable-next-line @next/next/no-img-element
@@ -257,8 +301,9 @@ export default async function InvoicePage({ params }: { params: Promise<{ id: st
                 />
               )}
             </div>
-            <p className="text-sm font-bold text-charcoal uppercase tracking-wider">Authorized Signature</p>
-            <p className="text-xs text-slate mt-1">For {companyProfile?.ownerName || "RK Fabrics Zone"}</p>
+            <p className="text-sm font-bold text-charcoal uppercase tracking-wider w-full text-center">Authorized Signature</p>
+            <p className="text-xs text-slate mt-1 w-full text-center">For {companyProfile?.ownerName || "RK Fabrics Zone"}</p>
+            <p className="text-[10px] font-black text-charcoal mt-6 w-full text-right tracking-widest uppercase">E. & O.E.</p>
           </div>
         </div>
       </div>

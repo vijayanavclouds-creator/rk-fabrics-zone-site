@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useRef } from "react"
+import { useState, useEffect, useRef, useMemo } from "react"
 import { Bell, AlertTriangle, Settings, Check, Trash2 } from "lucide-react"
 import { getAdminNotifications, markAdminNotificationAsRead, markAllAdminNotificationsAsRead, getLateShippingAlerts, updateLateShippingThreshold, clearAllAdminNotifications } from "@/actions/admin-notifications"
 import { toast } from "sonner"
@@ -56,14 +56,46 @@ export function AdminHeaderActions() {
     }
   }
 
+  const groupedNotifications = useMemo(() => {
+    const groups: Record<string, any> = {};
+    const result: any[] = [];
+    
+    notifications.forEach(notif => {
+      const key = notif.link || notif.message;
+      if (!groups[key]) {
+        groups[key] = { 
+          ...notif, 
+          groupCount: notif.isRead ? 0 : 1, 
+          groupIds: [notif.id],
+          isRead: notif.isRead
+        };
+        result.push(groups[key]);
+      } else {
+        if (!notif.isRead) {
+          groups[key].groupCount++;
+          groups[key].isRead = false;
+        }
+        groups[key].groupIds.push(notif.id);
+        if (new Date(notif.createdAt) > new Date(groups[key].createdAt)) {
+          groups[key].createdAt = notif.createdAt;
+          groups[key].message = notif.message;
+        }
+      }
+    });
+    
+    result.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+    return result;
+  }, [notifications]);
+
   const unreadNotifs = notifications.filter(n => !n.isRead).length
   const totalAlerts = alerts.length + paymentAlerts.length
 
-  const handleMarkAsRead = async (id: string, e: React.MouseEvent) => {
+  const handleMarkAsRead = async (id: string, e: React.MouseEvent, groupIds?: string[]) => {
     e.preventDefault()
     e.stopPropagation()
-    setNotifications(prev => prev.map(n => n.id === id ? { ...n, isRead: true } : n))
-    await markAdminNotificationAsRead(id)
+    const idsToMark = groupIds || [id];
+    setNotifications(prev => prev.map(n => idsToMark.includes(n.id) ? { ...n, isRead: true } : n))
+    await Promise.all(idsToMark.map(gid => markAdminNotificationAsRead(gid)))
   }
 
   const handleMarkAllRead = async () => {
@@ -74,6 +106,18 @@ export function AdminHeaderActions() {
   const handleClearAll = async () => {
     setNotifications([])
     await clearAllAdminNotifications()
+  }
+
+  const handleNotificationClick = async (notification: any) => {
+    if (!notification.isRead) {
+      const idsToMark = notification.groupIds || [notification.id];
+      setNotifications(prev => prev.map(n => idsToMark.includes(n.id) ? { ...n, isRead: true } : n));
+      idsToMark.forEach((gid: string) => markAdminNotificationAsRead(gid));
+    }
+    if (notification.link) {
+      setShowNotifications(false);
+      // Let the Link component handle the navigation if it's a link
+    }
   }
 
   const handleMarkPaymentAlertAsRead = async (id: string, e: React.MouseEvent) => {
@@ -193,7 +237,7 @@ export function AdminHeaderActions() {
         {showNotifications && (
           <div className="absolute -right-4 sm:-right-10 mt-2 w-80 sm:w-96 bg-white rounded-2xl shadow-neo-card border border-charcoal/10 overflow-hidden z-50">
             <div className="p-4 flex items-center justify-between bg-white">
-              <h3 className="font-bold text-charcoal">System Activity</h3>
+              <h3 className="font-bold text-charcoal">Notifications</h3>
               <div className="flex gap-3">
                 {unreadNotifs > 0 && (
                   <button 
@@ -215,23 +259,28 @@ export function AdminHeaderActions() {
             </div>
 
             <div className="max-h-96 overflow-y-auto custom-scrollbar">
-              {notifications.length === 0 ? (
+              {groupedNotifications.filter(n => !n.isRead).length === 0 ? (
                 <div className="p-8 text-center text-slate">
                   <Bell size={24} className="mx-auto mb-2 opacity-20" />
                   <p className="text-sm font-medium">No recent activity</p>
                 </div>
               ) : (
                 <div className="divide-y divide-charcoal/5">
-                  {notifications.map(notification => (
-                    <div key={notification.id} className={`group relative hover:bg-slate-50 transition-colors ${!notification.isRead ? 'bg-teal-50/20' : ''}`}>
+                  {groupedNotifications.filter(n => !n.isRead).map(notification => (
+                    <div 
+                      key={notification.id} 
+                      className={`group relative hover:bg-slate-50 transition-colors ${!notification.isRead ? 'bg-teal-50/20' : ''} ${!notification.link ? 'cursor-pointer' : ''}`}
+                      onClick={() => {
+                        if (!notification.link) {
+                          handleNotificationClick(notification);
+                        }
+                      }}
+                    >
                       {notification.link ? (
                         <Link 
                           href={notification.link}
                           className="block p-4"
-                          onClick={(e) => {
-                            if (!notification.isRead) handleMarkAsRead(notification.id, e);
-                            setShowNotifications(false);
-                          }}
+                          onClick={() => handleNotificationClick(notification)}
                         >
                           <NotificationContent notification={notification} />
                         </Link>
@@ -243,7 +292,7 @@ export function AdminHeaderActions() {
                       
                       {!notification.isRead && (
                         <button 
-                          onClick={(e) => handleMarkAsRead(notification.id, e)}
+                          onClick={(e) => handleMarkAsRead(notification.id, e, notification.groupIds)}
                           className="absolute right-4 top-4 text-teal-600 p-1 rounded-full hover:bg-teal-100 transition-colors"
                           title="Mark as read"
                         >
@@ -257,8 +306,8 @@ export function AdminHeaderActions() {
             </div>
 
             <div className="p-3 bg-white text-center">
-              <Link href="/admin?tab=activities" onClick={() => setShowNotifications(false)} className="text-sm font-semibold text-teal-600 hover:text-teal-800 transition-colors inline-block w-full">
-                View All Activity
+              <Link href="/admin?tab=notifications" onClick={() => setShowNotifications(false)} className="text-sm font-semibold text-teal-600 hover:text-teal-800 transition-colors inline-block w-full">
+                View All Notifications
               </Link>
             </div>
           </div>
@@ -279,6 +328,11 @@ function NotificationContent({ notification }: { notification: any }) {
         >
           {notification.type}
         </span>
+        {notification.groupCount > 1 && (
+          <span className="text-[10px] font-bold text-white bg-rose-500 rounded-full px-1.5 py-0.5 leading-none">
+            {notification.groupCount}
+          </span>
+        )}
         <span className="text-[10px] text-slate font-medium">
           {new Date(notification.createdAt).toLocaleString()}
         </span>

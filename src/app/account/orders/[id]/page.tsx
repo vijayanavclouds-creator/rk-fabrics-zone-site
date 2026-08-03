@@ -302,7 +302,7 @@ export default async function OrderDetailsPage({ params }: { params: Promise<{ i
             </div>
           </div>
 
-          {!order.waybillGenerated && order.status !== "CANCELLED" && (
+          {order.status !== "DELIVERED" && order.status !== "CANCELLED" && (
             <div className="bg-blue-50/50 border border-blue-100 p-4 rounded-xl mb-8 flex items-start gap-3">
               <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center shrink-0 mt-0.5">
                 <Truck size={16} className="text-blue-600" />

@@ -15,6 +15,16 @@ const checkAdmin = async () => {
 export async function getAdminNotifications() {
   try {
     await checkAdmin()
+
+    // Auto-delete read notifications older than 24 hours
+    await prisma.adminNotification.deleteMany({
+      where: { 
+        isRead: true,
+        createdAt: { lt: new Date(Date.now() - 24 * 60 * 60 * 1000) },
+        type: { not: "PAYMENT_ALERT" }
+      }
+    })
+
     const notifications = await prisma.adminNotification.findMany({
       where: { type: { not: "PAYMENT_ALERT" } },
       orderBy: { createdAt: "desc" },

@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useRef } from "react"
+import { useState, useEffect, useRef, useMemo } from "react"
 import { Bell, Check, X, Trash2 } from "lucide-react"
 import { getUserNotifications, markNotificationAsRead, markAllNotificationsAsRead, clearAllNotifications } from "@/actions/notification"
 import { useSession } from "next-auth/react"
@@ -43,19 +43,53 @@ export function NotificationDropdown() {
     setLoading(false)
   }
 
+  const groupedNotifications = useMemo(() => {
+    const groups: Record<string, any> = {};
+    const result: any[] = [];
+    
+    notifications.forEach(notif => {
+      const key = notif.link || notif.title + notif.message;
+      if (!groups[key]) {
+        groups[key] = { 
+          ...notif, 
+          groupCount: notif.isRead ? 0 : 1, 
+          groupIds: [notif.id],
+          isRead: notif.isRead
+        };
+        result.push(groups[key]);
+      } else {
+        if (!notif.isRead) {
+          groups[key].groupCount++;
+          groups[key].isRead = false;
+        }
+        groups[key].groupIds.push(notif.id);
+        if (new Date(notif.createdAt) > new Date(groups[key].createdAt)) {
+          groups[key].createdAt = notif.createdAt;
+          groups[key].message = notif.message;
+          groups[key].title = notif.title;
+        }
+      }
+    });
+    
+    result.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+    return result;
+  }, [notifications]);
+
   const unreadCount = notifications.filter(n => !n.isRead).length
 
-  const handleMarkAsRead = async (id: string, e: React.MouseEvent) => {
+  const handleMarkAsRead = async (id: string, e: React.MouseEvent, groupIds?: string[]) => {
     e.stopPropagation()
-    // Optimistic update
-    setNotifications(prev => prev.map(n => n.id === id ? { ...n, isRead: true } : n))
-    await markNotificationAsRead(id)
+    const idsToMark = groupIds || [id];
+    setNotifications(prev => prev.map(n => idsToMark.includes(n.id) ? { ...n, isRead: true } : n))
+    await Promise.all(idsToMark.map(gid => markNotificationAsRead(gid)))
   }
 
-  const handleNotificationClick = async (id: string, isRead: boolean, link?: string | null) => {
+  const handleNotificationClick = async (notification: any) => {
+    const { id, isRead, link, groupIds } = notification;
     if (!isRead) {
-      setNotifications(prev => prev.map(n => n.id === id ? { ...n, isRead: true } : n))
-      await markNotificationAsRead(id)
+      const idsToMark = groupIds || [id];
+      setNotifications(prev => prev.map(n => idsToMark.includes(n.id) ? { ...n, isRead: true } : n))
+      idsToMark.forEach((gid: string) => markNotificationAsRead(gid));
     }
     if (link) {
       setIsOpen(false)
@@ -113,32 +147,39 @@ export function NotificationDropdown() {
           </div>
 
           <div className="max-h-96 overflow-y-auto custom-scrollbar">
-            {loading && notifications.length === 0 ? (
+            {loading && groupedNotifications.filter(n => !n.isRead).length === 0 ? (
               <div className="p-8 text-center text-slate text-sm font-medium">Loading...</div>
-            ) : notifications.length === 0 ? (
+            ) : groupedNotifications.filter(n => !n.isRead).length === 0 ? (
               <div className="p-8 text-center text-slate">
                 <Bell size={24} className="mx-auto mb-2 opacity-20" />
                 <p className="text-sm font-medium">No notifications yet</p>
               </div>
             ) : (
               <div className="divide-y divide-charcoal/5">
-                {notifications.map(notification => (
+                {groupedNotifications.filter(n => !n.isRead).map(notification => (
                   <div 
                     key={notification.id} 
-                    onClick={() => handleNotificationClick(notification.id, notification.isRead, notification.link)}
+                    onClick={() => handleNotificationClick(notification)}
                     className={`p-4 hover:bg-slate-50 transition-colors ${notification.link ? 'cursor-pointer' : 'cursor-default'} relative ${!notification.isRead ? 'bg-teal-50/30' : ''}`}
                   >
                     {!notification.isRead && (
                       <div className="absolute left-0 top-0 bottom-0 w-1 bg-teal-500 rounded-r"></div>
                     )}
                     <div className="flex justify-between items-start mb-1">
-                      <h4 className={`text-sm ${!notification.isRead ? 'font-bold text-charcoal' : 'font-medium text-charcoal/80'}`}>
-                        {notification.title}
-                      </h4>
+                      <div className="flex items-center gap-2">
+                        <h4 className={`text-sm ${!notification.isRead ? 'font-bold text-charcoal' : 'font-medium text-charcoal/80'}`}>
+                          {notification.title}
+                        </h4>
+                        {notification.groupCount > 1 && (
+                          <span className="text-[10px] font-bold text-white bg-rose-500 rounded-full px-1.5 py-0.5 leading-none">
+                            {notification.groupCount}
+                          </span>
+                        )}
+                      </div>
                       {!notification.isRead && (
                         <button 
-                          onClick={(e) => handleMarkAsRead(notification.id, e)}
-                          className="text-slate hover:text-teal-600 p-0.5 rounded-full hover:bg-teal-50 transition-colors"
+                          onClick={(e) => handleMarkAsRead(notification.id, e, notification.groupIds)}
+                          className="text-slate hover:text-teal-600 p-0.5 rounded-full hover:bg-teal-50 transition-colors shrink-0"
                           title="Mark as read"
                         >
                           <Check size={14} />

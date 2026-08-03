@@ -68,6 +68,23 @@ export async function POST(req: Request) {
       data: { status: "RETURN_REQUESTED" }
     });
 
+    // Create system notification for admin
+    await prisma.adminNotification.create({
+      data: {
+        type: "RETURN",
+        message: `New return request for Order #${order.id.slice(-8).toUpperCase()} from ${order.user.name}`,
+        link: `/admin/orders/user/${order.userId}?expanded=${order.id}`
+      }
+    });
+
+    await prisma.adminActivity.create({
+      data: {
+        adminName: "System",
+        action: "Return Request Submitted",
+        details: `Customer ${order.user.name} submitted a return request for Order #${order.id.slice(-8).toUpperCase()}`
+      }
+    });
+
     // Send emails
     await Promise.all([
       sendReturnRequestedEmail(order, returnRequest),

@@ -24,6 +24,7 @@ import { QueriesManager } from "./queries-manager"
 import { ReturnsManager } from "./returns-manager"
 import { NewsletterManager } from "./newsletter-manager"
 import { ActivitiesManager } from "./activities-manager"
+import { NotificationsManager } from "./notifications-manager"
 import { AdminProfile } from "./admin-profile"
 import { PortalHeader } from "@/components/layout/portal-header"
 
@@ -46,7 +47,7 @@ export function AdminDashboard({
 }) {
   const searchParams = useSearchParams()
   const tabParam = searchParams.get("tab") as any
-  const targetView = ["overview", "list", "new", "edit", "banners", "system", "users", "orders", "navigation", "taxonomy", "company_profile", "finance", "queries", "returns", "newsletters", "activities", "profile"].includes(tabParam) ? tabParam : "overview"
+  const targetView = ["overview", "list", "new", "edit", "banners", "system", "users", "orders", "navigation", "taxonomy", "company_profile", "finance", "queries", "returns", "newsletters", "activities", "notifications", "profile"].includes(tabParam) ? tabParam : "overview"
   
   const [activeView, setActiveView] = useState<any>(targetView)
   const [prevTabParam, setPrevTabParam] = useState(tabParam)
@@ -127,7 +128,7 @@ export function AdminDashboard({
       {activeView === "company_profile" && <CompanyProfileManager />}
       {activeView === "finance" && <FinanceManager />}
       {activeView === "queries" && <QueriesManager initialQueries={queries || []} />}
-      {activeView === "returns" && <ReturnsManager initialReturns={returnRequests || []} />}
+      {activeView === "returns" && <ReturnsManager initialReturns={returnRequests || []} queries={queries || []} />}
       {activeView === "newsletters" && <NewsletterManager />}
 
       {activeView === "list" && (
@@ -164,6 +165,7 @@ export function AdminDashboard({
       {activeView === "users" && <UsersManager />}
       {activeView === "orders" && <OrdersManager />}
       {activeView === "activities" && <ActivitiesManager />}
+      {activeView === "notifications" && <NotificationsManager />}
       {activeView === "profile" && <AdminProfile />}
 
       {activeView === "list" && (

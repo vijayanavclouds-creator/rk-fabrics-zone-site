@@ -66,7 +66,7 @@ export async function POST(req: Request) {
               data: {
                 type: "PAYMENT_ALERT",
                 message: `Payment received: ₹${order.totalAmount.toLocaleString()} for Order #${order.id.slice(-6).toUpperCase()} from ${customerName}`,
-                link: `/admin/orders/user/${order.userId}`
+                link: `/admin/orders/user/${order.userId}?expanded=${order.id}#${order.id}`
               }
             })
           } catch (err) {

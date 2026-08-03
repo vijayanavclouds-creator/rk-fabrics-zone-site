@@ -106,6 +106,7 @@ export async function getCompanyProfileData() {
         address: "",
         companyDescription: "",
         gstNumber: "",
+        panNumber: "",
         signatureUrl: "",
         gstPriceThreshold: 2500,
         gstPercentBelowThreshold: 5,

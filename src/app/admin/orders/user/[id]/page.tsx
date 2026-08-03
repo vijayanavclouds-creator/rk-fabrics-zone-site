@@ -42,18 +42,42 @@ export default function UserOrdersPage() {
 
   useEffect(() => {
     const expandedParam = searchParams.get("expanded");
-    if (expandedParam) {
-      setExpandedOrderId(expandedParam);
-      // Wait for DOM to render the list, then scroll
-      if (!loading && orders.length > 0) {
-        setTimeout(() => {
-          const el = document.getElementById(expandedParam);
-          if (el) {
-            el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-          }
-        }, 100);
+    let targetId = expandedParam;
+    
+    if (!targetId && typeof window !== 'undefined') {
+      const hash = window.location.hash;
+      if (hash && hash.length > 1) {
+        targetId = hash.substring(1);
       }
     }
+
+    if (targetId) {
+      console.log("[DEBUG] Target ID found:", targetId);
+      setExpandedOrderId(targetId);
+      
+      // Wait for DOM to render the list, then scroll
+      if (!loading && orders.length > 0) {
+        console.log("[DEBUG] Loading false, orders > 0. Attempting scroll for", targetId);
+        setTimeout(() => {
+          const el = document.getElementById(targetId as string);
+          console.log("[DEBUG] Element found for scroll:", el !== null);
+          if (el) {
+            el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            
+            // Optional: highlight briefly
+            el.style.transition = 'box-shadow 0.3s ease-in-out';
+            el.style.boxShadow = '0 0 0 2px #0f766e';
+            setTimeout(() => {
+              el.style.boxShadow = 'none';
+            }, 2000);
+          }
+        }, 200);
+      }
+    } else if (!loading && orders.length > 0 && !expandedOrderId) {
+      // Fallback: If no order ID is specified in the URL, automatically expand the most recent order.
+      setExpandedOrderId(orders[0].id);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams, loading, orders.length]);
 
   const fetchOrders = async () => {

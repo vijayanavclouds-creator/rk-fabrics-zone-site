@@ -5,7 +5,7 @@ import Link from "next/link"
 import Image from "next/image"
 import { useSession, signOut } from "next-auth/react"
 import { motion, AnimatePresence } from "framer-motion"
-import { User, LayoutDashboard, ShoppingBag, Heart, Ticket, Settings, Bell, HelpCircle, MessageSquare, LogOut, Package, Image as ImageIcon, Users, Menu, Scissors, AlertTriangle, Building2, DollarSign, Mail, Smartphone, Undo2 } from "lucide-react"
+import { User, LayoutDashboard, ShoppingBag, Heart, Ticket, Settings, Bell, HelpCircle, MessageSquare, LogOut, Package, Image as ImageIcon, Users, Menu, Scissors, AlertTriangle, Building2, DollarSign, Mail, Smartphone, Undo2, Activity } from "lucide-react"
 import { useCartStore, useWishlistStore } from "@/store"
 import { useCheckoutStore } from "@/store/checkout"
 import { handlePwaInstallFallback } from "@/lib/pwa"
@@ -72,6 +72,7 @@ export function AccountDropdown() {
     { href: "/admin?tab=navigation", label: "Navigation Settings", icon: Menu },
     { href: "/admin?tab=banners", label: "Banner Settings", icon: ImageIcon },
     { href: "/admin?tab=system", label: "System Status", icon: Settings },
+    { href: "/admin?tab=activities", label: "System Activities", icon: Activity },
   ]
 
   const supportLinks = [
