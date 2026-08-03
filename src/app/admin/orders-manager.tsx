@@ -19,6 +19,7 @@ export function OrdersManager({ readOnly = false, basePath = "/admin" }: { readO
   const [sentReminders, setSentReminders] = useState<string[]>([])
   const [selectedUsers, setSelectedUsers] = useState<string[]>([])
   const [abandonedPage, setAbandonedPage] = useState(1)
+  const [ordersPage, setOrdersPage] = useState(1)
   const [threshold, setThreshold] = useState<number>(6)
   const [filterStatuses, setFilterStatuses] = useState<string[]>([])
   const [showFilters, setShowFilters] = useState(false)
@@ -219,6 +220,9 @@ export function OrdersManager({ readOnly = false, basePath = "/admin" }: { readO
   const abandonedItemsPerPage = 10;
   const paginatedAbandonedCarts = abandonedCarts.slice((abandonedPage - 1) * abandonedItemsPerPage, abandonedPage * abandonedItemsPerPage);
 
+  const ordersItemsPerPage = 10;
+  const paginatedUsersList = usersList.slice((ordersPage - 1) * ordersItemsPerPage, ordersPage * ordersItemsPerPage);
+
   return (
     <div className="animate-in fade-in duration-300">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 border-b border-charcoal/10 pb-2 mb-1">
@@ -352,23 +356,23 @@ export function OrdersManager({ readOnly = false, basePath = "/admin" }: { readO
               <table className="w-full text-left border-collapse">
                 <thead>
                   <tr className="bg-cream-dark/30 border-b border-charcoal/10">
-                    <th className="p-3 md:p-5 font-bold text-charcoal text-[10px] md:text-xs uppercase tracking-wider min-w-[140px] md:min-w-[200px]">Customer Name</th>
-                    <th className="p-3 md:p-5 font-bold text-charcoal text-[10px] md:text-xs uppercase tracking-wider whitespace-nowrap">Total Products</th>
-                    <th className="p-3 md:p-5 font-bold text-charcoal text-[10px] md:text-xs uppercase tracking-wider whitespace-nowrap hidden md:table-cell">Recent Items</th>
-                    <th className="p-3 md:p-5 font-bold text-charcoal text-[10px] md:text-xs uppercase tracking-wider whitespace-nowrap hidden md:table-cell">Ordered Date</th>
-                    <th className="p-3 md:p-5 font-bold text-charcoal text-[10px] md:text-xs uppercase tracking-wider whitespace-nowrap hidden lg:table-cell">Account Created</th>
-                    <th className="p-3 md:p-5 font-bold text-charcoal text-[10px] md:text-xs uppercase tracking-wider whitespace-nowrap">Status</th>
-                    <th className="p-3 md:p-5 w-8 md:w-10"></th>
+                    <th className="px-3 py-2 md:px-5 md:py-2 font-bold text-charcoal text-[10px] md:text-xs uppercase tracking-wider min-w-[140px] md:min-w-[200px]">Customer Name</th>
+                    <th className="px-3 py-2 md:px-5 md:py-2 font-bold text-charcoal text-[10px] md:text-xs uppercase tracking-wider whitespace-nowrap">Total Products</th>
+                    <th className="px-3 py-2 md:px-5 md:py-2 font-bold text-charcoal text-[10px] md:text-xs uppercase tracking-wider whitespace-nowrap hidden md:table-cell">Recent Items</th>
+                    <th className="px-3 py-2 md:px-5 md:py-2 font-bold text-charcoal text-[10px] md:text-xs uppercase tracking-wider whitespace-nowrap hidden md:table-cell">Ordered Date</th>
+                    <th className="px-3 py-2 md:px-5 md:py-2 font-bold text-charcoal text-[10px] md:text-xs uppercase tracking-wider whitespace-nowrap hidden lg:table-cell">Account Created</th>
+                    <th className="px-3 py-2 md:px-5 md:py-2 font-bold text-charcoal text-[10px] md:text-xs uppercase tracking-wider whitespace-nowrap">Status</th>
+                    <th className="px-3 py-2 md:px-5 md:py-2 w-8 md:w-10"></th>
                   </tr>
                 </thead>
                 <tbody>
-                  {usersList.map((user: any) => (
+                  {paginatedUsersList.map((user: any) => (
                     <tr 
                       key={user.id} 
                       className={`border-b border-charcoal/5 hover:bg-slate-50 transition-colors cursor-pointer group ${user.hasUnreadOrders ? 'bg-amber-50/30' : ''}`}
                       onClick={() => router.push(`${basePath}/orders/user/${encodeURIComponent(user.id)}`)}
                     >
-                      <td className="p-3 md:p-5 align-middle">
+                      <td className="px-3 py-2 md:px-5 md:py-2 align-middle">
                         <div className="flex items-center gap-2 md:gap-3">
                           <div>
                             <p className="font-semibold text-charcoal text-xs md:text-base flex items-center gap-1 md:gap-2">
@@ -381,19 +385,19 @@ export function OrdersManager({ readOnly = false, basePath = "/admin" }: { readO
                           </div>
                         </div>
                       </td>
-                      <td className="p-3 md:p-5 align-middle">
+                      <td className="px-3 py-2 md:px-5 md:py-2 align-middle">
                         <span className="font-medium text-xs md:text-base text-charcoal whitespace-nowrap">{user.totalPurchased} items</span>
                       </td>
-                      <td className="p-3 md:p-5 align-middle hidden md:table-cell">
+                      <td className="px-3 py-2 md:px-5 md:py-2 align-middle hidden md:table-cell">
                         <span className="font-medium text-xs md:text-base text-charcoal whitespace-nowrap">{user.recentOrderItemsCount} items</span>
                       </td>
-                      <td className="p-3 md:p-5 align-middle hidden md:table-cell">
+                      <td className="px-3 py-2 md:px-5 md:py-2 align-middle hidden md:table-cell">
                         <span className="text-[10px] md:text-base text-slate whitespace-nowrap">{new Date(user.lastOrderedDate).toLocaleDateString()}</span>
                       </td>
-                      <td className="p-3 md:p-5 align-middle hidden lg:table-cell">
+                      <td className="px-3 py-2 md:px-5 md:py-2 align-middle hidden lg:table-cell">
                         <span className="text-[10px] md:text-base text-slate whitespace-nowrap">{user.createdAt}</span>
                       </td>
-                      <td className="p-3 md:p-5 align-middle" onClick={(e) => e.stopPropagation()}>
+                      <td className="px-3 py-2 md:px-5 md:py-2 align-middle" onClick={(e) => e.stopPropagation()}>
                         {user.hasUnreadOrders ? (
                           !readOnly ? (
                             <button
@@ -411,13 +415,34 @@ export function OrdersManager({ readOnly = false, basePath = "/admin" }: { readO
                           </span>
                         )}
                       </td>
-                      <td className="p-3 md:p-5 align-middle text-right">
+                      <td className="px-3 py-2 md:px-5 md:py-2 align-middle text-right">
                         <ChevronRight className="text-slate-400 group-hover:text-teal-600 transition-colors" />
                       </td>
                     </tr>
                   ))}
                 </tbody>
               </table>
+              {Math.ceil(usersList.length / 10) > 1 && (
+                <div className="p-4 border-t border-charcoal/10 flex items-center justify-center gap-2 bg-white md:rounded-b-3xl">
+                  <button 
+                    disabled={ordersPage === 1}
+                    onClick={() => setOrdersPage(p => p - 1)}
+                    className="px-3 py-1.5 border border-charcoal/10 rounded-lg text-xs font-medium hover:bg-cream disabled:opacity-50 transition-colors"
+                  >
+                    Previous
+                  </button>
+                  <div className="flex items-center px-3 font-medium text-xs text-charcoal">
+                    Page {ordersPage} of {Math.ceil(usersList.length / 10)}
+                  </div>
+                  <button 
+                    disabled={ordersPage === Math.ceil(usersList.length / 10)}
+                    onClick={() => setOrdersPage(p => p + 1)}
+                    className="px-3 py-1.5 border border-charcoal/10 rounded-lg text-xs font-medium hover:bg-cream disabled:opacity-50 transition-colors"
+                  >
+                    Next
+                  </button>
+                </div>
+              )}
             </div>
           )}
         </div>
