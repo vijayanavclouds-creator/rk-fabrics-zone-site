@@ -41,7 +41,7 @@ export function FinanceManager() {
   ];
 
   return (
-    <div className="space-y-6 animate-in fade-in duration-300">
+    <div className="space-y-3 md:space-y-4 animate-in fade-in duration-300">
       <div className="border-b border-charcoal/10 pb-4 mb-6">
         <h2 className="font-[family-name:var(--font-playfair)] text-2xl font-bold text-charcoal">
           Finance Overview
@@ -72,44 +72,44 @@ export function FinanceManager() {
       </div>
 
       <div className="-mx-4 md:mx-0 bg-white rounded-none md:rounded-3xl border-y md:border border-charcoal/10 shadow-sm overflow-hidden">
-        <div className="p-4 md:p-6 border-b border-charcoal/10">
+        <div className="p-3 md:px-6 md:py-3 border-b border-charcoal/10">
           <h3 className="text-base md:text-lg font-bold text-charcoal">Recent Transactions</h3>
         </div>
         <div className="overflow-x-auto w-full">
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="bg-cream-dark/30 border-b border-charcoal/10">
-                <th className="p-2 md:p-5 font-bold text-charcoal text-[9px] md:text-xs uppercase tracking-wider whitespace-nowrap">Order ID</th>
-                <th className="p-2 md:p-5 font-bold text-charcoal text-[9px] md:text-xs uppercase tracking-wider">Date & Time</th>
-                <th className="p-2 md:p-5 font-bold text-charcoal text-[9px] md:text-xs uppercase tracking-wider whitespace-nowrap">Status</th>
-                <th className="p-2 md:p-5 font-bold text-charcoal text-[9px] md:text-xs uppercase tracking-wider">Txn ID</th>
-                <th className="p-2 md:p-5 font-bold text-charcoal text-[9px] md:text-xs uppercase tracking-wider text-right whitespace-nowrap">Amount</th>
+                <th className="p-2 md:px-5 md:py-2.5 font-bold text-charcoal text-[9px] md:text-xs uppercase tracking-wider whitespace-nowrap">Order ID</th>
+                <th className="p-2 md:px-5 md:py-2.5 font-bold text-charcoal text-[9px] md:text-xs uppercase tracking-wider">Date & Time</th>
+                <th className="p-2 md:px-5 md:py-2.5 font-bold text-charcoal text-[9px] md:text-xs uppercase tracking-wider whitespace-nowrap">Status</th>
+                <th className="p-2 md:px-5 md:py-2.5 font-bold text-charcoal text-[9px] md:text-xs uppercase tracking-wider">Txn ID</th>
+                <th className="p-2 md:px-5 md:py-2.5 font-bold text-charcoal text-[9px] md:text-xs uppercase tracking-wider text-right whitespace-nowrap">Amount</th>
               </tr>
             </thead>
             <tbody>
               {data.transactions.map((tx: any) => (
                 <tr key={tx.id} className="border-b border-charcoal/5 hover:bg-slate-50 transition-colors">
-                  <td className="p-2 md:p-5 align-middle">
+                  <td className="p-2 md:px-5 md:py-2.5 align-middle">
                     <Link href={`/admin/orders/user/${tx.userId}?expanded=${tx.id}`} className="font-mono text-[10px] md:text-sm text-[#1e5b7c] font-semibold hover:underline whitespace-nowrap block">
                       #{tx.id.slice(-8).toUpperCase()}
                     </Link>
                   </td>
-                  <td className="p-2 md:p-5 align-middle">
+                  <td className="p-2 md:px-5 md:py-2.5 align-middle">
                     <span className="text-[9px] md:text-sm text-slate block leading-tight">
                       {new Date(tx.date).toLocaleDateString('en-GB')} <br className="md:hidden" /> {new Date(tx.date).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
                     </span>
                   </td>
-                  <td className="p-2 md:p-5 align-middle">
+                  <td className="p-2 md:px-5 md:py-2.5 align-middle">
                     <span className="text-[8px] md:text-xs font-bold px-1.5 md:px-2 py-0.5 md:py-1 rounded bg-slate-100 text-slate-600 whitespace-nowrap">
                       {tx.transactionStatus || 'PENDING'}
                     </span>
                   </td>
-                  <td className="p-2 md:p-5 align-middle max-w-[60px] md:max-w-none">
+                  <td className="p-2 md:px-5 md:py-2.5 align-middle max-w-[60px] md:max-w-none">
                     <span className="font-mono text-[9px] md:text-sm text-charcoal truncate block">
                       {tx.transactionId || 'N/A'}
                     </span>
                   </td>
-                  <td className="p-2 md:p-5 align-middle text-right">
+                  <td className="p-2 md:px-5 md:py-2.5 align-middle text-right">
                     <span className="text-[10px] md:text-sm font-medium text-emerald-600 whitespace-nowrap">₹{tx.amount.toLocaleString()}</span>
                   </td>
                 </tr>
