@@ -9,6 +9,7 @@ import Link from "next/link";
 export function FinanceManager() {
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [txnPage, setTxnPage] = useState(1);
 
   useEffect(() => {
     async function loadData() {
@@ -39,6 +40,10 @@ export function FinanceManager() {
     { title: "Shipping Costs", value: `₹${data.totalShipping.toLocaleString()}`, icon: Truck, color: "text-amber-600", bg: "bg-amber-50" },
     { title: "Discounts Given", value: `₹${data.totalDiscounts.toLocaleString()}`, icon: Tags, color: "text-rose-600", bg: "bg-rose-50" },
   ];
+
+  const txnsPerPage = 10;
+  const totalTxnPages = Math.ceil((data.transactions?.length || 0) / txnsPerPage);
+  const paginatedTxns = (data.transactions || []).slice((txnPage - 1) * txnsPerPage, txnPage * txnsPerPage);
 
   return (
     <div className="space-y-3 md:space-y-4 animate-in fade-in duration-300">
@@ -87,7 +92,7 @@ export function FinanceManager() {
               </tr>
             </thead>
             <tbody>
-              {data.transactions.map((tx: any) => (
+              {paginatedTxns.map((tx: any) => (
                 <tr key={tx.id} className="border-b border-charcoal/5 hover:bg-slate-50 transition-colors">
                   <td className="p-2 md:px-5 md:py-2.5 align-middle">
                     <Link href={`/admin/orders/user/${tx.userId}?expanded=${tx.id}`} className="font-mono text-[10px] md:text-sm text-[#1e5b7c] font-semibold hover:underline whitespace-nowrap block">
@@ -117,6 +122,27 @@ export function FinanceManager() {
             </tbody>
           </table>
         </div>
+        {totalTxnPages > 1 && (
+          <div className="p-4 flex items-center justify-center gap-2 bg-white border-t border-charcoal/10">
+            <button 
+              onClick={() => setTxnPage(p => Math.max(1, p - 1))}
+              disabled={txnPage === 1}
+              className="px-3 py-1.5 border border-charcoal/10 rounded-lg text-xs font-medium bg-white hover:bg-slate-50 disabled:opacity-50 transition-colors"
+            >
+              Previous
+            </button>
+            <div className="flex items-center px-3 font-medium text-xs text-charcoal">
+              Page {txnPage} of {totalTxnPages}
+            </div>
+            <button 
+              onClick={() => setTxnPage(p => Math.min(totalTxnPages, p + 1))}
+              disabled={txnPage === totalTxnPages}
+              className="px-3 py-1.5 border border-charcoal/10 rounded-lg text-xs font-medium bg-white hover:bg-slate-50 disabled:opacity-50 transition-colors"
+            >
+              Next
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
