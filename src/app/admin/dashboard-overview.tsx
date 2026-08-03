@@ -309,20 +309,27 @@ export function DashboardOverview({ initialData, isSupport = false }: { initialD
 
   const FinanceCard = (
     <GlassCard className="bg-white !rounded-[16px] !p-2.5 md:!p-4 h-full">
-      <div className="grid grid-cols-2 gap-1.5 md:gap-3">
-        <Link href="/admin?tab=finance" className="bg-[#f1f5f9] rounded-lg p-2 md:p-2.5 flex flex-col items-center justify-center hover:bg-slate-200 transition-colors h-full min-h-[60px]">
-          <div className="flex items-center gap-1 mb-1">
-            <DollarSign size={10} className="text-amber-500 stroke-[3]" />
-            <p className="text-[7px] md:text-[8px] text-slate-500 font-bold uppercase tracking-wider">Finance</p>
+      <h3 className="text-[10px] font-black text-slate-700 uppercase tracking-widest mb-2 md:mb-4">
+        Finance & Returns
+      </h3>
+      <div className="flex flex-col gap-1.5 md:gap-3">
+        <Link href="/admin?tab=finance" className="flex items-center gap-2.5 md:gap-3 p-2 md:p-3 bg-white rounded-xl border border-slate-100 hover:border-orange-200 hover:shadow-sm transition-all group">
+          <div className="w-8 h-8 md:w-10 md:h-10 rounded-[8px] md:rounded-[10px] bg-gradient-to-br from-amber-400 to-orange-500 shrink-0 flex items-center justify-center text-white shadow-sm group-hover:scale-105 transition-transform duration-300">
+            <DollarSign size={14} className="md:w-[18px] md:h-[18px]" />
           </div>
-          <p className="text-[10px] md:text-xs font-black text-charcoal leading-none mt-0.5">Management</p>
+          <div>
+            <span className="text-[10px] md:text-xs font-bold text-charcoal block leading-tight">Finance Management</span>
+            <span className="text-[8px] md:text-[9px] text-slate-500">Track revenue, payouts, fees</span>
+          </div>
         </Link>
-        <Link href="/admin?tab=returns" className="bg-[#f1f5f9] rounded-lg p-2 md:p-2.5 flex flex-col items-center justify-center hover:bg-slate-200 transition-colors h-full min-h-[60px]">
-          <div className="flex items-center gap-1 mb-1">
-            <RotateCcw size={10} className="text-rose-500 stroke-[3]" />
-            <p className="text-[7px] md:text-[8px] text-slate-500 font-bold uppercase tracking-wider">Returns</p>
+        <Link href="/admin?tab=returns" className="flex items-center gap-2.5 md:gap-3 p-2 md:p-3 bg-white rounded-xl border border-slate-100 hover:border-red-200 hover:shadow-sm transition-all group">
+          <div className="w-8 h-8 md:w-10 md:h-10 rounded-[8px] md:rounded-[10px] bg-gradient-to-br from-red-400 to-rose-500 shrink-0 flex items-center justify-center text-white shadow-sm group-hover:scale-105 transition-transform duration-300">
+            <RotateCcw size={14} className="md:w-[18px] md:h-[18px]" />
           </div>
-          <p className="text-[10px] md:text-xs font-black text-charcoal leading-none mt-0.5">Management</p>
+          <div>
+            <span className="text-[10px] md:text-xs font-bold text-charcoal block leading-tight">Returns Management</span>
+            <span className="text-[8px] md:text-[9px] text-slate-500">Manage order returns & refunds</span>
+          </div>
         </Link>
       </div>
     </GlassCard>
@@ -330,20 +337,27 @@ export function DashboardOverview({ initialData, isSupport = false }: { initialD
 
   const ContentPromoCard = (
     <GlassCard className="bg-white !rounded-[16px] !p-2.5 md:!p-4 h-full">
-      <div className="grid grid-cols-2 gap-1.5 md:gap-3">
-        <Link href="/admin?tab=banners" className="bg-[#f1f5f9] rounded-lg p-2 md:p-2.5 flex flex-col items-center justify-center hover:bg-slate-200 transition-colors h-full min-h-[60px]">
-          <div className="flex items-center gap-1 mb-1">
-            <ImageIcon size={10} className="text-purple-500 stroke-[3]" />
-            <p className="text-[7px] md:text-[8px] text-slate-500 font-bold uppercase tracking-wider">Banner</p>
+      <h3 className="text-[10px] font-black text-slate-700 uppercase tracking-widest mb-2 md:mb-4">
+        Content & Promo
+      </h3>
+      <div className="flex flex-col gap-1.5 md:gap-3">
+        <Link href="/admin?tab=banners" className="flex items-center gap-2.5 md:gap-3 p-2 md:p-3 bg-white rounded-xl border border-slate-100 hover:border-purple-200 hover:shadow-sm transition-all group">
+          <div className="w-8 h-8 md:w-10 md:h-10 rounded-[8px] md:rounded-[10px] bg-gradient-to-br from-purple-400 to-purple-600 shrink-0 flex items-center justify-center text-white shadow-sm group-hover:scale-105 transition-transform duration-300">
+            <ImageIcon size={14} className="md:w-[18px] md:h-[18px]" />
           </div>
-          <p className="text-[10px] md:text-xs font-black text-charcoal leading-none mt-0.5">Management</p>
+          <div>
+            <span className="text-[10px] md:text-xs font-bold text-charcoal block leading-tight">Banner Management</span>
+            <span className="text-[8px] md:text-[9px] text-slate-500">Manags homepage banners</span>
+          </div>
         </Link>
-        <Link href="/admin?tab=newsletters" className="bg-[#f1f5f9] rounded-lg p-2 md:p-2.5 flex flex-col items-center justify-center hover:bg-slate-200 transition-colors h-full min-h-[60px]">
-          <div className="flex items-center gap-1 mb-1">
-            <Mail size={10} className="text-blue-500 stroke-[3]" />
-            <p className="text-[7px] md:text-[8px] text-slate-500 font-bold uppercase tracking-wider">Newsletter</p>
+        <Link href="/admin?tab=newsletters" className="flex items-center gap-2.5 md:gap-3 p-2 md:p-3 bg-white rounded-xl border border-slate-100 hover:border-blue-200 hover:shadow-sm transition-all group">
+          <div className="w-8 h-8 md:w-10 md:h-10 rounded-[8px] md:rounded-[10px] bg-gradient-to-br from-blue-400 to-blue-500 shrink-0 flex items-center justify-center text-white shadow-sm group-hover:scale-105 transition-transform duration-300">
+            <Mail size={14} className="md:w-[18px] md:h-[18px]" />
           </div>
-          <p className="text-[10px] md:text-xs font-black text-charcoal leading-none mt-0.5">Studio</p>
+          <div>
+            <span className="text-[10px] md:text-xs font-bold text-charcoal block leading-tight">Newsletter Studio</span>
+            <span className="text-[8px] md:text-[9px] text-slate-500">Manage subscribers</span>
+          </div>
         </Link>
       </div>
     </GlassCard>
@@ -406,6 +420,60 @@ export function DashboardOverview({ initialData, isSupport = false }: { initialD
   const OrderManagementCard = (
     <Link href={isSupport ? "/support?tab=orders" : "/admin?tab=orders"} className="block">
       <GlassCard className="group cursor-pointer bg-white !rounded-[16px] !p-2.5 md:!p-4">
+        <h3 className="text-[10px] font-black text-slate-700 uppercase tracking-widest mb-2 md:mb-4 flex items-center justify-between">
+          Order Management <CheckCircle2 size={12} className="text-emerald-500 stroke-[2.5]" />
+        </h3>
+        <div className="grid grid-cols-3 gap-1.5 md:gap-2 text-center">
+          <div className="bg-[#f1f5f9] rounded-lg p-1.5 md:p-2.5 flex flex-col items-center">
+            <div className="flex items-center gap-0.5 md:gap-1 mb-0.5 md:mb-1">
+              <Box size={8} className="text-emerald-500 stroke-[3]" />
+              <p className="text-[7px] md:text-[8px] text-slate-500 font-bold uppercase tracking-wider">Total</p>
+            </div>
+            <p className="text-xs md:text-sm font-black text-charcoal">{data.totalOrders}</p>
+          </div>
+          <div className="bg-[#f1f5f9] rounded-lg p-1.5 md:p-2.5 flex flex-col items-center">
+            <div className="flex items-center gap-0.5 md:gap-1 mb-0.5 md:mb-1">
+              <Clock size={8} className="text-amber-500 stroke-[3]" />
+              <p className="text-[7px] md:text-[8px] text-slate-500 font-bold uppercase tracking-wider">Confirmed</p>
+            </div>
+            <p className="text-xs md:text-sm font-black text-charcoal">{confirmedOrders}</p>
+          </div>
+          <div className="bg-[#f1f5f9] rounded-lg p-1.5 md:p-2.5 flex flex-col items-center">
+            <div className="flex items-center gap-0.5 md:gap-1 mb-0.5 md:mb-1">
+              <Truck size={8} className="text-blue-500 stroke-[3]" />
+              <p className="text-[7px] md:text-[8px] text-slate-500 font-bold uppercase tracking-wider">Shipped</p>
+            </div>
+            <p className="text-xs md:text-sm font-black text-charcoal">{shippedOrders}</p>
+          </div>
+          <div className="bg-[#f1f5f9] rounded-lg p-1.5 md:p-2.5 flex flex-col items-center">
+            <div className="flex items-center gap-0.5 md:gap-1 mb-0.5 md:mb-1">
+              <CheckCircle2 size={8} className="text-slate-400 stroke-[3]" />
+              <p className="text-[7px] md:text-[8px] text-slate-500 font-bold uppercase tracking-wider">Delivered</p>
+            </div>
+            <p className="text-xs md:text-sm font-black text-charcoal">{deliveredOrders}</p>
+          </div>
+          <div className="bg-[#f1f5f9] rounded-lg p-1.5 md:p-2.5 flex flex-col items-center">
+            <div className="flex items-center gap-0.5 md:gap-1 mb-0.5 md:mb-1">
+              <RotateCcw size={8} className="text-orange-400 stroke-[3]" />
+              <p className="text-[7px] md:text-[8px] text-slate-500 font-bold uppercase tracking-wider">Returned</p>
+            </div>
+            <p className="text-xs md:text-sm font-black text-charcoal">{returnedOrders}</p>
+          </div>
+          <div className="bg-[#f1f5f9] rounded-lg p-1.5 md:p-2.5 flex flex-col items-center">
+            <div className="flex items-center gap-0.5 md:gap-1 mb-0.5 md:mb-1">
+              <XCircle size={8} className="text-rose-500 stroke-[3]" />
+              <p className="text-[7px] md:text-[8px] text-slate-500 font-bold uppercase tracking-wider">Cancelled</p>
+            </div>
+            <p className="text-xs md:text-sm font-black text-charcoal">{cancelledOrders}</p>
+          </div>
+        </div>
+      </GlassCard>
+    </Link>
+  );
+
+  const MobileOrderManagementCard = (
+    <Link href={isSupport ? "/support?tab=orders" : "/admin?tab=orders"} className="block">
+      <GlassCard className="group cursor-pointer bg-white !rounded-[16px] !p-2.5 md:!p-4">
         <div className="grid grid-cols-3 gap-1.5 md:gap-2 text-center">
           <div className="bg-[#f1f5f9] rounded-lg p-2 md:p-2.5 flex flex-col items-center justify-center h-full min-h-[60px]">
             <div className="flex items-center gap-1 mb-1">
@@ -457,6 +525,26 @@ export function DashboardOverview({ initialData, isSupport = false }: { initialD
   const UserManagementCard = (
     <Link href={isSupport ? "/support?tab=users" : "/admin?tab=users"} className="block">
       <GlassCard className="group cursor-pointer bg-white !rounded-[16px] !p-2.5 md:!p-4">
+        <h3 className="text-[10px] font-black text-slate-700 uppercase tracking-widest mb-2 md:mb-4 flex items-center justify-between">
+          User Management <Users size={12} className="text-blue-500 stroke-[2.5]" />
+        </h3>
+        <div className="grid grid-cols-2 gap-1.5 md:gap-2 text-center">
+          <div className="bg-[#f1f5f9] rounded-lg p-1.5 md:p-3">
+            <p className="text-[7px] md:text-[8px] text-slate-600 font-bold uppercase tracking-wider mb-0.5 md:mb-1">Total Users</p>
+            <p className="text-xs md:text-sm font-black text-charcoal">{data.totalUsers}</p>
+          </div>
+          <div className="bg-[#f1f5f9] rounded-lg p-1.5 md:p-3">
+            <p className="text-[7px] md:text-[8px] text-slate-600 font-bold uppercase tracking-wider mb-0.5 md:mb-1">New (7 Days)</p>
+            <p className="text-xs md:text-sm font-black text-charcoal">{data.newUsersLast7Days || 0}</p>
+          </div>
+        </div>
+      </GlassCard>
+    </Link>
+  );
+
+  const MobileUserManagementCard = (
+    <Link href={isSupport ? "/support?tab=users" : "/admin?tab=users"} className="block">
+      <GlassCard className="group cursor-pointer bg-white !rounded-[16px] !p-2.5 md:!p-4">
         <div className="grid grid-cols-2 gap-1.5 md:gap-2 text-center">
           <div className="bg-[#f1f5f9] rounded-lg p-2 md:p-2.5 flex flex-col items-center justify-center h-full min-h-[60px]">
             <div className="flex items-center gap-1 mb-1">
@@ -475,6 +563,27 @@ export function DashboardOverview({ initialData, isSupport = false }: { initialD
         </div>
       </GlassCard>
     </Link>
+  );
+
+  const MobileFinanceCard = (
+    <GlassCard className="bg-white !rounded-[16px] !p-2.5 md:!p-4 h-full">
+      <div className="grid grid-cols-2 gap-1.5 md:gap-3">
+        <Link href="/admin?tab=finance" className="bg-[#f1f5f9] rounded-lg p-2 md:p-2.5 flex flex-col items-center justify-center hover:bg-slate-200 transition-colors h-full min-h-[60px]">
+          <div className="flex items-center gap-1 mb-1">
+            <DollarSign size={10} className="text-amber-500 stroke-[3]" />
+            <p className="text-[7px] md:text-[8px] text-slate-500 font-bold uppercase tracking-wider">Finance</p>
+          </div>
+          <p className="text-[10px] md:text-xs font-black text-charcoal leading-none mt-0.5">Management</p>
+        </Link>
+        <Link href="/admin?tab=returns" className="bg-[#f1f5f9] rounded-lg p-2 md:p-2.5 flex flex-col items-center justify-center hover:bg-slate-200 transition-colors h-full min-h-[60px]">
+          <div className="flex items-center gap-1 mb-1">
+            <RotateCcw size={10} className="text-rose-500 stroke-[3]" />
+            <p className="text-[7px] md:text-[8px] text-slate-500 font-bold uppercase tracking-wider">Returns</p>
+          </div>
+          <p className="text-[10px] md:text-xs font-black text-charcoal leading-none mt-0.5">Management</p>
+        </Link>
+      </div>
+    </GlassCard>
   );
 
   const QueryManagementCard = (
@@ -536,9 +645,9 @@ export function DashboardOverview({ initialData, isSupport = false }: { initialD
         {/* MOBILE LAYOUT */}
         <div className="xl:hidden flex flex-col space-y-2 md:space-y-4 max-sm:space-y-[2px] max-sm:bg-charcoal/5">
           {ChartCard}
-          {OrderManagementCard}
-          {UserManagementCard}
-          {!isSupport && FinanceCard}
+          {MobileOrderManagementCard}
+          {MobileUserManagementCard}
+          {!isSupport && MobileFinanceCard}
           
           {!isSupport && (
             <GlassCard className="bg-white !rounded-[16px] !p-2.5 md:!p-4">
