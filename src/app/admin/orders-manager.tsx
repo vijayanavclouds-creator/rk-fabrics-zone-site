@@ -18,6 +18,7 @@ export function OrdersManager({ readOnly = false, basePath = "/admin" }: { readO
   const [activeTab, setActiveTab] = useState<"orders" | "abandoned" | "settings">("orders")
   const [sentReminders, setSentReminders] = useState<string[]>([])
   const [selectedUsers, setSelectedUsers] = useState<string[]>([])
+  const [abandonedPage, setAbandonedPage] = useState(1)
   const [threshold, setThreshold] = useState<number>(6)
   const [filterStatuses, setFilterStatuses] = useState<string[]>([])
   const [showFilters, setShowFilters] = useState(false)
@@ -214,6 +215,9 @@ export function OrdersManager({ readOnly = false, basePath = "/admin" }: { readO
       toast.error(res.error || "Failed to update status")
     }
   }
+
+  const abandonedItemsPerPage = 10;
+  const paginatedAbandonedCarts = abandonedCarts.slice((abandonedPage - 1) * abandonedItemsPerPage, abandonedPage * abandonedItemsPerPage);
 
   return (
     <div className="animate-in fade-in duration-300">
@@ -455,15 +459,15 @@ export function OrdersManager({ readOnly = false, basePath = "/admin" }: { readO
                 <table className="w-full text-left border-collapse table-fixed md:table-auto">
                   <thead>
                     <tr className="bg-cream-dark/30 border-b border-charcoal/10">
-                      <th className="p-3 md:p-5 font-bold text-charcoal text-[10px] md:text-xs uppercase tracking-wider w-1/3 md:w-auto">Customer Name</th>
-                      <th className="p-3 md:p-5 font-bold text-charcoal text-[10px] md:text-xs uppercase tracking-wider w-1/4 md:w-auto">Cart Value</th>
-                      <th className="p-3 md:p-5 font-bold text-charcoal text-[10px] md:text-xs uppercase tracking-wider hidden md:table-cell">Items</th>
-                      <th className="p-3 md:p-5 font-bold text-charcoal text-[10px] md:text-xs uppercase tracking-wider w-1/4 md:w-auto">Last Reminder</th>
-                      <th className="p-3 md:p-5 font-bold text-charcoal text-[10px] md:text-xs uppercase tracking-wider text-right w-[80px] md:w-auto">Action</th>
+                      <th className="px-3 py-2 md:px-5 md:py-2 font-bold text-charcoal text-[10px] md:text-xs uppercase tracking-wider w-1/3 md:w-auto">Customer Name</th>
+                      <th className="px-3 py-2 md:px-5 md:py-2 font-bold text-charcoal text-[10px] md:text-xs uppercase tracking-wider w-1/4 md:w-auto">Cart Value</th>
+                      <th className="px-3 py-2 md:px-5 md:py-2 font-bold text-charcoal text-[10px] md:text-xs uppercase tracking-wider hidden md:table-cell">Items</th>
+                      <th className="px-3 py-2 md:px-5 md:py-2 font-bold text-charcoal text-[10px] md:text-xs uppercase tracking-wider w-1/4 md:w-auto">Last Reminder</th>
+                      <th className="px-3 py-2 md:px-5 md:py-2 font-bold text-charcoal text-[10px] md:text-xs uppercase tracking-wider text-right w-[80px] md:w-auto">Action</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {abandonedCarts.map((user: any) => {
+                    {paginatedAbandonedCarts.map((user: any) => {
                       const isSelected = selectedUsers.includes(user.id);
                       return (
                       <tr 
@@ -473,7 +477,7 @@ export function OrdersManager({ readOnly = false, basePath = "/admin" }: { readO
                         }}
                         className={`border-b border-charcoal/5 hover:bg-slate-50 transition-colors cursor-pointer relative ${isSelected ? 'bg-blue-50/50' : ''}`}
                       >
-                        <td className="p-3 md:p-5 align-middle break-words relative">
+                        <td className="px-3 py-2 md:px-5 md:py-2 align-middle break-words relative">
                           {isSelected && (
                             <div className="absolute top-1 left-1 text-blue-500 bg-transparent">
                               <Check size={16} strokeWidth={3} />
@@ -488,12 +492,11 @@ export function OrdersManager({ readOnly = false, basePath = "/admin" }: { readO
                             </div>
                           </div>
                         </td>
-                        <td className="p-3 md:p-5 align-middle">
+                        <td className="px-3 py-2 md:px-5 md:py-2 align-middle">
                           <span className="font-medium text-charcoal text-xs md:text-lg whitespace-nowrap">₹{user.totalAmount?.toLocaleString() || 0}</span>
-                          {/* Show items count below cart value on mobile only */}
                           <div className="md:hidden text-[9px] text-slate mt-1">{user.items?.length || 0} item(s)</div>
                         </td>
-                        <td className="p-3 md:p-5 align-middle hidden md:table-cell">
+                        <td className="px-3 py-2 md:px-5 md:py-2 align-middle hidden md:table-cell">
                           <div className="flex flex-col gap-1">
                             {user.items?.map((item: any, idx: number) => (
                               <span key={idx} className="text-sm text-slate flex items-center gap-2">
@@ -505,12 +508,12 @@ export function OrdersManager({ readOnly = false, basePath = "/admin" }: { readO
                             ))}
                           </div>
                         </td>
-                        <td className="p-3 md:p-5 align-middle">
+                        <td className="px-3 py-2 md:px-5 md:py-2 align-middle">
                           <span className="text-[9px] md:text-base text-slate whitespace-nowrap">
                             {sentReminders.includes(user.id) ? "Recently Sent" : "Never"}
                           </span>
                         </td>
-                        <td className="p-2 md:p-5 align-middle text-right">
+                        <td className="px-3 py-2 md:px-5 md:py-2 align-middle text-right">
                           <button
                             type="button"
                             disabled={selectedUsers.length > 0}
@@ -520,7 +523,7 @@ export function OrdersManager({ readOnly = false, basePath = "/admin" }: { readO
                               handleSendReminder(user.id);
                             }}
                             className={`text-[9px] md:text-sm font-bold px-3 py-1.5 md:px-5 md:py-2 rounded-full text-white transition-all shadow-md flex items-center justify-center gap-1 md:gap-2 ml-auto min-w-[70px] md:min-w-[140px] ${
-                              selectedUsers.length > 0 ? "bg-slate-300 cursor-not-allowed opacity-50 shadow-none" :
+                              selectedUsers.length > 0 ? "bg-slate-300 cursor-not-allowed opacity-50 shadow-none hover:shadow-none hover:translate-y-0" :
                               sentReminders.includes(user.id) ? "bg-amber-500 hover:bg-amber-600 hover:shadow-lg hover:-translate-y-0.5" : "bg-teal-600 hover:bg-teal-700 hover:shadow-lg hover:-translate-y-0.5"
                             }`}
                           >
@@ -530,9 +533,32 @@ export function OrdersManager({ readOnly = false, basePath = "/admin" }: { readO
                           </button>
                         </td>
                       </tr>
-                    )})}
+                    );})}
                   </tbody>
               </table>
+              {abandonedCarts.length > 0 && (
+                <div className="p-4 border-t border-charcoal/10 flex items-center justify-between bg-white rounded-b-3xl">
+                  <span className="text-[10px] md:text-sm text-slate">
+                    Showing {Math.min(abandonedCarts.length, (abandonedPage - 1) * 10 + 1)} to {Math.min(abandonedPage * 10, abandonedCarts.length)} of {abandonedCarts.length} entries
+                  </span>
+                  <div className="flex gap-2">
+                    <button 
+                      onClick={() => setAbandonedPage(p => Math.max(1, p - 1))}
+                      disabled={abandonedPage === 1}
+                      className="px-3 py-1.5 md:px-4 md:py-2 rounded-lg bg-white border border-charcoal/20 text-xs font-bold text-charcoal disabled:opacity-30 hover:bg-slate-50 transition-colors"
+                    >
+                      Prev
+                    </button>
+                    <button 
+                      onClick={() => setAbandonedPage(p => Math.min(Math.ceil(abandonedCarts.length / 10), p + 1))}
+                      disabled={abandonedPage === Math.ceil(abandonedCarts.length / 10)}
+                      className="px-3 py-1.5 md:px-4 md:py-2 rounded-lg bg-white border border-charcoal/20 text-xs font-bold text-charcoal disabled:opacity-30 hover:bg-slate-50 transition-colors"
+                    >
+                      Next
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         )
