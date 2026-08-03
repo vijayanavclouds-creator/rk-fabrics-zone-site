@@ -140,11 +140,11 @@ export function ActivitiesManager() {
         ) : activities.length > 0 ? (
           <div className="flex flex-col flex-1 min-h-0">
             <div className="space-y-3 flex-1 overflow-y-auto pr-2 md:pr-4 custom-scrollbar">
-              {activities.map((activity) => (
+              {activities.map((activity, index) => (
                 <div key={activity.id} className="flex gap-4 relative group">
                   <div className="w-3 h-3 rounded-full bg-teal-500 mt-1.5 shrink-0 relative z-10 shadow-[0_0_8px_rgba(20,184,166,0.6)] group-hover:scale-125 transition-transform"></div>
                   <div className="absolute left-[5px] top-5 w-[2px] h-full bg-slate-200 -z-0"></div>
-                  <div className="pb-2 w-full">
+                  <div className="pb-2 w-full relative">
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                       <p className="text-base text-charcoal">
                         <span className="font-bold text-lg">{activity.adminName}</span> <span dangerouslySetInnerHTML={{ __html: activity.action + (activity.details ? ` - ${activity.details}` : '') }} />
@@ -154,6 +154,9 @@ export function ActivitiesManager() {
                         <span>{new Date(activity.createdAt).toLocaleDateString('en-GB', { weekday: 'long', day: '2-digit', month: '2-digit', year: 'numeric' })} at {new Date(activity.createdAt).toLocaleTimeString('en-US', {hour: '2-digit', minute:'2-digit', hour12: true})}</span>
                       </div>
                     </div>
+                    {index !== activities.length - 1 && (
+                      <div className="absolute -bottom-1.5 left-0 right-0 h-px bg-gradient-to-r from-transparent via-charcoal/10 to-transparent pointer-events-none"></div>
+                    )}
                   </div>
                 </div>
               ))}
