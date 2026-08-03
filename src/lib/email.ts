@@ -1034,6 +1034,7 @@ export async function sendReturnRejectedEmail(order: any, reason: string = "") {
 }
 
 export async function sendReturnInquiryEmail(order: any, queryId: string) {
+  const from = process.env.SMTP_FROM || '"RK Fabrics Zone" <no-reply@rkfabricszone.com>'
   const to = order.user?.email
   const subject = `Inquiry regarding your return for Order #${order.id.slice(-8).toUpperCase()}`
 

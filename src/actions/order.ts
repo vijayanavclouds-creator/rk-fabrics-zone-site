@@ -195,7 +195,7 @@ export async function createOrder(data: any) {
         data: {
           type: "ORDER",
           message: `New order placed by ${session.user.name || email} for ₹${totalAmount.toLocaleString()}`,
-          link: `/admin/orders/user/${session.user.id}?expanded=${newOrder.id}#${newOrder.id}`
+          link: `/admin/orders/user/${session.user.id}?expanded=${order.id}#${order.id}`
         }
       });
     } catch (e) {
