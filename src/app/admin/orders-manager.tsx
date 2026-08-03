@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react"
 import { useRouter } from "next/navigation"
-import { getAllOrders, updateOrderStatus, toggleUserOrdersReadStatus } from "@/actions/order"
+import { getAllOrders, toggleUserOrdersReadStatus } from "@/actions/order"
 import { getAbandonedCarts, sendAbandonedCartReminder } from "@/actions/cart"
 import { getAdminSettings } from "@/actions/admin-notifications"
 import AdminSettingsForm from "./order-settings-form"
@@ -70,7 +70,7 @@ export function OrdersManager({ readOnly = false, basePath = "/admin" }: { readO
     if (typeof window !== "undefined") {
       const stored = localStorage.getItem("sentReminders");
       if (stored) {
-        try { return JSON.parse(stored); } catch (e) {}
+        try { return JSON.parse(stored); } catch (_) {}
       }
     }
     return [];
@@ -124,6 +124,7 @@ export function OrdersManager({ readOnly = false, basePath = "/admin" }: { readO
   }
 
   useEffect(() => {
+    // eslint-disable-next-line
     fetchOrders()
   }, [])
 
