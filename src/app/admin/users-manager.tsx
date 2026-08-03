@@ -17,6 +17,7 @@ export function UsersManager() {
   const [showAdmins, setShowAdmins] = useState(true)
   const [showSupport, setShowSupport] = useState(true)
   const [showCustomers, setShowCustomers] = useState(false)
+  const [customerPage, setCustomerPage] = useState(1)
 
   const fetchUsers = async () => {
     try {
@@ -57,15 +58,19 @@ export function UsersManager() {
   const supportUsers = users.filter(u => u.role === "SUPPORT")
   const customerUsers = users.filter(u => u.role === "CUSTOMER")
 
+  const customersPerPage = 10;
+  const totalCustomerPages = Math.ceil(customerUsers.length / customersPerPage);
+  const paginatedCustomers = customerUsers.slice((customerPage - 1) * customersPerPage, customerPage * customersPerPage);
+
   const UserRow = ({ user, icon: Icon, iconColor, iconBg }: any) => (
-    <div className="flex items-center justify-between p-3 md:p-4 rounded-xl border border-slate-100 hover:bg-slate-50 transition-colors gap-3">
+    <div className="flex items-center justify-between py-2 md:py-2.5 px-3 md:px-4 border-b border-charcoal/5 last:border-b-0 hover:bg-slate-50 transition-colors gap-3">
       <div className="flex items-center gap-3 md:gap-4 min-w-0">
-        <div className={`p-2 md:p-3 rounded-xl ${iconBg} ${iconColor} shrink-0`}>
-          <Icon size={20} />
+        <div className={`p-1.5 md:p-2 rounded-lg ${iconBg} ${iconColor} shrink-0`}>
+          <Icon size={16} />
         </div>
         <div className="min-w-0">
-          <h3 className="font-bold text-charcoal truncate">{user.name}</h3>
-          <p className="text-xs md:text-sm text-slate truncate">{user.email}</p>
+          <h3 className="font-bold text-charcoal text-sm truncate">{user.name}</h3>
+          <p className="text-[10px] md:text-xs text-slate truncate">{user.email}</p>
         </div>
       </div>
       <div className="flex shrink-0">
@@ -110,7 +115,7 @@ export function UsersManager() {
             </button>
             
             {showAdmins && (
-              <div className="p-3 md:p-4 space-y-3 bg-white rounded-b-2xl">
+              <div className="flex flex-col bg-white rounded-b-2xl overflow-hidden">
                 {adminUsers.length === 0 ? (
                   <p className="text-sm text-slate text-center py-4">No admin users found.</p>
                 ) : (
@@ -136,7 +141,7 @@ export function UsersManager() {
             </button>
             
             {showSupport && (
-              <div className="p-3 md:p-4 space-y-3 bg-white rounded-b-2xl">
+              <div className="flex flex-col bg-white rounded-b-2xl overflow-hidden">
                 {supportUsers.length === 0 ? (
                   <p className="text-sm text-slate text-center py-4">No support users found.</p>
                 ) : (
@@ -162,13 +167,36 @@ export function UsersManager() {
             </button>
             
             {showCustomers && (
-              <div className="p-3 md:p-4 space-y-3 bg-white rounded-b-2xl">
+              <div className="flex flex-col bg-white rounded-b-2xl overflow-hidden">
                 {customerUsers.length === 0 ? (
                   <p className="text-sm text-slate text-center py-4">No customers found.</p>
                 ) : (
-                  customerUsers.map((user) => (
-                    <UserRow key={user.id} user={user} icon={User} iconColor="text-slate-500" iconBg="bg-slate-200" />
-                  ))
+                  <>
+                    {paginatedCustomers.map((user) => (
+                      <UserRow key={user.id} user={user} icon={User} iconColor="text-slate-500" iconBg="bg-slate-200" />
+                    ))}
+                    {totalCustomerPages > 1 && (
+                      <div className="p-3 md:p-4 flex items-center justify-center gap-2 bg-slate-50/50 border-t border-charcoal/5">
+                        <button 
+                          onClick={() => setCustomerPage(p => Math.max(1, p - 1))}
+                          disabled={customerPage === 1}
+                          className="px-3 py-1.5 border border-charcoal/10 rounded-lg text-xs font-medium bg-white hover:bg-slate-50 disabled:opacity-50 transition-colors"
+                        >
+                          Previous
+                        </button>
+                        <div className="flex items-center px-3 font-medium text-xs text-charcoal">
+                          Page {customerPage} of {totalCustomerPages}
+                        </div>
+                        <button 
+                          onClick={() => setCustomerPage(p => Math.min(totalCustomerPages, p + 1))}
+                          disabled={customerPage === totalCustomerPages}
+                          className="px-3 py-1.5 border border-charcoal/10 rounded-lg text-xs font-medium bg-white hover:bg-slate-50 disabled:opacity-50 transition-colors"
+                        >
+                          Next
+                        </button>
+                      </div>
+                    )}
+                  </>
                 )}
               </div>
             )}
