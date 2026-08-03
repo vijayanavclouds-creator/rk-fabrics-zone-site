@@ -43,63 +43,65 @@ const getSubjectColor = (subject: string) => {
 
 function UserQueryGroup({ group, basePath }: { group: any; basePath: string }) {
   const [isOpen, setIsOpen] = useState(false);
+  const [innerPage, setInnerPage] = useState(1);
+  const innerItemsPerPage = 5;
+  const totalInnerPages = Math.ceil(group.queries.length / innerItemsPerPage);
+  const paginatedQueries = group.queries.slice((innerPage - 1) * innerItemsPerPage, innerPage * innerItemsPerPage);
 
   return (
-    <div className="-mx-6 md:mx-0 bg-white rounded-none md:rounded-2xl border-y md:border border-charcoal/10 shadow-sm overflow-hidden mb-4 md:mb-6">
+    <div className="-mx-6 md:mx-0 bg-white rounded-none md:rounded-2xl border-y md:border border-charcoal/10 shadow-sm overflow-hidden mb-2 md:mb-4">
       <button 
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full bg-slate-50 px-4 md:px-6 py-4 border-b border-charcoal/10 flex items-start sm:items-center justify-between hover:bg-slate-100 transition-colors text-left"
+        className="w-full bg-slate-50 px-4 md:px-6 py-2 border-b border-charcoal/10 flex items-start sm:items-center justify-between hover:bg-slate-100 transition-colors text-left"
       >
         <div className="flex flex-col sm:flex-row sm:items-center gap-3 w-full sm:w-auto">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-teal-100 flex items-center justify-center text-teal-700 font-bold shrink-0">
+            <div className="w-8 h-8 rounded-full bg-teal-100 flex items-center justify-center text-teal-700 font-bold shrink-0 text-sm">
               {group.name.charAt(0).toUpperCase()}
             </div>
             <div>
               <div className="flex flex-wrap items-center gap-2">
-                <h3 className="font-bold text-charcoal">{group.name}</h3>
+                <h3 className="font-bold text-charcoal text-sm">{group.name}</h3>
                 {group.unreadCount > 0 && (
                   <span className="text-[10px] font-bold text-rose-600 bg-rose-50 border border-rose-200 px-1.5 py-0.5 rounded shadow-sm">
                     {group.unreadCount} New Unread!
                   </span>
                 )}
               </div>
-              <p className="text-xs sm:text-sm text-slate">{group.email}</p>
+              <p className="text-xs text-slate">{group.email}</p>
             </div>
           </div>
         </div>
         
         <div className="flex flex-col sm:flex-row items-end sm:items-center gap-2 sm:gap-4 shrink-0">
           <div className="flex flex-col items-end">
-            <span className="text-xs font-medium text-slate">{format(new Date(group.lastUpdated), 'MMM dd, h:mm a')}</span>
-            <span className="text-[10px] sm:text-xs text-slate">{group.queries.length} {group.queries.length === 1 ? 'Query' : 'Queries'}</span>
+            <span className="text-[10px] md:text-xs font-medium text-slate">{format(new Date(group.lastUpdated), 'MMM dd, h:mm a')}</span>
+            <span className="text-[10px] text-slate">{group.queries.length} {group.queries.length === 1 ? 'Query' : 'Queries'}</span>
           </div>
-          <ChevronDown className={cn("text-slate transition-transform shrink-0 mt-1 sm:mt-0", isOpen && "rotate-180")} size={20} />
+          <ChevronDown className={cn("text-slate transition-transform shrink-0 mt-1 sm:mt-0", isOpen && "rotate-180")} size={16} />
         </div>
       </button>
 
       {isOpen && (
         <div className="divide-y divide-charcoal/5">
-          {group.queries.map((query: any) => {
+          {paginatedQueries.map((query: any) => {
             const isForwardedByMira = query.messages?.some((m: any) => m.senderType === 'BOT' && m.message.includes('[TRANSFER_TO_HUMAN]'));
             
             return (
               <Link 
                 key={query.id} 
                 href={`${basePath}/queries/${query.id}`}
-                className="block px-4 md:px-6 py-4 hover:bg-slate-50/50 transition-colors w-full text-left"
+                className="block px-4 md:px-6 py-2 hover:bg-slate-50/50 transition-colors w-full text-left"
               >
-                <div className="flex flex-col md:grid md:grid-cols-12 gap-3 md:gap-4 w-full items-start md:items-center">
-                  
-                  {/* Mobile Row 1 / Desktop Col 1 */}
-                  <div className="md:col-span-4 w-full flex items-start justify-between md:justify-start gap-2">
+                {/* Mobile Layout */}
+                <div className="flex md:hidden flex-col gap-2 w-full">
+                  <div className="flex items-start justify-between gap-2">
                     <div className="flex flex-wrap items-center gap-2">
-                      <span className={cn("px-2 md:px-3 py-1 rounded-full text-[10px] md:text-xs font-semibold border whitespace-nowrap", getSubjectColor(query.subject))}>
+                      <span className={cn("px-2 py-1 rounded-full text-[10px] font-semibold border whitespace-nowrap", getSubjectColor(query.subject))}>
                         {query.subject}
                       </span>
-                      
                       {query.status === "RESOLVED" && (
-                        <span className="text-xs text-slate font-medium">Resolved</span>
+                        <span className="text-[10px] text-slate font-medium">Resolved</span>
                       )}
                       {!query.isRead && query.status !== "RESOLVED" && query.messages?.[query.messages.length - 1]?.senderType === "USER" && (
                         <span className="text-[10px] text-rose-600 font-bold bg-rose-50 px-1.5 py-0.5 rounded border border-rose-200 animate-pulse whitespace-nowrap">
@@ -107,52 +109,83 @@ function UserQueryGroup({ group, basePath }: { group: any; basePath: string }) {
                         </span>
                       )}
                     </div>
-                    
-                    {/* Only show messages count on right side on mobile, hidden on desktop here */}
-                    <div className="md:hidden shrink-0">
-                      <span className="text-[10px] text-slate font-medium bg-slate-100 border border-slate-200 px-2 py-1 rounded-md">
-                        {query.messages?.length || 1} msgs
-                      </span>
-                    </div>
+                    <span className="text-[10px] text-slate font-medium bg-slate-100 border border-slate-200 px-2 py-1 rounded-md shrink-0">
+                      {query.messages?.length || 1} msgs
+                    </span>
                   </div>
-
-                  {/* Mobile Row 2 / Desktop Col 2 & 3 */}
-                  <div className="md:col-span-6 w-full flex flex-wrap items-center gap-3 text-xs md:text-sm text-slate">
+                  <div className="flex flex-wrap items-center gap-3 text-[10px] text-slate">
                     <div className="flex items-center gap-1.5">
-                      <Phone size={14} className="shrink-0 text-slate/70" />
+                      <Phone size={12} className="shrink-0 text-slate/70" />
                       <span>{query.phone || 'N/A'}</span>
                     </div>
-                    
-                    <div className="hidden md:block w-1 h-1 rounded-full bg-slate-300" />
-                    
                     <div className="flex items-center gap-1.5">
-                      <Calendar size={14} className="shrink-0 text-slate/70" />
+                      <Calendar size={12} className="shrink-0 text-slate/70" />
                       <span>{format(new Date(query.createdAt), 'MMM dd, yyyy h:mm a')}</span>
                     </div>
+                  </div>
+                </div>
 
+                {/* Desktop Strict Parallel Columns Layout */}
+                <div className="hidden md:grid grid-cols-12 gap-4 w-full items-center">
+                  <div className="col-span-4 flex items-center gap-2 truncate">
+                    <span className={cn("px-2 md:px-3 py-1 rounded-full text-[10px] md:text-xs font-semibold border whitespace-nowrap", getSubjectColor(query.subject))}>
+                      {query.subject}
+                    </span>
+                    {query.status === "RESOLVED" && (
+                      <span className="text-[10px] md:text-xs text-slate font-medium">Resolved</span>
+                    )}
+                    {!query.isRead && query.status !== "RESOLVED" && query.messages?.[query.messages.length - 1]?.senderType === "USER" && (
+                      <span className="text-[10px] text-rose-600 font-bold bg-rose-50 px-1.5 py-0.5 rounded border border-rose-200 animate-pulse whitespace-nowrap">
+                        New Message!
+                      </span>
+                    )}
+                  </div>
+                  <div className="col-span-3 flex items-center gap-1.5 text-xs text-slate truncate">
+                    <Phone size={14} className="shrink-0 text-slate/70" />
+                    <span className="truncate">{query.phone || 'N/A'}</span>
+                  </div>
+                  <div className="col-span-3 flex items-center gap-1.5 text-xs text-slate truncate">
+                    <Calendar size={14} className="shrink-0 text-slate/70" />
+                    <span className="truncate">{format(new Date(query.createdAt), 'MMM dd, yyyy h:mm a')}</span>
                     {isForwardedByMira && (
-                      <div className="relative group/tooltip inline-flex items-center justify-center ml-auto md:ml-2">
-                        <AlertCircle size={16} className="text-amber-500 fill-amber-50" />
-                        <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2.5 py-1.5 bg-charcoal text-white text-[10px] rounded-md opacity-0 group-hover/tooltip:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-10 shadow-lg font-medium">
-                          Escalated by AI Assistant
-                          <div className="absolute top-full left-1/2 -translate-x-1/2 -mt-px border-4 border-transparent border-t-charcoal"></div>
-                        </div>
+                      <div title="Escalated by AI Assistant" className="inline-flex shrink-0 ml-1">
+                        <AlertCircle size={14} className="text-amber-500 fill-amber-50" />
                       </div>
                     )}
                   </div>
-                  
-                  {/* Desktop Col 4 (Hidden on Mobile) */}
-                  <div className="hidden md:flex md:col-span-2 justify-end items-center gap-2">
-                    <span className="text-xs text-slate font-medium bg-slate-100 border border-slate-200 px-2.5 py-1 rounded-md">
+                  <div className="col-span-2 flex justify-end items-center gap-2">
+                    <span className="text-[10px] md:text-xs text-slate font-medium bg-slate-100 border border-slate-200 px-2 md:px-2.5 py-1 rounded-md whitespace-nowrap">
                       {query.messages?.length || 1} messages
                     </span>
-                    <ChevronDown size={18} className="text-slate -rotate-90" />
+                    <ChevronDown size={16} className="text-slate -rotate-90 shrink-0" />
                   </div>
-
                 </div>
               </Link>
             );
           })}
+          {totalInnerPages > 1 && (
+            <div className="px-4 md:px-6 py-2 flex items-center justify-between border-t border-charcoal/5 bg-slate-50/50">
+              <span className="text-[10px] text-slate">
+                Showing {Math.min(group.queries.length, (innerPage - 1) * innerItemsPerPage + 1)} to {Math.min(innerPage * innerItemsPerPage, group.queries.length)} of {group.queries.length} queries
+              </span>
+              <div className="flex gap-2">
+                <button 
+                  onClick={() => setInnerPage(p => Math.max(1, p - 1))}
+                  disabled={innerPage === 1}
+                  className="px-2 py-1 md:px-3 md:py-1 rounded border border-charcoal/20 bg-white text-[10px] font-bold text-charcoal disabled:opacity-30 hover:bg-slate-50 transition-colors"
+                >
+                  Prev
+                </button>
+                <button 
+                  onClick={() => setInnerPage(p => Math.min(totalInnerPages, p + 1))}
+                  disabled={innerPage === totalInnerPages}
+                  className="px-2 py-1 md:px-3 md:py-1 rounded border border-charcoal/20 bg-white text-[10px] font-bold text-charcoal disabled:opacity-30 hover:bg-slate-50 transition-colors"
+                >
+                  Next
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       )}
     </div>
@@ -181,7 +214,8 @@ export function QueriesManager({ initialQueries, basePath = "/admin" }: { initia
       const group = groups[groupKey];
       group.queries.push(query);
       
-      if (!query.isRead && query.status !== "RESOLVED") {
+      const isLatestUser = query.messages?.[query.messages.length - 1]?.senderType === "USER";
+      if (!query.isRead && query.status !== "RESOLVED" && isLatestUser) {
         group.unreadCount += 1;
       }
       
@@ -214,6 +248,11 @@ export function QueriesManager({ initialQueries, basePath = "/admin" }: { initia
     });
   }, [initialQueries]);
 
+  const [outerPage, setOuterPage] = useState(1);
+  const outerItemsPerPage = 10;
+  const totalOuterPages = Math.ceil(userGroups.length / outerItemsPerPage);
+  const paginatedUserGroups = userGroups.slice((outerPage - 1) * outerItemsPerPage, outerPage * outerItemsPerPage);
+
   if (initialQueries.length === 0) {
     return (
       <div className="bg-white rounded-2xl border border-charcoal/10 p-12 text-center shadow-sm">
@@ -226,9 +265,31 @@ export function QueriesManager({ initialQueries, basePath = "/admin" }: { initia
 
   return (
     <div className="space-y-2 md:space-y-4">
-      {userGroups.map((group) => (
+      {paginatedUserGroups.map((group) => (
         <UserQueryGroup key={group.id} group={group} basePath={basePath} />
       ))}
+      
+      {totalOuterPages > 1 && (
+        <div className="p-4 flex items-center justify-center gap-2">
+          <button 
+            onClick={() => setOuterPage(p => Math.max(1, p - 1))}
+            disabled={outerPage === 1}
+            className="px-3 py-1.5 border border-charcoal/10 rounded-lg text-xs font-medium bg-white hover:bg-slate-50 disabled:opacity-50 transition-colors"
+          >
+            Previous
+          </button>
+          <div className="flex items-center px-3 font-medium text-xs text-charcoal">
+            Page {outerPage} of {totalOuterPages}
+          </div>
+          <button 
+            onClick={() => setOuterPage(p => Math.min(totalOuterPages, p + 1))}
+            disabled={outerPage === totalOuterPages}
+            className="px-3 py-1.5 border border-charcoal/10 rounded-lg text-xs font-medium bg-white hover:bg-slate-50 disabled:opacity-50 transition-colors"
+          >
+            Next
+          </button>
+        </div>
+      )}
     </div>
   );
 }
