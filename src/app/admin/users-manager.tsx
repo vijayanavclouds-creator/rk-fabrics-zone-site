@@ -105,13 +105,13 @@ export function UsersManager() {
           <div className="border border-charcoal/10 rounded-2xl">
             <button 
               onClick={() => setShowAdmins(!showAdmins)}
-              className={cn("w-full flex items-center justify-between p-3 md:p-4 bg-slate-50 hover:bg-slate-100 transition-colors", showAdmins ? "rounded-t-2xl" : "rounded-2xl")}
+              className={cn("w-full flex items-center justify-between py-2 md:py-2.5 px-3 md:px-4 bg-slate-50 hover:bg-slate-100 transition-colors", showAdmins ? "rounded-t-2xl" : "rounded-2xl")}
             >
               <div className="flex items-center gap-3">
-                <Shield size={20} className="text-teal-600" />
-                <h3 className="font-bold text-charcoal">Administrators ({adminUsers.length})</h3>
+                <Shield size={16} className="text-teal-600" />
+                <h3 className="font-bold text-charcoal text-sm">Administrators ({adminUsers.length})</h3>
               </div>
-              {showAdmins ? <ChevronUp size={20} className="text-slate" /> : <ChevronDown size={20} className="text-slate" />}
+              {showAdmins ? <ChevronUp size={16} className="text-slate" /> : <ChevronDown size={16} className="text-slate" />}
             </button>
             
             {showAdmins && (
@@ -131,13 +131,13 @@ export function UsersManager() {
           <div className="border border-charcoal/10 rounded-2xl">
             <button 
               onClick={() => setShowSupport(!showSupport)}
-              className={cn("w-full flex items-center justify-between p-3 md:p-4 bg-slate-50 hover:bg-slate-100 transition-colors", showSupport ? "rounded-t-2xl" : "rounded-2xl")}
+              className={cn("w-full flex items-center justify-between py-2 md:py-2.5 px-3 md:px-4 bg-slate-50 hover:bg-slate-100 transition-colors", showSupport ? "rounded-t-2xl" : "rounded-2xl")}
             >
               <div className="flex items-center gap-3">
-                <Headset size={20} className="text-blue-600" />
-                <h3 className="font-bold text-charcoal">Support Staff ({supportUsers.length})</h3>
+                <Headset size={16} className="text-blue-600" />
+                <h3 className="font-bold text-charcoal text-sm">Support Staff ({supportUsers.length})</h3>
               </div>
-              {showSupport ? <ChevronUp size={20} className="text-slate" /> : <ChevronDown size={20} className="text-slate" />}
+              {showSupport ? <ChevronUp size={16} className="text-slate" /> : <ChevronDown size={16} className="text-slate" />}
             </button>
             
             {showSupport && (
@@ -157,13 +157,13 @@ export function UsersManager() {
           <div className="border border-charcoal/10 rounded-2xl">
             <button 
               onClick={() => setShowCustomers(!showCustomers)}
-              className={cn("w-full flex items-center justify-between p-3 md:p-4 bg-slate-50 hover:bg-slate-100 transition-colors", showCustomers ? "rounded-t-2xl" : "rounded-2xl")}
+              className={cn("w-full flex items-center justify-between py-2 md:py-2.5 px-3 md:px-4 bg-slate-50 hover:bg-slate-100 transition-colors", showCustomers ? "rounded-t-2xl" : "rounded-2xl")}
             >
               <div className="flex items-center gap-3">
-                <User size={20} className="text-slate-500" />
-                <h3 className="font-bold text-charcoal">Customers ({customerUsers.length})</h3>
+                <User size={16} className="text-slate-500" />
+                <h3 className="font-bold text-charcoal text-sm">Customers ({customerUsers.length})</h3>
               </div>
-              {showCustomers ? <ChevronUp size={20} className="text-slate" /> : <ChevronDown size={20} className="text-slate" />}
+              {showCustomers ? <ChevronUp size={16} className="text-slate" /> : <ChevronDown size={16} className="text-slate" />}
             </button>
             
             {showCustomers && (
