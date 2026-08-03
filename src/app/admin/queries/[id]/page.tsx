@@ -95,6 +95,14 @@ export default async function AdminQueryThreadPage({ params }: { params: Promise
       }
     });
     if (!updatedQuery) return null;
+
+    if (!updatedQuery.isRead) {
+      await prisma.contactQuery.update({
+        where: { id: resolvedParams.id },
+        data: { isRead: true }
+      });
+    }
+
     return {
       messages: updatedQuery.messages,
       status: updatedQuery.status

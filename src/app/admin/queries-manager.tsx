@@ -101,7 +101,7 @@ function UserQueryGroup({ group, basePath }: { group: any; basePath: string }) {
                       {query.status === "RESOLVED" && (
                         <span className="text-xs text-slate font-medium">Resolved</span>
                       )}
-                      {!query.isRead && query.status !== "RESOLVED" && (
+                      {!query.isRead && query.status !== "RESOLVED" && query.messages?.[query.messages.length - 1]?.senderType === "USER" && (
                         <span className="text-[10px] text-rose-600 font-bold bg-rose-50 px-1.5 py-0.5 rounded border border-rose-200 animate-pulse whitespace-nowrap">
                           New Message!
                         </span>
