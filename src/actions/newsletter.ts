@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache"
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
 import { logAdminActivity } from "./admin-activity"
+import { GoogleGenAI } from "@google/genai"
 
 export async function subscribeToNewsletter(email: string) {
   try {
@@ -168,45 +169,51 @@ export async function generateNewsletterWithAI(prompt: string) {
       return { success: false, error: "Unauthorized" }
     }
 
-    // Simulate AI thinking delay for realism
-    await new Promise(resolve => setTimeout(resolve, 1500))
+    const apiKey = process.env.GEMINI_API_KEY;
+    if (!apiKey) {
+      return { success: false, error: "GEMINI_API_KEY is not configured on the server." }
+    }
 
-    const lowerPrompt = prompt.toLowerCase()
+    const ai = new GoogleGenAI({ apiKey: apiKey });
     
-    // Extract discount if present (e.g., "30% off", "flat 50%", "20 percent")
-    const discountMatch = lowerPrompt.match(/(\d+)\s*(?:%|percent)/)
-    const discount = discountMatch ? `${discountMatch[1]}% OFF` : "a Special Discount"
+    const systemInstruction = `You are an expert marketing copywriter for RK Fabrics Zone.
+Generate a promotional email newsletter based on the user's prompt.
+CRITICAL RULES:
+1. Do NOT use any Markdown formatting like **bold** or *italics*. The output will be placed in a standard plain-text HTML textarea, so use plain text only. Do not use [link text](url) markdown syntax either, just write out URLs if needed.
+2. If a specific coupon code is provided in the prompt, you MUST use that exact code. Do NOT invent a different code.
+3. Keep the tone enthusiastic, professional, and persuasive.
+4. The response MUST be split into a Subject line and the Message Content. Format your response exactly like this:
+SUBJECT: [Your creative subject line here]
+CONTENT:
+[Your plain text newsletter content here]`;
 
-    // Extract product keywords
-    let product = "our exclusive collection"
-    if (lowerPrompt.includes("cotton kurta") || lowerPrompt.includes("cotton kurtas")) product = "Premium Cotton Kurtas"
-    else if (lowerPrompt.includes("silk saree") || lowerPrompt.includes("silk sarees")) product = "Pure Silk Sarees"
-    else if (lowerPrompt.includes("lehenga")) product = "Designer Lehengas"
-    else if (lowerPrompt.includes("fabric")) product = "Luxury Fabrics"
-    else if (lowerPrompt.includes("suit")) product = "Elegant Suit Sets"
+    const response = await ai.models.generateContent({
+      model: 'gemini-flash-latest',
+      contents: [
+        { role: "user", parts: [{ text: systemInstruction }, { text: `User Prompt: ${prompt}` }] }
+      ]
+    });
 
-    // Extract theme/occasion
-    let theme = "Special Offer"
-    if (lowerPrompt.includes("summer")) theme = "Summer Collection"
-    else if (lowerPrompt.includes("festive") || lowerPrompt.includes("diwali") || lowerPrompt.includes("eid")) theme = "Festive Season"
-    else if (lowerPrompt.includes("winter")) theme = "Winter Collection"
-    else if (lowerPrompt.includes("wedding")) theme = "Wedding Season"
+    const text = response.text || "";
+    let subject = "Special Offer from RK Fabrics Zone";
+    let content = text;
 
-    let subject = `✨ FLAT ${discount} on ${product}! 🎊`
-    if (discount === "a Special Discount") {
-      subject = `✨ Discover ${product} - ${theme} is Here! 🎊`
+    const subjectMatch = text.match(/SUBJECT:\s*([\s\S]*?)\nCONTENT:/);
+    if (subjectMatch) {
+      subject = subjectMatch[1].trim();
+      content = text.split("CONTENT:")[1].trim();
+    } else {
+      // Fallback if AI doesn't follow strict formatting
+      const lines = text.split('\n');
+      if (lines[0].toUpperCase().startsWith("SUBJECT:")) {
+        subject = lines[0].replace(/SUBJECT:/i, '').trim();
+        content = lines.slice(1).join('\n').trim();
+      }
     }
 
-    let content = `Dear Customer,\n\nWe are thrilled to announce our latest ${theme} deals!\n\nFor a limited time only, enjoy **${discount}** on our highly sought-after ${product}. Whether you are shopping for a special occasion or upgrading your everyday wardrobe, we have something perfectly tailored for you.\n\n✨ **Why you'll love it:**\n- Premium quality and comfort\n- Stunning, exclusive designs\n- Unbeatable value\n\nDon't miss out on this incredible offer. Use code **OFFER${discountMatch ? discountMatch[1] : "X"}** at checkout to claim your discount!\n\n[Shop the ${product} Collection Now](/shop)\n\nWarm regards,\nThe RK Fabrics Team`
-
-    // Overrides for specific exact templates if they ask for welcome/sale
-    if (lowerPrompt.includes("welcome") && !discountMatch) {
-      subject = "Welcome to RK Fabrics! 🌟"
-      content = "Hello there,\n\nWelcome to the RK Fabrics family! We are thrilled to have you here.\n\nTo celebrate, we are giving you an exclusive first-time buyer discount. Use code **WELCOME10** for 10% off your first order.\n\nHappy Shopping!\n\nBest,\nRK Fabrics Team"
-    } else if (lowerPrompt.includes("clearance")) {
-      subject = "🚨 MASSIVE CLEARANCE SALE - Up to 70% OFF! 🚨"
-      content = "Hey!\n\nIt's time for our biggest Clearance Event! We are making room for new arrivals, which means YOU get absolute steal deals on our premium collections.\n\nEnjoy massive markdowns on fabrics, kurtas, and sarees. Stock is strictly limited, so grab your favorites before they sell out forever!\n\nStay stylish,\nRK Fabrics Team"
-    }
+    // Strip out any accidental markdown asterisks just in case
+    content = content.replace(/\*\*/g, '').replace(/\*/g, '');
+    subject = subject.replace(/\*\*/g, '').replace(/\*/g, '');
 
     return { success: true, subject, content }
 

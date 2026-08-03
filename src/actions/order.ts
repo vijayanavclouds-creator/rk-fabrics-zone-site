@@ -8,6 +8,15 @@ import { sendOrderConfirmationEmail, sendOrderShippedEmail, sendOrderDeliveredEm
 import { logAdminActivity } from "./admin-activity"
 import { getGSTRates } from "./system"
 
+interface OrderItemInput {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  variant: any;
+  quantity: number;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  product?: any;
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function createOrder(data: any) {
   try {
     const session = await getServerSession(authOptions)
@@ -51,10 +60,37 @@ export async function createOrder(data: any) {
 
     // Server-side validation of the coupon to prevent tampering
     let validatedDiscount = 0
+    let isSpecificCoupon = false;
+
     if (couponCode) {
-      const coupon = await prisma.coupon.findUnique({ where: { code: couponCode } })
-      if (!coupon || coupon.isUsed || coupon.validForUserId !== session.user.id || coupon.expiresAt < new Date()) {
-        return { success: false, error: "Invalid or expired promo code" }
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const coupon: any = await prisma.coupon.findUnique({ where: { code: couponCode } })
+      
+      // Use the exact same validation logic we built in validateCoupon
+      if (!coupon || !coupon.isActive) {
+        return { success: false, error: "Invalid or inactive promo code" }
+      }
+
+      if (coupon.expiresAt < new Date()) {
+        return { success: false, error: "This promo code has expired" }
+      }
+
+      if (coupon.validForUserId) {
+        if (coupon.isUsed) return { success: false, error: "This promo code has already been used" }
+        if (coupon.validForUserId !== session.user.id) return { success: false, error: "This promo code is not valid for your account" }
+        isSpecificCoupon = true;
+      } else {
+        const existingOrder = await prisma.order.findFirst({
+          where: { userId: session.user.id, couponCode, status: { not: "CANCELLED" } }
+        })
+        if (existingOrder) return { success: false, error: "You have already used this promo code" }
+
+        if (coupon.isForNewUsersOnly) {
+          const pastOrder = await prisma.order.findFirst({
+            where: { userId: session.user.id, status: "DELIVERED" }
+          })
+          if (pastOrder) return { success: false, error: "This promo code is only valid for new users" }
+        }
       }
       
       // Calculate the actual discount expected
@@ -75,7 +111,7 @@ export async function createOrder(data: any) {
       const rates = await getGSTRates()
       
       if (subtotalAmount > 0) {
-        items.forEach((item: any) => {
+        items.forEach((item: OrderItemInput) => {
           const originalPrice = item.variant.salePrice || item.variant.price
           const itemTotal = originalPrice * item.quantity
           const itemWeight = itemTotal / subtotalAmount
@@ -134,6 +170,7 @@ export async function createOrder(data: any) {
           shippingMode,
           paymentStatus: paymentMethod === "PHONEPE" || paymentMethod === "COD" ? "PENDING" : "PAID", 
           items: {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             create: items.map((item: any) => ({
               productId: item.product.id,
               variantId: item.variant.id,
@@ -149,7 +186,8 @@ export async function createOrder(data: any) {
       });
 
       // Decrement stock for each item
-      for (const item of items) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      for (const item of items as any[]) {
         await tx.productVariant.update({
           where: { id: item.variant.id },
           data: {
@@ -160,8 +198,8 @@ export async function createOrder(data: any) {
         });
       }
 
-      // Mark the coupon as used if one was applied
-      if (couponCode) {
+      // Mark the coupon as used ONLY if it is a personal coupon
+      if (couponCode && isSpecificCoupon) {
         await tx.coupon.update({
           where: { code: couponCode },
           data: { isUsed: true }
@@ -203,9 +241,9 @@ export async function createOrder(data: any) {
     }
 
     return { success: true, orderId: order.id }
-  } catch (error: any) {
+  } catch (error) {
     console.error("Error creating order:", error)
-    return { success: false, error: error.message || "Failed to create order" }
+    return { success: false, error: error instanceof Error ? error.message : "Failed to create order" }
   }
 }
 
@@ -223,7 +261,7 @@ export async function getUserOrders() {
     })
 
     return { success: true, orders }
-  } catch (error: any) {
+  } catch {
     return { success: false, error: "Failed to fetch orders" }
   }
 }
@@ -244,7 +282,7 @@ export async function getAllOrders() {
     })
 
     return { success: true, orders }
-  } catch (error: any) {
+  } catch {
     return { success: false, error: "Failed to fetch orders" }
   }
 }
@@ -271,7 +309,7 @@ export async function getAdminUserOrders(userIdOrEmail: string) {
     })
 
     return { success: true, orders }
-  } catch (error: any) {
+  } catch {
     return { success: false, error: "Failed to fetch orders" }
   }
 }
@@ -289,8 +327,8 @@ export async function deleteOrder(orderId: string) {
 
     revalidatePath("/admin")
     return { success: true }
-  } catch (error: any) {
-    return { success: false, error: error.message }
+  } catch (error) {
+    return { success: false, error: error instanceof Error ? error.message : "Error" }
   }
 }
 
@@ -333,8 +371,8 @@ export async function updateOrderShippingMode(orderId: string, shippingMode: "Su
 
     revalidatePath("/admin")
     return { success: true, order }
-  } catch (error: any) {
-    return { success: false, error: error.message }
+  } catch {
+    return { success: false, error: "Failed to update shipping mode" }
   }
 }
 
@@ -357,6 +395,7 @@ export async function updateOrderStatus(orderId: string, status: string) {
       return { success: false, error: "Order status cannot be changed once delivered or cancelled" }
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const updateData: any = { status }
     if (status === "SHIPPED") {
       updateData.shippedAt = new Date()
@@ -392,7 +431,7 @@ export async function updateOrderStatus(orderId: string, status: string) {
     await logAdminActivity(`updated Order <b>#${updatedOrder.id.slice(-6).toUpperCase()}</b> status`, diff);
     
     return { success: true }
-  } catch (error: any) {
+  } catch {
     return { success: false, error: "Failed to update order status" }
   }
 }
@@ -446,7 +485,7 @@ export async function cancelCustomerOrder(orderId: string) {
     revalidatePath("/account")
     
     return { success: true }
-  } catch (error: any) {
+  } catch (error) {
     console.error("Error cancelling order:", error)
     return { success: false, error: "Failed to cancel order" }
   }
@@ -472,8 +511,8 @@ export async function toggleUserOrdersReadStatus(userIdOrEmail: string, isRead: 
     revalidatePath("/admin")
     
     return { success: true }
-  } catch (error: any) {
+  } catch (error) {
     console.error("toggleUserOrdersReadStatus Error:", error)
-    return { success: false, error: "Failed to update read status: " + error.message }
+    return { success: false, error: "Failed to update read status: " + (error instanceof Error ? error.message : "") }
   }
 }

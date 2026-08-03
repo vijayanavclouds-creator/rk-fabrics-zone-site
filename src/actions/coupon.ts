@@ -81,16 +81,46 @@ export async function validateCoupon(code: string) {
       return { success: false, error: "Invalid promo code" }
     }
 
-    if (coupon.isUsed) {
-      return { success: false, error: "This promo code has already been used" }
+    if (!coupon.isActive) {
+      return { success: false, error: "This promo code is no longer active" }
     }
 
     if (coupon.expiresAt < new Date()) {
       return { success: false, error: "This promo code has expired" }
     }
 
-    if (coupon.validForUserId !== session.user.id) {
-      return { success: false, error: "This promo code is not valid for your account" }
+    if (coupon.validForUserId) {
+      // Personal coupon logic
+      if (coupon.isUsed) {
+        return { success: false, error: "This promo code has already been used" }
+      }
+      if (coupon.validForUserId !== session.user.id) {
+        return { success: false, error: "This promo code is not valid for your account" }
+      }
+    } else {
+      // Global coupon logic
+      const existingOrder = await prisma.order.findFirst({
+        where: {
+          userId: session.user.id,
+          couponCode: code,
+          status: { not: "CANCELLED" }
+        }
+      })
+      if (existingOrder) {
+        return { success: false, error: "You have already used this promo code" }
+      }
+
+      if (coupon.isForNewUsersOnly) {
+        const pastOrder = await prisma.order.findFirst({
+          where: {
+            userId: session.user.id,
+            status: "DELIVERED"
+          }
+        })
+        if (pastOrder) {
+          return { success: false, error: "This promo code is only valid for new users" }
+        }
+      }
     }
 
     return { 
@@ -103,5 +133,90 @@ export async function validateCoupon(code: string) {
     }
   } catch (error: any) {
     return { success: false, error: "Failed to validate coupon" }
+  }
+}
+
+export async function createGlobalCoupon(data: {
+  discountValue: number;
+  discountType: "PERCENTAGE" | "FIXED";
+  expiresInDays: number;
+  isForNewUsersOnly: boolean;
+}) {
+  try {
+    const session = await getServerSession(authOptions)
+    if (!session || session.user.role !== "ADMIN") {
+      return { success: false, error: "Unauthorized" }
+    }
+
+    const { discountValue, discountType, expiresInDays, isForNewUsersOnly } = data
+    
+    // Generate a unique 8-character code
+    const code = "G" + Math.random().toString(36).substring(2, 8).toUpperCase()
+    
+    const expiresAt = new Date()
+    expiresAt.setDate(expiresAt.getDate() + expiresInDays)
+
+    const coupon = await prisma.coupon.create({
+      data: {
+        code,
+        discountValue,
+        discountType,
+        isForNewUsersOnly,
+        expiresAt,
+        isActive: true,
+      }
+    })
+
+    const diff = `type: <i>${discountType}</i>, expires in <i>${expiresInDays} days</i>, new users only: <i>${isForNewUsersOnly}</i>`;
+    await logAdminActivity(`created global coupon <b>${code}</b> for <b>${discountValue}</b> off`, diff);
+
+    return { success: true, coupon }
+  } catch (error: any) {
+    console.error("Error creating global coupon:", error)
+    return { success: false, error: error.message || "Failed to create global coupon" }
+  }
+}
+
+export async function getGlobalCoupons() {
+  try {
+    const session = await getServerSession(authOptions)
+    if (!session || session.user.role !== "ADMIN") {
+      return { success: false, error: "Unauthorized" }
+    }
+
+    const coupons = await prisma.coupon.findMany({
+      where: {
+        validForUserId: null
+      },
+      orderBy: {
+        createdAt: 'desc'
+      }
+    })
+
+    return { success: true, coupons }
+  } catch (error: any) {
+    console.error("Error getting global coupons:", error)
+    return { success: false, error: "Failed to load global coupons" }
+  }
+}
+
+export async function deactivateGlobalCoupon(couponId: string) {
+  try {
+    const session = await getServerSession(authOptions)
+    if (!session || session.user.role !== "ADMIN") {
+      return { success: false, error: "Unauthorized" }
+    }
+
+    const coupon = await prisma.coupon.update({
+      where: { id: couponId },
+      data: { isActive: false }
+    })
+
+    await logAdminActivity(`deactivated global coupon <b>${coupon.code}</b>`);
+
+    return { success: true, coupon }
+  } catch (error: any) {
+    console.error("Error deactivating coupon:", error)
+    return { success: false, error: "Failed to deactivate coupon" }
   }
 }

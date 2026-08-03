@@ -185,9 +185,11 @@ model Coupon {
   code           String   @unique
   discountValue  Float
   discountType   String   // "PERCENTAGE" or "FIXED"
-  validForUserId String
-  user           User     @relation(fields: [validForUserId], references: [id], onDelete: Cascade)
+  validForUserId String?
+  user           User?    @relation(fields: [validForUserId], references: [id], onDelete: Cascade)
   isUsed         Boolean  @default(false)
+  isActive       Boolean  @default(true)
+  isForNewUsersOnly Boolean @default(false)
   expiresAt      DateTime
   createdAt      DateTime @default(now())
 }
