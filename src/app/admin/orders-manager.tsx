@@ -70,7 +70,7 @@ export function OrdersManager({ readOnly = false, basePath = "/admin" }: { readO
     if (typeof window !== "undefined") {
       const stored = localStorage.getItem("sentReminders");
       if (stored) {
-        try { return JSON.parse(stored); } catch (_) {}
+        try { return JSON.parse(stored); } catch {}
       }
     }
     return [];
