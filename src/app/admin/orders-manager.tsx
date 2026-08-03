@@ -519,13 +519,13 @@ export function OrdersManager({ readOnly = false, basePath = "/admin" }: { readO
                               e.stopPropagation();
                               handleSendReminder(user.id);
                             }}
-                            className={`text-[9px] md:text-sm font-bold px-3 py-1.5 md:px-5 md:py-2 rounded-full text-white transition-all shadow-md flex items-center justify-center gap-1 md:gap-2 ml-auto ${
+                            className={`text-[9px] md:text-sm font-bold px-3 py-1.5 md:px-5 md:py-2 rounded-full text-white transition-all shadow-md flex items-center justify-center gap-1 md:gap-2 ml-auto min-w-[70px] md:min-w-[140px] ${
                               selectedUsers.length > 0 ? "bg-slate-300 cursor-not-allowed opacity-50 shadow-none" :
                               sentReminders.includes(user.id) ? "bg-amber-500 hover:bg-amber-600 hover:shadow-lg hover:-translate-y-0.5" : "bg-teal-600 hover:bg-teal-700 hover:shadow-lg hover:-translate-y-0.5"
                             }`}
                           >
                             <Bell size={12} className="md:w-4 md:h-4" /> 
-                            <span className="hidden md:inline">{sentReminders.includes(user.id) ? "Send again" : "Send Reminder"}</span>
+                            <span className="hidden md:inline">{sentReminders.includes(user.id) ? "Send Again" : "Reminder"}</span>
                             <span className="md:hidden">{sentReminders.includes(user.id) ? "Again" : "Send"}</span>
                           </button>
                         </td>
