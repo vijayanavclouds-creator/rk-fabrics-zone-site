@@ -536,27 +536,25 @@ export function OrdersManager({ readOnly = false, basePath = "/admin" }: { readO
                     );})}
                   </tbody>
               </table>
-              {abandonedCarts.length > 0 && (
-                <div className="p-4 border-t border-charcoal/10 flex items-center justify-between bg-white rounded-b-3xl">
-                  <span className="text-[10px] md:text-sm text-slate">
-                    Showing {Math.min(abandonedCarts.length, (abandonedPage - 1) * 10 + 1)} to {Math.min(abandonedPage * 10, abandonedCarts.length)} of {abandonedCarts.length} entries
-                  </span>
-                  <div className="flex gap-2">
-                    <button 
-                      onClick={() => setAbandonedPage(p => Math.max(1, p - 1))}
-                      disabled={abandonedPage === 1}
-                      className="px-3 py-1.5 md:px-4 md:py-2 rounded-lg bg-white border border-charcoal/20 text-xs font-bold text-charcoal disabled:opacity-30 hover:bg-slate-50 transition-colors"
-                    >
-                      Prev
-                    </button>
-                    <button 
-                      onClick={() => setAbandonedPage(p => Math.min(Math.ceil(abandonedCarts.length / 10), p + 1))}
-                      disabled={abandonedPage === Math.ceil(abandonedCarts.length / 10)}
-                      className="px-3 py-1.5 md:px-4 md:py-2 rounded-lg bg-white border border-charcoal/20 text-xs font-bold text-charcoal disabled:opacity-30 hover:bg-slate-50 transition-colors"
-                    >
-                      Next
-                    </button>
+              {Math.ceil(abandonedCarts.length / 10) > 1 && (
+                <div className="p-4 border-t border-charcoal/10 flex items-center justify-center gap-2 bg-white rounded-b-3xl">
+                  <button 
+                    disabled={abandonedPage === 1}
+                    onClick={() => setAbandonedPage(p => p - 1)}
+                    className="px-3 py-1.5 border border-charcoal/10 rounded-lg text-xs font-medium hover:bg-cream disabled:opacity-50 transition-colors"
+                  >
+                    Previous
+                  </button>
+                  <div className="flex items-center px-3 font-medium text-xs text-charcoal">
+                    Page {abandonedPage} of {Math.ceil(abandonedCarts.length / 10)}
                   </div>
+                  <button 
+                    disabled={abandonedPage === Math.ceil(abandonedCarts.length / 10)}
+                    onClick={() => setAbandonedPage(p => p + 1)}
+                    className="px-3 py-1.5 border border-charcoal/10 rounded-lg text-xs font-medium hover:bg-cream disabled:opacity-50 transition-colors"
+                  >
+                    Next
+                  </button>
                 </div>
               )}
             </div>
