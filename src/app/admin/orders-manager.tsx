@@ -445,7 +445,7 @@ export function OrdersManager({ readOnly = false, basePath = "/admin" }: { readO
                 {selectedUsers.length > 0 && (
                   <button
                     onClick={handleBulkSendReminders}
-                    className="text-sm font-bold bg-teal-600 hover:bg-teal-700 text-white px-4 py-1.5 rounded-lg shadow-sm flex items-center gap-2 transition-all"
+                    className="text-sm font-bold bg-teal-600 hover:bg-teal-700 text-white px-4 py-1.5 rounded-full shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all flex items-center gap-2"
                   >
                     <Bell size={14} /> Send Reminders ({selectedUsers.length})
                   </button>
@@ -519,9 +519,9 @@ export function OrdersManager({ readOnly = false, basePath = "/admin" }: { readO
                               e.stopPropagation();
                               handleSendReminder(user.id);
                             }}
-                            className={`text-[9px] md:text-sm font-bold px-2 py-1 md:px-4 md:py-2 rounded md:rounded-lg text-white transition-colors shadow-sm flex items-center justify-center gap-1 md:gap-2 ml-auto ${
-                              selectedUsers.length > 0 ? "bg-slate-300 cursor-not-allowed opacity-50" :
-                              sentReminders.includes(user.id) ? "bg-amber-500 hover:bg-amber-600" : "bg-teal-600 hover:bg-teal-700"
+                            className={`text-[9px] md:text-sm font-bold px-3 py-1.5 md:px-5 md:py-2 rounded-full text-white transition-all shadow-md flex items-center justify-center gap-1 md:gap-2 ml-auto ${
+                              selectedUsers.length > 0 ? "bg-slate-300 cursor-not-allowed opacity-50 shadow-none" :
+                              sentReminders.includes(user.id) ? "bg-amber-500 hover:bg-amber-600 hover:shadow-lg hover:-translate-y-0.5" : "bg-teal-600 hover:bg-teal-700 hover:shadow-lg hover:-translate-y-0.5"
                             }`}
                           >
                             <Bell size={12} className="md:w-4 md:h-4" /> 
