@@ -49,7 +49,7 @@ function UserQueryGroup({ group, basePath }: { group: any; basePath: string }) {
   const paginatedQueries = group.queries.slice((innerPage - 1) * innerItemsPerPage, innerPage * innerItemsPerPage);
 
   return (
-    <div className="-mx-6 md:mx-0 bg-white rounded-none md:rounded-2xl border-y md:border border-charcoal/10 shadow-sm overflow-hidden mb-2 md:mb-4">
+    <div className="w-full bg-white">
       <button 
         onClick={() => setIsOpen(!isOpen)}
         className="w-full bg-slate-50 px-4 md:px-6 py-2 border-b border-charcoal/10 flex items-start sm:items-center justify-between hover:bg-slate-100 transition-colors text-left"
@@ -264,13 +264,13 @@ export function QueriesManager({ initialQueries, basePath = "/admin" }: { initia
   }
 
   return (
-    <div className="space-y-2 md:space-y-4">
+    <div className="-mx-6 md:mx-0 md:rounded-2xl border-y md:border border-charcoal/10 shadow-sm overflow-hidden divide-y divide-charcoal/10 bg-white">
       {paginatedUserGroups.map((group) => (
         <UserQueryGroup key={group.id} group={group} basePath={basePath} />
       ))}
       
       {totalOuterPages > 1 && (
-        <div className="p-4 flex items-center justify-center gap-2">
+        <div className="p-4 flex items-center justify-center gap-2 bg-white">
           <button 
             onClick={() => setOuterPage(p => Math.max(1, p - 1))}
             disabled={outerPage === 1}
