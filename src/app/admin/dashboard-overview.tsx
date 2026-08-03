@@ -258,8 +258,9 @@ export function DashboardOverview({ initialData, isSupport = false }: { initialD
         </div>
       </div>
       <div className="h-[224px] md:h-[280px] w-full relative z-0">
-        <ResponsiveContainer width="100%" height="100%">
-          <ComposedChart data={data.chartData} margin={{ top: 10, right: 10, left: -10, bottom: 0 }}>
+        {mounted && (
+          <ResponsiveContainer width="100%" height="100%">
+            <ComposedChart data={data.chartData} margin={{ top: 10, right: 10, left: -10, bottom: 0 }}>
             <defs>
               <linearGradient id="colorSales" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="5%" stopColor="#0d9488" stopOpacity={0.3}/>
@@ -301,22 +302,37 @@ export function DashboardOverview({ initialData, isSupport = false }: { initialD
             )}
           </ComposedChart>
         </ResponsiveContainer>
+      )}
       </div>
     </GlassCard>
   );
 
   const FinanceCard = (
-    <Link href="/admin?tab=finance" className="block">
-      <GlassCard className="flex flex-col gap-4 items-center justify-center h-full group cursor-pointer hover:bg-white/95 transition-colors p-8 text-center">
-        <div className="w-16 h-16 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 shrink-0 flex items-center justify-center text-white shadow-[0_8px_16px_-6px_rgba(245,158,11,0.5)] group-hover:scale-110 transition-transform duration-300">
-          <DollarSign size={32} />
-        </div>
-        <div>
-          <h3 className="text-lg font-black text-charcoal tracking-tight mb-1">Finance Management</h3>
-          <p className="text-xs text-slate">Track revenue, payouts, fees, and reports.</p>
-        </div>
-      </GlassCard>
-    </Link>
+    <GlassCard className="bg-white !rounded-[16px] !p-2.5 md:!p-4 h-full">
+      <h3 className="text-[10px] font-black text-slate-700 uppercase tracking-widest mb-2 md:mb-4">
+        Finance & Returns
+      </h3>
+      <div className="flex flex-col gap-1.5 md:gap-3">
+        <Link href="/admin?tab=finance" className="flex items-center gap-2.5 md:gap-3 p-2 md:p-3 bg-white rounded-xl border border-slate-100 hover:border-orange-200 hover:shadow-sm transition-all group">
+          <div className="w-8 h-8 md:w-10 md:h-10 rounded-[8px] md:rounded-[10px] bg-gradient-to-br from-amber-400 to-orange-500 shrink-0 flex items-center justify-center text-white shadow-sm group-hover:scale-105 transition-transform duration-300">
+            <DollarSign size={14} className="md:w-[18px] md:h-[18px]" />
+          </div>
+          <div>
+            <span className="text-[10px] md:text-xs font-bold text-charcoal block leading-tight">Finance Management</span>
+            <span className="text-[8px] md:text-[9px] text-slate-500">Track revenue, payouts, fees</span>
+          </div>
+        </Link>
+        <Link href="/admin?tab=returns" className="flex items-center gap-2.5 md:gap-3 p-2 md:p-3 bg-white rounded-xl border border-slate-100 hover:border-red-200 hover:shadow-sm transition-all group">
+          <div className="w-8 h-8 md:w-10 md:h-10 rounded-[8px] md:rounded-[10px] bg-gradient-to-br from-red-400 to-rose-500 shrink-0 flex items-center justify-center text-white shadow-sm group-hover:scale-105 transition-transform duration-300">
+            <RotateCcw size={14} className="md:w-[18px] md:h-[18px]" />
+          </div>
+          <div>
+            <span className="text-[10px] md:text-xs font-bold text-charcoal block leading-tight">Returns Management</span>
+            <span className="text-[8px] md:text-[9px] text-slate-500">Manage order returns & refunds</span>
+          </div>
+        </Link>
+      </div>
+    </GlassCard>
   );
 
   const ContentPromoCard = (

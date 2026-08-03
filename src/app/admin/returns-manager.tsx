@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { format } from "date-fns";
-import { ChevronDown, RefreshCcw, Package, AlertCircle } from "lucide-react";
+import { ChevronDown, RefreshCcw, Package, AlertCircle, MessageSquare } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 
 type ReturnRequest = {
@@ -104,11 +105,34 @@ export function ReturnsManager({ initialReturns }: { initialReturns: ReturnReque
 
 function UserReturnGroup({ group }: { group: any }) {
   const [isOpen, setIsOpen] = useState(false);
+  const [localUnread, setLocalUnread] = useState(group.unreadCount);
+
+  useEffect(() => {
+    setLocalUnread(group.unreadCount);
+  }, [group.unreadCount]);
+
+  const toggleOpen = async () => {
+    const willOpen = !isOpen;
+    setIsOpen(willOpen);
+    
+    if (willOpen && localUnread > 0) {
+      setLocalUnread(0);
+      try {
+        const { markReturnsAsRead } = await import('@/actions/returns');
+        const unreadIds = group.returns.filter((r: any) => !r.isReadByAdmin).map((r: any) => r.id);
+        if (unreadIds.length > 0) {
+          await markReturnsAsRead(unreadIds);
+        }
+      } catch(e) {
+        console.error(e);
+      }
+    }
+  };
 
   return (
     <div className="bg-white rounded-2xl border border-charcoal/10 shadow-sm overflow-hidden">
       <button 
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={toggleOpen}
         className="w-full bg-slate-50 px-4 md:px-6 py-4 border-b border-charcoal/10 flex items-start sm:items-center justify-between hover:bg-slate-100 transition-colors text-left"
       >
         <div className="flex items-center gap-3">
@@ -118,9 +142,9 @@ function UserReturnGroup({ group }: { group: any }) {
           <div>
             <div className="flex items-center gap-2">
               <h3 className="font-bold text-charcoal">{group.name}</h3>
-              {group.unreadCount > 0 && (
+              {localUnread > 0 && (
                 <span className="text-[10px] font-bold text-rose-600 bg-rose-50 border border-rose-200 px-1.5 py-0.5 rounded shadow-sm">
-                  {group.unreadCount} Unread
+                  {localUnread} Unread
                 </span>
               )}
             </div>
@@ -151,6 +175,29 @@ function UserReturnGroup({ group }: { group: any }) {
 function ReturnItem({ ret }: { ret: any }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
+
+  const handleContactCustomer = async () => {
+    const defaultMessage = "We need some additional details regarding your return request for Order #" + ret.orderId.slice(-8).toUpperCase() + ". Could you please provide images or a brief explanation?";
+    const msg = prompt("Enter your first message to the customer:", defaultMessage);
+    if (!msg) return;
+
+    setIsSubmitting(true);
+    setError(null);
+    try {
+      const { startReturnInquiry } = await import('@/actions/returns');
+      const res = await startReturnInquiry(ret.id, msg);
+      if (res.success && res.queryId) {
+        router.push(`/admin/queries/${res.queryId}`);
+      } else {
+        setError(res.error || "Failed to start inquiry.");
+        setIsSubmitting(false);
+      }
+    } catch (e: any) {
+      setError(e.message);
+      setIsSubmitting(false);
+    }
+  };
 
   const handleMarkReturned = async () => {
     if (confirm("Are you sure you want to accept this return request?")) {
@@ -220,7 +267,7 @@ function ReturnItem({ ret }: { ret: any }) {
           <div className="bg-slate-50 border border-slate-200 rounded-lg p-3">
             <h4 className="text-xs font-bold text-charcoal uppercase tracking-wider mb-2">Return Reasons</h4>
             <div className="flex flex-wrap gap-1.5 mb-2">
-              {ret.reasons.map((r: string) => (
+              {ret.reasons?.map((r: string) => (
                 <span key={r} className="bg-white border border-slate-200 px-2 py-1 rounded text-xs text-charcoal">
                   {r}
                 </span>
@@ -235,7 +282,7 @@ function ReturnItem({ ret }: { ret: any }) {
             <div className="bg-slate-50 border border-slate-200 rounded-lg p-3">
               <h4 className="text-xs font-bold text-charcoal uppercase tracking-wider mb-2">Items to Return</h4>
               <div className="space-y-1">
-                {ret.order?.items?.filter((item: any) => ret.items.includes(item.id)).map((item: any) => (
+                {ret.order?.items?.filter((item: any) => ret.items?.includes(item.id)).map((item: any) => (
                   <div key={item.id} className="flex items-center gap-2 text-sm text-charcoal">
                     <Package size={14} className="text-slate-400 shrink-0" />
                     <span className="line-clamp-1">{item.productName} ({item.variantName})</span>
@@ -284,6 +331,19 @@ function ReturnItem({ ret }: { ret: any }) {
               </p>
             </div>
           )}
+          
+          <button
+            onClick={handleContactCustomer}
+            disabled={isSubmitting}
+            className="w-full flex justify-center items-center gap-2 py-2 text-xs font-bold text-charcoal bg-slate-100 hover:bg-slate-200 rounded-xl border border-slate-300 transition-colors mt-2 disabled:opacity-70"
+          >
+            {isSubmitting ? (
+              <span className="animate-spin h-3 w-3 border-2 border-charcoal rounded-full border-b-transparent"></span>
+            ) : (
+              <MessageSquare size={14} />
+            )}
+            Contact Customer
+          </button>
         </div>
       </div>
     </div>

@@ -1032,3 +1032,108 @@ export async function sendReturnRejectedEmail(order: any, reason: string = "") {
     return { success: false, error }
   }
 }
+
+export async function sendReturnInquiryEmail(order: any, queryId: string) {
+  const to = order.user?.email
+  const subject = `Inquiry regarding your return for Order #${order.id.slice(-8).toUpperCase()}`
+
+  if (!to) return { success: false, error: "No user email found" }
+
+  const html = `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Return Inquiry</title>
+</head>
+<body style="margin: 0; padding: 0; background-color: #E8EBEF; font-family: Arial, sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color: #E8EBEF; padding: 40px 20px;">
+    <tr>
+      <td align="center">
+        <!-- Main Card -->
+        <table width="100%" max-width="600" cellpadding="0" cellspacing="0" border="0" style="max-width: 600px; background-color: #F6FAFD; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid #D1CDC1;">
+          
+          <!-- Header -->
+          <tr>
+            <td align="center" style="padding: 40px 20px 20px 20px;">
+              <img src="https://www.rkfabricszone.com/logo.png" alt="RK Fabrics Zone" width="80" style="display: block; margin-bottom: 15px; border-radius: 50%;">
+              <h1 style="margin: 0; color: #0A1931; font-size: 24px; font-weight: bold; letter-spacing: 1px;">RK Fabrics Zone</h1>
+            </td>
+          </tr>
+
+          <!-- Hero -->
+          <tr>
+            <td align="center" style="padding: 0 30px 30px 30px; border-bottom: 2px dashed #D1CDC1;">
+              <h2 style="margin: 0 0 10px 0; color: #0d9488; font-size: 26px;">Action Required: Return Request</h2>
+              <p style="margin: 0; color: #64748b; font-size: 16px; line-height: 1.5;">
+                We need some additional information regarding your return request for order <strong>#${order.id.slice(-8).toUpperCase()}</strong>.
+              </p>
+            </td>
+          </tr>
+
+          <!-- Content -->
+          <tr>
+            <td style="padding: 30px;">
+              <p style="margin: 0 0 20px 0; color: #334155; font-size: 15px; line-height: 1.6;">
+                Hi ${order.user?.name || 'Customer'},
+              </p>
+              <p style="margin: 0 0 20px 0; color: #334155; font-size: 15px; line-height: 1.6;">
+                Our team has started an inquiry regarding your recent return request. Please click the button below to view the message from our team and provide any requested details (such as images of the defective product).
+              </p>
+
+              <div style="text-align: center; margin: 35px 0;">
+                <a href="${process.env.NEXT_PUBLIC_APP_URL || 'https://www.rkfabricszone.com'}/account/queries/${queryId}" 
+                   style="display: inline-block; background-color: #0A1931; color: #ffffff; font-size: 16px; font-weight: bold; text-decoration: none; padding: 14px 32px; border-radius: 8px; border-bottom: 3px solid #000000; letter-spacing: 0.5px;">
+                  View Inquiry
+                </a>
+              </div>
+            </td>
+          </tr>
+          
+          <!-- Footer Signature -->
+          <tr>
+            <td style="padding: 0 30px 30px 30px;">
+              <!-- Left Column: Image -->
+              <table cellpadding="0" cellspacing="0" border="0" width="100%">
+                <tr>
+                  <td width="90" valign="top">
+                    <img src="https://www.rkfabricszone.com/contact.png" alt="Support" width="80" style="display: block; border-radius: 12px; border: 2px solid #E8EBEF;">
+                  </td>
+                  <!-- Right Column: Details -->
+                  <td valign="middle" style="padding-left: 25px;">
+                    <!-- Name & Role -->
+                    <h2 style="margin: 0 0 4px 0; color: #0A1931; font-size: 20px; font-weight: bold; white-space: nowrap;">Customer Support</h2>
+                    <p style="margin: 0 0 12px 0; color: #0A1931; font-size: 13px; line-height: 1.4; white-space: nowrap;">Always Here To Help</p>
+                    <!-- Contact Info -->
+                    <table cellpadding="0" cellspacing="0" border="0" style="font-size: 13px; line-height: 22px; color: #0A1931;">
+                      <tr>
+                        <td style="padding-right: 10px; font-size: 14px;">🌐</td>
+                        <td><a href="https://www.rkfabricszone.com/contact" style="color: #0A1931; text-decoration: none; white-space: nowrap;">www.rkfabricszone.com</a></td>
+                      </tr>
+                      <tr>
+                        <td style="padding-right: 10px; font-size: 14px;">✉️</td>
+                        <td><a href="mailto:support@rkfabricszone.com" style="color: #0A1931; text-decoration: none; white-space: nowrap;">support@rkfabricszone.com</a></td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
+  `
+
+  try {
+    await transporter.sendMail({ from, to, subject, html })
+    return { success: true }
+  } catch (error) {
+    console.error("Error sending return inquiry email:", error)
+    return { success: false, error }
+  }
+}
+
