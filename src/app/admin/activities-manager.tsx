@@ -161,21 +161,21 @@ export function ActivitiesManager() {
             
             {/* Pagination */}
             {totalPages > 1 && (
-              <div className="flex justify-center gap-2 mt-6 pt-6 border-t border-charcoal/10 shrink-0">
+              <div className="flex justify-center gap-2 mt-3 pt-3 border-t border-charcoal/10 shrink-0 -mb-2 md:-mb-4">
                 <button 
                   disabled={page === 1}
                   onClick={() => setPage(p => p - 1)}
-                  className="px-4 py-2 border border-charcoal/10 rounded-lg text-sm font-medium hover:bg-cream disabled:opacity-50 transition-colors"
+                  className="px-3 py-1.5 border border-charcoal/10 rounded-lg text-xs font-medium hover:bg-cream disabled:opacity-50 transition-colors"
                 >
                   Previous
                 </button>
-                <div className="flex items-center px-4 font-medium text-sm text-charcoal">
+                <div className="flex items-center px-3 font-medium text-xs text-charcoal">
                   Page {page} of {totalPages}
                 </div>
                 <button 
                   disabled={page === totalPages}
                   onClick={() => setPage(p => p + 1)}
-                  className="px-4 py-2 border border-charcoal/10 rounded-lg text-sm font-medium hover:bg-cream disabled:opacity-50 transition-colors"
+                  className="px-3 py-1.5 border border-charcoal/10 rounded-lg text-xs font-medium hover:bg-cream disabled:opacity-50 transition-colors"
                 >
                   Next
                 </button>
