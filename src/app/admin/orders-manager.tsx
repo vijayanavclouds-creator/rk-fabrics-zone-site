@@ -473,12 +473,12 @@ export function OrdersManager({ readOnly = false, basePath = "/admin" }: { readO
                         }}
                         className={`border-b border-charcoal/5 hover:bg-slate-50 transition-colors cursor-pointer relative ${isSelected ? 'bg-blue-50/50' : ''}`}
                       >
-                        {isSelected && (
-                          <div className="absolute top-1 left-1 text-blue-500 bg-transparent">
-                            <Check size={16} strokeWidth={3} />
-                          </div>
-                        )}
-                        <td className="p-3 md:p-5 align-middle break-words">
+                        <td className="p-3 md:p-5 align-middle break-words relative">
+                          {isSelected && (
+                            <div className="absolute top-1 left-1 text-blue-500 bg-transparent">
+                              <Check size={16} strokeWidth={3} />
+                            </div>
+                          )}
                           <div className="flex items-center gap-2 md:gap-3 ml-2 md:ml-0">
                             <div>
                               <p className="font-semibold text-charcoal text-xs md:text-base flex items-center gap-2">
