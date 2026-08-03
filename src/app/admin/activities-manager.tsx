@@ -65,7 +65,7 @@ export function ActivitiesManager() {
         description="A complete history of all administrative actions." 
       />
 
-      <div className="-mx-6 -my-6 md:m-0 bg-white md:rounded-3xl border-y md:border border-charcoal/10 overflow-hidden shadow-sm p-4 md:p-6 lg:p-8 h-[calc(100vh-64px)] md:h-auto flex flex-col">
+      <div className="-mx-6 -my-6 md:m-0 bg-white md:rounded-3xl border-y md:border border-charcoal/10 overflow-hidden shadow-sm p-4 md:p-6 lg:p-8 h-[calc(100vh-64px)] md:h-[calc(100vh-140px)] flex flex-col">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 md:mb-8 pb-4 border-b border-charcoal/10 shrink-0">
           <div className="flex items-center gap-3">
             <div className="p-3 bg-teal-50 text-teal-600 rounded-xl">
