@@ -534,9 +534,10 @@ export function OrdersManager({ readOnly = false, basePath = "/admin" }: { readO
                   </tbody>
               </table>
             </div>
-          )
-        )}
-      </div>
+          </div>
+        )
+      )}
+    </div>
     </div>
   )
 }
