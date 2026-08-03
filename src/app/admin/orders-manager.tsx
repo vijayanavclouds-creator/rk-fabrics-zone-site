@@ -7,16 +7,74 @@ import { getAbandonedCarts, sendAbandonedCartReminder } from "@/actions/cart"
 import { getAdminSettings } from "@/actions/admin-notifications"
 import AdminSettingsForm from "./order-settings-form"
 import { toast } from "sonner"
-import { Package, Search, ChevronRight, CheckCircle, Clock, Truck, XCircle, User, Bell, Settings, SlidersHorizontal, X, Check } from "lucide-react"
+import { Package, Search, ChevronRight, CheckCircle, Bell, SlidersHorizontal, Check } from "lucide-react"
+
+interface OrderItem {
+  id?: string;
+  productName?: string;
+  quantity: number;
+  product?: { name: string };
+}
+
+interface OrderUser {
+  id?: string | null;
+  name?: string | null;
+  email?: string | null;
+  createdAt?: string | Date | null;
+}
+
+interface Order {
+  id: string;
+  email: string;
+  status: string;
+  isReadByAdmin: boolean;
+  createdAt: string | Date;
+  items: OrderItem[];
+  user?: OrderUser;
+}
+
+interface CartItem {
+  quantity: number;
+  product?: { name: string };
+  productName?: string;
+}
+
+interface AbandonedCart {
+  id: string;
+  name?: string | null;
+  email?: string | null;
+  totalAmount: number;
+  items: CartItem[];
+}
+
+interface GroupedUser {
+  id: string;
+  name: string;
+  email: string;
+  createdAt: string;
+  orders: Order[];
+  totalPurchased: number;
+  lastOrderedDate: string | Date;
+  recentOrderItemsCount: number;
+  hasUnreadOrders: boolean;
+}
 
 export function OrdersManager({ readOnly = false, basePath = "/admin" }: { readOnly?: boolean; basePath?: string }) {
   const router = useRouter()
-  const [orders, setOrders] = useState<any[]>([])
-  const [abandonedCarts, setAbandonedCarts] = useState<any[]>([])
+  const [orders, setOrders] = useState<Order[]>([])
+  const [abandonedCarts, setAbandonedCarts] = useState<AbandonedCart[]>([])
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState("")
   const [activeTab, setActiveTab] = useState<"orders" | "abandoned" | "settings">("orders")
-  const [sentReminders, setSentReminders] = useState<string[]>([])
+  const [sentReminders, setSentReminders] = useState<string[]>(() => {
+    if (typeof window !== "undefined") {
+      const stored = localStorage.getItem("sentReminders");
+      if (stored) {
+        try { return JSON.parse(stored); } catch (e) {}
+      }
+    }
+    return [];
+  })
   const [selectedUsers, setSelectedUsers] = useState<string[]>([])
   const [abandonedPage, setAbandonedPage] = useState(1)
   const [ordersPage, setOrdersPage] = useState(1)
@@ -33,16 +91,6 @@ export function OrdersManager({ readOnly = false, basePath = "/admin" }: { readO
     }
     document.addEventListener('mousedown', handleClickOutside)
     return () => document.removeEventListener('mousedown', handleClickOutside)
-  }, [])
-
-  useEffect(() => {
-    fetchOrders()
-    const storedReminders = localStorage.getItem("sentReminders")
-    if (storedReminders) {
-      try {
-        setSentReminders(JSON.parse(storedReminders))
-      } catch (e) {}
-    }
   }, [])
 
   const fetchOrders = async () => {
@@ -74,6 +122,10 @@ export function OrdersManager({ readOnly = false, basePath = "/admin" }: { readO
       setLoading(false)
     }
   }
+
+  useEffect(() => {
+    fetchOrders()
+  }, [])
 
   const handleSendReminder = async (userId: string) => {
     toast.loading("Sending reminder...")
@@ -137,41 +189,7 @@ export function OrdersManager({ readOnly = false, basePath = "/admin" }: { readO
     setSelectedUsers([]);
   }
 
-  const handleStatusChange = async (orderId: string, newStatus: string) => {
-    toast.loading("Updating status...")
-    const res = await updateOrderStatus(orderId, newStatus)
-    toast.dismiss()
-    
-    if (res.success) {
-      toast.success("Order status updated!")
-      fetchOrders()
-      window.dispatchEvent(new CustomEvent('orderStatusUpdated'))
-    } else {
-      toast.error(res.error || "Failed to update status")
-    }
-  }
 
-  const getStatusIcon = (status: string) => {
-    switch (status) {
-      case "CONFIRMED": return <Clock size={16} />
-      case "PROCESSING": return <Package size={16} />
-      case "SHIPPED": return <Truck size={16} />
-      case "DELIVERED": return <CheckCircle size={16} />
-      case "CANCELLED": return <XCircle size={16} />
-      default: return <Clock size={16} />
-    }
-  }
-
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case "CONFIRMED": return "bg-amber-100 text-amber-800 border-amber-200"
-      case "PROCESSING": return "bg-blue-100 text-blue-800 border-blue-200"
-      case "SHIPPED": return "bg-indigo-100 text-indigo-800 border-indigo-200"
-      case "DELIVERED": return "bg-emerald-100 text-emerald-800 border-emerald-200"
-      case "CANCELLED": return "bg-rose-100 text-rose-800 border-rose-200"
-      default: return "bg-slate-100 text-slate-800 border-slate-200"
-    }
-  }
 
   // Filter orders by status if any filters are selected
   const filteredOrders = filterStatuses.length > 0 
@@ -198,7 +216,7 @@ export function OrdersManager({ readOnly = false, basePath = "/admin" }: { readO
     if (!order.isReadByAdmin && order.status === "PROCESSING") acc[userId].hasUnreadOrders = true;
     
     // aggregate total products purchased
-    const orderQuantity = order.items.reduce((sum: number, item: any) => sum + item.quantity, 0);
+    const orderQuantity = order.items.reduce((sum: number, item: OrderItem) => sum + item.quantity, 0);
     acc[userId].totalPurchased += orderQuantity;
     
     // get last ordered date
@@ -208,16 +226,16 @@ export function OrdersManager({ readOnly = false, basePath = "/admin" }: { readO
     }
     
     return acc;
-  }, {} as Record<string, any>);
+  }, {} as Record<string, GroupedUser>);
 
-  const usersList = Object.values(groupedUsers).filter((u: any) => 
+  const usersList = Object.values(groupedUsers).filter((u: GroupedUser) => 
     u.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
     u.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    u.orders.some((o: any) => o.id.toLowerCase().includes(searchTerm.toLowerCase()))
+    u.orders.some((o: Order) => o.id.toLowerCase().includes(searchTerm.toLowerCase()))
   )
 
   // Sort users by last ordered date descending
-  usersList.sort((a: any, b: any) => new Date(b.lastOrderedDate).getTime() - new Date(a.lastOrderedDate).getTime())
+  usersList.sort((a: GroupedUser, b: GroupedUser) => new Date(b.lastOrderedDate).getTime() - new Date(a.lastOrderedDate).getTime())
 
   const handleToggleReadStatus = async (e: React.MouseEvent, userId: string, currentStatus: boolean) => {
     e.stopPropagation() // Prevent clicking the row
@@ -388,7 +406,7 @@ export function OrdersManager({ readOnly = false, basePath = "/admin" }: { readO
                   </tr>
                 </thead>
                 <tbody>
-                  {paginatedUsersList.map((user: any) => (
+                  {paginatedUsersList.map((user: GroupedUser) => (
                     <tr 
                       key={user.id} 
                       className={`border-b border-charcoal/5 hover:bg-slate-50 transition-colors cursor-pointer group ${user.hasUnreadOrders ? 'bg-amber-50/30' : ''}`}
@@ -514,7 +532,7 @@ export function OrdersManager({ readOnly = false, basePath = "/admin" }: { readO
                     </tr>
                   </thead>
                   <tbody>
-                    {paginatedAbandonedCarts.map((user: any) => {
+                    {paginatedAbandonedCarts.map((user: AbandonedCart) => {
                       const isSelected = selectedUsers.includes(user.id);
                       return (
                       <tr 
@@ -545,7 +563,7 @@ export function OrdersManager({ readOnly = false, basePath = "/admin" }: { readO
                         </td>
                         <td className="px-3 py-2 md:px-5 md:py-2 align-middle hidden md:table-cell">
                           <div className="flex flex-col gap-1">
-                            {user.items?.map((item: any, idx: number) => (
+                            {user.items?.map((item: CartItem, idx: number) => (
                               <span key={idx} className="text-sm text-slate flex items-center gap-2">
                                 <span className="w-6 h-6 rounded bg-slate-100 flex items-center justify-center text-xs font-bold text-charcoal">{item.quantity}x</span>
                                 <span className="truncate max-w-[200px]" title={item.product?.name || item.productName || 'Product'}>
