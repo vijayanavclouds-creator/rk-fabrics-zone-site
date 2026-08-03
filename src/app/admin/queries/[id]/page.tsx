@@ -72,7 +72,7 @@ export default async function AdminQueryThreadPage({ params }: { params: Promise
       });
     }
 
-    await logAdminActivity(`replied to query <b>${query!.subject}</b> from <b>${query!.name || query!.user?.name || "Customer"}</b>`);
+    await logAdminActivity(`replied to query <a href="/admin/queries/${query!.id}" class="text-teal-600 hover:underline font-semibold">${query!.subject}</a> from <b>${query!.name || query!.user?.name || "Customer"}</b>`);
     revalidatePath(`/admin/queries/${query!.id}`);
   }
 
@@ -82,7 +82,7 @@ export default async function AdminQueryThreadPage({ params }: { params: Promise
       where: { id: query!.id },
       data: { status: "RESOLVED" }
     });
-    await logAdminActivity(`resolved query <b>${query!.subject}</b> from <b>${query!.name || query!.user?.name || "Customer"}</b>`);
+    await logAdminActivity(`resolved query <a href="/admin/queries/${query!.id}" class="text-teal-600 hover:underline font-semibold">${query!.subject}</a> from <b>${query!.name || query!.user?.name || "Customer"}</b>`);
     revalidatePath(`/admin/queries/${query!.id}`);
   }
 
