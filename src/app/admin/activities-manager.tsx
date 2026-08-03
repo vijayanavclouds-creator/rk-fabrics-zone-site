@@ -163,7 +163,7 @@ export function ActivitiesManager() {
             </div>
             
             {/* Pagination */}
-            {totalPages > 1 && (
+            {totalPages > 0 && (
               <div className="flex justify-center gap-2 mt-3 pt-3 border-t border-charcoal/10 shrink-0 -mb-2 md:-mb-4">
                 <button 
                   disabled={page === 1}
