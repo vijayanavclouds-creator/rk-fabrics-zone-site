@@ -6,8 +6,16 @@ import { PortalHeader } from "@/components/layout/portal-header"
 import { getAllAdminActivities, deleteAdminActivitiesByDateRange } from "@/actions/admin-activity"
 import { toast } from "sonner"
 
+interface AdminActivityData {
+  id: string;
+  adminName: string;
+  action: string;
+  details?: string | null;
+  createdAt: string | Date;
+}
+
 export function ActivitiesManager() {
-  const [activities, setActivities] = useState<any[]>([])
+  const [activities, setActivities] = useState<AdminActivityData[]>([])
   const [loading, setLoading] = useState(true)
   const [page, setPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
@@ -37,6 +45,11 @@ export function ActivitiesManager() {
     }
     setLoading(false)
   }
+
+  useEffect(() => {
+    fetchActivities(page)
+  }, [page])
+
 
   const handleClearHistory = async () => {
     if (!startDate || !endDate) return toast.error("Please select both dates")
