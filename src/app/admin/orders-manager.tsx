@@ -47,43 +47,54 @@ export function OrdersManager({ readOnly = false, basePath = "/admin" }: { readO
 
   const fetchOrders = async () => {
     setLoading(true)
-    const [ordersRes, cartsRes, settingsRes] = await Promise.all([
-      getAllOrders(),
-      getAbandonedCarts(),
-      getAdminSettings()
-    ])
-    
-    if (ordersRes.success) {
-      setOrders(ordersRes.orders || [])
-    } else {
-      toast.error(ordersRes.error || "Failed to load orders")
-    }
+    try {
+      const [ordersRes, cartsRes, settingsRes] = await Promise.all([
+        getAllOrders(),
+        getAbandonedCarts(),
+        getAdminSettings()
+      ])
+      
+      if (ordersRes.success) {
+        setOrders(ordersRes.orders || [])
+      } else {
+        toast.error(ordersRes.error || "Failed to load orders")
+      }
 
-    if (cartsRes.success) {
-      setAbandonedCarts(cartsRes.data || [])
-    }
+      if (cartsRes.success) {
+        setAbandonedCarts(cartsRes.data || [])
+      }
 
-    if (settingsRes.success && settingsRes.settings) {
-      setThreshold(settingsRes.settings.lateShippingThresholdHours || 6)
+      if (settingsRes.success && settingsRes.settings) {
+        setThreshold(settingsRes.settings.lateShippingThresholdHours || 6)
+      }
+    } catch (error) {
+      console.error("Error fetching orders data:", error)
+      toast.error("Network or server error occurred. Please refresh the page.")
+    } finally {
+      setLoading(false)
     }
-    
-    setLoading(false)
   }
 
   const handleSendReminder = async (userId: string) => {
     toast.loading("Sending reminder...")
-    const res = await sendAbandonedCartReminder(userId)
-    toast.dismiss()
-    
-    if (res.success) {
-      toast.success("Reminder sent successfully!")
-      setSentReminders(prev => {
-        const next = [...prev, userId]
-        localStorage.setItem("sentReminders", JSON.stringify(next))
-        return next
-      })
-    } else {
-      toast.error(res.error || "Failed to send reminder")
+    try {
+      const res = await sendAbandonedCartReminder(userId)
+      toast.dismiss()
+      
+      if (res.success) {
+        toast.success("Reminder sent successfully!")
+        setSentReminders(prev => {
+          const next = [...prev, userId]
+          localStorage.setItem("sentReminders", JSON.stringify(next))
+          return next
+        })
+      } else {
+        toast.error(res.error || "Failed to send reminder")
+      }
+    } catch (error) {
+      toast.dismiss()
+      console.error(error)
+      toast.error("Failed to communicate with server.")
     }
   }
 
@@ -94,21 +105,26 @@ export function OrdersManager({ readOnly = false, basePath = "/admin" }: { readO
     let successCount = 0;
     let failCount = 0;
     
-    for (const userId of selectedUsers) {
-      const res = await sendAbandonedCartReminder(userId);
-      if (res.success) {
-        successCount++;
-        setSentReminders(prev => {
-          if (!prev.includes(userId)) {
-            const next = [...prev, userId];
-            localStorage.setItem("sentReminders", JSON.stringify(next));
-            return next;
-          }
-          return prev;
-        });
-      } else {
-        failCount++;
+    try {
+      for (const userId of selectedUsers) {
+        const res = await sendAbandonedCartReminder(userId);
+        if (res.success) {
+          successCount++;
+          setSentReminders(prev => {
+            if (!prev.includes(userId)) {
+              const next = [...prev, userId];
+              localStorage.setItem("sentReminders", JSON.stringify(next));
+              return next;
+            }
+            return prev;
+          });
+        } else {
+          failCount++;
+        }
       }
+    } catch (error) {
+      console.error(error)
+      failCount = selectedUsers.length - successCount;
     }
     
     toast.dismiss();
@@ -206,14 +222,20 @@ export function OrdersManager({ readOnly = false, basePath = "/admin" }: { readO
   const handleToggleReadStatus = async (e: React.MouseEvent, userId: string, currentStatus: boolean) => {
     e.stopPropagation() // Prevent clicking the row
     toast.loading(currentStatus ? "Marking as read..." : "Marking as unread...")
-    const res = await toggleUserOrdersReadStatus(userId, !currentStatus)
-    toast.dismiss()
-    
-    if (res.success) {
-      toast.success(currentStatus ? "Orders marked as read" : "Orders marked as unread")
-      fetchOrders()
-    } else {
-      toast.error(res.error || "Failed to update status")
+    try {
+      const res = await toggleUserOrdersReadStatus(userId, !currentStatus)
+      toast.dismiss()
+      
+      if (res.success) {
+        toast.success(currentStatus ? "Orders marked as read" : "Orders marked as unread")
+        fetchOrders()
+      } else {
+        toast.error(res.error || "Failed to update status")
+      }
+    } catch (error) {
+      toast.dismiss()
+      console.error(error)
+      toast.error("Failed to communicate with server.")
     }
   }
 
