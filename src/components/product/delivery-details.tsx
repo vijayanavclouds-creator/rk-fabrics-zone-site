@@ -268,12 +268,14 @@ export function DeliveryDetails() {
                       <div className="w-full px-5 py-4 rounded-full neumorphic-inset flex items-center transition-all">
                         <input 
                           type="text" 
-                          placeholder="Search by area, street, or pincode"
+                          maxLength={6}
+                          placeholder="Enter your 6-digit pincode"
                           value={pincode}
                           onFocus={() => setIsInputFocused(true)}
                           onBlur={() => setIsInputFocused(false)}
                           onChange={(e) => {
-                            setPincode(e.target.value);
+                            const val = e.target.value.replace(/\D/g, '').slice(0, 6);
+                            setPincode(val);
                             setError("");
                             setSuccessMsg("");
                           }}

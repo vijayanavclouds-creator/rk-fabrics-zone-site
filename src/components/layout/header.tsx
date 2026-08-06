@@ -102,19 +102,7 @@ export function Header({ initialNavLinks, announcementBanner }: { initialNavLink
 
  return (
  <>
- {/* Announcement Bar */}
-  {banner?.isActive && (
-   <div className="w-full bg-charcoal text-white text-xs md:text-sm py-2 font-medium relative z-50 marquee-container">
-   <div className="marquee-content">
-     <span dangerouslySetInnerHTML={{ __html: banner.text }} />
-     <span className="mx-16 opacity-50">✦</span>
-   </div>
-   <div className="marquee-content" aria-hidden="true">
-     <span dangerouslySetInnerHTML={{ __html: banner.text }} />
-     <span className="mx-16 opacity-50">✦</span>
-   </div>
-   </div>
-  )}
+ {/* Announcement Bar Removed */}
 
  {/* Main Header */}
   <header

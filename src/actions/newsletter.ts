@@ -33,7 +33,7 @@ export async function subscribeToNewsletter(email: string) {
   }
 }
 
-export async function sendNewsletter(subject: string, content: string) {
+export async function sendNewsletter(subject: string, content: string, targetUserIds?: string[], couponCode?: string, targetUsers?: string) {
   try {
     const session = await getServerSession(authOptions)
     if (!session || session.user.role !== "ADMIN") {
@@ -43,17 +43,30 @@ export async function sendNewsletter(subject: string, content: string) {
     if (!subject || !content) {
       return { success: false, error: "Subject and content are required" }
     }
+    
+    // Default the targetUsers label if not provided
+    let finalTargetUsers = targetUsers
+    if (!finalTargetUsers) {
+      if (targetUserIds && targetUserIds.length > 0) {
+        finalTargetUsers = "Selected Users"
+      } else {
+        finalTargetUsers = "All Users"
+      }
+    }
 
     // 1. Create the newsletter record
     const newsletter = await prisma.newsletter.create({
-      data: { subject, content }
+      data: { subject, content, couponCode, targetUsers: finalTargetUsers }
     })
 
-    // 2. Fetch all registered users to deliver it to their portal
-    // (We also have `NewsletterSubscriber` which contains guest emails, 
-    // but the requirement is for customers to see it on their portal).
-    // Let's create a UserNewsletter for every user.
-    const users = await prisma.user.findMany({ select: { id: true } })
+    // 2. Fetch users to deliver it to their portal
+    let users: { id: string }[] = []
+    
+    if (targetUserIds && targetUserIds.length > 0) {
+      users = targetUserIds.map(id => ({ id }))
+    } else {
+      users = await prisma.user.findMany({ select: { id: true } })
+    }
     
     if (users.length > 0) {
       const userNewsletters = users.map(user => ({

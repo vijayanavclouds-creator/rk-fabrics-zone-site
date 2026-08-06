@@ -211,3 +211,107 @@ export async function getGSTRates() {
     platformFeePercent: profile?.platformFeePercent ?? 2
   };
 }
+
+// Get Home2 HTML Settings
+export async function getHome2HtmlSettings() {
+  try {
+    const heroRecord = await prisma.systemSetting.findUnique({ where: { key: "HOME2_HERO_HTML" } });
+    const carouselRecord = await prisma.systemSetting.findUnique({ where: { key: "HOME2_CAROUSEL_HTML" } });
+    return {
+      success: true,
+      heroHtml: heroRecord ? heroRecord.value : "",
+      carouselHtml: carouselRecord ? carouselRecord.value : ""
+    };
+  } catch (error: any) {
+    return { success: false, error: error.message };
+  }
+}
+
+// Save Home2 HTML Settings
+export async function saveHome2HtmlSettings(heroHtml: string, carouselHtml: string) {
+  try {
+    await prisma.systemSetting.upsert({
+      where: { key: "HOME2_HERO_HTML" },
+      update: { value: heroHtml },
+      create: { key: "HOME2_HERO_HTML", value: heroHtml }
+    });
+    await prisma.systemSetting.upsert({
+      where: { key: "HOME2_CAROUSEL_HTML" },
+      update: { value: carouselHtml },
+      create: { key: "HOME2_CAROUSEL_HTML", value: carouselHtml }
+    });
+    
+    revalidatePath("/");
+    revalidatePath("/admin");
+    
+    // Log the action
+    await logAdminActivity("updated homepage HTML settings", "Modified dynamic homepage HTML");
+    
+    return { success: true };
+  } catch (error: any) {
+    console.error("Error saving Home2 HTML settings:", error);
+    return { success: false, error: error.message };
+  }
+}
+
+// Get HTML Records
+export async function getHtmlRecords() {
+  try {
+    const records = await prisma.htmlRecord.findMany({
+      orderBy: { updatedAt: 'desc' }
+    });
+    return { success: true, records };
+  } catch (error: any) {
+    console.error("Error fetching HTML records:", error);
+    return { success: false, error: error.message };
+  }
+}
+
+// Create HTML Record
+export async function createHtmlRecord(title: string, type: string, code: string) {
+  try {
+    await prisma.htmlRecord.create({
+      data: {
+        title,
+        type,
+        code
+      }
+    });
+    revalidatePath("/admin");
+    return { success: true };
+  } catch (error: any) {
+    console.error("Error creating HTML record:", error);
+    return { success: false, error: error.message };
+  }
+}
+
+// Update HTML Record
+export async function updateHtmlRecord(id: string, title: string, type: string, code: string) {
+  try {
+    await prisma.htmlRecord.update({
+      where: { id },
+      data: {
+        title,
+        type,
+        code
+      }
+    });
+    revalidatePath("/admin");
+    return { success: true };
+  } catch (error: any) {
+    console.error("Error updating HTML record:", error);
+    return { success: false, error: error.message };
+  }
+}
+
+// Delete HTML Record
+export async function deleteHtmlRecord(id: string) {
+  try {
+    await prisma.htmlRecord.delete({ where: { id } });
+    revalidatePath("/admin");
+    return { success: true };
+  } catch (error: any) {
+    console.error("Error deleting HTML record:", error);
+    return { success: false, error: error.message };
+  }
+}

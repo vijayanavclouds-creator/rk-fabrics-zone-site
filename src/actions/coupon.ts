@@ -200,6 +200,26 @@ export async function getGlobalCoupons() {
   }
 }
 
+export async function getAllAdminCoupons() {
+  try {
+    const session = await getServerSession(authOptions)
+    if (!session || session.user.role !== "ADMIN") {
+      return { success: false, error: "Unauthorized" }
+    }
+
+    const coupons = await prisma.coupon.findMany({
+      orderBy: {
+        createdAt: 'desc'
+      }
+    })
+
+    return { success: true, coupons }
+  } catch (error: any) {
+    console.error("Error getting all coupons:", error)
+    return { success: false, error: "Failed to load coupons" }
+  }
+}
+
 export async function deactivateGlobalCoupon(couponId: string) {
   try {
     const session = await getServerSession(authOptions)
@@ -218,5 +238,94 @@ export async function deactivateGlobalCoupon(couponId: string) {
   } catch (error: any) {
     console.error("Error deactivating coupon:", error)
     return { success: false, error: "Failed to deactivate coupon" }
+  }
+}
+
+export async function getGlobalCouponStats() {
+  try {
+    const session = await getServerSession(authOptions)
+    if (!session || session.user.role !== "ADMIN") {
+      return { success: false, error: "Unauthorized" }
+    }
+
+    const globalCoupons = await prisma.coupon.findMany({
+      where: { validForUserId: null }
+    })
+
+    const totalUsers = await prisma.user.count({ where: { role: "CUSTOMER" } })
+
+    const usersWithDeliveredOrders = await prisma.order.groupBy({
+      by: ['userId'],
+      where: { status: "DELIVERED" }
+    })
+    
+    const newUsersCount = totalUsers - usersWithDeliveredOrders.length
+
+    const allUsedOrders = await prisma.order.findMany({
+      where: { 
+        couponCode: { not: null },
+        status: { not: "CANCELLED" }
+      },
+      select: { userId: true, couponCode: true }
+    })
+
+    const stats: Record<string, { usedCount: number, eligibleCount: number }> = {}
+
+    for (const coupon of globalCoupons) {
+      const eligibleCount = coupon.isForNewUsersOnly ? newUsersCount : totalUsers
+      
+      const uniqueUsersUsed = new Set(
+        allUsedOrders
+          .filter(o => o.couponCode === coupon.code)
+          .map(o => o.userId)
+      ).size
+
+      stats[coupon.code] = {
+        usedCount: uniqueUsersUsed,
+        eligibleCount: eligibleCount > 0 ? eligibleCount : 0
+      }
+    }
+
+    return { success: true, stats }
+  } catch (error: any) {
+    console.error("Error getting coupon stats:", error)
+    return { success: false, error: "Failed to load coupon stats" }
+  }
+}
+
+export async function getCouponUsageDetails(couponCode: string) {
+  try {
+    const session = await getServerSession(authOptions)
+    if (!session || session.user.role !== "ADMIN") {
+      return { success: false, error: "Unauthorized" }
+    }
+
+    const coupon = await prisma.coupon.findUnique({ where: { code: couponCode } })
+    if (!coupon) return { success: false, error: "Coupon not found" }
+
+    const usedOrders = await prisma.order.findMany({
+      where: { couponCode: couponCode, status: { not: "CANCELLED" } },
+      select: { userId: true }
+    })
+    const usedUserIds = new Set(usedOrders.map(o => o.userId))
+
+    let deliveredUserIds = new Set<string>()
+    if (coupon.isForNewUsersOnly) {
+      const deliveredOrders = await prisma.order.findMany({
+        where: { status: "DELIVERED" },
+        select: { userId: true }
+      })
+      deliveredUserIds = new Set(deliveredOrders.map(o => o.userId))
+    }
+
+    return { 
+      success: true, 
+      usedUserIds: Array.from(usedUserIds),
+      ineligibleUserIds: Array.from(deliveredUserIds),
+      isForNewUsersOnly: coupon.isForNewUsersOnly
+    }
+  } catch (error: any) {
+    console.error("Error getting coupon usage details:", error)
+    return { success: false, error: "Failed to load usage details" }
   }
 }

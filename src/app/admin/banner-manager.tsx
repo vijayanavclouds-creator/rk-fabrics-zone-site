@@ -1,76 +1,61 @@
 "use client"
 
-import { useState, useTransition, useRef, useEffect } from "react"
-import { createBanner, deleteBanner, updateBannerOrder, getFileSize, updateBannerTitle, getCloudinarySignature } from "@/actions/admin"
-import { getAnnouncementBanner, saveAnnouncementBanner } from "@/actions/system"
-import imageCompression from 'browser-image-compression';
+import { useState, useEffect } from "react"
+import { 
+  getAnnouncementBanner, 
+  saveAnnouncementBanner, 
+  getHome2HtmlSettings, 
+  saveHome2HtmlSettings,
+  getHtmlRecords,
+  createHtmlRecord,
+  updateHtmlRecord,
+  deleteHtmlRecord
+} from "@/actions/system"
+import { DEFAULT_HERO_HTML, DEFAULT_CAROUSEL_HTML } from "./default-home2-html"
 import { toast } from "sonner"
-import { Upload, X, GripVertical, Image as ImageIcon, Loader2 } from "lucide-react"
-import { DragDropContext, Droppable, Draggable, DropResult } from "@hello-pangea/dnd"
-import Image from "next/image"
+import { Loader2, Save, Plus, X, Trash, Play, Copy, Pencil } from "lucide-react"
 import { useRouter } from "next/navigation"
-
-function FileSizeDisplay({ url }: { url: string }) {
-  const [size, setSize] = useState<string | null>(null)
-  
-  useEffect(() => {
-    getFileSize(url).then(bytes => {
-      if (bytes) {
-        const mb = bytes / (1024 * 1024)
-        if (mb >= 1) setSize(`${mb.toFixed(2)} MB`)
-        else setSize(`${(bytes / 1024).toFixed(0)} KB`)
-      } else {
-        setSize("Unknown size")
-      }
-    })
-  }, [url])
-
-  if (!size) return <span className="text-xs text-slate-400">Loading size...</span>
-  return <span className="text-sm font-medium text-slate bg-white px-3 py-1 rounded-lg border border-charcoal/5 shadow-sm">{size}</span>
-}
-
-function BannerTitleInput({ banner }: { banner: any }) {
-  const [title, setTitle] = useState(banner.title || "")
-  const [isSaving, setIsSaving] = useState(false)
-  
-  const handleSave = async () => {
-    if (title === banner.title) return
-    setIsSaving(true)
-    const res = await updateBannerTitle(banner.id, title)
-    if (res.success) toast.success("Tag updated")
-    else toast.error("Failed to update tag")
-    setIsSaving(false)
-  }
-
-  return (
-    <div className="flex gap-2 items-center mt-2">
-      <input 
-        type="text" 
-        value={title} 
-        onChange={e => setTitle(e.target.value)} 
-        onBlur={handleSave}
-        onKeyDown={e => e.key === 'Enter' && handleSave()}
-        placeholder="Enter tag (e.g. Cottons)" 
-        className="text-sm px-3 py-1.5 rounded-lg border border-charcoal/10 bg-white focus:outline-none focus:border-teal-500 w-full sm:w-48"
-      />
-      {isSaving && <Loader2 size={14} className="animate-spin text-slate-400" />}
-    </div>
-  )
-}
 
 export function BannerManager({ banners }: { banners: any[] }) {
   const router = useRouter()
-  const [isPending, startTransition] = useTransition()
-  const [uploadingType, setUploadingType] = useState<"hero" | "carousel" | null>(null)
   
   const [announcement, setAnnouncement] = useState({ text: "", isActive: false });
   const [isLoadingAnnouncement, setIsLoadingAnnouncement] = useState(true);
+
+  // HTML State
+  const [heroHtml, setHeroHtml] = useState("")
+  const [carouselHtml, setCarouselHtml] = useState("")
+  const [savingHtml, setSavingHtml] = useState(false)
+  
+  // Records State
+  const [records, setRecords] = useState<any[]>([])
+  
+  // Modal State
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false)
+  const [previewHtml, setPreviewHtml] = useState<string | null>(null) // Used for fullscreen preview
+  const [newRecord, setNewRecord] = useState({ title: "", type: "Hero HTML", code: "" })
+  const [editingRecordId, setEditingRecordId] = useState<string | null>(null)
+  const [isSavingRecord, setIsSavingRecord] = useState(false)
+
+  const loadRecords = async () => {
+    const res = await getHtmlRecords()
+    if (res.success && res.records) setRecords(res.records)
+  }
 
   useEffect(() => {
     getAnnouncementBanner().then((data) => {
       if (data) setAnnouncement(data);
       setIsLoadingAnnouncement(false);
     });
+    
+    getHome2HtmlSettings().then(res => {
+      if (res.success) {
+        setHeroHtml(res.heroHtml || DEFAULT_HERO_HTML)
+        setCarouselHtml(res.carouselHtml || DEFAULT_CAROUSEL_HTML)
+      }
+    });
+
+    loadRecords()
   }, []);
 
   const handleSaveAnnouncement = async () => {
@@ -84,304 +69,293 @@ export function BannerManager({ banners }: { banners: any[] }) {
     else toast.error("Failed to update banner");
   };
 
-  const heroBanners = banners.filter(b => b.type === "hero").sort((a, b) => a.order - b.order)
-  const carouselBanners = banners.filter(b => b.type === "carousel").sort((a, b) => a.order - b.order)
+  const handleSaveHtml = async () => {
+    setSavingHtml(true)
+    const res = await saveHome2HtmlSettings(heroHtml, carouselHtml)
+    if (res.success) toast.success("HTML Settings Saved")
+    else toast.error("Failed to save HTML")
+    setSavingHtml(false)
+  }
 
-  const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>, type: "hero" | "carousel") => {
-    const file = e.target.files?.[0]
-    if (!file) return
-
-    setUploadingType(type)
-    try {
-      let fileToUpload = file;
-      
-      // Always compress images to ensure fast loading and save Cloudinary storage
-      toast.info("Optimizing image for fast loading...");
-      const options = {
-        maxSizeMB: 0.3, // Compress to ~300KB max
-        maxWidthOrHeight: 1600, // Limit dimensions for web
-        useWebWorker: true,
-        initialQuality: 0.8
-      }
-      fileToUpload = await imageCompression(file, options);
-
-      // 1. Get secure upload signature from our server
-      const sigData = await getCloudinarySignature()
-      if (!sigData.success || !sigData.signature || !sigData.apiKey || !sigData.cloudName) {
-        throw new Error("Failed to get upload signature from server")
-      }
-
-      // 2. Upload file directly to Cloudinary from the browser!
-      const formData = new FormData()
-      formData.append("file", fileToUpload)
-      formData.append("api_key", sigData.apiKey)
-      formData.append("timestamp", sigData.timestamp!.toString())
-      formData.append("signature", sigData.signature)
-      formData.append("folder", "rk-fabrics/banners")
-      formData.append("use_filename", "true")
-      formData.append("unique_filename", "true")
-
-      const uploadRes = await fetch(`https://api.cloudinary.com/v1_1/${sigData.cloudName}/image/upload`, {
-        method: "POST",
-        body: formData,
-      })
-
-      const uploadData = await uploadRes.json()
-      
-      if (!uploadRes.ok) {
-        throw new Error(uploadData.error?.message || "Upload to Cloudinary failed")
-      }
-
-      // 3. Save the returned URL to our database
-      const createData = new FormData()
-      createData.append("type", type)
-      createData.append("imageUrl", uploadData.secure_url)
-
-      const createRes = await createBanner(createData)
-      if (createRes.success) {
-        toast.success(`${type} image added successfully!`)
-      } else {
-        throw new Error(createRes.error || "Failed to save banner")
-      }
-    } catch (error: any) {
-      toast.error(error.message)
-    } finally {
-      setUploadingType(null)
-      if (e.target) e.target.value = ''
+  const handleSaveRecord = async () => {
+    if (!newRecord.title || !newRecord.code) return toast.error("Title and HTML Code are required")
+    setIsSavingRecord(true)
+    let res;
+    if (editingRecordId) {
+      res = await updateHtmlRecord(editingRecordId, newRecord.title, newRecord.type, newRecord.code)
+    } else {
+      res = await createHtmlRecord(newRecord.title, newRecord.type, newRecord.code)
+    }
+    setIsSavingRecord(false)
+    if (res.success) {
+      toast.success(editingRecordId ? "Record updated successfully" : "Record saved successfully")
+      setIsAddModalOpen(false)
+      setNewRecord({ title: "", type: "Hero HTML", code: "" })
+      setEditingRecordId(null)
+      loadRecords()
+    } else {
+      toast.error(editingRecordId ? "Failed to update record" : "Failed to save record")
     }
   }
 
-  const handleDelete = (id: string) => {
-    if (!confirm("Remove this image?")) return
-    startTransition(async () => {
-      const res = await deleteBanner(id)
-      if (res.success) toast.success("Image removed")
-      else toast.error("Failed to remove image")
-    })
+  const handleDeleteRecord = async (id: string) => {
+    if (!confirm("Are you sure you want to delete this record?")) return
+    const res = await deleteHtmlRecord(id)
+    if (res.success) {
+      toast.success("Record deleted")
+      loadRecords()
+    } else {
+      toast.error("Failed to delete record")
+    }
   }
 
-  const handleAddUrl = async (type: "hero" | "carousel") => {
-    const url = window.prompt(`Paste the direct image URL for the ${type} banner:`);
-    if (!url) return;
-    
-    if (!url.startsWith("http")) {
-      toast.error("Please enter a valid URL starting with http");
-      return;
+  const handleUseRecord = (record: any) => {
+    if (record.type === "Hero HTML") {
+      setHeroHtml(record.code)
+    } else {
+      setCarouselHtml(record.code)
     }
-
-    setUploadingType(type);
-    try {
-      const createData = new FormData();
-      createData.append("type", type);
-      createData.append("imageUrl", url);
-
-      const createRes = await createBanner(createData);
-      if (createRes.success) {
-        toast.success(`${type} image added successfully!`);
-      } else {
-        throw new Error(createRes.error || "Failed to save banner");
-      }
-    } catch (error: any) {
-      toast.error(error.message);
-    } finally {
-      setUploadingType(null);
-    }
-  };
-
-  const handleDragEnd = (result: DropResult, typeBanners: any[]) => {
-    if (!result.destination) return;
-    const { source, destination } = result;
-    if (source.index === destination.index) return;
-    
-    const newItems = Array.from(typeBanners);
-    const [draggedItem] = newItems.splice(source.index, 1);
-    newItems.splice(destination.index, 0, draggedItem);
-    
-    startTransition(async () => {
-      await updateBannerOrder(newItems.map(b => b.id));
-      toast.success("Order updated");
-    });
+    toast.success(`Loaded "${record.title}" into ${record.type} editor`)
   }
-
-  const BannerList = ({ title, items, type }: { title: string, items: any[], type: "hero" | "carousel" }) => (
-    <div className="bg-white md:rounded-3xl border-y md:border border-charcoal/10 p-4 sm:p-5 md:p-8 shadow-[0_8px_30px_rgb(0,0,0,0.08)] md:shadow-sm -mx-4 sm:mx-0 mb-6 md:mb-0">
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 border-b border-charcoal/10 pb-4">
-        <div>
-          <h3 className="text-xl font-bold text-charcoal">{title}</h3>
-          <p className="text-sm text-slate mt-1">
-            {items.length} of 7 images • Recommended Size: {type === "hero" ? "1920 × 800px" : "1200 × 600px"}
-          </p>
-        </div>
-        <div className="flex items-center gap-2">
-          <button 
-            type="button"
-            disabled={uploadingType === type || isPending}
-            onClick={() => handleAddUrl(type)}
-            className={`
-              flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold shadow-neo-btn transition-all cursor-pointer
-              ${uploadingType === type || isPending ? 'bg-slate-200 text-slate-400 cursor-not-allowed shadow-none' : 'bg-white text-charcoal border border-charcoal/20 hover:bg-slate-50 hover:shadow-neo-pressed'}
-            `}
-          >
-            <ImageIcon size={16} />
-            Add from URL
-          </button>
-          
-          <label className={`
-            flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold shadow-neo-btn transition-all cursor-pointer
-            ${uploadingType === type || isPending ? 'bg-slate-200 text-slate-400 cursor-not-allowed shadow-none' : 'bg-charcoal text-white hover:bg-black hover:shadow-neo-pressed'}
-          `}>
-            {uploadingType === type ? <Loader2 size={16} className="animate-spin" /> : <Upload size={16} />}
-            Upload Image
-            <input 
-              type="file" 
-              accept="image/*" 
-              className="hidden" 
-              disabled={uploadingType === type || isPending}
-              onClick={(e) => {
-                if (items.length >= 7) {
-                  e.preventDefault();
-                  toast.error(`Maximum 7 images allowed for ${type} section.`);
-                }
-              }}
-              onChange={(e) => handleUpload(e, type)} 
-            />
-          </label>
-        </div>
-      </div>
-
-      <DragDropContext onDragEnd={(res) => handleDragEnd(res, items)}>
-        <Droppable droppableId={`${type}-banners`}>
-          {(provided) => (
-            <div className="space-y-4" {...provided.droppableProps} ref={provided.innerRef}>
-              {items.length === 0 && (
-                <div className="text-center py-12 bg-slate-50 rounded-2xl border border-dashed border-charcoal/20">
-                  <ImageIcon className="mx-auto text-slate-400 mb-3" size={32} />
-                  <p className="text-slate font-medium">No images added yet.</p>
-                </div>
-              )}
-              
-              {items.map((banner, index) => (
-                <Draggable key={banner.id} draggableId={banner.id} index={index}>
-                  {(provided, snapshot) => (
-                    <div 
-                      ref={provided.innerRef}
-                      {...provided.draggableProps}
-                      className={`flex items-center gap-2 sm:gap-4 bg-slate-50 p-2 sm:p-3 rounded-2xl border transition-all duration-200 ${
-                        snapshot.isDragging ? 'shadow-lg border-teal-500 scale-[1.02] bg-white z-50' : 'border-charcoal/5 group'
-                      }`}
-                    >
-                      <div 
-                        {...provided.dragHandleProps}
-                        className="flex flex-col gap-1 px-1 sm:px-2 text-slate-300 hover:text-charcoal cursor-grab active:cursor-grabbing transition-colors"
-                      >
-                        <GripVertical size={20} />
-                      </div>
-                      
-                      <div className="relative w-20 h-14 sm:w-32 sm:h-20 rounded-xl overflow-hidden shadow-inner bg-charcoal/5 flex-shrink-0">
-                        <Image src={banner.imageUrl} alt="Banner" fill className="object-cover" />
-                      </div>
-
-                      <div className="flex-grow pl-1 sm:pl-4 flex flex-col justify-center overflow-hidden">
-                        <div>
-                          <FileSizeDisplay url={banner.imageUrl} />
-                        </div>
-                        {type === "carousel" && <BannerTitleInput banner={banner} />}
-                      </div>
-
-                      <button 
-                        onClick={() => handleDelete(banner.id)}
-                        disabled={isPending}
-                        className="p-2 text-rose-500 hover:bg-rose-100 rounded-full transition-colors mr-2 shrink-0"
-                        title="Remove"
-                      >
-                        <X size={20} />
-                      </button>
-                    </div>
-                  )}
-                </Draggable>
-              ))}
-              {provided.placeholder}
-            </div>
-          )}
-        </Droppable>
-      </DragDropContext>
-    </div>
-  )
 
   return (
-    <div className="animate-in fade-in duration-300 space-y-6">
+    <div className="animate-in fade-in duration-300 space-y-6 pb-24">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 border-b border-charcoal/10 pb-4">
         <div>
           <h2 className="font-[family-name:var(--font-playfair)] text-2xl font-bold text-charcoal">
-            Banner Settings
+            Dynamic Homepage (Home 2)
           </h2>
-          <p className="text-slate mt-1 text-sm">Manage your store's hero and carousel images.</p>
+          <p className="text-slate mt-1 text-sm">Manage dynamic HTML and AI generation for your secondary home page.</p>
         </div>
+        <button 
+          onClick={handleSaveHtml}
+          disabled={savingHtml}
+          className="btn-primary flex items-center gap-2"
+        >
+          {savingHtml ? <Loader2 size={16} className="animate-spin" /> : <Save size={16} />}
+          Save HTML Settings
+        </button>
       </div>
-      
-      <div className="bg-[#f6fafd] md:rounded-3xl border-y md:border border-charcoal/10 p-4 sm:p-5 md:p-8 shadow-[0_8px_30px_rgb(0,0,0,0.08)] md:shadow-sm mb-8 -mx-4 sm:mx-0">
-        <h3 className="text-xl font-bold text-charcoal mb-4">Announcement Banner (Top Header)</h3>
-        {isLoadingAnnouncement && !announcement.text ? (
-          <p className="text-sm text-slate animate-pulse">Loading...</p>
+
+      {/* HTML Records Section */}
+      <div className="bg-white md:rounded-3xl border-y md:border border-charcoal/10 p-4 sm:p-5 md:p-8 shadow-[0_8px_30px_rgb(0,0,0,0.08)] md:shadow-sm -mx-4 sm:mx-0">
+        <div className="flex justify-between items-center mb-6">
+          <h3 className="text-xl font-bold text-charcoal">Saved HTML Templates</h3>
+          <button 
+            onClick={() => {
+              setEditingRecordId(null)
+              setNewRecord({ title: "", type: "Hero HTML", code: "" })
+              setIsAddModalOpen(true)
+            }}
+            className="flex items-center gap-2 text-sm font-semibold text-white bg-charcoal hover:bg-charcoal-light px-4 py-2 rounded-xl transition-colors"
+          >
+            <Plus size={16} /> Add New
+          </button>
+        </div>
+        
+        {records.length === 0 ? (
+          <div className="text-center py-8 text-slate text-sm bg-slate-50 rounded-xl border border-charcoal/10">
+            No HTML records saved yet. Create one for future reference!
+          </div>
         ) : (
-          <div className="space-y-6 w-full">
-            
-            <div className="grid md:grid-cols-2 gap-6 items-start">
-              <div className="w-full min-w-0">
-                <label className="block text-sm font-bold text-charcoal mb-2">Banner Content (HTML supported)</label>
-                <textarea 
-                  value={announcement.text}
-                  onChange={(e) => setAnnouncement({...announcement, text: e.target.value})}
-                  rows={4}
-                  className="w-full px-4 py-3 rounded-xl border border-charcoal/20 bg-transparent focus:outline-none focus:border-teal-600 focus:ring-1 focus:ring-teal-600 transition-all text-sm font-mono h-32"
-                  placeholder="🎉 <strong>FREE SHIPPING</strong> on orders above ₹999... ✨"
-                />
-              </div>
-              
-              <div className="w-full h-full flex flex-col min-w-0">
-                <label className="block text-sm font-bold text-charcoal mb-2">Live Preview</label>
-                <div className="flex-1 border border-charcoal/10 rounded-xl overflow-hidden bg-cream flex flex-col justify-center min-h-[8rem]">
-                  <div className="w-full bg-charcoal text-white text-xs py-2 font-medium relative z-10 marquee-container">
-                    <div className="marquee-content">
-                      <span dangerouslySetInnerHTML={{ __html: announcement.text || "Your text here..." }} />
-                      <span className="mx-16 opacity-50">✦</span>
-                    </div>
-                    <div className="marquee-content" aria-hidden="true">
-                      <span dangerouslySetInnerHTML={{ __html: announcement.text || "Your text here..." }} />
-                      <span className="mx-16 opacity-50">✦</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-t border-charcoal/10 pt-6">
-              <label className="flex items-center gap-2 cursor-pointer">
-                <input 
-                  type="checkbox" 
-                  checked={announcement.isActive}
-                  onChange={(e) => setAnnouncement({...announcement, isActive: e.target.checked})}
-                  className="w-4 h-4 rounded text-teal-600 focus:ring-teal-600"
-                />
-                <span className="text-sm font-bold text-charcoal">Show Announcement Banner</span>
-              </label>
-              
-              <button 
-                onClick={handleSaveAnnouncement}
-                disabled={isLoadingAnnouncement}
-                className="w-full sm:w-auto btn-primary flex flex-row items-center justify-center gap-2 py-2.5 px-6 disabled:opacity-50 text-sm font-semibold whitespace-nowrap"
-              >
-                <span>Save Announcement</span>
-              </button>
-            </div>
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-sm whitespace-nowrap">
+              <thead className="bg-slate-50 text-slate border-b border-charcoal/10">
+                <tr>
+                  <th className="px-4 py-3 font-semibold rounded-tl-xl">Title</th>
+                  <th className="px-4 py-3 font-semibold">Type</th>
+                  <th className="px-4 py-3 font-semibold">Last Modified</th>
+                  <th className="px-4 py-3 font-semibold text-right rounded-tr-xl">Actions</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-charcoal/5">
+                {records.map(record => (
+                  <tr key={record.id} className="hover:bg-slate-50/50 transition-colors">
+                    <td className="px-4 py-3 font-medium text-charcoal">{record.title}</td>
+                    <td className="px-4 py-3">
+                      <span className={`px-2 py-1 rounded-md text-xs font-medium ${record.type === 'Hero HTML' ? 'bg-blue-100 text-blue-800' : 'bg-purple-100 text-purple-800'}`}>
+                        {record.type}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3 text-slate">
+                      {new Date(record.updatedAt).toLocaleDateString()} {new Date(record.updatedAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+                    </td>
+                    <td className="px-4 py-3">
+                      <div className="flex items-center justify-end gap-2">
+                        <button onClick={() => setPreviewHtml(record.code)} className="p-1.5 text-teal-600 hover:bg-teal-50 rounded-md transition-colors" title="Preview Fullscreen">
+                          <Play size={16} />
+                        </button>
+                        <button onClick={() => handleUseRecord(record)} className="p-1.5 text-blue-600 hover:bg-blue-50 rounded-md transition-colors" title="Use this code">
+                          <Copy size={16} />
+                        </button>
+                        <button 
+                          onClick={() => {
+                            setEditingRecordId(record.id)
+                            setNewRecord({ title: record.title, type: record.type, code: record.code })
+                            setIsAddModalOpen(true)
+                          }} 
+                          className="p-1.5 text-amber-600 hover:bg-amber-50 rounded-md transition-colors" 
+                          title="Edit"
+                        >
+                          <Pencil size={16} />
+                        </button>
+                        <button onClick={() => handleDeleteRecord(record.id)} className="p-1.5 text-red-500 hover:bg-red-50 rounded-md transition-colors" title="Delete">
+                          <Trash size={16} />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         )}
       </div>
 
-      <div className="grid lg:grid-cols-2 gap-8">
-        <BannerList title="Hero Images" items={heroBanners} type="hero" />
-        <BannerList title="Carousel Images" items={carouselBanners} type="carousel" />
+      {/* Editor Section (Side-by-side on desktop) */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
+        {/* HTML Editor Section for Hero */}
+        <div className="bg-white md:rounded-3xl border-y md:border border-charcoal/10 p-4 sm:p-5 md:p-6 shadow-[0_8px_30px_rgb(0,0,0,0.08)] md:shadow-sm -mx-4 sm:mx-0 flex flex-col h-[700px]">
+          <div className="flex justify-between items-center mb-4 shrink-0">
+            <h3 className="text-lg font-bold text-charcoal">Hero Section HTML</h3>
+            <button 
+              onClick={() => setPreviewHtml(heroHtml)} 
+              className="text-sm font-semibold text-teal-600 hover:text-teal-700 bg-teal-50 hover:bg-teal-100 px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1.5"
+            >
+              <Play size={14} /> Preview
+            </button>
+          </div>
+          
+          <textarea
+            value={heroHtml}
+            onChange={e => setHeroHtml(e.target.value)}
+            className="w-full flex-1 p-4 rounded-xl border border-charcoal/20 bg-slate-50 focus:bg-white focus:outline-none focus:border-teal-600 focus:ring-1 focus:ring-teal-600 transition-all text-xs sm:text-sm font-mono custom-scrollbar resize-none"
+            placeholder="<div>Your custom Hero HTML here...</div>"
+          />
+        </div>
+
+        {/* HTML Editor Section for Carousel */}
+        <div className="bg-white md:rounded-3xl border-y md:border border-charcoal/10 p-4 sm:p-5 md:p-6 shadow-[0_8px_30px_rgb(0,0,0,0.08)] md:shadow-sm -mx-4 sm:mx-0 flex flex-col h-[700px]">
+          <div className="flex justify-between items-center mb-4 shrink-0">
+            <h3 className="text-lg font-bold text-charcoal">Carousel Section HTML</h3>
+            <button 
+              onClick={() => setPreviewHtml(carouselHtml)} 
+              className="text-sm font-semibold text-teal-600 hover:text-teal-700 bg-teal-50 hover:bg-teal-100 px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1.5"
+            >
+              <Play size={14} /> Preview
+            </button>
+          </div>
+          
+          <textarea
+            value={carouselHtml}
+            onChange={e => setCarouselHtml(e.target.value)}
+            className="w-full flex-1 p-4 rounded-xl border border-charcoal/20 bg-slate-50 focus:bg-white focus:outline-none focus:border-teal-600 focus:ring-1 focus:ring-teal-600 transition-all text-xs sm:text-sm font-mono custom-scrollbar resize-none"
+            placeholder="<div>Your custom Carousel HTML here...</div>"
+          />
+        </div>
       </div>
+
+      {/* --- ADD RECORD MODAL --- */}
+      {isAddModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-charcoal/50 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="bg-white rounded-2xl shadow-xl w-full max-w-3xl overflow-hidden flex flex-col max-h-[90vh]">
+            <div className="flex justify-between items-center p-5 border-b border-charcoal/10 shrink-0">
+              <h3 className="text-lg font-bold text-charcoal">{editingRecordId ? "Edit HTML Template" : "Add New HTML Template"}</h3>
+              <button 
+                onClick={() => {
+                  setIsAddModalOpen(false)
+                  setEditingRecordId(null)
+                }} 
+                className="text-slate hover:text-charcoal transition-colors"
+              >
+                <X size={20} />
+              </button>
+            </div>
+            
+            <div className="p-5 overflow-y-auto flex-1 space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-1.5">
+                  <label className="text-sm font-semibold text-charcoal">Template Title</label>
+                  <input 
+                    type="text" 
+                    value={newRecord.title}
+                    onChange={e => setNewRecord({...newRecord, title: e.target.value})}
+                    placeholder="e.g. Summer Sale Hero"
+                    className="w-full px-3 py-2 rounded-lg border border-charcoal/20 focus:outline-none focus:border-teal-600"
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <label className="text-sm font-semibold text-charcoal">Template Type</label>
+                  <select 
+                    value={newRecord.type}
+                    onChange={e => setNewRecord({...newRecord, type: e.target.value})}
+                    className="w-full px-3 py-2 rounded-lg border border-charcoal/20 focus:outline-none focus:border-teal-600"
+                  >
+                    <option value="Hero HTML">Hero HTML</option>
+                    <option value="Carousel HTML">Carousel HTML</option>
+                  </select>
+                </div>
+              </div>
+              
+              <div className="space-y-1.5 h-64 md:h-96 flex flex-col">
+                <label className="text-sm font-semibold text-charcoal shrink-0">HTML Code</label>
+                <textarea 
+                  value={newRecord.code}
+                  onChange={e => setNewRecord({...newRecord, code: e.target.value})}
+                  placeholder="Paste your HTML code here..."
+                  className="w-full flex-1 p-3 rounded-lg border border-charcoal/20 bg-slate-50 focus:bg-white focus:outline-none focus:border-teal-600 font-mono text-xs custom-scrollbar resize-none"
+                />
+              </div>
+            </div>
+            
+            <div className="p-5 border-t border-charcoal/10 flex justify-end gap-3 shrink-0 bg-slate-50">
+              <button 
+                onClick={() => {
+                  setIsAddModalOpen(false)
+                  setEditingRecordId(null)
+                }}
+                className="px-4 py-2 rounded-lg text-sm font-semibold text-charcoal hover:bg-charcoal/5 transition-colors"
+              >
+                Cancel
+              </button>
+              <button 
+                onClick={handleSaveRecord}
+                disabled={isSavingRecord}
+                className="btn-primary flex items-center gap-2"
+              >
+                {isSavingRecord ? <Loader2 size={16} className="animate-spin" /> : <Save size={16} />}
+                Save Template
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* --- FULLSCREEN PREVIEW MODAL --- */}
+      {previewHtml !== null && (
+        <div className="fixed inset-0 z-[100] flex flex-col bg-white animate-in slide-in-from-bottom-4 duration-300">
+          <div className="flex justify-between items-center px-6 py-4 border-b border-charcoal/10 bg-white shadow-sm shrink-0">
+            <h3 className="text-lg font-bold text-charcoal flex items-center gap-2">
+              <Play size={18} className="text-teal-600" /> Live Preview Mode
+            </h3>
+            <button 
+              onClick={() => setPreviewHtml(null)} 
+              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-charcoal text-white hover:bg-charcoal-light transition-colors text-sm font-semibold"
+            >
+              <X size={16} /> Close Preview
+            </button>
+          </div>
+          
+          <div className="flex-1 w-full bg-slate-50 overflow-hidden relative">
+            <iframe 
+              srcDoc={`<!DOCTYPE html><html><head><script src="https://cdn.tailwindcss.com"></script><style>body { margin: 0; overflow-x: hidden; }</style></head><body>${previewHtml}</body></html>`}
+              className="w-full h-full border-none absolute inset-0"
+              title="HTML Preview"
+            />
+          </div>
+        </div>
+      )}
+
     </div>
   )
 }

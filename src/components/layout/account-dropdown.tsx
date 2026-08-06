@@ -70,7 +70,7 @@ export function AccountDropdown() {
     // Site Settings
     { href: "/admin?tab=company_profile", label: "Company Profile", icon: Building2 },
     { href: "/admin?tab=navigation", label: "Navigation Settings", icon: Menu },
-    { href: "/admin?tab=banners", label: "Banner Settings", icon: ImageIcon },
+    { href: "/admin?tab=banners", label: "Dynamic Homepage", icon: ImageIcon },
     { href: "/admin?tab=system", label: "System Status", icon: Settings },
     { href: "/admin?tab=activities", label: "System Activities", icon: Activity },
   ]

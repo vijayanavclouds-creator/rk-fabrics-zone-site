@@ -340,16 +340,27 @@ export function DashboardOverview({ initialData, isSupport = false }: { initialD
       <h3 className="text-[10px] font-black text-slate-700 uppercase tracking-widest mb-2 md:mb-4">
         Content & Promo
       </h3>
-      <div className="flex flex-col gap-1.5 md:gap-3">
+      <div className="flex flex-col gap-1.5">
         <Link href="/admin?tab=banners" className="flex items-center gap-2.5 md:gap-3 p-2 md:p-3 bg-white rounded-xl border border-slate-100 hover:border-purple-200 hover:shadow-sm transition-all group">
-          <div className="w-8 h-8 md:w-10 md:h-10 rounded-[8px] md:rounded-[10px] bg-gradient-to-br from-purple-400 to-purple-600 shrink-0 flex items-center justify-center text-white shadow-sm group-hover:scale-105 transition-transform duration-300">
-            <ImageIcon size={14} className="md:w-[18px] md:h-[18px]" />
+          <div className="p-2 md:p-2.5 bg-purple-50 text-purple-600 rounded-lg group-hover:bg-purple-100 transition-colors">
+            <ImageIcon size={16} className="md:w-5 md:h-5" />
           </div>
           <div>
-            <span className="text-[10px] md:text-xs font-bold text-charcoal block leading-tight">Banner Management</span>
+            <h4 className="font-bold text-charcoal text-[11px] md:text-sm">Banners</h4>
             <span className="text-[8px] md:text-[9px] text-slate-500">Manags homepage banners</span>
           </div>
         </Link>
+
+        <Link href="/admin?tab=banner2" className="flex items-center gap-2.5 md:gap-3 p-2 md:p-3 bg-white rounded-xl border border-slate-100 hover:border-purple-200 hover:shadow-sm transition-all group">
+          <div className="p-2 md:p-2.5 bg-indigo-50 text-indigo-600 rounded-lg group-hover:bg-indigo-100 transition-colors">
+            <ImageIcon size={16} className="md:w-5 md:h-5" />
+          </div>
+          <div>
+            <h4 className="font-bold text-charcoal text-[11px] md:text-sm">Dynamic Home</h4>
+            <span className="text-[8px] md:text-[9px] text-slate-500">Manage dynamic HTML</span>
+          </div>
+        </Link>
+
         <Link href="/admin?tab=newsletters" className="flex items-center gap-2.5 md:gap-3 p-2 md:p-3 bg-white rounded-xl border border-slate-100 hover:border-blue-200 hover:shadow-sm transition-all group">
           <div className="w-8 h-8 md:w-10 md:h-10 rounded-[8px] md:rounded-[10px] bg-gradient-to-br from-blue-400 to-blue-500 shrink-0 flex items-center justify-center text-white shadow-sm group-hover:scale-105 transition-transform duration-300">
             <Mail size={14} className="md:w-[18px] md:h-[18px]" />

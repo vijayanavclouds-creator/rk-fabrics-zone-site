@@ -136,6 +136,7 @@ export function AdminDashboard({
       {activeView === "queries" && <QueriesManager initialQueries={queries || []} />}
       {activeView === "returns" && <ReturnsManager initialReturns={returnRequests || []} queries={queries || []} />}
       {activeView === "newsletters" && <NewsletterManager />}
+      {activeView === "banners" && <BannerManager banners={initialBanners} />}
 
       {activeView === "list" && (
         <PortalHeader 
@@ -150,10 +151,6 @@ export function AdminDashboard({
             </Link>
           }
         />
-      )}
-
-      {activeView === "banners" && (
-        <BannerManager banners={initialBanners} />
       )}
 
       {activeView === "navigation" && (

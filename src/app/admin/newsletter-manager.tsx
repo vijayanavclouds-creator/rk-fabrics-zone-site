@@ -2,14 +2,17 @@
 
 import { useState, useEffect, useRef } from "react"
 import { sendNewsletter, generateNewsletterWithAI, getAdminNewsletters, deleteAdminNewsletter } from "@/actions/newsletter"
-import { createGlobalCoupon, getGlobalCoupons, deactivateGlobalCoupon } from "@/actions/coupon"
+import { createGlobalCoupon, getGlobalCoupons, deactivateGlobalCoupon, getGlobalCouponStats } from "@/actions/coupon"
 import { toast } from "sonner"
-import { Send, Mail, Sparkles, Clock, Users, ArrowRight, Trash2, Ticket, ChevronDown } from "lucide-react"
+import { Send, Mail, Sparkles, Clock, Users, ArrowRight, Trash2, Ticket, ChevronDown, Check, Target } from "lucide-react"
+import Link from "next/link"
 
 interface Campaign {
   id: string
   subject: string
   content: string
+  couponCode?: string
+  targetUsers?: string
   createdAt: Date
   _count: { users: number }
 }
@@ -33,6 +36,12 @@ export function NewsletterManager() {
   const [campaigns, setCampaigns] = useState<Campaign[]>([])
   
   const [coupons, setCoupons] = useState<Coupon[]>([])
+  const [couponStats, setCouponStats] = useState<Record<string, { usedCount: number, eligibleCount: number }>>({})
+  const [targetUsers, setTargetUsers] = useState<string[]>([])
+  const [targetCouponCode, setTargetCouponCode] = useState<string | null>(null)
+  const [targetUserType, setTargetUserType] = useState<string | null>(null)
+  const [currentPage, setCurrentPage] = useState(1)
+  const itemsPerPage = 5
   const [couponVal, setCouponVal] = useState("")
   const [couponType, setCouponType] = useState<"PERCENTAGE" | "FIXED">("PERCENTAGE")
   const [couponExpiry, setCouponExpiry] = useState(30)
@@ -60,6 +69,10 @@ export function NewsletterManager() {
     const res = await getGlobalCoupons()
     if (res.success) {
       setCoupons((res.coupons as unknown as Coupon[]) || [])
+    }
+    const statsRes = await getGlobalCouponStats()
+    if (statsRes.success) {
+      setCouponStats(statsRes.stats as any)
     }
   }
 
@@ -114,7 +127,28 @@ export function NewsletterManager() {
       await loadCampaigns()
       await loadCoupons()
     })()
+    
+    const saved = localStorage.getItem("targetUsers")
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved)
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          setTargetUsers(parsed)
+          setTargetCouponCode(localStorage.getItem("targetCouponCode"))
+          setTargetUserType(localStorage.getItem("targetUserType"))
+        }
+      } catch (e) {}
+    }
   }, [])
+
+  const clearTargetUsers = () => {
+    localStorage.removeItem("targetUsers")
+    localStorage.removeItem("targetCouponCode")
+    localStorage.removeItem("targetUserType")
+    setTargetUsers([])
+    setTargetCouponCode(null)
+    setTargetUserType(null)
+  }
 
   const handleGenerateAI = async () => {
     if (!prompt) {
@@ -147,10 +181,10 @@ export function NewsletterManager() {
 
     setLoading(true)
     toast.loading("Sending newsletter...", { id: "send" })
-    const res = await sendNewsletter(subject, content)
+    const res = await sendNewsletter(subject, content, targetUsers, targetCouponCode || undefined, targetUserType || undefined)
 
     if (res.success) {
-      toast.success("Newsletter sent successfully to all users!", { id: "send" })
+      toast.success("Newsletter sent successfully!", { id: "send" })
       setSubject("")
       setContent("")
       setPrompt("")
@@ -266,19 +300,23 @@ export function NewsletterManager() {
         {coupons.length > 0 && (
           <div className="flex flex-col gap-3">
             {/* Desktop Header */}
-            <div className="hidden md:grid md:grid-cols-6 gap-4 px-6 py-3 bg-slate-50 border border-charcoal/10 rounded-2xl text-sm font-bold text-charcoal shadow-sm">
-              <div>Code</div>
-              <div>Discount</div>
+            <div className="hidden md:grid md:grid-cols-7 gap-4 px-6 py-3 bg-slate-50 border border-charcoal/10 rounded-2xl text-sm font-bold text-charcoal shadow-sm">
+              <div className="col-span-2">Code / Discount</div>
               <div>Target</div>
               <div>Expires</div>
+              <div>Stats</div>
               <div>Status</div>
               <div className="text-right">Action</div>
             </div>
             
             {/* Coupon List */}
             <div className="flex flex-col gap-3">
-              {coupons.map(c => (
-                <div key={c.id} className={`flex flex-col md:grid md:grid-cols-6 gap-3 md:gap-4 p-4 md:px-6 md:py-4 items-start md:items-center border border-charcoal/10 rounded-2xl bg-white transition-all ${!c.isActive ? 'opacity-60 bg-slate-50/50' : 'shadow-sm hover:shadow-md'}`}>
+              {coupons.map(c => {
+                const stats = couponStats[c.code]
+                const used = stats ? stats.usedCount : 0
+                const eligible = stats ? stats.eligibleCount : 0
+                return (
+                <div key={c.id} className={`flex flex-col md:grid md:grid-cols-7 gap-3 md:gap-4 p-4 md:px-6 md:py-4 items-start md:items-center border border-charcoal/10 rounded-2xl bg-white transition-all ${!c.isActive ? 'opacity-60 bg-slate-50/50' : 'shadow-sm hover:shadow-md'}`}>
                   
                   {/* Mobile Row 1 / Desktop Col 1 & 2 */}
                   <div className="flex justify-between items-center w-full md:w-auto md:col-span-2 md:grid md:grid-cols-2 md:gap-4 border-b border-charcoal/5 pb-3 md:border-0 md:pb-0">
@@ -286,8 +324,8 @@ export function NewsletterManager() {
                     <div className="font-bold text-charcoal/80 text-sm md:text-sm">{c.discountType === 'PERCENTAGE' ? `${c.discountValue}% OFF` : `₹${c.discountValue} OFF`}</div>
                   </div>
 
-                  {/* Mobile Row 2 / Desktop Col 3-6 */}
-                  <div className="flex flex-wrap items-center justify-between w-full md:w-auto md:col-span-4 md:grid md:grid-cols-4 md:gap-4 pt-1 md:pt-0">
+                  {/* Mobile Row 2 / Desktop Col 3-7 */}
+                  <div className="flex flex-wrap items-center justify-between w-full md:w-auto md:col-span-5 md:grid md:grid-cols-5 md:gap-4 pt-1 md:pt-0">
                     <div className="flex-1 min-w-[100px] mb-2 md:mb-0">
                       <span className={`px-3 py-1.5 rounded-full text-[10px] font-black uppercase tracking-wider ${c.isForNewUsersOnly ? 'bg-blue-100 text-blue-700' : 'bg-green-100 text-green-700'}`}>
                         {c.isForNewUsersOnly ? 'New Users' : 'All Users'}
@@ -296,6 +334,11 @@ export function NewsletterManager() {
                     <div className="flex-1 min-w-[100px] text-sm font-medium text-slate mb-2 md:mb-0 flex items-center gap-1.5">
                       <Clock size={14} className="opacity-50" />
                       {new Date(c.expiresAt).toLocaleDateString()}
+                    </div>
+                    <div className="flex-1 min-w-[80px] flex flex-col md:flex-row md:items-center gap-1">
+                      <Link href={`/admin?tab=users&couponFilter=${c.code}`} className="inline-block text-xs font-bold px-2 py-1 bg-amber-50 text-amber-700 border border-amber-200 rounded hover:bg-amber-100 transition-colors whitespace-nowrap shadow-sm text-center">
+                        Used: {used}/{eligible}
+                      </Link>
                     </div>
                     <div className="flex-1 min-w-[80px]">
                       {c.isActive ? (
@@ -308,7 +351,7 @@ export function NewsletterManager() {
                       {c.isActive ? (
                         <button 
                           onClick={() => handleDeactivateCoupon(c.id)}
-                          className="w-full md:w-auto text-xs font-bold text-rose-600 bg-rose-50 px-4 py-2.5 md:py-2 rounded-full hover:bg-rose-100 transition-colors"
+                          className="w-full md:w-auto text-xs font-bold text-rose-600 bg-rose-50 px-4 py-2.5 md:py-2 rounded-full hover:bg-rose-100 transition-colors shadow-sm"
                         >
                           Deactivate
                         </button>
@@ -317,9 +360,8 @@ export function NewsletterManager() {
                       )}
                     </div>
                   </div>
-                  
                 </div>
-              ))}
+              )})}
             </div>
           </div>
         )}
@@ -328,6 +370,15 @@ export function NewsletterManager() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-8 items-start">
         {/* LEFT COLUMN: COMPOSER */}
         <div className="-mx-4 md:mx-0 bg-white p-4 md:p-6 rounded-none md:rounded-3xl border-y md:border border-charcoal/10 shadow-sm">
+          {targetUsers.length > 0 && (
+            <div className="bg-emerald-50 border border-emerald-200 p-4 rounded-xl flex items-center justify-between mb-6 shadow-sm">
+              <div className="flex items-center gap-2">
+                <Users size={16} className="text-emerald-700" />
+                <span className="text-sm font-bold text-emerald-800">Targeting {targetUsers.length} specific users</span>
+              </div>
+              <button type="button" onClick={clearTargetUsers} className="text-xs text-emerald-700 font-bold hover:underline bg-emerald-100 px-3 py-1.5 rounded-lg border border-emerald-200 hover:bg-emerald-200 transition-colors">Clear Target</button>
+            </div>
+          )}
           <form onSubmit={handleSubmit} className="space-y-6">
             
             {/* AI Prompt Box */}
@@ -413,48 +464,88 @@ export function NewsletterManager() {
             </span>
           </div>
 
-          <div className="flex-1 overflow-y-auto custom-scrollbar pr-2 space-y-4">
-            {campaigns.length === 0 ? (
-              <div className="h-full flex flex-col items-center justify-center text-slate/50 space-y-3 py-12">
-                <Mail size={48} className="opacity-20" />
-                <p className="text-sm font-medium">No campaigns sent yet.</p>
-              </div>
-            ) : (
-              campaigns.map((campaign) => (
-                <div key={campaign.id} className="p-4 rounded-2xl border border-charcoal/5 bg-slate-50/50 hover:bg-slate-50 transition-colors group">
-                  <h4 className="font-bold text-charcoal text-sm mb-1">{campaign.subject}</h4>
-                  
-                  <div className="flex items-center gap-4 text-xs text-slate mt-3">
-                    <span className="flex items-center gap-1.5 bg-white px-2 py-1 rounded-md shadow-sm border border-charcoal/5">
-                      <Clock size={12} />
-                      {new Date(campaign.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
-                    </span>
-                    <span className="flex items-center gap-1.5 bg-white px-2 py-1 rounded-md shadow-sm border border-charcoal/5">
-                      <Users size={12} />
-                      {campaign._count?.users || 0} Recipients
-                    </span>
-                  </div>
-
-                  <div className="mt-4 flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <button 
-                      onClick={() => handleDelete(campaign.id)}
-                      className="text-xs font-bold text-rose-600 hover:text-rose-700 flex items-center gap-1 bg-rose-50 hover:bg-rose-100 px-3 py-1.5 rounded-lg transition-colors"
-                    >
-                      <Trash2 size={14} /> Delete
-                    </button>
-                    <button 
-                      onClick={() => {
-                        setSubject(campaign.subject)
-                        setContent(campaign.content)
-                        toast.success("Loaded into editor!")
-                      }}
-                      className="text-xs font-bold text-teal-600 hover:text-teal-700 flex items-center gap-1 bg-teal-50 hover:bg-teal-100 px-3 py-1.5 rounded-lg transition-colors"
-                    >
-                      Reuse Content <ArrowRight size={14} />
-                    </button>
-                  </div>
+          <div className="flex-1 flex flex-col min-h-0">
+            <div className="flex-1 overflow-y-auto custom-scrollbar pr-2 space-y-4">
+              {campaigns.length === 0 ? (
+                <div className="h-full flex flex-col items-center justify-center text-slate/50 space-y-3 py-12">
+                  <Mail size={48} className="opacity-20" />
+                  <p className="text-sm font-medium">No campaigns sent yet.</p>
                 </div>
-              ))
+              ) : (
+                campaigns.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map((campaign) => (
+                  <div key={campaign.id} className="relative p-2 pb-1 md:px-3 md:pt-3 md:pb-1.5 rounded-2xl border border-charcoal/5 bg-slate-50/50 hover:bg-slate-50 transition-colors group">
+                    <h4 className="font-bold text-charcoal text-sm leading-tight mb-0.5 line-clamp-2 pr-12">{campaign.subject}</h4>
+                    
+                    <div className="flex flex-wrap items-center gap-1.5 text-[10px] md:text-xs text-slate mt-1">
+                      <span className="flex items-center gap-1 bg-white px-1.5 py-0.5 rounded-md shadow-sm border border-charcoal/5">
+                        <Clock size={10} className="md:w-3 md:h-3" />
+                        {new Date(campaign.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
+                      </span>
+                      <span className="flex items-center gap-1 bg-white px-1.5 py-0.5 rounded-md shadow-sm border border-charcoal/5">
+                        <Users size={10} className="md:w-3 md:h-3" />
+                        {campaign._count?.users || 0} Recipients
+                      </span>
+                      {campaign.couponCode && (
+                        <span className="flex items-center gap-1 bg-teal-50 text-teal-700 font-bold px-1.5 py-0.5 rounded-md shadow-sm border border-teal-100">
+                          <Ticket size={10} className="md:w-3 md:h-3" />
+                          {campaign.couponCode}
+                        </span>
+                      )}
+                      {campaign.targetUsers && (
+                        <span className="flex items-center gap-1 bg-purple-50 text-purple-700 font-bold px-1.5 py-0.5 rounded-md shadow-sm border border-purple-100">
+                          <Target size={10} className="md:w-3 md:h-3" />
+                          {campaign.targetUsers}
+                        </span>
+                      )}
+                    </div>
+
+                    <div className="absolute top-2 right-2 flex justify-end gap-1.5 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity bg-white/80 md:bg-transparent backdrop-blur-sm md:backdrop-blur-none p-1 md:p-0 rounded-lg">
+                      <button 
+                        onClick={() => handleDelete(campaign.id)}
+                        title="Delete"
+                        className="text-[10px] md:text-xs font-bold text-rose-600 hover:text-rose-700 flex items-center justify-center gap-1 bg-rose-50 hover:bg-rose-100 p-1.5 md:px-2 md:py-0.5 rounded-md transition-colors"
+                      >
+                        <Trash2 size={12} className="md:w-3 md:h-3" />
+                        <span className="hidden md:inline">Delete</span>
+                      </button>
+                      <button 
+                        onClick={() => {
+                          setSubject(campaign.subject)
+                          setContent(campaign.content)
+                          toast.success("Loaded into editor!")
+                        }}
+                        title="Reuse"
+                        className="text-[10px] md:text-xs font-bold text-charcoal hover:text-charcoal flex items-center justify-center gap-1 bg-slate-100 hover:bg-slate-200 p-1.5 md:px-2 md:py-0.5 rounded-md transition-colors"
+                      >
+                        <span className="hidden md:inline">Reuse</span>
+                        <Send size={12} className="md:w-3 md:h-3 rotate-[-45deg]" />
+                      </button>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+            
+            {campaigns.length > itemsPerPage && (
+              <div className="flex items-center justify-between mt-4 pt-4 border-t border-charcoal/10">
+                <button
+                  onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                  disabled={currentPage === 1}
+                  className="px-3 py-1.5 text-xs font-bold text-charcoal bg-slate-100 hover:bg-slate-200 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                >
+                  Previous
+                </button>
+                <span className="text-xs text-slate font-medium">
+                  Page {currentPage} of {Math.ceil(campaigns.length / itemsPerPage)}
+                </span>
+                <button
+                  onClick={() => setCurrentPage(p => Math.min(Math.ceil(campaigns.length / itemsPerPage), p + 1))}
+                  disabled={currentPage === Math.ceil(campaigns.length / itemsPerPage)}
+                  className="px-3 py-1.5 text-xs font-bold text-charcoal bg-slate-100 hover:bg-slate-200 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                >
+                  Next
+                </button>
+              </div>
             )}
           </div>
         </div>

@@ -3,10 +3,12 @@
 import { useState } from "react"
 import { subscribeToNewsletter } from "@/actions/newsletter"
 import { toast } from "sonner"
+import { Send, Loader2 } from "lucide-react"
 
 export function NewsletterForm() {
   const [email, setEmail] = useState("")
   const [loading, setLoading] = useState(false)
+  const [isFocused, setIsFocused] = useState(false)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -25,23 +27,31 @@ export function NewsletterForm() {
   }
 
   return (
-    <form className="flex w-full md:w-auto relative" onSubmit={handleSubmit}>
-      <input
-        type="email"
-        placeholder="Enter your email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        required
-        className="flex-1 md:w-[400px] pl-6 pr-32 py-2 rounded-full bg-charcoal/50 shadow-[inset_4px_4px_8px_rgba(0,0,0,0.4),inset_-4px_-4px_8px_rgba(255,255,255,0.02)] !border-none !outline-none focus:!border-none focus:!ring-0 focus:!outline-none text-white placeholder:text-white/40 text-sm transition-shadow disabled:opacity-50"
-        disabled={loading}
-      />
-      <button
-        type="submit"
-        disabled={loading}
-        className="absolute right-1 top-1 bottom-1 px-6 bg-gradient-to-r from-gold to-yellow-600 hover:from-yellow-500 hover:to-gold text-charcoal font-bold rounded-full text-sm shadow-[4px_4px_8px_rgba(0,0,0,0.3),-2px_-2px_6px_rgba(255,255,255,0.1)] transition-all hover:scale-[1.02] disabled:opacity-50 disabled:hover:scale-100"
-      >
-        {loading ? "..." : "Subscribe"}
-      </button>
+    <form className="flex w-full relative mt-1" onSubmit={handleSubmit}>
+      <div className={`flex items-center w-full rounded-full border border-white/40 bg-[var(--color-cream)] pl-5 pr-1.5 py-1.5 overflow-hidden transition-all duration-200 ${isFocused ? 'shadow-neo-pressed scale-[0.99]' : 'shadow-neo-btn'}`}>
+        <input
+          type="email"
+          placeholder="Enter your email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          onFocus={() => setIsFocused(true)}
+          onBlur={() => setIsFocused(false)}
+          required
+          className="flex-1 bg-transparent border-none !outline-none !ring-0 focus:!ring-0 focus:!border-none focus:!outline-none text-charcoal placeholder:text-slate/60 text-sm transition-all disabled:opacity-50 min-w-0 py-1"
+          disabled={loading}
+        />
+        <button
+          type="submit"
+          disabled={loading || !email.trim()}
+          className="w-7 h-7 flex items-center justify-center shrink-0 text-slate-500 hover:text-[#1a2b49] transition-colors disabled:opacity-50"
+        >
+          {loading ? (
+            <Loader2 size={16} className="animate-spin stroke-[1.5]" />
+          ) : (
+            <Send size={16} className="stroke-[1.5] translate-x-[-1px] translate-y-[1px]" />
+          )}
+        </button>
+      </div>
     </form>
   )
 }

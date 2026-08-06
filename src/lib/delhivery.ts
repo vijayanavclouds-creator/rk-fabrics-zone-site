@@ -58,7 +58,7 @@ export async function checkPincodeServiceability(pincode: string): Promise<Servi
       }
       return { isServiceable: true, expectedDeliveryDays: 4, message: "Delivery available." }
     } else {
-      return { isServiceable: false, message: "Sorry, we do not deliver to this location via Delhivery." }
+      return { isServiceable: false, message: "Sorry, we do not deliver to this location at the moment." }
     }
   } catch (error: any) {
     console.error("Delhivery Pincode Error:", error)
