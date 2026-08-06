@@ -1,8 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
-import { Heart, MapPin, Phone, Mail, Globe, Bookmark, AtSign, MessageCircle } from "lucide-react";
+import { Heart, Phone, Mail, AtSign } from "lucide-react";
 import { getCompanyProfile } from "@/actions/system";
-import { getStoreTaxonomyData } from "@/lib/data/system";
 import { NewsletterForm } from "./newsletter-form";
 
 const footerLinks = {
@@ -19,7 +18,6 @@ const footerLinks = {
  { label: "Terms & Conditions", href: "/account/help#terms" },
  ],
 };
-import { authOptions } from "@/lib/auth";
 
 export async function Footer() {
   const companyProfile = await getCompanyProfile();
@@ -29,9 +27,9 @@ export async function Footer() {
   <footer className="neumorphic-surface mt-4 md:mt-8 mx-2 md:mx-4 mb-2 md:mb-4 rounded-[2rem] pb-10 md:pb-0 text-charcoal relative z-10">
     {/* Main Footer */}
     <div className="max-w-7xl mx-auto px-6 lg:px-8 py-4 md:py-6">
-      <div className="grid grid-cols-1 md:grid-cols-12 gap-x-4 gap-y-6 md:gap-x-6">
+      <div className="grid grid-cols-12 gap-x-2 gap-y-6 md:gap-x-6">
         {/* Brand Column */}
-        <div className="col-span-1 md:col-span-5 lg:col-span-4">
+        <div className="col-span-6 md:col-span-5 lg:col-span-4">
           <Link href="/" className="flex items-center gap-2 mb-1.5">
             <div className="relative w-10 h-10 md:w-12 md:h-12 rounded-full overflow-hidden ring-2 ring-[#1a2b49]/20 shrink-0">
               <Image
@@ -51,8 +49,11 @@ export async function Footer() {
               </span>
             </div>
           </Link>
-          <p className="text-[10px] md:text-xs text-[#4a627a] mb-1.5 leading-snug whitespace-pre-line">
+          <p className="hidden md:block text-[10px] md:text-xs text-[#4a627a] mb-1.5 leading-snug whitespace-pre-line">
             {companyProfile?.companyDescription || <>Premium Fabrics | Stylish You<br />Manufacturer & direct seller from Jaipur, India.</>}
+          </p>
+          <p className="md:hidden text-[10px] text-[#4a627a] mb-1.5 leading-snug">
+            Premium Fabrics | Stylish You
           </p>
           <div className="space-y-0.5 text-[10px] md:text-xs text-[#4a627a]">
 
@@ -67,10 +68,8 @@ export async function Footer() {
           </div>
         </div>
 
-        {/* Navigation Links Group & Newsletter */}
-        <div className="col-span-1 md:col-span-7 lg:col-span-8 grid grid-cols-1 sm:grid-cols-3 gap-x-4 gap-y-6">
-          {/* Company Links */}
-          <div>
+        {/* Company Links */}
+        <div className="col-span-3 md:col-span-2 lg:col-span-2">
             <h4 className="font-[family-name:var(--font-cinzel)] text-xs md:text-sm font-semibold text-[#1a2b49] tracking-wider uppercase mb-1.5 md:mb-2">
               Company
             </h4>
@@ -87,8 +86,8 @@ export async function Footer() {
             </ul>
           </div>
 
-          {/* Help Links */}
-          <div>
+        {/* Help Links */}
+        <div className="col-span-3 md:col-span-2 lg:col-span-2">
             <h4 className="font-[family-name:var(--font-cinzel)] text-xs md:text-sm font-semibold text-[#1a2b49] tracking-wider uppercase mb-1.5 md:mb-2">
               Help
             </h4>
@@ -106,18 +105,17 @@ export async function Footer() {
             </ul>
           </div>
 
-          {/* Newsletter Column */}
-          <div>
-            <h4 className="font-[family-name:var(--font-playfair)] text-sm md:text-base font-bold text-[#1a2b49] leading-tight mb-1.5 md:mb-2">
+        {/* Newsletter Column */}
+        <div className="col-span-12 md:col-span-3 lg:col-span-4">
+            <h4 className="font-[family-name:var(--font-playfair)] text-sm md:text-base font-bold text-[#1a2b49] leading-tight mb-1.5 md:mb-2 text-center">
               Stay Stylish — Join Our Newsletter
             </h4>
-            <p className="text-[10px] md:text-xs text-[#4a627a] mb-3 leading-snug">
+            <p className="text-[10px] md:text-xs text-[#4a627a] mb-3 leading-snug text-center">
               Exclusive discounts & fabric care tips, straight to your inbox.
             </p>
             <NewsletterForm />
-          </div>
-        </div>
       </div>
+    </div>
 
   {/* Social & Bottom */}
  <div className="mt-2 pt-2 border-t border-[#1a2b49]/10 flex flex-col md:flex-row items-center justify-between gap-3">
@@ -165,9 +163,10 @@ export async function Footer() {
   )}
  </div>
 
- <p className="text-[10px] text-[#4a627a] text-center leading-relaxed">
- © {new Date().getFullYear()} RK Fabrics Zone. All rights reserved. <span className="block sm:inline">Made with <Heart size={10} className="inline text-rose-500" /> in Jaipur, India.</span>
- </p>
+ <div className="text-[10px] text-[#4a627a] leading-relaxed flex flex-row justify-between sm:block sm:text-center w-full sm:w-auto gap-2">
+   <span className="text-left sm:inline">© {new Date().getFullYear()} RK Fabrics Zone. All rights reserved.</span>
+   <span className="text-right sm:inline">{' '}Made with <Heart size={10} className="inline text-rose-500" /> in Jaipur, India.</span>
+ </div>
 
  <div className="flex items-center gap-2 text-[10px] text-[#4a627a]">
  {companyProfile?.gstNumber && (

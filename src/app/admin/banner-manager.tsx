@@ -115,7 +115,17 @@ export function BannerManager({ banners }: { banners: any[] }) {
     } else {
       setCarouselHtml(record.code)
     }
-    toast.success(`Loaded "${record.title}" into ${record.type} editor`)
+    
+    // Copy to clipboard as well
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(record.code).then(() => {
+        toast.success(`Loaded into editor & copied to clipboard!`)
+      }).catch(() => {
+        toast.success(`Loaded "${record.title}" into ${record.type} editor`)
+      });
+    } else {
+      toast.success(`Loaded "${record.title}" into ${record.type} editor`)
+    }
   }
 
   return (
