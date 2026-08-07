@@ -111,7 +111,7 @@ export async function getStoreTaxonomy() {
 }
 
 // Save Store Taxonomy
-type TaxonomyItem = { label?: string; value?: string };
+export type TaxonomyItem = { label: string; value: string; subcategories?: {label: string, value: string}[] };
 export async function saveStoreTaxonomy(categories: TaxonomyItem[], fabrics: TaxonomyItem[]) {
   try {
     const oldTaxonomy = await getStoreTaxonomyData();

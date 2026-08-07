@@ -55,8 +55,7 @@ export function AccountDropdown() {
     
     // Catalog
     { href: "/admin?tab=list", label: "Product Settings", icon: Package },
-    { href: "/admin?tab=taxonomy", label: "Taxonomy Settings", icon: Scissors },
-    
+    { href: "/admin?tab=taxonomy", label: "Navigation & Taxonomy", icon: Scissors },
     // Sales
     { href: "/admin?tab=orders", label: "Orders Management", icon: ShoppingBag },
     { href: "/admin?tab=finance", label: "Finance Management", icon: DollarSign },
@@ -69,7 +68,6 @@ export function AccountDropdown() {
     
     // Site Settings
     { href: "/admin?tab=company_profile", label: "Company Profile", icon: Building2 },
-    { href: "/admin?tab=navigation", label: "Navigation Settings", icon: Menu },
     { href: "/admin?tab=banners", label: "Dynamic Homepage", icon: ImageIcon },
     { href: "/admin?tab=system", label: "System Status", icon: Settings },
     { href: "/admin?tab=activities", label: "System Activities", icon: Activity },

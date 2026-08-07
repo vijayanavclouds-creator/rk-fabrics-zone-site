@@ -153,12 +153,11 @@ export function AdminDashboard({
         />
       )}
 
-      {activeView === "navigation" && (
-        <NavigationManager />
-      )}
-
       {activeView === "taxonomy" && (
-        <TaxonomyManager initialCategories={storeCategories} initialFabrics={storeFabrics} />
+        <div className="space-y-12">
+          <NavigationManager />
+          <TaxonomyManager initialCategories={storeCategories} initialFabrics={storeFabrics} />
+        </div>
       )}
 
       {activeView === "system" && (
@@ -429,6 +428,15 @@ export function ProductEditor({ product = {}, products, storeCategories, storeFa
       return product.category ? [product.category] : [];
     }
   })
+  const [updatedSubcategory, setUpdatedSubcategory] = useState<string[]>(() => {
+    try {
+      if (!product.subcategory) return [];
+      const parsed = JSON.parse(product.subcategory);
+      return Array.isArray(parsed) ? parsed : [product.subcategory];
+    } catch {
+      return product.subcategory ? [product.subcategory] : [];
+    }
+  })
   const [updatedFabric, setUpdatedFabric] = useState<string>(product.fabric || "")
   const [updatedFabricDetails, setUpdatedFabricDetails] = useState<string>(product.fabricDetails || "")
   const [updatedDescription, setUpdatedDescription] = useState<string>(product.description || "")
@@ -463,6 +471,7 @@ export function ProductEditor({ product = {}, products, storeCategories, storeFa
 
   const handleUpdateBaseDetails = async (formData: FormData) => {
     formData.append("category", JSON.stringify(updatedCategory))
+    formData.append("subcategory", JSON.stringify(updatedSubcategory))
     formData.append("fabric", updatedFabric)
     formData.append("fabricDetails", updatedFabricDetails)
     
@@ -559,6 +568,7 @@ export function ProductEditor({ product = {}, products, storeCategories, storeFa
       const formData = new FormData()
       formData.append("payload", JSON.stringify(payload))
       formData.append("category", JSON.stringify(updatedCategory))
+      formData.append("subcategory", JSON.stringify(updatedSubcategory))
       formData.append("fabric", updatedFabric)
       formData.append("fabricDetails", updatedFabricDetails)
       
@@ -773,6 +783,14 @@ export function ProductEditor({ product = {}, products, storeCategories, storeFa
               selected={updatedCategory} 
               onChange={(v:any) => { setUpdatedCategory(v); setBaseDetailsChanged(true); }} 
               options={storeCategories} 
+            />
+          </div>
+          <div>
+            <label className="block text-[11px] md:text-sm font-semibold text-charcoal mb-1 md:mb-2">Subcategory</label>
+            <CategorySelect 
+              selected={updatedSubcategory} 
+              onChange={(v:any) => { setUpdatedSubcategory(v); setBaseDetailsChanged(true); }} 
+              options={storeCategories.filter((c:any) => updatedCategory.includes(c.value)).flatMap((c:any) => c.subcategories || [])} 
             />
           </div>
           <div>

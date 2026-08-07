@@ -29,7 +29,7 @@ export async function Footer() {
     <div className="max-w-7xl mx-auto px-6 lg:px-8 py-4 md:py-6">
       <div className="grid grid-cols-12 gap-x-2 gap-y-6 md:gap-x-6">
         {/* Brand Column */}
-        <div className="col-span-6 md:col-span-5 lg:col-span-4">
+        <div className="col-span-6 md:col-span-5 lg:col-span-4 order-2 md:order-1">
           <Link href="/" className="flex items-center gap-2 mb-1.5">
             <div className="relative w-10 h-10 md:w-12 md:h-12 rounded-full overflow-hidden ring-2 ring-[#1a2b49]/20 shrink-0">
               <Image
@@ -69,7 +69,7 @@ export async function Footer() {
         </div>
 
         {/* Company Links */}
-        <div className="col-span-3 md:col-span-2 lg:col-span-2">
+        <div className="col-span-3 md:col-span-2 lg:col-span-2 order-3 md:order-2">
             <h4 className="font-[family-name:var(--font-cinzel)] text-xs md:text-sm font-semibold text-[#1a2b49] tracking-wider uppercase mb-1.5 md:mb-2">
               Company
             </h4>
@@ -87,7 +87,7 @@ export async function Footer() {
           </div>
 
         {/* Help Links */}
-        <div className="col-span-3 md:col-span-2 lg:col-span-2">
+        <div className="col-span-3 md:col-span-2 lg:col-span-2 order-4 md:order-3">
             <h4 className="font-[family-name:var(--font-cinzel)] text-xs md:text-sm font-semibold text-[#1a2b49] tracking-wider uppercase mb-1.5 md:mb-2">
               Help
             </h4>
@@ -106,11 +106,11 @@ export async function Footer() {
           </div>
 
         {/* Newsletter Column */}
-        <div className="col-span-12 md:col-span-3 lg:col-span-4">
-            <h4 className="font-[family-name:var(--font-playfair)] text-sm md:text-base font-bold text-[#1a2b49] leading-tight mb-1.5 md:mb-2 text-center">
+        <div className="col-span-12 md:col-span-3 lg:col-span-4 order-1 md:order-4 mb-2 md:mb-0 border-b border-[#1a2b49]/10 pb-6 md:border-0 md:pb-0">
+            <h4 className="font-[family-name:var(--font-playfair)] text-sm md:text-base font-bold text-[#1a2b49] leading-tight mb-1.5 md:mb-2 text-center md:text-left">
               Stay Stylish — Join Our Newsletter
             </h4>
-            <p className="text-[10px] md:text-xs text-[#4a627a] mb-3 leading-snug text-center">
+            <p className="text-[10px] md:text-xs text-[#4a627a] mb-3 leading-snug text-center md:text-left">
               Exclusive discounts & fabric care tips, straight to your inbox.
             </p>
             <NewsletterForm />
@@ -118,7 +118,7 @@ export async function Footer() {
     </div>
 
   {/* Social & Bottom */}
- <div className="mt-2 pt-2 border-t border-[#1a2b49]/10 flex flex-col md:flex-row items-center justify-between gap-3">
+ <div className="mt-2 pt-2 border-t border-[#1a2b49]/10 flex flex-col md:flex-row items-center justify-between gap-1.5 md:gap-3">
  <div className="flex flex-wrap items-center gap-3">
   {companyProfile?.facebookUrl ? (
     <a href={companyProfile.facebookUrl} target="_blank" rel="noopener noreferrer" className="hover:scale-110 transition-transform" aria-label="Facebook">
@@ -163,9 +163,9 @@ export async function Footer() {
   )}
  </div>
 
- <div className="text-[10px] text-[#4a627a] leading-relaxed flex flex-row justify-between sm:block sm:text-center w-full sm:w-auto gap-2">
-   <span className="text-left sm:inline">© {new Date().getFullYear()} RK Fabrics Zone. All rights reserved.</span>
-   <span className="text-right sm:inline">{' '}Made with <Heart size={10} className="inline text-rose-500" /> in Jaipur, India.</span>
+ <div className="text-[10px] text-[#4a627a] leading-relaxed flex flex-col sm:block sm:text-center w-full sm:w-auto gap-2">
+   <span className="text-center sm:inline">© {new Date().getFullYear()} RK Fabrics Zone. All rights reserved.</span>
+   <span className="hidden sm:inline">{' '}Made with <Heart size={10} className="inline text-rose-500" /> in Jaipur, India.</span>
  </div>
 
  <div className="flex items-center gap-2 text-[10px] text-[#4a627a]">
@@ -175,7 +175,8 @@ export async function Footer() {
      <span>|</span>
    </>
  )}
- <span>🇮🇳 Made in India</span>
+ <span className="hidden sm:inline">🇮🇳 Made in India</span>
+ <span className="sm:hidden flex items-center gap-1">Made with <Heart size={10} className="text-rose-500" /> in Jaipur, India.</span>
  </div>
  </div>
  </div>

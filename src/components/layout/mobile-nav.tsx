@@ -55,7 +55,7 @@ export function MobileNav() {
   const adminLinks = [
     { href: "/admin?tab=overview", label: "Dashboard Overview", icon: LayoutDashboard },
     { href: "/admin?tab=list", label: "Product Settings", icon: Package },
-    { href: "/admin?tab=taxonomy", label: "Taxonomy Settings", icon: Scissors },
+    { href: "/admin?tab=taxonomy", label: "Navigation & Taxonomy", icon: Scissors },
     { href: "/admin?tab=orders", label: "Orders Management", icon: ShoppingBag },
     { href: "/admin?tab=finance", label: "Finance Management", icon: DollarSign },
     { href: "/admin?tab=queries", label: "Queries Management", icon: MessageSquare },
@@ -63,7 +63,6 @@ export function MobileNav() {
     { href: "/admin?tab=newsletters", label: "Newsletter Studio", icon: Mail },
     { href: "/admin?tab=users", label: "User Management", icon: Users },
     { href: "/admin?tab=company_profile", label: "Company Profile", icon: Building2 },
-    { href: "/admin?tab=navigation", label: "Navigation Settings", icon: Menu },
     { href: "/admin?tab=banners", label: "Dynamic Homepage", icon: ImageIcon },
     { href: "/admin?tab=system", label: "System Status", icon: Settings },
   ];

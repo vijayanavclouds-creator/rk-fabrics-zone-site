@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useRef } from "react";
 import { getDashboardAnalytics, getChartData } from "@/actions/analytics";
-import { BarChart3, Users, Tags, ShoppingBag, Server, Settings, Image as ImageIcon, Mail, FileText, CheckCircle2, ChevronDown, Activity, Clock, Box, ShieldQuestion, Coins, Network, User as UserIcon, Ticket, Package, Truck, RotateCcw, XCircle, DollarSign, Pencil } from "lucide-react";
+import { BarChart3, Users, Tags, ShoppingBag, Server, Settings, Image as ImageIcon, Mail, FileText, CheckCircle2, ChevronDown, Activity, Clock, Box, ShieldQuestion, Coins, Network, User as UserIcon, Ticket, Package, Truck, RotateCcw, XCircle, DollarSign, Pencil, MessageSquare } from "lucide-react";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area, ComposedChart } from "recharts";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
@@ -106,9 +106,9 @@ export function DashboardOverview({ initialData, isSupport = false }: { initialD
   );
 
   const NavigationCard = (
-    <Link href="/admin?tab=navigation" className="block">
+    <Link href="/admin?tab=taxonomy" className="block">
       <GlassCard className="flex items-center justify-between group cursor-pointer bg-white !rounded-[16px] !p-2.5 md:!p-4 h-full">
-        <h3 className="text-[10px] md:text-sm font-bold text-charcoal uppercase tracking-widest">Navigation</h3>
+        <h3 className="text-[10px] md:text-sm font-bold text-charcoal uppercase tracking-widest">Nav & Taxonomy</h3>
         <div className="text-slate-400 group-hover:rotate-45 transition-transform duration-500">
           <Settings size={14} className="stroke-[2.5]" />
         </div>
@@ -117,11 +117,11 @@ export function DashboardOverview({ initialData, isSupport = false }: { initialD
   );
 
   const TaxonomyCard = (
-    <Link href="/admin?tab=taxonomy" className="block">
+    <Link href="/admin?tab=newsletters" className="block">
       <GlassCard className="flex items-center justify-between group cursor-pointer bg-white !rounded-[16px] !p-2.5 md:!p-4 h-full">
-        <h3 className="text-[10px] md:text-sm font-bold text-charcoal uppercase tracking-widest">Taxonomy</h3>
-        <div className="text-purple-500 group-hover:rotate-45 transition-transform duration-500">
-          <Network size={14} className="stroke-[2.5]" />
+        <h3 className="text-[10px] md:text-sm font-bold text-charcoal uppercase tracking-widest">Newsletter Studio</h3>
+        <div className="text-blue-500 group-hover:-rotate-12 transition-transform duration-500">
+          <Mail size={14} className="stroke-[2.5]" />
         </div>
       </GlassCard>
     </Link>
@@ -341,13 +341,13 @@ export function DashboardOverview({ initialData, isSupport = false }: { initialD
         Content & Promo
       </h3>
       <div className="flex flex-col gap-1.5">
-        <Link href="/admin?tab=banners" className="flex items-center gap-2.5 md:gap-3 p-2 md:p-3 bg-white rounded-xl border border-slate-100 hover:border-purple-200 hover:shadow-sm transition-all group">
-          <div className="p-2 md:p-2.5 bg-purple-50 text-purple-600 rounded-lg group-hover:bg-purple-100 transition-colors">
-            <ImageIcon size={16} className="md:w-5 md:h-5" />
+        <Link href="/admin?tab=queries" className="flex items-center gap-2.5 md:gap-3 p-2 md:p-3 bg-white rounded-xl border border-slate-100 hover:border-amber-200 hover:shadow-sm transition-all group">
+          <div className="p-2 md:p-2.5 bg-amber-50 text-amber-600 rounded-lg group-hover:bg-amber-100 transition-colors">
+            <MessageSquare size={16} className="md:w-5 md:h-5" />
           </div>
           <div>
-            <h4 className="font-bold text-charcoal text-[11px] md:text-sm">Banners</h4>
-            <span className="text-[8px] md:text-[9px] text-slate-500">Manags homepage banners</span>
+            <h4 className="font-bold text-charcoal text-[11px] md:text-sm">Queries Management</h4>
+            <span className="text-[8px] md:text-[9px] text-slate-500">Manage user queries</span>
           </div>
         </Link>
 
@@ -358,16 +358,6 @@ export function DashboardOverview({ initialData, isSupport = false }: { initialD
           <div>
             <h4 className="font-bold text-charcoal text-[11px] md:text-sm">Dynamic Home</h4>
             <span className="text-[8px] md:text-[9px] text-slate-500">Manage dynamic HTML</span>
-          </div>
-        </Link>
-
-        <Link href="/admin?tab=newsletters" className="flex items-center gap-2.5 md:gap-3 p-2 md:p-3 bg-white rounded-xl border border-slate-100 hover:border-blue-200 hover:shadow-sm transition-all group">
-          <div className="w-8 h-8 md:w-10 md:h-10 rounded-[8px] md:rounded-[10px] bg-gradient-to-br from-blue-400 to-blue-500 shrink-0 flex items-center justify-center text-white shadow-sm group-hover:scale-105 transition-transform duration-300">
-            <Mail size={14} className="md:w-[18px] md:h-[18px]" />
-          </div>
-          <div>
-            <span className="text-[10px] md:text-xs font-bold text-charcoal block leading-tight">Newsletter Studio</span>
-            <span className="text-[8px] md:text-[9px] text-slate-500">Manage subscribers</span>
           </div>
         </Link>
       </div>
@@ -699,33 +689,15 @@ export function DashboardOverview({ initialData, isSupport = false }: { initialD
                   <p className="text-xs md:text-sm font-black text-charcoal leading-none">{data.totalCategories}</p>
                 </Link>
 
-                {/* Navigation */}
-                <Link href="/admin?tab=navigation" className="bg-[#f1f5f9] rounded-lg p-2 md:p-2.5 flex flex-col items-center justify-center hover:bg-slate-200 transition-colors h-full min-h-[60px]">
+                {/* Navigation & Taxonomy */}
+                <Link href="/admin?tab=taxonomy" className="bg-[#f1f5f9] rounded-lg p-2 md:p-2.5 flex flex-col items-center justify-center hover:bg-slate-200 transition-colors h-full min-h-[60px]">
                   <div className="flex items-center gap-1 mb-1">
                     <Settings size={10} className="text-slate-500 stroke-[3]" />
-                    <p className="text-[7px] md:text-[8px] text-slate-500 font-bold uppercase tracking-wider">Navigation</p>
+                    <p className="text-[7px] md:text-[8px] text-slate-500 font-bold uppercase tracking-wider">Nav & Tax</p>
                   </div>
                   <p className="text-[10px] md:text-xs font-black text-charcoal leading-none mt-0.5">Settings</p>
                 </Link>
                 
-                {/* Taxonomy */}
-                <Link href="/admin?tab=taxonomy" className="bg-[#f1f5f9] rounded-lg p-2 md:p-2.5 flex flex-col items-center justify-center hover:bg-slate-200 transition-colors h-full min-h-[60px]">
-                  <div className="flex items-center gap-1 mb-1">
-                    <Network size={10} className="text-indigo-500 stroke-[3]" />
-                    <p className="text-[7px] md:text-[8px] text-slate-500 font-bold uppercase tracking-wider">Taxonomy</p>
-                  </div>
-                  <p className="text-[10px] md:text-xs font-black text-charcoal leading-none mt-0.5">Settings</p>
-                </Link>
-          
-                {/* Banner */}
-                <Link href="/admin?tab=banners" className="bg-[#f1f5f9] rounded-lg p-2 md:p-2.5 flex flex-col items-center justify-center hover:bg-slate-200 transition-colors h-full min-h-[60px]">
-                  <div className="flex items-center gap-1 mb-1">
-                    <ImageIcon size={10} className="text-pink-500 stroke-[3]" />
-                    <p className="text-[7px] md:text-[8px] text-slate-500 font-bold uppercase tracking-wider">Banner</p>
-                  </div>
-                  <p className="text-[10px] md:text-xs font-black text-charcoal leading-none mt-0.5">Settings</p>
-                </Link>
-          
                 {/* Newsletter */}
                 <Link href="/admin?tab=newsletters" className="bg-[#f1f5f9] rounded-lg p-2 md:p-2.5 flex flex-col items-center justify-center hover:bg-slate-200 transition-colors h-full min-h-[60px]">
                   <div className="flex items-center gap-1 mb-1">
@@ -733,6 +705,15 @@ export function DashboardOverview({ initialData, isSupport = false }: { initialD
                     <p className="text-[7px] md:text-[8px] text-slate-500 font-bold uppercase tracking-wider">Newsletter</p>
                   </div>
                   <p className="text-[10px] md:text-xs font-black text-charcoal leading-none mt-0.5">Studio</p>
+                </Link>
+          
+                {/* Queries */}
+                <Link href="/admin?tab=queries" className="bg-[#f1f5f9] rounded-lg p-2 md:p-2.5 flex flex-col items-center justify-center hover:bg-slate-200 transition-colors h-full min-h-[60px]">
+                  <div className="flex items-center gap-1 mb-1">
+                    <MessageSquare size={10} className="text-amber-500 stroke-[3]" />
+                    <p className="text-[7px] md:text-[8px] text-slate-500 font-bold uppercase tracking-wider">Queries</p>
+                  </div>
+                  <p className="text-[10px] md:text-xs font-black text-charcoal leading-none mt-0.5">Settings</p>
                 </Link>
               </div>
             </GlassCard>
