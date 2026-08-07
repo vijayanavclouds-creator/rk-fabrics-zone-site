@@ -148,6 +148,7 @@ model User {
   newsletters   UserNewsletter[]
   reviews       Review[]
   returnRequests ReturnRequest[]
+  pushSubscriptions PushSubscription[]
   cartData      String?   // JSON string of the cart
   cartUpdatedAt DateTime?
 }
@@ -384,4 +385,15 @@ model HtmlRecord {
   code      String   @db.Text
   updatedAt DateTime @updatedAt
   createdAt DateTime @default(now())
+}
+
+model PushSubscription {
+  id        String   @id @default(cuid())
+  endpoint  String   @unique
+  p256dh    String
+  auth      String
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

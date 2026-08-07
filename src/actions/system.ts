@@ -4,7 +4,6 @@ import prisma from "@/lib/prisma";
 import { revalidatePath, revalidateTag } from "next/cache";
 import { logAdminActivity } from "./admin-activity";
 import { generateDiffString } from "@/lib/utils";
-import { PRODUCT_CATEGORIES, FABRIC_OPTIONS } from "@/lib/constants";
 import { getNavigationLinksData, getStoreTaxonomyData, getAnnouncementBannerData, getCompanyProfileData } from "@/lib/data/system";
 
 // Get Navigation Links
@@ -36,13 +35,14 @@ export async function saveAnnouncementBanner(data: { text: string; isActive: boo
     }
     
     return { success: true };
-  } catch (error: any) {
-    return { success: false, error: error.message };
+  } catch (error: unknown) {
+    return { success: false, error: error instanceof Error ? error.message : "Unknown error" };
   }
 }
 
 // Save Navigation Links
-export async function saveNavigationLinks(links: any) {
+type LinkItem = { href?: string; label?: string; submenu?: LinkItem[] };
+export async function saveNavigationLinks(links: LinkItem[]) {
   try {
     const oldLinks = await getNavigationLinksData();
     
@@ -58,7 +58,7 @@ export async function saveNavigationLinks(links: any) {
     
     const changes: string[] = [];
     
-    const findChanges = (oldArr: any[], newArr: any[], prefix = "link") => {
+    const findChanges = (oldArr: LinkItem[], newArr: LinkItem[], prefix = "link") => {
       // Find deleted
       oldArr.forEach(oldItem => {
         const found = newArr.find(newItem => (oldItem.href && newItem.href === oldItem.href) || newItem.label === oldItem.label);
@@ -99,9 +99,9 @@ export async function saveNavigationLinks(links: any) {
     await logAdminActivity("updated navigation links", diff);
     
     return { success: true };
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error saving navigation links:", error);
-    return { success: false, error: error.message };
+    return { success: false, error: error instanceof Error ? error.message : "Unknown error" };
   }
 }
 
@@ -111,7 +111,8 @@ export async function getStoreTaxonomy() {
 }
 
 // Save Store Taxonomy
-export async function saveStoreTaxonomy(categories: any[], fabrics: any[]) {
+type TaxonomyItem = { label?: string; value?: string };
+export async function saveStoreTaxonomy(categories: TaxonomyItem[], fabrics: TaxonomyItem[]) {
   try {
     const oldTaxonomy = await getStoreTaxonomyData();
     
@@ -136,7 +137,7 @@ export async function saveStoreTaxonomy(categories: any[], fabrics: any[]) {
     
     const changes: string[] = [];
     
-    const diffTaxonomy = (oldArr: any[], newArr: any[], prefix: string) => {
+    const diffTaxonomy = (oldArr: TaxonomyItem[], newArr: TaxonomyItem[], prefix: string) => {
       oldArr.forEach(oldItem => {
         if (!newArr.find(newItem => (oldItem.value && newItem.value === oldItem.value) || newItem.label === oldItem.label)) {
           changes.push(`deleted ${prefix} <i>${oldItem.label}</i>`);
@@ -162,9 +163,9 @@ export async function saveStoreTaxonomy(categories: any[], fabrics: any[]) {
     await logAdminActivity("updated store taxonomy", diff);
     
     return { success: true };
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error saving store taxonomy:", error);
-    return { success: false, error: error.message };
+    return { success: false, error: error instanceof Error ? error.message : "Unknown error" };
   }
 }
 
@@ -174,7 +175,7 @@ export async function getCompanyProfile() {
 }
 
 // Save Company Profile Settings
-export async function saveCompanyProfile(profileData: any) {
+export async function saveCompanyProfile(profileData: Record<string, unknown>) {
   try {
     const oldProfile = await getCompanyProfileData();
     
@@ -193,9 +194,9 @@ export async function saveCompanyProfile(profileData: any) {
     }
     
     return { success: true };
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error saving company profile:", error);
-    return { success: false, error: error.message };
+    return { success: false, error: error instanceof Error ? error.message : "Unknown error" };
   }
 }
 
@@ -222,8 +223,8 @@ export async function getHome2HtmlSettings() {
       heroHtml: heroRecord ? heroRecord.value : "",
       carouselHtml: carouselRecord ? carouselRecord.value : ""
     };
-  } catch (error: any) {
-    return { success: false, error: error.message };
+  } catch (error: unknown) {
+    return { success: false, error: error instanceof Error ? error.message : "Unknown error" };
   }
 }
 
@@ -248,9 +249,9 @@ export async function saveHome2HtmlSettings(heroHtml: string, carouselHtml: stri
     await logAdminActivity("updated homepage HTML settings", "Modified dynamic homepage HTML");
     
     return { success: true };
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error saving Home2 HTML settings:", error);
-    return { success: false, error: error.message };
+    return { success: false, error: error instanceof Error ? error.message : "Unknown error" };
   }
 }
 
@@ -261,9 +262,9 @@ export async function getHtmlRecords() {
       orderBy: { updatedAt: 'desc' }
     });
     return { success: true, records };
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error fetching HTML records:", error);
-    return { success: false, error: error.message };
+    return { success: false, error: error instanceof Error ? error.message : "Unknown error" };
   }
 }
 
@@ -279,9 +280,9 @@ export async function createHtmlRecord(title: string, type: string, code: string
     });
     revalidatePath("/admin");
     return { success: true };
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error creating HTML record:", error);
-    return { success: false, error: error.message };
+    return { success: false, error: error instanceof Error ? error.message : "Unknown error" };
   }
 }
 
@@ -298,9 +299,9 @@ export async function updateHtmlRecord(id: string, title: string, type: string, 
     });
     revalidatePath("/admin");
     return { success: true };
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error updating HTML record:", error);
-    return { success: false, error: error.message };
+    return { success: false, error: error instanceof Error ? error.message : "Unknown error" };
   }
 }
 
@@ -310,8 +311,8 @@ export async function deleteHtmlRecord(id: string) {
     await prisma.htmlRecord.delete({ where: { id } });
     revalidatePath("/admin");
     return { success: true };
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error deleting HTML record:", error);
-    return { success: false, error: error.message };
+    return { success: false, error: error instanceof Error ? error.message : "Unknown error" };
   }
 }

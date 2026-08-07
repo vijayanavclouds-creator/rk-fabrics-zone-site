@@ -97,6 +97,10 @@ export async function sendNewsletter(subject: string, content: string, targetUse
     // TODO: In a real app, you would also use an email service (SendGrid, AWS SES) 
     // to email all `NewsletterSubscriber` records.
 
+    // 3. Send Web Push Notification to subscribers
+    const { sendPushToNewsletterSubscribers } = await import("./push");
+    sendPushToNewsletterSubscribers(subject, "You have a new newsletter from RK Fabrics Zone!").catch(console.error);
+
     await logAdminActivity(`sent newsletter <b>${subject}</b>`, `Delivered to ${users.length} users`);
 
     return { success: true }

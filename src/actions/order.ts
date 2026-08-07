@@ -424,6 +424,14 @@ export async function updateOrderStatus(orderId: string, status: string) {
       }
     }
 
+    const { sendPushToUser } = await import("./push");
+    sendPushToUser(
+      updatedOrder.userId,
+      "Order Status Updated",
+      `Your order #${updatedOrder.id.slice(-6).toUpperCase()} is now ${status}.`,
+      `/account/orders/${updatedOrder.id}`
+    ).catch(console.error);
+
     revalidatePath("/admin")
     revalidatePath("/account")
     

@@ -1,0 +1,512 @@
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=Inter:wght@400;500;600;700&display=swap');
+
+  .rfz-carousel-section {
+    width: 100%;
+    padding: 80px 20px;
+    box-sizing: border-box;
+    /* Updated to the new Icy Blue / White Background */
+    background: #f4f8fc; 
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    color: #1a2b49;
+    overflow: hidden;
+  }
+
+  .rfz-carousel-section *, .rfz-carousel-section *::before, .rfz-carousel-section *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  .rfz-container {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  /* --- TYPOGRAPHY & TITLES --- */
+  .rfz-section-header {
+    text-align: center;
+    margin-bottom: 40px;
+  }
+  
+  .rfz-section-title {
+    font-size: 24px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    color: #1a2b49; /* Dark Navy */
+    text-transform: uppercase;
+    position: relative;
+    display: inline-block;
+    padding-bottom: 12px;
+  }
+  
+  .rfz-section-title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 3px;
+    background: #37546d; /* Slate Blue Accent */
+    border-radius: 2px;
+  }
+
+  /* --- PREMIUM NEUMORPHIC SHADOWS (ICY BLUE THEME) --- */
+  .rfz-neu-out {
+    background: #f4f8fc;
+    box-shadow: 12px 12px 24px #dce4ed, -12px -12px 24px #ffffff;
+    border-radius: 24px;
+    border: 1px solid rgba(255,255,255,0.7);
+  }
+  
+  .rfz-neu-in {
+    background: #f4f8fc;
+    box-shadow: inset 6px 6px 12px #dce4ed, inset -6px -6px 12px #ffffff;
+    border-radius: 16px;
+  }
+
+  /* --- PRODUCT GRIDS --- */
+  .rfz-product-grid-4 {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 30px;
+    margin-bottom: 80px;
+  }
+
+  /* --- PRODUCT CARD --- */
+  .rfz-product-card {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .rfz-product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 16px 16px 30px #dce4ed, -16px -16px 30px #ffffff;
+  }
+  
+  .rfz-product-img-wrapper {
+    width: 100%;
+    aspect-ratio: 1;
+    border-radius: 16px;
+    overflow: hidden;
+    margin-bottom: 20px;
+    padding: 8px; 
+    box-shadow: inset 4px 4px 8px #dce4ed, inset -4px -4px 8px #ffffff;
+  }
+  
+  .rfz-product-img-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 10px;
+  }
+  
+  .rfz-product-name {
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: #1a2b49;
+  }
+  
+  .rfz-product-price {
+    font-size: 16px;
+    font-weight: 700;
+    color: #37546d;
+    margin-bottom: 16px;
+  }
+  
+  .rfz-btn-neu {
+    padding: 10px 24px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #37546d;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    background: #f4f8fc;
+    box-shadow: 4px 4px 10px #dce4ed, -4px -4px 10px #ffffff;
+    border-radius: 99px;
+    transition: all 0.2s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  
+  .rfz-btn-neu:hover {
+    color: #1a2b49;
+  }
+  
+  .rfz-btn-neu:active {
+    box-shadow: inset 4px 4px 8px #dce4ed, inset -4px -4px 8px #ffffff;
+  }
+
+  /* --- VIEW ALL CARD --- */
+  .rfz-view-all-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: transform 0.3s ease;
+  }
+  
+  .rfz-view-all-card:hover {
+    transform: translateY(-5px);
+  }
+  
+  .rfz-view-all-circle {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 16px;
+    background: #f4f8fc;
+    box-shadow: 6px 6px 12px #dce4ed, -6px -6px 12px #ffffff;
+    transition: all 0.3s ease;
+  }
+  
+  .rfz-view-all-card:active .rfz-view-all-circle {
+    box-shadow: inset 6px 6px 12px #dce4ed, inset -6px -6px 12px #ffffff;
+  }
+  
+  .rfz-view-all-circle svg {
+    width: 32px;
+    height: 32px;
+    stroke: #37546d;
+  }
+
+  /* --- SALE BANNER --- */
+  .rfz-sale-banner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 40px 60px;
+    margin: 80px 0;
+    position: relative;
+    border-radius: 32px;
+    overflow: visible; 
+  }
+  
+  .rfz-sale-tag {
+    position: absolute;
+    left: -20px;
+    top: -30px;
+    background: #37546d; 
+    color: white;
+    padding: 24px 40px;
+    border-radius: 16px;
+    transform: rotate(-8deg);
+    box-shadow: 8px 12px 20px rgba(55, 84, 109, 0.35), inset 2px 2px 4px rgba(255,255,255,0.3);
+    font-family: 'Playfair Display', serif;
+    font-size: 36px;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  
+  .rfz-sale-tag::before {
+    content: '';
+    width: 12px;
+    height: 12px;
+    background: #f4f8fc;
+    border-radius: 50%;
+    box-shadow: inset 2px 2px 4px rgba(0,0,0,0.3);
+  }
+  
+  .rfz-sale-content {
+    flex: 1;
+    text-align: center;
+    padding-left: 140px; 
+  }
+  
+  .rfz-sale-limit {
+    font-size: 14px;
+    font-weight: 600;
+    color: #4a627a;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  
+  .rfz-sale-title {
+    font-size: 64px;
+    font-weight: 800;
+    color: #1a2b49;
+    line-height: 1;
+    margin-bottom: 12px;
+    font-family: 'Playfair Display', serif;
+  }
+  
+  .rfz-sale-subtitle {
+    font-size: 16px;
+    color: #2a3f54;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+  }
+  
+  .rfz-sale-code {
+    padding: 24px 40px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .rfz-sale-code span:first-child {
+    font-size: 12px;
+    font-weight: 600;
+    color: #4a627a;
+  }
+  
+  .rfz-sale-code span:last-child {
+    font-size: 22px;
+    font-weight: 700;
+    color: #37546d;
+    letter-spacing: 0.1em;
+  }
+
+  /* --- FEATURED CATEGORY --- */
+  .rfz-category-grid-5 {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 20px;
+    margin-bottom: 9px;
+  }
+  
+  .rfz-cat-card {
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-decoration: none;
+    transition: transform 0.3s ease;
+  }
+  
+  .rfz-cat-card:hover {
+    transform: translateY(-5px);
+  }
+  
+  .rfz-cat-img {
+    width: 100%;
+    aspect-ratio: 4/3;
+    border-radius: 16px;
+    margin-bottom: 16px;
+    overflow: hidden;
+    box-shadow: inset 4px 4px 8px #dce4ed, inset -4px -4px 8px #ffffff;
+    padding: 6px;
+  }
+  
+  .rfz-cat-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 10px;
+  }
+  
+  .rfz-cat-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: #1a2b49;
+    margin-bottom: 4px;
+  }
+  
+  .rfz-cat-link {
+    font-size: 11px;
+    color: #37546d;
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+
+  /* --- RESPONSIVE DESIGN --- */
+  @media (max-width: 1024px) {
+    .rfz-product-grid-4 { grid-template-columns: repeat(2, 1fr); }
+    .rfz-category-grid-5 { grid-template-columns: repeat(3, 1fr); gap: 30px; }
+    .rfz-sale-banner { flex-direction: column; gap: 30px; padding: 60px 20px 40px; margin-top: 80px; }
+    .rfz-sale-content { padding-left: 0; }
+    .rfz-sale-tag { left: 50%; top: -30px; transform: translateX(-50%) rotate(-5deg); }
+  }
+
+  @media (max-width: 768px) {
+    .rfz-carousel-section { padding: 40px 16px; }
+    .rfz-product-grid-4 { grid-template-columns: repeat(2, 1fr); gap: 16px; margin-bottom: 60px;}
+    .rfz-category-grid-5 { grid-template-columns: repeat(2, 1fr); gap: 16px; }
+    
+    .rfz-sale-title { font-size: 44px; }
+    .rfz-sale-tag { font-size: 24px; padding: 16px 24px; }
+    
+    .rfz-product-name { font-size: 13px; }
+    .rfz-product-price { font-size: 14px; }
+    .rfz-btn-neu { padding: 8px 16px; font-size: 10px; }
+    
+    .rfz-view-all-circle { width: 60px; height: 60px; }
+  }
+</style>
+
+<div class="rfz-carousel-section">
+  <div class="rfz-container">
+    
+    <!-- 1. NEW ARRIVALS -->
+    <div class="rfz-section-header">
+      <h2 class="rfz-section-title">New Arrivals</h2>
+    </div>
+    
+    <div class="rfz-product-grid-4">
+      <!-- Product 1 -->
+      <div class="rfz-product-card rfz-neu-out">
+        <div class="rfz-product-img-wrapper">
+          <img src="https://res.cloudinary.com/dodcvilgs/image/upload/v1784562642/rk-fabrics/products/jsq3w7ywphhkxjqpnf9u.jpg" alt="New Arrival 1" loading="lazy">
+        </div>
+        <h3 class="rfz-product-name">Elegant Silk Blend</h3>
+        <p class="rfz-product-price">₹1,100</p>
+        <button class="rfz-btn-neu">Buy Now</button>
+      </div>
+      <!-- Product 2 -->
+      <div class="rfz-product-card rfz-neu-out">
+        <div class="rfz-product-img-wrapper">
+          <img src="https://res.cloudinary.com/dodcvilgs/image/upload/v1784542099/rk-fabrics/products/osb4jlokz7kp7rukikq1.jpg" alt="New Arrival 2" loading="lazy">
+        </div>
+        <h3 class="rfz-product-name">Tailored Linen Ethnic</h3>
+        <p class="rfz-product-price">₹1,350</p>
+        <button class="rfz-btn-neu">Buy Now</button>
+      </div>
+      <!-- Product 3 -->
+      <div class="rfz-product-card rfz-neu-out">
+        <div class="rfz-product-img-wrapper">
+          <img src="https://res.cloudinary.com/dodcvilgs/image/upload/v1784565526/rk-fabrics/products/bggmb3mniadk901ogevf.jpg" alt="New Arrival 3" loading="lazy">
+        </div>
+        <h3 class="rfz-product-name">Minimalist Cotton Set</h3>
+        <p class="rfz-product-price">₹1,600</p>
+        <button class="rfz-btn-neu">Buy Now</button>
+      </div>
+      <!-- View All Card -->
+      <a href="/shop?collection=new-arrivals" class="rfz-view-all-card rfz-neu-out">
+        <div class="rfz-view-all-circle">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+          </svg>
+        </div>
+        <h3 class="rfz-product-name">View All</h3>
+        <p class="rfz-product-price" style="color: #4a627a; font-size: 13px; font-weight: 500; margin-bottom: 0;">Discover More</p>
+      </a>
+    </div>
+
+    <!-- 2. SALE BANNER -->
+    <div class="rfz-sale-banner rfz-neu-out">
+      <div class="rfz-sale-tag">
+        SALE
+      </div>
+      <div class="rfz-sale-content">
+        <p class="rfz-sale-limit">Limited Time</p>
+        <h2 class="rfz-sale-title">20% OFF</h2>
+        <p class="rfz-sale-subtitle">ON YOUR FIRST PURCHASE</p>
+      </div>
+      <div class="rfz-sale-code rfz-neu-in">
+        <span>CODE:</span>
+        <span>WELCOME20</span>
+      </div>
+    </div>
+
+    <!-- 3. TOP RATED PRODUCTS -->
+    <div class="rfz-section-header">
+      <h2 class="rfz-section-title">Top Rated Products</h2>
+    </div>
+    
+    <div class="rfz-product-grid-4">
+      <!-- Product 1 -->
+      <div class="rfz-product-card rfz-neu-out">
+        <div class="rfz-product-img-wrapper">
+          <img src="https://res.cloudinary.com/dodcvilgs/image/upload/v1784610263/rk-fabrics/products/jk0kp6dhbgrjr1sk72z4.jpg" alt="Top Rated 1" loading="lazy">
+        </div>
+        <h3 class="rfz-product-name">Designer Pearl Saree</h3>
+        <p class="rfz-product-price">₹2,450</p>
+        <button class="rfz-btn-neu">Buy Now</button>
+      </div>
+      <!-- Product 2 -->
+      <div class="rfz-product-card rfz-neu-out">
+        <div class="rfz-product-img-wrapper">
+          <img src="https://res.cloudinary.com/dodcvilgs/image/upload/v1784562664/rk-fabrics/products/zw8vdqcxyyg7dokyuzit.jpg" alt="Top Rated 2" loading="lazy">
+        </div>
+        <h3 class="rfz-product-name">Premium Velvet Suit</h3>
+        <p class="rfz-product-price">₹1,800</p>
+        <button class="rfz-btn-neu">Buy Now</button>
+      </div>
+      <!-- Product 3 -->
+      <div class="rfz-product-card rfz-neu-out">
+        <div class="rfz-product-img-wrapper">
+          <img src="https://res.cloudinary.com/dodcvilgs/image/upload/v1784562642/rk-fabrics/products/jsq3w7ywphhkxjqpnf9u.jpg" alt="Top Rated 3" loading="lazy">
+        </div>
+        <h3 class="rfz-product-name">Classic Weave Kurta</h3>
+        <p class="rfz-product-price">₹950</p>
+        <button class="rfz-btn-neu">Buy Now</button>
+      </div>
+      <!-- Product 4 -->
+      <div class="rfz-product-card rfz-neu-out">
+        <div class="rfz-product-img-wrapper">
+          <img src="https://res.cloudinary.com/dodcvilgs/image/upload/v1784542099/rk-fabrics/products/osb4jlokz7kp7rukikq1.jpg" alt="Top Rated 4" loading="lazy">
+        </div>
+        <h3 class="rfz-product-name">Festive Banarasi</h3>
+        <p class="rfz-product-price">₹3,200</p>
+        <button class="rfz-btn-neu">Buy Now</button>
+      </div>
+    </div>
+
+    <!-- 4. FEATURED CATEGORY -->
+    <div class="rfz-section-header">
+      <h2 class="rfz-section-title">Featured Category</h2>
+    </div>
+    
+    <div class="rfz-category-grid-5">
+      <!-- Category 1 -->
+      <a href="/category/dresses" class="rfz-cat-card rfz-neu-out">
+        <div class="rfz-cat-img">
+          <img src="https://res.cloudinary.com/dodcvilgs/image/upload/v1784562642/rk-fabrics/products/jsq3w7ywphhkxjqpnf9u.jpg" alt="Dresses" loading="lazy">
+        </div>
+        <h3 class="rfz-cat-title">Dresses</h3>
+        <span class="rfz-cat-link">Shop Dresses</span>
+      </a>
+      <!-- Category 2 -->
+      <a href="/category/sarees" class="rfz-cat-card rfz-neu-out">
+        <div class="rfz-cat-img">
+          <img src="https://res.cloudinary.com/dodcvilgs/image/upload/v1784542099/rk-fabrics/products/osb4jlokz7kp7rukikq1.jpg" alt="Sarees" loading="lazy">
+        </div>
+        <h3 class="rfz-cat-title">Sarees</h3>
+        <span class="rfz-cat-link">Shop Sarees</span>
+      </a>
+      <!-- Category 3 -->
+      <a href="/category/kurti" class="rfz-cat-card rfz-neu-out">
+        <div class="rfz-cat-img">
+          <img src="https://res.cloudinary.com/dodcvilgs/image/upload/v1784565526/rk-fabrics/products/bggmb3mniadk901ogevf.jpg" alt="Kurtis" loading="lazy">
+        </div>
+        <h3 class="rfz-cat-title">Kurtis</h3>
+        <span class="rfz-cat-link">Shop Kurtis</span>
+      </a>
+      <!-- Category 4 -->
+      <a href="/category/outerwear" class="rfz-cat-card rfz-neu-out">
+        <div class="rfz-cat-img">
+          <img src="https://res.cloudinary.com/dodcvilgs/image/upload/v1784610263/rk-fabrics/products/jk0kp6dhbgrjr1sk72z4.jpg" alt="Outerwear" loading="lazy">
+        </div>
+        <h3 class="rfz-cat-title">Outerwear</h3>
+        <span class="rfz-cat-link">Shop Outerwear</span>
+      </a>
+      <!-- Category 5 -->
+      <a href="/category/accessories" class="rfz-cat-card rfz-neu-out">
+        <div class="rfz-cat-img">
+          <img src="https://res.cloudinary.com/dodcvilgs/image/upload/v1784562664/rk-fabrics/products/zw8vdqcxyyg7dokyuzit.jpg" alt="Accessories" loading="lazy">
+        </div>
+        <h3 class="rfz-cat-title">Accessories</h3>
+        <span class="rfz-cat-link">Shop Accessories</span>
+      </a>
+    </div>
+
+  </div>
+</div>

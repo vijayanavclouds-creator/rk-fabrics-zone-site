@@ -163,6 +163,15 @@ export async function sendAbandonedCartReminder(userId: string) {
       }
     });
 
+    // 3. Send Web Push
+    const { sendPushToUser } = await import("./push");
+    await sendPushToUser(
+      user.id,
+      "You left something behind! 🛍️",
+      "Your cart is waiting for you. Complete your purchase now before items sell out!",
+      "/cart"
+    );
+
     return { success: true };
   } catch (error: any) {
     console.error("Error sending abandoned cart reminder:", error);
