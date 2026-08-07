@@ -5,15 +5,17 @@ import { getUsers } from "@/actions/auth"
 import { updateUserRole } from "@/actions/admin"
 import { getAllAdminCoupons, getCouponUsageDetails } from "@/actions/coupon"
 import { toast } from "sonner"
-import { Shield, User, Loader2, ChevronDown, ChevronUp, Headset, Check, X, Send } from "lucide-react"
+import { Shield, User, Loader2, ChevronDown, ChevronUp, Headset, Check, X, Send, Eye, Trash2, Power, Calendar, Mail, Phone, ShoppingBag, CreditCard, Activity } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useRouter } from "next/navigation"
+import { getUserProfileDetails, deactivateUser, deleteUser } from "@/actions/admin"
 
 export function UsersManager() {
   const router = useRouter()
   const [users, setUsers] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const [isPending, startTransition] = useTransition()
+  const [selectedProfileId, setSelectedProfileId] = useState<string | null>(null)
   
   // Coupon Filter State
   const [globalCoupons, setGlobalCoupons] = useState<any[]>([])
@@ -164,8 +166,13 @@ export function UsersManager() {
             <Icon size={16} />
           </div>
           <div className="min-w-0">
-            <h3 className="font-bold text-charcoal text-sm truncate">{user.name}</h3>
-            <p className="text-[10px] md:text-xs text-slate truncate">{user.email}</p>
+            <h3 className="font-bold text-charcoal text-sm truncate flex items-center gap-2">
+              {user.name}
+              {user.isActive === false && (
+                <span className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-rose-100 text-rose-700">Deactivated</span>
+              )}
+            </h3>
+            <p className={cn("text-[10px] md:text-xs truncate", user.isActive === false ? "text-rose-500 line-through opacity-70" : "text-slate")}>{user.email}</p>
           </div>
         </div>
         
@@ -183,7 +190,16 @@ export function UsersManager() {
           </div>
         )}
 
-        <div className="flex shrink-0">
+        <div className="flex shrink-0 items-center gap-1 md:gap-2">
+          {user.role === "CUSTOMER" && (
+            <button
+              onClick={() => setSelectedProfileId(user.id)}
+              className="p-1.5 md:p-2 text-slate-400 hover:text-teal-600 hover:bg-teal-50 rounded-lg transition-colors"
+              title="View Profile"
+            >
+              <Eye size={16} />
+            </button>
+          )}
           <RoleSelect
             value={user.role}
             onChange={(newRole) => handleRoleChange(user.id, newRole as any)}
@@ -355,6 +371,7 @@ export function UsersManager() {
           </div>
         </div>
       </div>
+      <CustomerProfileModal userId={selectedProfileId} onClose={() => setSelectedProfileId(null)} onUpdate={fetchData} />
     </div>
   )
 }
@@ -460,6 +477,162 @@ const CouponSelect = ({ value, onChange, options, disabled }: { value: string, o
           </div>
         </div>
       )}
+    </div>
+  )
+}
+
+function CustomerProfileModal({ userId, onClose, onUpdate }: { userId: string | null, onClose: () => void, onUpdate: () => void }) {
+  const [profile, setProfile] = useState<any>(null)
+  const [loading, setLoading] = useState(false)
+  const [isDeleting, setIsDeleting] = useState(false)
+  const [isDeactivating, setIsDeactivating] = useState(false)
+
+  useEffect(() => {
+    if (userId) {
+      setLoading(true)
+      getUserProfileDetails(userId).then(res => {
+        if (res.success) setProfile(res.user)
+        else toast.error(res.error)
+        setLoading(false)
+      })
+    } else {
+      setProfile(null)
+    }
+  }, [userId])
+
+  if (!userId) return null
+
+  const handleDeactivate = async () => {
+    if (!profile) return
+    setIsDeactivating(true)
+    const res = await deactivateUser(profile.id)
+    if (res.success) {
+      toast.success(res.isActive ? "Account activated" : "Account deactivated")
+      setProfile({ ...profile, isActive: res.isActive })
+      onUpdate()
+    } else {
+      toast.error(res.error)
+    }
+    setIsDeactivating(false)
+  }
+
+  const handleDelete = async () => {
+    if (!profile) return
+    if (!confirm(`Are you absolutely sure you want to permanently delete ${profile.name}'s account? This cannot be undone.`)) {
+      return
+    }
+    
+    setIsDeleting(true)
+    const res = await deleteUser(profile.id)
+    if (res.success) {
+      toast.success("Account permanently deleted")
+      onUpdate()
+      onClose()
+    } else {
+      toast.error(res.error)
+    }
+    setIsDeleting(false)
+  }
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-charcoal/40 backdrop-blur-sm animate-in fade-in duration-200">
+      <div className="bg-white rounded-3xl w-full max-w-lg shadow-2xl overflow-hidden border border-charcoal/10 animate-in zoom-in-95 duration-200">
+        <div className="flex items-center justify-between p-4 md:p-6 border-b border-charcoal/10 bg-slate-50">
+          <h3 className="font-bold text-lg text-charcoal flex items-center gap-2">
+            <User size={20} className="text-teal-600" />
+            Customer Profile
+          </h3>
+          <button onClick={onClose} className="p-2 text-slate hover:text-charcoal bg-white rounded-full border border-charcoal/10 transition-colors">
+            <X size={16} />
+          </button>
+        </div>
+
+        <div className="p-4 md:p-6">
+          {loading ? (
+            <div className="flex justify-center py-12"><Loader2 className="animate-spin text-charcoal w-8 h-8" /></div>
+          ) : profile ? (
+            <div className="space-y-6">
+              {/* Header */}
+              <div className="flex items-start gap-4">
+                <div className="w-16 h-16 rounded-full bg-slate-200 flex items-center justify-center shrink-0 border-2 border-white shadow-sm overflow-hidden text-2xl font-bold text-slate-500 uppercase">
+                  {profile.name ? profile.name.substring(0, 2) : profile.email.substring(0, 2)}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <h2 className="text-xl font-bold text-charcoal truncate">{profile.name || 'Unknown Name'}</h2>
+                    {profile.isActive === false && (
+                      <span className="px-2 py-0.5 rounded-full text-xs font-bold bg-rose-100 text-rose-700">Deactivated</span>
+                    )}
+                  </div>
+                  <p className="text-sm text-slate truncate flex items-center gap-1.5 mt-1">
+                    <Mail size={14} /> {profile.email}
+                  </p>
+                  {profile.phone && (
+                    <p className="text-sm text-slate truncate flex items-center gap-1.5 mt-1">
+                      <Phone size={14} /> {profile.phone}
+                    </p>
+                  )}
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div className="bg-slate-50 rounded-2xl p-4 border border-charcoal/5">
+                  <div className="flex items-center gap-2 text-slate-500 mb-1">
+                    <ShoppingBag size={14} />
+                    <span className="text-xs font-semibold uppercase">Total Orders</span>
+                  </div>
+                  <p className="text-lg font-bold text-charcoal">{profile.totalOrders}</p>
+                </div>
+                <div className="bg-slate-50 rounded-2xl p-4 border border-charcoal/5">
+                  <div className="flex items-center gap-2 text-slate-500 mb-1">
+                    <CreditCard size={14} />
+                    <span className="text-xs font-semibold uppercase">Total Spent</span>
+                  </div>
+                  <p className="text-lg font-bold text-charcoal">₹{profile.totalSpent.toLocaleString()}</p>
+                </div>
+              </div>
+
+              <div className="space-y-3 bg-slate-50 rounded-2xl p-4 border border-charcoal/5">
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-slate flex items-center gap-2"><Calendar size={14} /> Joined</span>
+                  <span className="font-semibold text-charcoal">{new Date(profile.createdAt).toLocaleDateString()}</span>
+                </div>
+                {profile.dob && (
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-slate flex items-center gap-2"><User size={14} /> Date of Birth</span>
+                    <span className="font-semibold text-charcoal">{new Date(profile.dob).toLocaleDateString()}</span>
+                  </div>
+                )}
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-slate flex items-center gap-2"><Activity size={14} /> Status</span>
+                  <span className="font-semibold text-charcoal">{profile.isActive ? 'Active' : 'Deactivated'}</span>
+                </div>
+              </div>
+
+              <div className="pt-4 border-t border-charcoal/10 flex flex-col sm:flex-row gap-3">
+                <button 
+                  onClick={handleDeactivate} 
+                  disabled={isDeactivating}
+                  className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl border-2 border-charcoal text-charcoal hover:bg-charcoal hover:text-white transition-colors font-semibold text-sm disabled:opacity-50"
+                >
+                  {isDeactivating ? <Loader2 className="animate-spin w-4 h-4" /> : <Power size={16} />}
+                  {profile.isActive ? 'Deactivate Account' : 'Reactivate Account'}
+                </button>
+                <button 
+                  onClick={handleDelete} 
+                  disabled={isDeleting}
+                  className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl border-2 border-rose-500 text-rose-600 hover:bg-rose-500 hover:text-white transition-colors font-semibold text-sm disabled:opacity-50"
+                >
+                  {isDeleting ? <Loader2 className="animate-spin w-4 h-4" /> : <Trash2 size={16} />}
+                  Delete Account
+                </button>
+              </div>
+            </div>
+          ) : (
+            <p className="text-center text-slate py-8">User profile not found.</p>
+          )}
+        </div>
+      </div>
     </div>
   )
 }

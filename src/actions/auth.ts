@@ -295,7 +295,9 @@ export async function getUsers() {
         id: true,
         name: true,
         email: true,
+        phone: true,
         role: true,
+        isActive: true,
         createdAt: true,
       },
       orderBy: { createdAt: "desc" }

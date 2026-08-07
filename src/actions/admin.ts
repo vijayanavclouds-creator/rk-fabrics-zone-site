@@ -791,3 +791,109 @@ export async function globalAdminSearch(query: string) {
     return { success: false, error: error.message }
   }
 }
+
+export async function getUserProfileDetails(userId: string) {
+  try {
+    const session = await getServerSession(authOptions);
+    if (!session || session.user.role !== "ADMIN") {
+      return { success: false, error: "Unauthorized" };
+    }
+
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        phone: true,
+        dob: true,
+        role: true,
+        isActive: true,
+        createdAt: true,
+        orders: {
+          select: {
+            id: true,
+            totalAmount: true,
+          }
+        }
+      }
+    });
+
+    if (!user) {
+      return { success: false, error: "User not found" };
+    }
+
+    const totalSpent = user.orders.reduce((sum, order) => sum + order.totalAmount, 0);
+
+    return { 
+      success: true, 
+      user: {
+        ...user,
+        totalOrders: user.orders.length,
+        totalSpent
+      } 
+    };
+  } catch (error: any) {
+    console.error("Get user profile details error:", error);
+    return { success: false, error: "Failed to fetch user profile" };
+  }
+}
+
+export async function deactivateUser(userId: string) {
+  try {
+    const session = await getServerSession(authOptions);
+    if (!session || session.user.role !== "ADMIN") {
+      return { success: false, error: "Unauthorized" };
+    }
+
+    if (userId === session.user.id) {
+      return { success: false, error: "You cannot deactivate your own account" };
+    }
+
+    const user = await prisma.user.findUnique({ where: { id: userId } });
+    if (!user) {
+      return { success: false, error: "User not found" };
+    }
+
+    await prisma.user.update({
+      where: { id: userId },
+      data: { isActive: !user.isActive }
+    });
+
+    await logAdminActivity(`${user.isActive ? 'Deactivated' : 'Reactivated'} account for <b>${user.name || user.email}</b>`);
+
+    return { success: true, isActive: !user.isActive };
+  } catch (error: any) {
+    console.error("Deactivate user error:", error);
+    return { success: false, error: "Failed to change user status" };
+  }
+}
+
+export async function deleteUser(userId: string) {
+  try {
+    const session = await getServerSession(authOptions);
+    if (!session || session.user.role !== "ADMIN") {
+      return { success: false, error: "Unauthorized" };
+    }
+
+    if (userId === session.user.id) {
+      return { success: false, error: "You cannot delete your own account" };
+    }
+
+    const user = await prisma.user.findUnique({ where: { id: userId } });
+    if (!user) {
+      return { success: false, error: "User not found" };
+    }
+
+    await prisma.user.delete({
+      where: { id: userId }
+    });
+
+    await logAdminActivity(`Deleted account for <b>${user.name || user.email}</b> permanently`);
+
+    return { success: true };
+  } catch (error: any) {
+    console.error("Delete user error:", error);
+    return { success: false, error: "Failed to delete user. They might have dependent data that prevents deletion." };
+  }
+}
