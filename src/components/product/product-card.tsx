@@ -104,12 +104,12 @@ interface ProductCardProps {
  >
   <Link
   href={productUrl}
-  className="product-card block group relative bg-cream rounded-[1.5rem] p-[7px] shadow-neo-card transition-all duration-300 hover:shadow-neo-pressed flex flex-col h-full"
+  className="product-card block group relative bg-cream rounded-none p-[7px] shadow-neo-card transition-all duration-300 hover:shadow-neo-pressed flex flex-col h-full"
   onMouseEnter={() => setIsHovered(true)}
   onMouseLeave={() => setIsHovered(false)}
   >
   {/* Image Area */}
-  <div className="relative aspect-[4/5] bg-cream shadow-neo-pressed rounded-[1.2rem] overflow-hidden shrink-0">
+  <div className="relative aspect-[4/5] bg-cream shadow-neo-pressed rounded-none overflow-hidden shrink-0">
   {/* Real Product Image or Fabric Pattern Background */}
   {product.images && product.images.length > 0 ? (
   <Image
