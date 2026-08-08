@@ -112,6 +112,9 @@
     flex-wrap: nowrap;
     overflow-x: auto;
     gap: 20px;
+    margin: 0 auto;
+    width: max-content;
+    max-width: 100%;
     margin-bottom: 30px;
     padding-bottom: 20px;
     -ms-overflow-style: none;
@@ -642,15 +645,42 @@
     const leftBtn = wrapper.querySelector('.left-arrow');
     const rightBtn = wrapper.querySelector('.right-arrow');
 
-    if(leftBtn && container) {
-      leftBtn.addEventListener('click', () => {
-        container.scrollBy({ left: -300, behavior: 'smooth' });
-      });
-    }
-    if(rightBtn && container) {
-      rightBtn.addEventListener('click', () => {
-        container.scrollBy({ left: 300, behavior: 'smooth' });
-      });
+    if(container) {
+      const updateArrows = () => {
+        const canScroll = container.scrollWidth > container.clientWidth;
+        
+        if (!canScroll) {
+          if (leftBtn) leftBtn.style.display = 'none';
+          if (rightBtn) rightBtn.style.display = 'none';
+        } else {
+          // You could optionally show/hide left and right based on scroll position:
+          // if (leftBtn) leftBtn.style.display = container.scrollLeft > 0 ? 'flex' : 'none';
+          // if (rightBtn) rightBtn.style.display = Math.ceil(container.scrollLeft + container.clientWidth) >= container.scrollWidth ? 'none' : 'flex';
+          
+          if (leftBtn) leftBtn.style.display = 'flex';
+          if (rightBtn) rightBtn.style.display = 'flex';
+        }
+      };
+
+      // Initial state
+      updateArrows();
+
+      // Update on resize
+      window.addEventListener('resize', updateArrows);
+      
+      // Update on scroll (if using dynamic hide/show)
+      // container.addEventListener('scroll', updateArrows);
+
+      if(leftBtn) {
+        leftBtn.addEventListener('click', () => {
+          container.scrollBy({ left: -300, behavior: 'smooth' });
+        });
+      }
+      if(rightBtn) {
+        rightBtn.addEventListener('click', () => {
+          container.scrollBy({ left: 300, behavior: 'smooth' });
+        });
+      }
     }
   });
 </script>

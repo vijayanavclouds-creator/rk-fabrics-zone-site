@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
@@ -8,11 +7,11 @@ export function Home2Client({ heroHtml, carouselHtml }: { heroHtml: string, caro
   return (
     <div className="w-full flex flex-col min-h-screen">
       {heroHtml ? (
-        <div dangerouslySetInnerHTML={{ __html: heroHtml }} />
+        <div suppressHydrationWarning dangerouslySetInnerHTML={{ __html: heroHtml }} />
       ) : (
         <section className="relative flex items-center pt-2 md:pt-6 pb-2 md:pb-12 overflow-hidden bg-white">
-          <div className="relative w-full px-2 md:px-4 py-2 md:py-0">
-            <div className="flex flex-col items-center justify-center w-full bg-cream md:rounded-[2.5rem] pt-12 pb-16 relative overflow-hidden shadow-sm border border-charcoal/5">
+          <div className="relative w-full">
+            <div className="flex flex-col items-center justify-center w-full bg-cream pt-12 pb-16 relative overflow-hidden">
               <div className="text-center z-10 relative px-4 mt-8 md:mt-32">
                 <h1 className="font-[family-name:var(--font-playfair)] text-5xl lg:text-7xl font-bold text-charcoal leading-[1.15] mb-4">
                   Premium <span className="text-slate-600">Fabrics</span><br />
@@ -33,7 +32,7 @@ export function Home2Client({ heroHtml, carouselHtml }: { heroHtml: string, caro
       )}
 
       {carouselHtml ? (
-        <div dangerouslySetInnerHTML={{ __html: carouselHtml }} />
+        <div suppressHydrationWarning dangerouslySetInnerHTML={{ __html: carouselHtml }} />
       ) : (
         <div className="py-20 text-center text-slate-500">
           Carousel HTML not set yet.

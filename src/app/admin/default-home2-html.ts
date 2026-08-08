@@ -1,7 +1,7 @@
 export const DEFAULT_HERO_HTML = `<section class="relative flex items-center pt-2 md:pt-6 pb-2 md:pb-12 overflow-hidden bg-white">
-  <div class="relative w-full px-2 md:px-4 py-2 md:py-0">
+  <div class="relative w-full">
     <!-- Desktop View -->
-    <div class="hidden md:flex flex-col items-center justify-center w-full bg-[#fdfbf7] rounded-[2.5rem] pt-12 pb-16 relative overflow-hidden shadow-sm border border-black/5">
+    <div class="hidden md:flex flex-col items-center justify-center w-full bg-[#fdfbf7] pt-12 pb-16 relative overflow-hidden">
       <div class="absolute inset-0 opacity-5" style="background-image: radial-gradient(#000 1px, transparent 1px); background-size: 20px 20px;"></div>
       
       <div class="text-center z-10 relative px-4 mt-8 md:mt-16">
@@ -21,7 +21,7 @@ export const DEFAULT_HERO_HTML = `<section class="relative flex items-center pt-
     </div>
 
     <!-- Mobile View -->
-    <div class="flex md:hidden flex-col items-center justify-center w-full bg-[#fdfbf7] rounded-[1.5rem] pt-8 pb-10 relative overflow-hidden shadow-sm border border-black/5">
+    <div class="flex md:hidden flex-col items-center justify-center w-full bg-[#fdfbf7] pt-8 pb-10 relative overflow-hidden">
       <div class="text-center z-10 relative px-4 mt-4">
         <h1 class="font-serif text-4xl font-bold text-[#2a2a2a] leading-tight mb-3">
           Premium <span class="text-slate-600">Fabrics</span><br />
