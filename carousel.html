@@ -30,9 +30,10 @@
   }
   
   .rfz-section-title {
-    font-size: 24px;
-    font-weight: 600;
-    letter-spacing: 0.1em;
+    font-family: 'Playfair Display', serif;
+    font-size: 32px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
     color: #1a2b49; /* Dark Navy */
     text-transform: uppercase;
     position: relative;
@@ -104,6 +105,7 @@
     .rfz-scroll-btn { width: 36px; height: 36px; }
     .rfz-scroll-btn.left-arrow { left: 5px; }
     .rfz-scroll-btn.right-arrow { right: 5px; }
+    .rfz-section-header {margin-bottom: 18px;}
   }
 
   /* --- PRODUCT GRIDS --- */
@@ -345,11 +347,9 @@
 
   
   .rfz-cat-card {
-    flex: 0 0 200px;
+    flex: 0 0 260px;
     padding: 14px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    display: block;
     text-decoration: none;
     transition: transform 0.3s ease;
   }
@@ -362,10 +362,10 @@
     width: 100%;
     aspect-ratio: 4/3;
     border-radius: 16px;
-    margin-bottom: 16px;
+    margin-bottom: 0;
     overflow: hidden;
     box-shadow: inset 4px 4px 8px #dce4ed, inset -4px -4px 8px #ffffff;
-    padding: 6px;
+    position: relative;
   }
   
   .rfz-cat-img img {
@@ -376,41 +376,132 @@
   }
   
   .rfz-cat-title {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 40px 16px 12px 16px;
+    background: linear-gradient(to top, rgba(244, 248, 252, 0.9) 0%, rgba(244, 248, 252, 0.6) 40%, transparent 100%);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    -webkit-mask-image: linear-gradient(to top, black 0%, black 40%, transparent 100%);
+    mask-image: linear-gradient(to top, black 0%, black 40%, transparent 100%);
+    border-radius: 0 0 10px 10px;
     font-size: 15px;
-    font-weight: 600;
+    font-weight: 700;
     color: #1a2b49;
-    margin-bottom: 4px;
+    text-align: center;
+    margin: 0;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
   }
   
   .rfz-cat-link {
-    font-size: 11px;
-    color: #37546d;
-    font-weight: 600;
-    text-transform: uppercase;
+    display: none;
   }
 
   /* --- RESPONSIVE DESIGN --- */
   @media (max-width: 1024px) {
-    
-    
-    .rfz-sale-banner { flex-direction: column; gap: 30px; padding: 60px 20px 40px; margin-top: 80px; }
-    .rfz-sale-content { padding-left: 0; }
-    .rfz-sale-tag { left: 50%; top: -30px; transform: translateX(-50%) rotate(-5deg); }
+    .rfz-sale-banner { padding: 30px 40px; gap: 20px; }
+    .rfz-sale-content { padding-left: 80px; }
+    .rfz-sale-tag { padding: 16px 24px; font-size: 24px; left: -10px; top: -20px; }
   }
 
   @media (max-width: 768px) {
-    .rfz-carousel-section { padding: 40px 16px; }
+    .rfz-carousel-section { padding: 0px 9px; }
     
+    /* Shrink Sale Banner for Mobile (Horizontal Layout) */
+    .rfz-sale-banner { 
+      flex-direction: row;
+      justify-content: space-between;
+      padding: 16px 12px 16px 12px; 
+      gap: 8px;
+      margin-top: 40px;
+      margin-bottom: 40px;
+      border-radius: 16px;
+    }
     
+    .rfz-sale-tag { 
+      font-size: 14px; 
+      padding: 5px 7px; 
+      top: -16px;
+      left: -9px;
+      border-radius: 9px;
+      transform: rotate(-16deg);
+    }
     
-    .rfz-sale-title { font-size: 44px; }
-    .rfz-sale-tag { font-size: 24px; padding: 16px 24px; }
+    .rfz-sale-content {
+      padding-left: 72px; /* Make room for the overlapping tag */
+      text-align: left;
+    }
     
-    .rfz-product-name { font-size: 13px; }
-    .rfz-product-price { font-size: 14px; }
-    .rfz-btn-neu { padding: 8px 16px; font-size: 10px; }
+    .rfz-sale-title { font-size: 26px; margin-bottom: 2px; }
+    .rfz-sale-limit { font-size: 8px; margin-bottom: 2px; letter-spacing: 0.05em; }
+    .rfz-sale-subtitle { font-size: 8px; }
+    
+    .rfz-sale-code { 
+      padding: 9px 18px;
+      gap: 2px;
+      border-radius: 12px;
+      min-width: fit-content;
+    }
+    
+    .rfz-sale-code span:first-child { font-size: 7px; }
+    .rfz-sale-code span:last-child { font-size: 11px; }    
+    /* Resize cards to show at least 2 on screen */
+    .rfz-product-card {
+      flex: 0 0 160px;
+    }
+    .rfz-cat-card {
+      flex: 0 0 140px;
+      padding: 10px;
+    }
+    .rfz-cat-title {
+      font-size: 12px;
+      padding: 30px 10px 10px 10px;
+    }
+    
+    .rfz-product-name { font-size: 12px; padding: 0 10px; margin-bottom: 8px; }
+    .rfz-product-price { font-size: 13px; padding-left: 10px; margin-bottom: 12px; }
+    .rfz-btn-neu { padding: 6px 12px; font-size: 9px; margin-right: 10px; margin-bottom: 12px; }
     
     .rfz-view-all-circle { width: 60px; height: 60px; }
+    
+    .rfz-scroll-btn { 
+      background: rgba(244, 248, 252, 0.2); 
+      box-shadow: 2px 2px 8px rgba(220, 228, 237, 0.3), -2px -2px 8px rgba(255, 255, 255, 0.3);
+      backdrop-filter: blur(2px);
+      -webkit-backdrop-filter: blur(2px);
+    }
+    
+    /* Faded separator line on mobile (bottom only) */
+    .rfz-section-title {
+      display: block;
+      width: 100%;
+      padding-top: 0px;
+      padding-bottom: 7px;
+    }
+    
+    .rfz-section-title::before {
+      display: none;
+    }
+    
+    .rfz-section-title::after {
+      content: '';
+      position: absolute;
+      left: 10%;
+      width: 80%;
+      height: 1px;
+      background: linear-gradient(to right, transparent 0%, rgba(55, 84, 109, 0.3) 50%, transparent 100%);
+      transform: none;
+      border-radius: 0;
+      bottom: 0;
+    }
+    
+    /* Reduce bottom margin of "View All" button wrappers on mobile */
+    div[style*="margin-bottom: 60px"] {
+      margin-bottom: 34px !important;
+    }
   }
 </style>
 
@@ -495,9 +586,9 @@
       <a href="/shop?collection=new-arrivals" class="rfz-btn-neu" style="padding: 12px 32px; font-size: 14px; text-decoration: none;">View All</a>
     </div>
 
-    <!-- 3. TOP RATED PRODUCTS -->
+    <!-- 3. TOP RATED -->
     <div class="rfz-section-header">
-      <h2 class="rfz-section-title">Top Rated Products</h2>
+      <h2 class="rfz-section-title">Top Rated</h2>
     </div>
     
     <div class="rfz-carousel-wrapper">
@@ -598,36 +689,39 @@
       <button class="rfz-scroll-btn left-arrow"><svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg></button>
       <div class="rfz-category-grid-5">
       <!-- Category 1 -->
-      <a href="/category/dresses" class="rfz-cat-card rfz-neu-out">
+      <a href="/category/dresses-jumpsuits" class="rfz-cat-card rfz-neu-out">
         <div class="rfz-cat-img">
-          <img src="https://res.cloudinary.com/dodcvilgs/image/upload/v1784562642/rk-fabrics/products/jsq3w7ywphhkxjqpnf9u.jpg" alt="Dresses" loading="lazy">
+          <img src="https://res.cloudinary.com/dodcvilgs/image/upload/v1786181841/dresses_card_ujpeaa.png" alt="Dresses & Jumpsuits" loading="lazy">
+          <h3 class="rfz-cat-title">Dresses & Jumpsuits</h3>
         </div>
-        <h3 class="rfz-cat-title">Dresses</h3>
-        <span class="rfz-cat-link">Shop Dresses</span>
+      </a>
+      <!-- Category 2 -->
+      <a href="/category/ethnic-fusion-wear" class="rfz-cat-card rfz-neu-out">
+        <div class="rfz-cat-img">
+          <img src="https://res.cloudinary.com/dodcvilgs/image/upload/v1786183532/kurti_card_irhv8o.png" alt="Ethnic & Fusion Wear" loading="lazy">
+          <h3 class="rfz-cat-title">Ethnic & Fusion Wear</h3>
+        </div>
       </a>
       <!-- Category 3 -->
-      <a href="/category/kurti" class="rfz-cat-card rfz-neu-out">
+      <a href="/category/upperwear" class="rfz-cat-card rfz-neu-out">
         <div class="rfz-cat-img">
-          <img src="https://res.cloudinary.com/dodcvilgs/image/upload/v1784565526/rk-fabrics/products/bggmb3mniadk901ogevf.jpg" alt="Kurtis" loading="lazy">
+          <img src="https://res.cloudinary.com/dodcvilgs/image/upload/v1786184167/upperwear_card_arfiti.png" alt="Upperwear" loading="lazy">
+          <h3 class="rfz-cat-title">Upperwear</h3>
         </div>
-        <h3 class="rfz-cat-title">Kurtis</h3>
-        <span class="rfz-cat-link">Shop Kurtis</span>
       </a>
       <!-- Category 4 -->
-      <a href="/category/outerwear" class="rfz-cat-card rfz-neu-out">
+      <a href="/category/lowerwear" class="rfz-cat-card rfz-neu-out">
         <div class="rfz-cat-img">
-          <img src="https://res.cloudinary.com/dodcvilgs/image/upload/v1784610263/rk-fabrics/products/jk0kp6dhbgrjr1sk72z4.jpg" alt="Outerwear" loading="lazy">
+          <img src="https://res.cloudinary.com/dodcvilgs/image/upload/v1786184791/collection_card_bq89r8.png" alt="Lowerwear" loading="lazy">
+          <h3 class="rfz-cat-title">Lowerwear</h3>
         </div>
-        <h3 class="rfz-cat-title">Outerwear</h3>
-        <span class="rfz-cat-link">Shop Outerwear</span>
       </a>
       <!-- Category 5 -->
-      <a href="/category/accessories" class="rfz-cat-card rfz-neu-out">
+      <a href="/category/co-ord-sets" class="rfz-cat-card rfz-neu-out">
         <div class="rfz-cat-img">
-          <img src="https://res.cloudinary.com/dodcvilgs/image/upload/v1784562664/rk-fabrics/products/zw8vdqcxyyg7dokyuzit.jpg" alt="Accessories" loading="lazy">
+          <img src="https://res.cloudinary.com/dodcvilgs/image/upload/v1784562642/rk-fabrics/products/jsq3w7ywphhkxjqpnf9u.jpg" alt="Co-ord Sets" loading="lazy">
+          <h3 class="rfz-cat-title">Co-ord Sets</h3>
         </div>
-        <h3 class="rfz-cat-title">Accessories</h3>
-        <span class="rfz-cat-link">Shop Accessories</span>
       </a>
       </div>
       <button class="rfz-scroll-btn right-arrow"><svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></button>
