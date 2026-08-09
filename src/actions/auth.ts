@@ -11,8 +11,9 @@ function generateOTP() {
   return Math.floor(100000 + Math.random() * 900000).toString();
 }
 
-export async function sendSignupOtp(email: string) {
+export async function sendSignupOtp(rawEmail: string) {
   try {
+    const email = rawEmail ? rawEmail.trim().toLowerCase() : ''
     if (!email) return { success: false, error: "Email is required" };
     if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email)) {
       return { success: false, error: "Please enter a valid email address" };
@@ -309,9 +310,12 @@ export async function getUsers() {
   }
 }
 
-export async function sendStaffLoginOtp(email: string, requiredRole: "ADMIN" | "SUPPORT") {
+export async function sendStaffLoginOtp(rawEmail: string, requiredRole: "ADMIN" | "SUPPORT") {
   try {
-    if (!email) return { success: false, error: "Email is required" };
+    const email = rawEmail ? rawEmail.trim().toLowerCase() : ''
+    if (!email) {
+      return { success: false, error: "Email is required" };
+    }
 
     const user = await prisma.user.findUnique({ where: { email } });
     if (!user) {

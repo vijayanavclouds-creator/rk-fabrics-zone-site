@@ -5,7 +5,8 @@ import { sendOTPEmail } from "@/lib/email"
 export async function POST(req: Request) {
   try {
     const body = await req.json()
-    const { email, requiredRole } = body
+    const { email: rawEmail, requiredRole } = body
+    const email = rawEmail ? rawEmail.trim().toLowerCase() : ''
 
     if (!email) {
       return NextResponse.json({ success: false, error: "Email is required" }, { status: 400 })
