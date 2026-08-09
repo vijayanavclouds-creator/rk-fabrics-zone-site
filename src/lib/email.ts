@@ -478,7 +478,7 @@ export async function sendCouponEmail(email: string, userName: string, couponCod
   `
 
   try {
-    const info = await transporter.sendMail({
+    const info = await getTransporter().sendMail({
       from,
       to,
       subject,
@@ -597,7 +597,7 @@ export async function sendOrderDeliveredEmail(order: any) {
   `
 
   try {
-    const info = await transporter.sendMail({
+    const info = await getTransporter().sendMail({
       from,
       to,
       subject: `🎉 Your Order has been Delivered! - #${order.id.slice(-8).toUpperCase()} 🎁`,
@@ -717,7 +717,7 @@ export async function sendOrderCancelledEmail(order: any) {
   `
 
   try {
-    const info = await transporter.sendMail({
+    const info = await getTransporter().sendMail({
       from,
       to,
       subject: `❌ Order Cancelled - #${order.id.slice(-8).toUpperCase()}`,
@@ -781,7 +781,7 @@ export async function sendAbandonedCartEmail(user: any, cartItems: any[]) {
   `
 
   try {
-    const info = await transporter.sendMail({
+    const info = await getTransporter().sendMail({
       from,
       to,
       subject,
@@ -898,7 +898,7 @@ export async function sendReturnRequestedEmail(order: any, returnRequest: any) {
   `
 
   try {
-    const info = await transporter.sendMail({
+    const info = await getTransporter().sendMail({
       from,
       to,
       subject: `🔁 Return Request Received - #${order.id.slice(-8).toUpperCase()}`,
@@ -931,7 +931,7 @@ export async function sendAdminReturnNotification(order: any, returnRequest: any
   `
 
   try {
-    await transporter.sendMail({ from, to, subject, html })
+    await getTransporter().sendMail({ from, to, subject, html })
     return { success: true }
   } catch (error) {
     console.error("Error sending admin return notification:", error)
@@ -981,7 +981,7 @@ export async function sendReturnAcceptedEmail(order: any) {
   `
 
   try {
-    await transporter.sendMail({ from, to, subject, html })
+    await getTransporter().sendMail({ from, to, subject, html })
     return { success: true }
   } catch (error) {
     console.error("Error sending return accepted email:", error)
@@ -1032,7 +1032,7 @@ export async function sendReturnRejectedEmail(order: any, reason: string = "") {
   `
 
   try {
-    await transporter.sendMail({ from, to, subject, html })
+    await getTransporter().sendMail({ from, to, subject, html })
     return { success: true }
   } catch (error) {
     console.error("Error sending return rejected email:", error)
@@ -1137,7 +1137,7 @@ export async function sendReturnInquiryEmail(order: any, queryId: string) {
   `
 
   try {
-    await transporter.sendMail({ from, to, subject, html })
+    await getTransporter().sendMail({ from, to, subject, html })
     return { success: true }
   } catch (error) {
     console.error("Error sending return inquiry email:", error)
