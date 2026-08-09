@@ -27,6 +27,7 @@ import {
  ZoomIn,
  ZoomOut,
  Zap,
+ Flame,
 } from "lucide-react";
 import { cn, formatPrice, calculateDiscount } from "@/lib/utils";
 import { getProductBySlug, products } from "@/lib/data";
@@ -236,24 +237,39 @@ function ProductDetail({ product }: { product: NonNullable<ReturnType<typeof get
    </div>
  </div>
 
- {/* Badges */}
- <div className="absolute top-4 left-4 flex flex-col gap-2">
- {hasDiscount && (
- <span className="px-3 py-1.5 text-xs font-bold bg-rose text-white rounded-full">
- {discount}% OFF
- </span>
- )}
- {product.isNewArrival && (
- <span className="px-3 py-1.5 text-xs font-bold bg-teal-600 text-white rounded-full flex items-center gap-1">
- <Sparkles size={10} /> NEW
- </span>
- )}
- {product.isBestseller && (
- <span className="px-3 py-1.5 text-xs font-bold bg-gold text-white rounded-full">
- BESTSELLER
- </span>
- )}
- </div>
+  {/* Discount and New Tags (Top Left Corner) */}
+  <div className="absolute top-1 left-1 flex flex-col items-start gap-0.5 z-20 pointer-events-none md:top-0 md:left-0 md:gap-0">
+    {hasDiscount && (
+      <span className={cn(
+        "px-1.5 py-[1px] text-[7px] md:px-2 md:py-0.5 md:text-[10px] leading-tight font-bold bg-rose-500 text-white shadow-sm rounded-full md:rounded-none",
+        product.isNewArrival ? "md:rounded-br-sm md:border-b md:border-white/20" : "md:rounded-br-xl"
+      )}>
+        -{discount}%
+      </span>
+    )}
+    {product.isNewArrival && (
+      <span className={cn(
+        "px-1.5 py-[1px] text-[7px] md:px-2 md:py-0.5 md:text-[10px] leading-tight font-bold bg-teal-600 text-white shadow-sm flex items-center gap-0.5 md:gap-1 rounded-full md:rounded-none",
+        (hasDiscount && !product.isBestseller) ? "md:rounded-br-xl md:rounded-tr-none" : 
+        hasDiscount ? "md:rounded-tr-none" : 
+        !product.isBestseller ? "md:rounded-br-xl" : ""
+      )}>
+        NEW
+      </span>
+    )}
+    {product.isBestseller && (
+      <span className={cn(
+        "px-1.5 py-[1px] text-[7px] md:px-2 md:py-0.5 md:text-[10px] leading-tight font-bold bg-gold text-white shadow-sm flex items-center gap-0.5 md:gap-1 rounded-full md:rounded-none md:rounded-br-xl",
+        (hasDiscount || product.isNewArrival) && "md:rounded-tr-none"
+      )}>
+        <Flame size={8} className="md:w-[12px] md:h-[12px]" /> HOT
+      </span>
+    )}
+  </div>
+
+  {/* Badges - Empty now since BESTSELLER moved */}
+  <div className="absolute top-4 right-4 flex flex-col gap-2 z-10 pointer-events-none">
+  </div>
 
  {/* Wishlist Button */}
  <button

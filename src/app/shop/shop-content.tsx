@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, Suspense, useEffect } from "react";
+import React, { useState, useMemo, Suspense, useEffect, Fragment } from "react";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { motion } from "framer-motion";
 import { SlidersHorizontal, Grid3X3, LayoutGrid, X, ChevronDown } from "lucide-react";
@@ -15,26 +15,23 @@ const sortOptions = [
  { value: "popular", label: "Most Popular" },
  { value: "rating", label: "Highest Rated" },
 ];
-
 export function ShopContent({ 
   products, 
-  categories, 
-  fabricFilters 
+  categories 
 }: { 
   products: any[], 
-  categories: { id: string, name: string }[], 
-  fabricFilters: { id: string, name: string }[] 
+  categories: any[] 
 }) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const categoryParam = searchParams.get("category");
   const filterParam = searchParams.get("filter");
-  const fabricParam = searchParams.get("fabric");
+
 
  const [sortBy, setSortBy] = useState("newest");
  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
- const [selectedFabrics, setSelectedFabrics] = useState<string[]>([]);
+ const [expandedCategories, setExpandedCategories] = useState<string[]>([]);
  const [selectedFeatures, setSelectedFeatures] = useState<string[]>([]);
  const [selectedDiscount, setSelectedDiscount] = useState<number>(0);
  const [priceRange, setPriceRange] = useState<[number, number]>([0, 25000]);
@@ -62,19 +59,15 @@ export function ShopContent({
 
   useEffect(() => {
     if (categoryParam) {
-      setSelectedCategories(categoryParam.split(','));
+      const cats = categoryParam.split(',');
+      setSelectedCategories(cats);
+      setExpandedCategories(prev => Array.from(new Set([...prev, ...cats])));
     } else {
       setSelectedCategories([]);
     }
   }, [categoryParam]);
 
-  useEffect(() => {
-    if (fabricParam) {
-      setSelectedFabrics(fabricParam.split(','));
-    } else {
-      setSelectedFabrics([]);
-    }
-  }, [fabricParam]);
+
 
   useEffect(() => {
     let features: string[] = [];
@@ -97,25 +90,56 @@ export function ShopContent({
  const filteredProducts = useMemo(() => {
  let result = [...products];
 
- // Category filter
- if (selectedCategories.length > 0) {
-   result = result.filter((p) => {
-     try {
-       const pCats = JSON.parse(p.category);
-       if (Array.isArray(pCats)) {
-         return selectedCategories.some(sc => {
-           if (sc === "women") return pCats.some(c => c.startsWith("women"));
-           if (sc === "men") return pCats.some(c => c.startsWith("men"));
-           return pCats.includes(sc);
-         });
-       }
-     } catch(e) {}
-     // fallback
-     if (selectedCategories.includes("women")) return p.category.startsWith("women");
-     if (selectedCategories.includes("men")) return p.category.startsWith("men");
-     return selectedCategories.includes(p.category);
-   });
- }
+  // Category filter
+  if (selectedCategories.length > 0) {
+    result = result.filter((p) => {
+      let pCats: string[] = [];
+      try { if (p.category) { const parsed = JSON.parse(p.category); Array.isArray(parsed) ? pCats.push(...parsed) : pCats.push(p.category); } } catch(e) { if (p.category) pCats.push(p.category); }
+      try { if (p.subcategory) { const parsed = JSON.parse(p.subcategory); Array.isArray(parsed) ? pCats.push(...parsed) : pCats.push(p.subcategory); } } catch(e) { if (p.subcategory) pCats.push(p.subcategory); }
+      try { if (p.subSubcategory) { const parsed = JSON.parse(p.subSubcategory); Array.isArray(parsed) ? pCats.push(...parsed) : pCats.push(p.subSubcategory); } } catch(e) { if (p.subSubcategory) pCats.push(p.subSubcategory); }
+      // Helper to get all descendant values for a selected category
+      const getFamilyValues = (catValue: string): string[] => {
+        const family = [catValue];
+        const mainCat = categories.find((c: any) => c.value === catValue);
+        if (mainCat) {
+          mainCat.subcategories?.forEach((sub: any) => {
+            family.push(sub.value);
+            sub.subcategories?.forEach((subSub: any) => family.push(subSub.value));
+          });
+          return family;
+        }
+        for (const main of categories) {
+          const subCat = main.subcategories?.find((s: any) => s.value === catValue);
+          if (subCat) {
+            subCat.subcategories?.forEach((subSub: any) => family.push(subSub.value));
+            return family;
+          }
+        }
+        return family;
+      };
+
+      // If a parent and child are both selected, only apply the child's filter
+      const effectiveCategories = selectedCategories.filter(sc => {
+        const family = getFamilyValues(sc);
+        const descendants = family.slice(1);
+        return !selectedCategories.some(otherSc => descendants.includes(otherSc));
+      });
+
+      return effectiveCategories.some(sc => {
+        const familyValues = getFamilyValues(sc);
+        
+        const hasCategory = familyValues.some(val => pCats.includes(val) || pCats.some(c => typeof c === 'string' && c.startsWith(val)));
+        
+        const hasFabric = p.fabric && familyValues.some(val => {
+          const normalizedVal = val.toLowerCase().replace(/-/g, ' ');
+          const normalizedFabric = p.fabric.toLowerCase().replace(/-/g, ' ');
+          return normalizedFabric.includes(normalizedVal);
+        });
+        
+        return hasCategory || hasFabric;
+      });
+    });
+  }
 
   // URL Filter (legacy support)
   if (filterParam === "new") {
@@ -137,12 +161,7 @@ export function ShopContent({
     result = result.filter(p => p.discountPercent >= selectedDiscount);
   }
 
- // Fabric filter
- if (selectedFabrics.length > 0) {
- result = result.filter((p) =>
- selectedFabrics.some((f) => p.fabric.toLowerCase().includes(f.toLowerCase()))
- );
- }
+
 
  // Price filter
  result = result.filter((p) => {
@@ -169,7 +188,7 @@ export function ShopContent({
  }
 
  return result;
- }, [sortBy, selectedCategories, selectedFabrics, selectedFeatures, selectedDiscount, priceRange, filterParam]);
+ }, [sortBy, selectedCategories, selectedFeatures, selectedDiscount, priceRange, filterParam]);
 
   const updateUrl = (key: string, values: string[]) => {
     const params = new URLSearchParams(searchParams.toString());
@@ -181,21 +200,44 @@ export function ShopContent({
     router.replace(`${pathname}?${params.toString()}`, { scroll: false });
   };
 
-  const toggleCategory = (cat: string) => {
-    const next = selectedCategories.includes(cat) 
-      ? selectedCategories.filter((c) => c !== cat) 
-      : [...selectedCategories, cat];
-    setSelectedCategories(next);
-    updateUrl('category', next);
+  const handleCategoryClick = (catValue: string, isMainOrSub: boolean = false) => {
+    const hasSelectedChild = () => {
+      const mainCat = categories.find((c: any) => c.value === catValue);
+      if (mainCat) {
+        return mainCat.subcategories?.some((sub: any) => 
+          selectedCategories.includes(sub.value) || 
+          sub.subcategories?.some((ss: any) => selectedCategories.includes(ss.value))
+        );
+      }
+      for (const main of categories) {
+        const subCat = main.subcategories?.find((s: any) => s.value === catValue);
+        if (subCat) {
+          return subCat.subcategories?.some((ss: any) => selectedCategories.includes(ss.value));
+        }
+      }
+      return false;
+    };
+
+    if (isMainOrSub && hasSelectedChild()) {
+      setExpandedCategories(prev => 
+        prev.includes(catValue) ? prev.filter(c => c !== catValue) : [...prev, catValue]
+      );
+    } else {
+      const next = selectedCategories.includes(catValue) 
+        ? selectedCategories.filter((c) => c !== catValue) 
+        : [...selectedCategories, catValue];
+      setSelectedCategories(next);
+      updateUrl('category', next);
+      
+      if (!selectedCategories.includes(catValue)) {
+        setExpandedCategories(prev => Array.from(new Set([...prev, catValue])));
+      } else {
+        setExpandedCategories(prev => prev.filter(c => c !== catValue));
+      }
+    }
   };
 
-  const toggleFabric = (fab: string) => {
-    const next = selectedFabrics.includes(fab) 
-      ? selectedFabrics.filter((f) => f !== fab) 
-      : [...selectedFabrics, fab];
-    setSelectedFabrics(next);
-    updateUrl('fabric', next);
-  };
+
 
   const toggleFeature = (feat: string) => {
     const next = selectedFeatures.includes(feat) 
@@ -212,19 +254,19 @@ export function ShopContent({
 
   const clearFilters = () => {
     setSelectedCategories([]);
-    setSelectedFabrics([]);
+
     setSelectedFeatures([]);
     setSelectedDiscount(0);
     setPriceRange([0, 25000]);
     const params = new URLSearchParams(searchParams.toString());
     params.delete('category');
-    params.delete('fabric');
+
     params.delete('features');
     params.delete('discount');
     router.replace(`${pathname}?${params.toString()}`, { scroll: false });
   };
 
- const hasActiveFilters = selectedCategories.length > 0 || selectedFabrics.length > 0 || selectedFeatures.length > 0 || selectedDiscount > 0 || priceRange[0] > 0 || priceRange[1] < 25000;
+ const hasActiveFilters = selectedCategories.length > 0 || selectedFeatures.length > 0 || selectedDiscount > 0 || priceRange[0] > 0 || priceRange[1] < 25000;
 
  return (
  <div className="w-full mx-auto px-4 md:px-6 lg:px-8 pt-4 pb-8 md:py-12">
@@ -243,65 +285,65 @@ export function ShopContent({
  </motion.div>
 
  {/* Toolbar */}
- <div className="flex items-center justify-between mb-6 gap-4 flex-wrap">
- <div className="flex items-center gap-2">
- {/* Filter Toggle */}
- <button
- onClick={handleOpenFilters}
- className={cn(
- "btn-primary !py-2.5 !px-4 flex items-center gap-2 text-sm font-medium transition-all",
- showFilters ? "shadow-neo-pressed scale-[0.97]" : ""
- )}
- >
- <SlidersHorizontal size={16} />
- Filters
- {hasActiveFilters && (
- <span className="w-5 h-5 bg-gold text-white text-[10px] font-bold rounded-full flex items-center justify-center">
- {selectedCategories.length + selectedFabrics.length + selectedFeatures.length + (selectedDiscount > 0 ? 1 : 0)}
- </span>
- )}
- </button>
+ <div className="flex items-center justify-between mb-6 gap-2 md:gap-4">
+ <div className="flex items-center gap-1.5 md:gap-2">
+  {/* Filter Toggle */}
+  <button
+  onClick={handleOpenFilters}
+  className={cn(
+  "btn-primary !py-2 md:!py-2.5 !px-2.5 md:!px-4 flex items-center gap-1.5 md:gap-2 text-[11px] md:text-sm font-medium transition-all whitespace-nowrap",
+  showFilters ? "shadow-neo-pressed scale-[0.97]" : ""
+  )}
+  >
+  <SlidersHorizontal size={14} className="w-3.5 h-3.5 md:w-4 md:h-4" />
+  Filters
+  {hasActiveFilters && (
+  <span className="w-4 h-4 md:w-5 md:h-5 bg-gold text-white text-[9px] md:text-[10px] font-bold rounded-full flex items-center justify-center">
+  {selectedCategories.length + selectedFeatures.length + (selectedDiscount > 0 ? 1 : 0)}
+  </span>
+  )}
+  </button>
 
- {/* Clear Filters */}
- {hasActiveFilters && (
- <button
- onClick={clearFilters}
- className="flex items-center gap-1 px-3 py-2.5 rounded-xl text-xs font-medium text-rose hover:bg-rose/5 transition-colors"
- >
- <X size={14} /> Clear All
- </button>
- )}
- </div>
+  {/* Clear Filters */}
+  {hasActiveFilters && (
+  <button
+  onClick={clearFilters}
+  className="flex items-center gap-1 px-1.5 md:px-2 py-2 md:py-2.5 rounded-xl text-[11px] md:text-xs font-medium text-rose hover:bg-rose/5 transition-colors whitespace-nowrap"
+  >
+  <X size={12} className="md:w-[14px] md:h-[14px]" /> Clear All
+  </button>
+  )}
+  </div>
 
- <div className="flex items-center gap-3">
- {/* Grid Toggle */}
- <div className="hidden md:flex items-center gap-1 btn-primary !p-1 !px-1.5">
- {([3, 5, 7] as const).map((cols) => (
- <button
- key={cols}
- onClick={() => setGridCols(cols)}
- className={cn(
- "p-1.5 rounded-xl transition-all flex items-center justify-center",
- gridCols === cols
- ? "shadow-neo-pressed text-teal-600 scale-[0.97]"
- : "text-slate hover:text-charcoal"
- )}
- >
- {cols === 3 ? <LayoutGrid size={16} /> : <Grid3X3 size={16} />}
- </button>
- ))}
- </div>
+  <div className="flex items-center gap-1.5 md:gap-3">
+  {/* Grid Toggle */}
+  <div className="hidden md:flex items-center gap-1 btn-primary !p-1 !px-1.5">
+  {([3, 5, 7] as const).map((cols) => (
+  <button
+  key={cols}
+  onClick={() => setGridCols(cols)}
+  className={cn(
+  "p-1.5 rounded-xl transition-all flex items-center justify-center",
+  gridCols === cols
+  ? "shadow-neo-pressed text-teal-600 scale-[0.97]"
+  : "text-slate hover:text-charcoal"
+  )}
+  >
+  {cols === 3 ? <LayoutGrid size={16} /> : <Grid3X3 size={16} />}
+  </button>
+  ))}
+  </div>
 
- {/* Sort */}
- <div className="relative">
-    <button
-      onClick={() => setIsSortOpen(!isSortOpen)}
-      onBlur={() => setTimeout(() => setIsSortOpen(false), 150)}
-      className="btn-primary !py-2.5 !px-4 flex items-center gap-2 text-sm font-medium transition-all"
-    >
-      {sortOptions.find((opt) => opt.value === sortBy)?.label}
-      <ChevronDown size={14} className={cn("transition-transform", isSortOpen && "rotate-180")} />
-    </button>
+   {/* Sort */}
+   <div className="relative">
+      <button
+        onClick={() => setIsSortOpen(!isSortOpen)}
+        onBlur={() => setTimeout(() => setIsSortOpen(false), 150)}
+        className="btn-primary !py-2 md:!py-2.5 !px-2.5 md:!px-4 flex items-center gap-1.5 md:gap-2 text-[11px] md:text-sm font-medium transition-all whitespace-nowrap"
+      >
+        {sortOptions.find((opt) => opt.value === sortBy)?.label}
+        <ChevronDown size={14} className={cn("transition-transform w-3.5 h-3.5 md:w-4 md:h-4", isSortOpen && "rotate-180")} />
+      </button>
     
     {isSortOpen && (
       <motion.div
@@ -342,48 +384,58 @@ export function ShopContent({
  >
  <div className="sticky top-28 space-y-6">
  {/* Categories */}
- <div className="bg-white rounded-2xl p-5 border border-charcoal/5 ">
- <h3 className="font-semibold text-sm text-charcoal mb-3">Categories</h3>
- <div className="space-y-2">
- {categories.map((cat) => (
- <label
- key={cat.id}
- className="flex items-center gap-2.5 cursor-pointer group"
- >
- <input
- type="checkbox"
- checked={selectedCategories.includes(cat.id)}
- onChange={() => toggleCategory(cat.id)}
- className="w-4 h-4 rounded border-2 border-charcoal/20 text-teal-600 focus:ring-teal-500 cursor-pointer accent-teal-600"
- />
- <span className="text-sm text-slate group-hover:text-charcoal :text-dark-text transition-colors">
- {cat.name}
- </span>
- </label>
- ))}
- </div>
+ <div className="bg-white rounded-2xl p-5 border border-charcoal/5 space-y-2">
+   {categories.map((cat: any) => (
+     <div key={cat.value}>
+       <button 
+         onClick={() => handleCategoryClick(cat.value, true)}
+         className={cn(
+           "text-left w-full font-semibold text-sm transition-colors",
+           selectedCategories.includes(cat.value) ? "text-emerald-600" : "text-charcoal hover:text-emerald-600"
+         )}
+       >
+         {cat.label}
+       </button>
+       {expandedCategories.includes(cat.value) && (
+         <div className="space-y-2 pl-6 mt-2">
+           {(cat.subcategories || []).map((sub: any) => (
+             <div key={sub.value} className="space-y-2">
+               <button
+                 onClick={() => handleCategoryClick(sub.value, true)}
+                 className={cn(
+                   "text-left w-full text-sm transition-colors",
+                   selectedCategories.includes(sub.value) ? "text-emerald-600 font-medium" : "text-slate hover:text-emerald-600"
+                 )}
+               >
+                 {sub.label}
+               </button>
+               
+               {/* Sub-subcategories */}
+               {expandedCategories.includes(sub.value) && (sub.subcategories || []).length > 0 && (
+                 <div className="pl-6 space-y-2">
+                   {(sub.subcategories || []).map((subSub: any) => (
+                     <button
+                       key={subSub.value}
+                       onClick={() => handleCategoryClick(subSub.value, false)}
+                       className={cn(
+                         "text-left w-full text-sm transition-colors",
+                         selectedCategories.includes(subSub.value) ? "text-emerald-600 font-medium" : "text-slate hover:text-emerald-600"
+                       )}
+                     >
+                       {subSub.label}
+                     </button>
+                   ))}
+                 </div>
+               )}
+             </div>
+           ))}
+         </div>
+       )}
+     </div>
+   ))}
  </div>
 
- {/* Fabrics */}
- <div className="bg-white rounded-2xl p-5 border border-charcoal/5 ">
- <h3 className="font-semibold text-sm text-charcoal mb-3">Fabric Type</h3>
- <div className="flex flex-wrap gap-2">
- {fabricFilters.map((fab) => (
-            <button
-              key={fab.id}
-              onClick={() => toggleFabric(fab.id)}
-              className={cn(
-                "px-3 py-1.5 rounded-full text-xs font-medium border transition-colors",
-                selectedFabrics.includes(fab.id)
-                  ? "bg-teal-600 text-white border-teal-600"
-                  : "bg-transparent text-slate border-charcoal/10 hover:border-teal-500"
-              )}
-            >
-              {fab.name}
-            </button>
-          ))}
- </div>
- </div>
+
 
  {/* Highlights */}
  <div className="bg-white rounded-2xl p-5 border border-charcoal/5 ">
@@ -396,17 +448,16 @@ export function ShopContent({
        { id: "featured", label: "Featured" },
        { id: "on_sale", label: "On Sale" }
      ].map((feat) => (
-       <label key={feat.id} className="flex items-center gap-2.5 cursor-pointer group">
-         <input
-           type="checkbox"
-           checked={selectedFeatures.includes(feat.id)}
-           onChange={() => toggleFeature(feat.id)}
-           className="w-4 h-4 rounded border-2 border-charcoal/20 text-teal-600 focus:ring-teal-500 cursor-pointer accent-teal-600"
-         />
-         <span className="text-sm text-slate group-hover:text-charcoal transition-colors">
-           {feat.label}
-         </span>
-       </label>
+       <button
+         key={feat.id}
+         onClick={() => toggleFeature(feat.id)}
+         className={cn(
+           "text-left w-full text-sm transition-colors",
+           selectedFeatures.includes(feat.id) ? "text-emerald-600 font-medium" : "text-slate hover:text-emerald-600"
+         )}
+       >
+         {feat.label}
+       </button>
      ))}
    </div>
  </div>
@@ -422,24 +473,17 @@ export function ShopContent({
        { value: 40, label: "40% or more" },
        { value: 50, label: "50% or more" }
      ].map((disc) => (
-       <label key={disc.value} className="flex items-center gap-2.5 cursor-pointer group">
-         <input
-           type="radio"
-           name="discount"
-           checked={selectedDiscount === disc.value}
-           onChange={() => updateDiscount(disc.value)}
-           className="w-4 h-4 rounded-full border-2 border-charcoal/20 text-teal-600 focus:ring-teal-500 cursor-pointer accent-teal-600"
-         />
-         <span className="text-sm text-slate group-hover:text-charcoal transition-colors">
-           {disc.label}
-         </span>
-       </label>
-     ))}
-     {selectedDiscount > 0 && (
-       <button onClick={() => updateDiscount(0)} className="text-xs text-rose hover:underline mt-2">
-         Clear Discount Filter
-       </button>
-     )}
+        <button
+          key={disc.value}
+          onClick={() => updateDiscount(selectedDiscount === disc.value ? 0 : disc.value)}
+          className={cn(
+            "text-left w-full text-sm transition-colors",
+            selectedDiscount === disc.value ? "text-emerald-600 font-medium" : "text-slate hover:text-emerald-600"
+          )}
+        >
+          {disc.label}
+        </button>
+      ))}
    </div>
  </div>
 
@@ -507,41 +551,58 @@ export function ShopContent({
 
     <div className="flex-1 overflow-y-auto p-4 space-y-6">
       <div>
-        <h4 className="text-xs font-bold text-charcoal uppercase mb-3 tracking-wide">Category</h4>
-        <div className="flex flex-wrap gap-2">
-          {categories.slice(0, 6).map((cat) => (
-            <button
-              key={cat.id}
-              onClick={() => toggleCategory(cat.id)}
-              className={cn(
-                "px-3.5 py-1.5 rounded-full text-sm font-medium border transition-all",
-                selectedCategories.includes(cat.id)
-                  ? "bg-charcoal text-white border-charcoal"
-                  : "bg-white text-slate-700 border-charcoal/10 hover:border-charcoal/30"
+        <h4 className="text-xs font-bold text-charcoal uppercase mb-3 tracking-wide">Categories</h4>
+        <div className="space-y-4">
+          {categories.map((cat: any) => (
+            <div key={cat.value}>
+              <div className="mb-2">
+                <button
+                  onClick={() => handleCategoryClick(cat.value, true)}
+                  className={cn(
+                    "px-4 py-2 rounded-full text-sm font-bold border transition-all",
+                    selectedCategories.includes(cat.value)
+                      ? "bg-emerald-600 text-white border-emerald-600"
+                      : "bg-white text-charcoal border-charcoal/10 hover:border-charcoal/30"
+                  )}
+                >
+                  {cat.label}
+                </button>
+              </div>
+              {expandedCategories.includes(cat.value) && (
+                <div className="flex flex-wrap gap-2 pl-2 border-l-2 border-charcoal/10 ml-4 mb-4">
+                  {(cat.subcategories || []).map((sub: any) => (
+                    <Fragment key={sub.value}>
+                      <button
+                        onClick={() => handleCategoryClick(sub.value, true)}
+                        className={cn(
+                          "px-3.5 py-1.5 rounded-full text-sm font-medium border transition-all",
+                          selectedCategories.includes(sub.value)
+                            ? "bg-emerald-600 text-white border-emerald-600"
+                            : "bg-white text-slate-700 border-charcoal/10 hover:border-charcoal/30"
+                        )}
+                      >
+                        {sub.label}
+                      </button>
+                      
+                      {expandedCategories.includes(sub.value) && (sub.subcategories || []).map((subSub: any) => (
+                        <button
+                          key={subSub.value}
+                          onClick={() => handleCategoryClick(subSub.value, false)}
+                          className={cn(
+                            "px-3.5 py-1.5 rounded-full text-xs font-medium border transition-all",
+                            selectedCategories.includes(subSub.value)
+                              ? "bg-emerald-600 text-white border-emerald-600"
+                              : "bg-slate-50 text-slate-700 border-charcoal/10 hover:border-charcoal/30"
+                          )}
+                        >
+                          {subSub.label}
+                        </button>
+                      ))}
+                    </Fragment>
+                  ))}
+                </div>
               )}
-            >
-              {cat.name}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      <div>
-        <h4 className="text-xs font-bold text-charcoal uppercase mb-3 tracking-wide">Fabric</h4>
-        <div className="flex flex-wrap gap-2">
-          {fabricFilters.map((fab) => (
-            <button
-              key={fab.id}
-              onClick={() => toggleFabric(fab.id)}
-              className={cn(
-                "px-3.5 py-1.5 rounded-full text-sm font-medium border transition-all",
-                selectedFabrics.includes(fab.id)
-                  ? "bg-charcoal text-white border-charcoal"
-                  : "bg-white text-slate-700 border-charcoal/10 hover:border-charcoal/30"
-              )}
-            >
-              {fab.name}
-            </button>
+            </div>
           ))}
         </div>
       </div>
@@ -562,7 +623,7 @@ export function ShopContent({
               className={cn(
                 "px-3.5 py-1.5 rounded-full text-sm font-medium border transition-all",
                 selectedFeatures.includes(feat.id)
-                  ? "bg-charcoal text-white border-charcoal"
+                  ? "bg-emerald-600 text-white border-emerald-600"
                   : "bg-white text-slate-700 border-charcoal/10 hover:border-charcoal/30"
               )}
             >
@@ -588,13 +649,30 @@ export function ShopContent({
               className={cn(
                 "px-3.5 py-1.5 rounded-full text-sm font-medium border transition-all",
                 selectedDiscount === disc.value
-                  ? "bg-charcoal text-white border-charcoal"
+                  ? "bg-emerald-600 text-white border-emerald-600"
                   : "bg-white text-slate-700 border-charcoal/10 hover:border-charcoal/30"
               )}
             >
               {disc.label}
             </button>
           ))}
+        </div>
+      </div>
+
+      <div>
+        <h4 className="text-xs font-bold text-charcoal uppercase mb-3 tracking-wide">Price Range</h4>
+        <input
+          type="range"
+          min="0"
+          max="25000"
+          step="500"
+          value={priceRange[1]}
+          onChange={(e) => setPriceRange([priceRange[0], parseInt(e.target.value)])}
+          className="w-full accent-teal-600"
+        />
+        <div className="flex justify-between text-xs text-slate mt-2">
+          <span>₹0</span>
+          <span className="font-medium text-teal-600">₹{priceRange[1].toLocaleString("en-IN")}</span>
         </div>
       </div>
     </div>

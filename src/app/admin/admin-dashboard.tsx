@@ -437,8 +437,16 @@ export function ProductEditor({ product = {}, products, storeCategories, storeFa
       return product.subcategory ? [product.subcategory] : [];
     }
   })
+  const [updatedSubSubcategory, setUpdatedSubSubcategory] = useState<string[]>(() => {
+    try {
+      if (!product.subSubcategory) return [];
+      const parsed = JSON.parse(product.subSubcategory);
+      return Array.isArray(parsed) ? parsed : [product.subSubcategory];
+    } catch {
+      return product.subSubcategory ? [product.subSubcategory] : [];
+    }
+  })
   const [updatedFabric, setUpdatedFabric] = useState<string>(product.fabric || "")
-  const [updatedFabricDetails, setUpdatedFabricDetails] = useState<string>(product.fabricDetails || "")
   const [updatedDescription, setUpdatedDescription] = useState<string>(product.description || "")
   const [showPreview, setShowPreview] = useState<boolean>(false)
   const [updatedDetailsHtml, setUpdatedDetailsHtml] = useState<string>(product.detailsHtml || "")
@@ -472,8 +480,8 @@ export function ProductEditor({ product = {}, products, storeCategories, storeFa
   const handleUpdateBaseDetails = async (formData: FormData) => {
     formData.append("category", JSON.stringify(updatedCategory))
     formData.append("subcategory", JSON.stringify(updatedSubcategory))
+    formData.append("subSubcategory", JSON.stringify(updatedSubSubcategory))
     formData.append("fabric", updatedFabric)
-    formData.append("fabricDetails", updatedFabricDetails)
     
     if (!activeProductId) {
       const res = await createProduct(formData)
@@ -569,8 +577,8 @@ export function ProductEditor({ product = {}, products, storeCategories, storeFa
       formData.append("payload", JSON.stringify(payload))
       formData.append("category", JSON.stringify(updatedCategory))
       formData.append("subcategory", JSON.stringify(updatedSubcategory))
+      formData.append("subSubcategory", JSON.stringify(updatedSubSubcategory))
       formData.append("fabric", updatedFabric)
-      formData.append("fabricDetails", updatedFabricDetails)
       
       const res = await bulkUpdateImagesAndVariants(formData)
       if (res.success) {
@@ -778,20 +786,32 @@ export function ProductEditor({ product = {}, products, storeCategories, storeFa
             <input required name="name" type="text" defaultValue={product.name} className="w-full p-2 md:p-3 text-xs md:text-sm rounded-lg md:rounded-xl border border-charcoal/10 focus:outline-none focus:border-teal-600 focus:ring-1 md:focus:ring-2 focus:ring-teal-600/20 shadow-inner bg-slate-50 transition-all" />
           </div>
           <div>
-            <label className="block text-[11px] md:text-sm font-semibold text-charcoal mb-1 md:mb-2">Category</label>
-            <CategorySelect 
-              selected={updatedCategory} 
-              onChange={(v:any) => { setUpdatedCategory(v); setBaseDetailsChanged(true); }} 
-              options={storeCategories} 
-            />
-          </div>
-          <div>
-            <label className="block text-[11px] md:text-sm font-semibold text-charcoal mb-1 md:mb-2">Subcategory</label>
-            <CategorySelect 
-              selected={updatedSubcategory} 
-              onChange={(v:any) => { setUpdatedSubcategory(v); setBaseDetailsChanged(true); }} 
-              options={storeCategories.filter((c:any) => updatedCategory.includes(c.value)).flatMap((c:any) => c.subcategories || [])} 
-            />
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4 mb-4 md:mb-6">
+              <div>
+                <label className="block text-[11px] md:text-sm font-semibold text-charcoal mb-1 md:mb-2">Category</label>
+                <CategorySelect 
+                  selected={updatedCategory} 
+                  onChange={(v:any) => { setUpdatedCategory(v); setBaseDetailsChanged(true); }} 
+                  options={storeCategories} 
+                />
+              </div>
+              <div>
+                <label className="block text-[11px] md:text-sm font-semibold text-charcoal mb-1 md:mb-2">Subcategory</label>
+                <CategorySelect 
+                  selected={updatedSubcategory} 
+                  onChange={(v:any) => { setUpdatedSubcategory(v); setBaseDetailsChanged(true); }} 
+                  options={storeCategories.filter((c:any) => updatedCategory.includes(c.value)).flatMap((c:any) => c.subcategories || [])} 
+                />
+              </div>
+              <div>
+                <label className="block text-[11px] md:text-sm font-semibold text-charcoal mb-1 md:mb-2">Sub-subcategory</label>
+                <CategorySelect 
+                  selected={updatedSubSubcategory} 
+                  onChange={(v:any) => { setUpdatedSubSubcategory(v); setBaseDetailsChanged(true); }} 
+                  options={storeCategories.filter((c:any) => updatedCategory.includes(c.value)).flatMap((c:any) => c.subcategories || []).filter((s:any) => updatedSubcategory.includes(s.value)).flatMap((s:any) => s.subcategories || [])} 
+                />
+              </div>
+            </div>
           </div>
           <div>
             <label className="block text-[11px] md:text-sm font-semibold text-charcoal mb-1 md:mb-2">Base Price (MRP ₹)</label>
@@ -800,6 +820,10 @@ export function ProductEditor({ product = {}, products, storeCategories, storeFa
           <div>
             <label className="block text-[11px] md:text-sm font-semibold text-charcoal mb-1 md:mb-2">Discount (%)</label>
             <input name="discountPercent" type="number" min="0" max="100" defaultValue={product.discountPercent || 0} className="w-full p-2 md:p-3 text-xs md:text-sm rounded-lg md:rounded-xl border border-charcoal/10 focus:outline-none focus:border-teal-600 focus:ring-1 md:focus:ring-2 focus:ring-teal-600/20 shadow-inner bg-slate-50 transition-all" />
+          </div>
+          <div>
+            <label className="block text-[11px] md:text-sm font-semibold text-charcoal mb-1 md:mb-2">Fabric Details</label>
+            <input name="fabric" type="text" value={updatedFabric} onChange={(e) => { setUpdatedFabric(e.target.value); setBaseDetailsChanged(true); }} className="w-full p-2 md:p-3 text-xs md:text-sm rounded-lg md:rounded-xl border border-charcoal/10 focus:outline-none focus:border-teal-600 focus:ring-1 md:focus:ring-2 focus:ring-teal-600/20 shadow-inner bg-slate-50 transition-all" placeholder="e.g. 100% Pure Cotton" />
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:flex md:flex-wrap items-center gap-4 pt-4 pb-2 md:col-span-2 border-t border-charcoal/10 md:border-t-0 md:pt-2">
             <div className="flex items-center gap-2">
@@ -832,24 +856,7 @@ export function ProductEditor({ product = {}, products, storeCategories, storeFa
             {/* Left Column: Fabric Details & Advanced Details */}
             <div className="flex flex-col gap-4 md:border-r md:border-charcoal/10 md:pr-4">
               
-              {/* Fabric Details */}
-              <div>
-                <h3 className="text-lg font-semibold text-charcoal mb-2">Fabric Details</h3>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div className="flex gap-2 relative">
-                    <div className="hidden md:block absolute -left-12 top-2 text-teal-600/20">
-                      <Scissors size={40} />
-                    </div>
-                    <FabricSelect 
-                      value={updatedFabric} 
-                      onChange={(v:any) => { setUpdatedFabric(v); setBaseDetailsChanged(true); }} 
-                      options={storeFabrics}
-                      name="fabric"
-                    />
-                  </div>
-                  <input name="fabricDetails" type="text" value={updatedFabricDetails} onChange={(e) => { setUpdatedFabricDetails(e.target.value); setBaseDetailsChanged(true); }} className="w-full p-2 md:p-3 rounded-lg md:rounded-xl border border-charcoal/10 focus:outline-none focus:border-teal-600 focus:ring-1 md:focus:ring-2 focus:ring-teal-600/20 shadow-inner bg-slate-50 transition-all text-xs md:text-sm" placeholder="e.g. 100% Pure, Handwoven" />
-                </div>
-              </div>
+
               
               {/* Advanced Details (HTML) */}
               <div className="pt-4 border-t border-charcoal/10 mt-auto md:mt-0">
@@ -1368,50 +1375,4 @@ const CategorySelect = ({ selected, onChange, options, name }: { selected: strin
   )
 }
 
-const FabricSelect = ({ value, onChange, options, name }: { value: string, onChange: (v: string) => void, options: {value: string, label: string}[], name?: string }) => {
-  const [isOpen, setIsOpen] = useState(false)
-  const dropdownRef = useRef<HTMLDivElement>(null)
 
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setIsOpen(false)
-      }
-    }
-    document.addEventListener('mousedown', handleClickOutside)
-    return () => document.removeEventListener('mousedown', handleClickOutside)
-  }, [])
-
-  const selectedLabel = options.find(o => o.value === value)?.label || value || "Select fabric..."
-
-  return (
-    <div className="relative w-full" ref={dropdownRef}>
-      {name && <input type="hidden" name={name} value={value} />}
-      <button type="button" onClick={() => setIsOpen(!isOpen)} className="w-full bg-white border border-charcoal/20 rounded-xl px-4 py-2.5 focus:border-teal-500 focus:ring-1 focus:ring-teal-500 outline-none text-sm flex justify-between items-center">
-        <span className={!value ? "text-slate" : "text-charcoal"}>{selectedLabel}</span>
-        <ChevronDown size={16} className={cn("text-slate transition-transform", isOpen && "rotate-180")} />
-      </button>
-      {isOpen && (
-        <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-charcoal/10 rounded-xl shadow-xl z-50 p-2 max-h-64 overflow-y-auto no-scrollbar">
-          {value && !options.some(o => o.value === value) && (
-            <button type="button" onClick={() => { onChange(value); setIsOpen(false) }} className="w-full text-left flex items-center gap-2.5 px-3 py-2 bg-rose-50 hover:bg-rose-100 rounded-lg cursor-pointer group transition-colors">
-              <div className="w-4 h-4 rounded-full border-2 border-rose-500 flex items-center justify-center shrink-0">
-                <div className="w-2 h-2 rounded-full bg-rose-500" />
-              </div>
-              <span className="text-sm text-rose-600 font-medium">{value} <span className="text-xs text-rose-400 font-normal">(Deleted Fabric)</span></span>
-            </button>
-          )}
-          {options.map(opt => (
-            <button key={opt.value} type="button" onClick={() => { onChange(opt.value); setIsOpen(false) }} className="w-full text-left flex items-center gap-2.5 px-3 py-2 hover:bg-slate/5 rounded-lg cursor-pointer group transition-colors">
-              <div className={cn("w-4 h-4 rounded-full border-2 flex items-center justify-center transition-colors shrink-0", value === opt.value ? "border-teal-600" : "border-charcoal/20 group-hover:border-teal-600")}>
-                {value === opt.value && <div className="w-2 h-2 rounded-full bg-teal-600" /> }
-              </div>
-              <span className="text-sm text-charcoal">{opt.label}</span>
-            </button>
-          ))}
-          {options.length === 0 && <div className="px-3 py-2 text-sm text-slate">No fabrics configured.</div>}
-        </div>
-      )}
-    </div>
-  )
-}

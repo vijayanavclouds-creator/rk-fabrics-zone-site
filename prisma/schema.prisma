@@ -16,6 +16,7 @@ model Product {
   shortDescription String
   category         String
   subcategory      String?
+  subSubcategory   String?
   gender           String
   type             String
   basePrice        Float

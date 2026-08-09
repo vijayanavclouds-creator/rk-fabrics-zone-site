@@ -23,6 +23,8 @@ export async function updateProduct(formData: FormData) {
     const id = formData.get("id") as string
     const name = formData.get("name") as string
     const category = formData.get("category") as string
+    const subcategory = formData.get("subcategory") as string || null
+    const subSubcategory = formData.get("subSubcategory") as string || null
     const basePrice = parseFloat(formData.get("basePrice") as string)
     const discountPercent = parseInt(formData.get("discountPercent") as string) || 0
     const isFreeDelivery = formData.get("isFreeDelivery") === "true"
@@ -52,6 +54,8 @@ export async function updateProduct(formData: FormData) {
     const updateData = { 
       name,
       category,
+      subcategory,
+      subSubcategory,
       slug,
       description,
       detailsHtml,
@@ -114,6 +118,8 @@ export async function createProduct(formData: FormData) {
   try {
     const name = formData.get("name") as string
     const category = formData.get("category") as string || "women-ethnic"
+    const subcategory = formData.get("subcategory") as string || null
+    const subSubcategory = formData.get("subSubcategory") as string || null
     const basePrice = parseFloat(formData.get("basePrice") as string)
     const discountPercent = parseInt(formData.get("discountPercent") as string) || 0
     const fabric = formData.get("fabric") as string || "Silk"
@@ -146,6 +152,8 @@ export async function createProduct(formData: FormData) {
         detailsHtml,
         shortDescription: "Short description",
         category,
+        subcategory,
+        subSubcategory,
         gender: "women",
         type: "readymade",
         basePrice,

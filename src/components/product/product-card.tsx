@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { Heart, ShoppingBag, Eye, Star, Sparkles } from "lucide-react";
+import { Heart, ShoppingBag, Eye, Star, Sparkles, Flame } from "lucide-react";
 import { cn, formatPrice, calculateDiscount } from "@/lib/utils";
 import { useCartStore, useWishlistStore } from "@/store";
 import { toast } from "sonner";
@@ -126,23 +126,38 @@ interface ProductCardProps {
   </div>
   )}
 
-  {/* Badges */}
-  <div className="absolute top-2 left-2 flex flex-col gap-1 z-10">
-  {hasDiscount && (
-  <span className="px-2 py-0.5 text-[10px] font-bold bg-rose text-white rounded-full shadow-sm">
-  {discount}% OFF
-  </span>
-  )}
-  {product.isNewArrival && (
-  <span className="px-2 py-0.5 text-[10px] font-bold bg-teal-600 text-white rounded-full shadow-sm flex items-center gap-1">
-  <Sparkles size={8} /> NEW
-  </span>
-  )}
-  {product.isBestseller && (
-  <span className="px-2 py-0.5 text-[10px] font-bold bg-gold text-white rounded-full shadow-sm">
-  BESTSELLER
-  </span>
-  )}
+  {/* Discount and New Tags (Top Left Corner) */}
+  <div className="absolute top-1 left-1 flex flex-col items-start gap-0.5 z-20 pointer-events-none md:top-0 md:left-0 md:gap-0">
+    {hasDiscount && (
+      <span className={cn(
+        "px-1 py-[1px] text-[6px] md:px-1.5 md:py-[1px] md:text-[8px] leading-tight font-bold bg-rose-500 text-white shadow-sm rounded-full md:rounded-none",
+        product.isNewArrival ? "md:rounded-br-sm md:border-b md:border-white/20" : "md:rounded-br-xl"
+      )}>
+        -{discount}%
+      </span>
+    )}
+    {product.isNewArrival && (
+      <span className={cn(
+        "px-1 py-[1px] text-[6px] md:px-1.5 md:py-[1px] md:text-[8px] leading-tight font-bold bg-teal-600 text-white shadow-sm flex items-center gap-0.5 md:gap-1 rounded-full md:rounded-none",
+        (hasDiscount && !product.isBestseller) ? "md:rounded-br-xl md:rounded-tr-none" : 
+        hasDiscount ? "md:rounded-tr-none" : 
+        !product.isBestseller ? "md:rounded-br-xl" : ""
+      )}>
+        NEW
+      </span>
+    )}
+    {product.isBestseller && (
+      <span className={cn(
+        "px-1 py-[1px] text-[6px] md:px-1.5 md:py-[1px] md:text-[8px] leading-tight font-bold bg-gold text-white shadow-sm flex items-center gap-0.5 rounded-full md:rounded-none md:rounded-br-xl",
+        (hasDiscount || product.isNewArrival) && "md:rounded-tr-none"
+      )}>
+        <Flame size={7} className="md:w-[10px] md:h-[10px]" /> HOT
+      </span>
+    )}
+  </div>
+
+  {/* Badges - Empty now since BESTSELLER moved */}
+  <div className="absolute top-2 right-2 flex flex-col gap-1 z-10">
   </div>
 
   {/* Wishlist Button */}
@@ -184,7 +199,7 @@ interface ProductCardProps {
   {lowStock && (
   <div className="absolute bottom-2 left-2 right-2 z-[5]">
   <div className="urgency-pill text-[9px] py-0.5">
-  <span className="w-1.5 h-1.5 bg-gold rounded-full animate-pulse" />
+  <span className="w-1.5 h-1.5 bg-charcoal rounded-full animate-pulse" />
   Only {primaryVariant.stock} left
   </div>
   </div>

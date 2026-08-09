@@ -31,7 +31,8 @@ export default async function AdminPage() {
     returnRequests
   ] = await Promise.all([
     prisma.product.findMany({
-      include: { variants: true, images: true }
+      include: { variants: true, images: true },
+      orderBy: { createdAt: 'desc' }
     }),
     prisma.banner.findMany({
       orderBy: { order: 'asc' }

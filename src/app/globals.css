@@ -337,7 +337,6 @@ body {
  box-shadow: 0 8px 25px rgba(212, 175, 55, 0.35);
 }
 
-/* ── Urgency Pill ── */
 .urgency-pill {
  display: inline-flex;
  align-items: center;
@@ -345,10 +344,9 @@ body {
  padding: 0.25rem 0.75rem;
  border-radius: 9999px;
  font-size: 0.75rem;
- font-weight: 600;
- background: linear-gradient(135deg, rgba(212, 175, 55, 0.12) 0%, rgba(212, 175, 55, 0.06) 100%);
- color: var(--color-gold-dark);
- border: 1px solid rgba(212, 175, 55, 0.2);
+ font-weight: 700;
+ background: rgba(255, 255, 255, 0.1);
+ color: var(--color-charcoal);
 }
 
 /* ── Product Card Hover ── */

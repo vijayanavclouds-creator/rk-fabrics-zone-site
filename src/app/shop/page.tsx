@@ -25,16 +25,7 @@ export default async function ShopPage() {
   });
   const { categories: storeCats, fabrics: storeFabs } = await getStoreTaxonomyData();
 
-  // Format categories for the UI using the exact predefined options from the database
-  const categories = storeCats.map((c: any) => ({
-    id: c.value,
-    name: c.label
-  }));
 
-  const fabricFilters = storeFabs.map((f: any) => ({
-    id: f.value,
-    name: f.label
-  }));
 
   const breadcrumbSchema = {
     '@context': 'https://schema.org',
@@ -65,8 +56,7 @@ export default async function ShopPage() {
       <Suspense fallback={null}>
         <ShopContent 
           products={products} 
-          categories={categories} 
-          fabricFilters={fabricFilters} 
+          categories={storeCats as any} 
         />
       </Suspense>
     </>
