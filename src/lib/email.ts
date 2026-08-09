@@ -1,17 +1,24 @@
 import nodemailer from 'nodemailer'
 
-const transporter = nodemailer.createTransport({
-  host: process.env.SMTP_HOST || 'smtp.gmail.com',
-  port: parseInt(process.env.SMTP_PORT || '465'),
-  secure: true,
-  auth: {
-    user: process.env.SMTP_USER,
-    pass: process.env.SMTP_PASS,
-  },
-  connectionTimeout: 5000,
-  greetingTimeout: 5000,
-  socketTimeout: 5000,
-})
+let transporter: nodemailer.Transporter | null = null
+
+function getTransporter() {
+  if (!transporter) {
+    transporter = nodemailer.createTransport({
+      host: process.env.SMTP_HOST || 'smtp.zoho.in',
+      port: parseInt(process.env.SMTP_PORT || '465'),
+      secure: true,
+      auth: {
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASS,
+      },
+      connectionTimeout: 5000,
+      greetingTimeout: 5000,
+      socketTimeout: 5000,
+    })
+  }
+  return transporter
+}
 
 export async function sendOrderConfirmationEmail(order: any) {
   const from = process.env.SMTP_FROM || '"RK Fabrics Zone" <no-reply@rkfabricszone.com>'
@@ -158,7 +165,7 @@ export async function sendOrderConfirmationEmail(order: any) {
   `
 
   try {
-    const info = await transporter.sendMail({
+    const info = await getTransporter().sendMail({
       from,
       to,
       subject: `💖 Thank you for your order! - #${order.id.slice(-8).toUpperCase()} 🚚`,
@@ -290,7 +297,7 @@ export async function sendOrderShippedEmail(order: any) {
   `
 
   try {
-    const info = await transporter.sendMail({
+    const info = await getTransporter().sendMail({
       from,
       to,
       subject: `📦 Your Order is on the way! - #${order.id.slice(-8).toUpperCase()} 🚚`,
@@ -420,7 +427,7 @@ export async function sendOTPEmail(email: string, otp: string, type: 'SIGNUP' | 
   `
 
   try {
-    const info = await transporter.sendMail({
+    const info = await getTransporter().sendMail({
       from,
       to,
       subject,
