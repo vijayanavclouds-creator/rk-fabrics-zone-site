@@ -46,7 +46,8 @@ export async function POST(req: Request) {
 
     const emailRes = await sendOTPEmail(email, otp, otpType as any)
     if (!emailRes.success) {
-      return NextResponse.json({ success: false, error: "Failed to send verification code email" }, { status: 500 })
+      const errorMessage = emailRes.error instanceof Error ? emailRes.error.message : JSON.stringify(emailRes.error)
+      return NextResponse.json({ success: false, error: "Failed to send verification code email: " + errorMessage }, { status: 500 })
     }
 
     return NextResponse.json({ success: true })

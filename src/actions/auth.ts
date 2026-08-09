@@ -351,7 +351,8 @@ export async function sendStaffLoginOtp(rawEmail: string, requiredRole: "ADMIN" 
 
     const emailRes = await sendOTPEmail(email, otp, otpType as any);
     if (!emailRes.success) {
-      return { success: false, error: "Failed to send verification code email" };
+      const errorMessage = emailRes.error instanceof Error ? emailRes.error.message : JSON.stringify(emailRes.error)
+      return { success: false, error: "Failed to send verification code email: " + errorMessage };
     }
 
     return { success: true };
