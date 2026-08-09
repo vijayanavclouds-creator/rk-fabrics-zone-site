@@ -10,7 +10,7 @@ import { cn } from "@/lib/utils"
 export interface TaxonomyOption {
   value: string;
   label: string;
-  subcategories?: { label: string, value: string }[];
+  subcategories?: TaxonomyOption[];
 }
 
 interface TaxonomyManagerProps {
