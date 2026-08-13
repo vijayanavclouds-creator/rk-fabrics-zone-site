@@ -728,6 +728,476 @@ export const products: Product[] = [
       }
     ],
     "reviews": []
+  },
+  {
+    "id": "cmsq3bdnz00008o8ceobqutab",
+    "name": "Tie-Neck Tiered Gown",
+    "slug": "tie-neck-tiered-gown-5870",
+    "description": "",
+    "detailsHtml": null,
+    "shortDescription": "Short description",
+    "category": "[\"women-western\",\"upperwear\"]",
+    "subcategory": "[\"dresses-maxi\"]",
+    "subSubcategory": "[]",
+    "gender": "women",
+    "type": "readymade",
+    "basePrice": 399,
+    "salePrice": 359.1,
+    "discountPercent": 10,
+    "isOnSale": false,
+    "isFreeDelivery": true,
+    "fabric": "Cotton Cambric",
+    "fabricDetails": null,
+    "occasion": [],
+    "tags": [],
+    "rating": 0,
+    "reviewCount": 0,
+    "isFeatured": true,
+    "isNewArrival": true,
+    "isBestseller": false,
+    "isActive": true,
+    "isReturnable": true,
+    "createdAt": "2026-08-12T12:53:25.871Z",
+    "variants": [
+      {
+        "id": "cmsq3btgt00048o8cew9q94kj",
+        "sku": "VAR-226349",
+        "size": "S",
+        "color": "Gold",
+        "colorHex": "#FFE81D",
+        "price": 399,
+        "salePrice": 359.1,
+        "stock": 10,
+        "productId": "cmsq3bdnz00008o8ceobqutab"
+      },
+      {
+        "id": "cmsq3btvj00068o8c29hzw0bp",
+        "sku": "VAR-226879",
+        "size": "M",
+        "color": "Gold",
+        "colorHex": "#FFE81D",
+        "price": 399,
+        "salePrice": 359.1,
+        "stock": 10,
+        "productId": "cmsq3bdnz00008o8ceobqutab"
+      },
+      {
+        "id": "cmsq3bua600088o8cwyytevzj",
+        "sku": "VAR-227405",
+        "size": "L",
+        "color": "Gold",
+        "colorHex": "#FFE81D",
+        "price": 399,
+        "salePrice": 359.1,
+        "stock": 10,
+        "productId": "cmsq3bdnz00008o8ceobqutab"
+      },
+      {
+        "id": "cmsq3bup3000a8o8cgex4965x",
+        "sku": "VAR-227943",
+        "size": "XL",
+        "color": "Gold",
+        "colorHex": "#FFE81D",
+        "price": 399,
+        "salePrice": 359.1,
+        "stock": 10,
+        "productId": "cmsq3bdnz00008o8ceobqutab"
+      }
+    ],
+    "images": [
+      {
+        "id": "cmsq3bvij000c8o8cla82o7u1",
+        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1786539212/rk-fabrics/products/Gemini_Generated_Image_wt3njswt3njswt3n_z1eprj.jpg",
+        "alt": "Gemini_Generated_Image_wt3njswt3njswt3n.png",
+        "isPrimary": false,
+        "productId": "cmsq3bdnz00008o8ceobqutab"
+      },
+      {
+        "id": "cmsq3bvwy000e8o8cb5p7q25n",
+        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1786539214/rk-fabrics/products/Tie-Neck_Tiered_Gown2_djwuoj.jpg",
+        "alt": "Tie-Neck Tiered Gown2.png",
+        "isPrimary": true,
+        "productId": "cmsq3bdnz00008o8ceobqutab"
+      },
+      {
+        "id": "cmsq3bwbv000g8o8cvt5k9hab",
+        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1786539215/rk-fabrics/products/Tie-Neck_Tiered_Gown3_rekzbq.jpg",
+        "alt": "Tie-Neck Tiered Gown3.png",
+        "isPrimary": false,
+        "productId": "cmsq3bdnz00008o8ceobqutab"
+      },
+      {
+        "id": "cmsq3bwq6000i8o8c3kfrpib4",
+        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1786539216/rk-fabrics/products/Tie-Neck_Tiered_Gown4_mdosvz.jpg",
+        "alt": "Tie-Neck Tiered Gown4.png",
+        "isPrimary": false,
+        "productId": "cmsq3bdnz00008o8ceobqutab"
+      },
+      {
+        "id": "cmsq3bx58000k8o8cdgyrhgej",
+        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1786539218/rk-fabrics/products/blob_ocgtvm.jpg",
+        "alt": "Tie-Neck Tiered Gown5.png",
+        "isPrimary": false,
+        "productId": "cmsq3bdnz00008o8ceobqutab"
+      },
+      {
+        "id": "cmsq3bxji000m8o8ct0do7tzm",
+        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1786539223/rk-fabrics/products/Tie-Neck_Tiered_Gown7_mrrzam.jpg",
+        "alt": "Tie-Neck Tiered Gown7.png",
+        "isPrimary": false,
+        "productId": "cmsq3bdnz00008o8ceobqutab"
+      }
+    ],
+    "reviews": []
+  },
+  {
+    "id": "cmsq4vohu000p8o8cuzxdk8su",
+    "name": "Slim-Fit Tailored Trousers",
+    "slug": "slim-fit-tailored-trousers-2539",
+    "description": "",
+    "detailsHtml": null,
+    "shortDescription": "Short description",
+    "category": "[\"women-western\",\"lowerwear\"]",
+    "subcategory": "[\"trousers-pants-palazzos\"]",
+    "subSubcategory": "[]",
+    "gender": "women",
+    "type": "readymade",
+    "basePrice": 399,
+    "salePrice": 359.1,
+    "discountPercent": 10,
+    "isOnSale": false,
+    "isFreeDelivery": true,
+    "fabric": "Cotton Twill Blend",
+    "fabricDetails": null,
+    "occasion": [],
+    "tags": [],
+    "rating": 0,
+    "reviewCount": 0,
+    "isFeatured": false,
+    "isNewArrival": true,
+    "isBestseller": false,
+    "isActive": true,
+    "isReturnable": true,
+    "createdAt": "2026-08-12T13:37:12.540Z",
+    "variants": [
+      {
+        "id": "cmsq4w1ij000t8o8cegr45ugm",
+        "sku": "VAR-849515",
+        "size": "S",
+        "color": "Silver",
+        "colorHex": "#D3D3D3",
+        "price": 399,
+        "salePrice": 359.1,
+        "stock": 10,
+        "productId": "cmsq4vohu000p8o8cuzxdk8su"
+      },
+      {
+        "id": "cmsq4w1wu000v8o8c2avrsi4v",
+        "sku": "VAR-850029",
+        "size": "M",
+        "color": "Silver",
+        "colorHex": "#D3D3D3",
+        "price": 399,
+        "salePrice": 359.1,
+        "stock": 10,
+        "productId": "cmsq4vohu000p8o8cuzxdk8su"
+      },
+      {
+        "id": "cmsq4w2b5000x8o8cy3weily3",
+        "sku": "VAR-850544",
+        "size": "L",
+        "color": "Silver",
+        "colorHex": "#D3D3D3",
+        "price": 399,
+        "salePrice": 359.1,
+        "stock": 10,
+        "productId": "cmsq4vohu000p8o8cuzxdk8su"
+      },
+      {
+        "id": "cmsq4w2q5000z8o8cuderrij7",
+        "sku": "VAR-851084",
+        "size": "XL",
+        "color": "Silver",
+        "colorHex": "#D3D3D3",
+        "price": 399,
+        "salePrice": 359.1,
+        "stock": 10,
+        "productId": "cmsq4vohu000p8o8cuzxdk8su"
+      }
+    ],
+    "images": [
+      {
+        "id": "cmsq4w3is00118o8crezzsj2r",
+        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1786541839/rk-fabrics/products/Slim-Fit_Tailored_Trousers_v0wqgq.jpg",
+        "alt": "Slim-Fit Tailored Trousers.png",
+        "isPrimary": false,
+        "productId": "cmsq4vohu000p8o8cuzxdk8su"
+      },
+      {
+        "id": "cmsq4w3xi00138o8ch05jwoep",
+        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1786541841/rk-fabrics/products/Slim-Fit_Tailored_Trousers1_lrsmkt.jpg",
+        "alt": "Slim-Fit Tailored Trousers1.png",
+        "isPrimary": false,
+        "productId": "cmsq4vohu000p8o8cuzxdk8su"
+      },
+      {
+        "id": "cmsq4w4cm00158o8cd0qm4krd",
+        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1786541843/rk-fabrics/products/blob_asz7gg.jpg",
+        "alt": "Slim-Fit Tailored Trousers2.png",
+        "isPrimary": true,
+        "productId": "cmsq4vohu000p8o8cuzxdk8su"
+      },
+      {
+        "id": "cmsq4w4ri00178o8caom8e3ob",
+        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1786541844/rk-fabrics/products/blob_uxwt45.jpg",
+        "alt": "Slim-Fit Tailored Trousers3.png",
+        "isPrimary": false,
+        "productId": "cmsq4vohu000p8o8cuzxdk8su"
+      },
+      {
+        "id": "cmsq4w56500198o8cuk53fofd",
+        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1786541847/rk-fabrics/products/Slim-Fit_Tailored_Trousers4_gjan7n.jpg",
+        "alt": "Slim-Fit Tailored Trousers4.png",
+        "isPrimary": false,
+        "productId": "cmsq4vohu000p8o8cuzxdk8su"
+      }
+    ],
+    "reviews": []
+  },
+  {
+    "id": "cmsqaoppg001c8o8c94271vle",
+    "name": "Teal Floral Casual Top",
+    "slug": "teal-floral-casual-top-5195",
+    "description": "",
+    "detailsHtml": null,
+    "shortDescription": "Short description",
+    "category": "[\"women-western\",\"upperwear\"]",
+    "subcategory": "[\"tops-tunics\"]",
+    "subSubcategory": "[]",
+    "gender": "women",
+    "type": "readymade",
+    "basePrice": 399,
+    "salePrice": 359.1,
+    "discountPercent": 10,
+    "isOnSale": false,
+    "isFreeDelivery": true,
+    "fabric": "Cotton Blend",
+    "fabricDetails": null,
+    "occasion": [],
+    "tags": [],
+    "rating": 0,
+    "reviewCount": 0,
+    "isFeatured": false,
+    "isNewArrival": true,
+    "isBestseller": false,
+    "isActive": true,
+    "isReturnable": true,
+    "createdAt": "2026-08-12T16:19:45.196Z",
+    "variants": [
+      {
+        "id": "cmsqap4dg001g8o8c0ab4n1rx",
+        "sku": "VAR-604324",
+        "size": "S",
+        "color": "Gray",
+        "colorHex": "#5A7C85",
+        "price": 399,
+        "salePrice": 359.1,
+        "stock": 10,
+        "productId": "cmsqaoppg001c8o8c94271vle"
+      },
+      {
+        "id": "cmsqap4sh001i8o8cszlebpeu",
+        "sku": "VAR-604864",
+        "size": "M",
+        "color": "Gray",
+        "colorHex": "#5A7C85",
+        "price": 399,
+        "salePrice": 359.1,
+        "stock": 10,
+        "productId": "cmsqaoppg001c8o8c94271vle"
+      },
+      {
+        "id": "cmsqap57h001k8o8cfhostsob",
+        "sku": "VAR-605403",
+        "size": "L",
+        "color": "Gray",
+        "colorHex": "#5A7C85",
+        "price": 399,
+        "salePrice": 359.1,
+        "stock": 10,
+        "productId": "cmsqaoppg001c8o8c94271vle"
+      },
+      {
+        "id": "cmsqap5ml001m8o8cok1p5ni1",
+        "sku": "VAR-605948",
+        "size": "XL",
+        "color": "Gray",
+        "colorHex": "#5A7C85",
+        "price": 399,
+        "salePrice": 359.1,
+        "stock": 10,
+        "productId": "cmsqaoppg001c8o8c94271vle"
+      }
+    ],
+    "images": [
+      {
+        "id": "cmsqap6h3001o8o8c25efoc8r",
+        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1786551590/rk-fabrics/products/blob_k3bmrd.jpg",
+        "alt": "Teal Floral Casual Top1.png",
+        "isPrimary": false,
+        "productId": "cmsqaoppg001c8o8c94271vle"
+      },
+      {
+        "id": "cmsqap6w7001q8o8cxya45hm0",
+        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1786551592/rk-fabrics/products/blob_q4mpsf.jpg",
+        "alt": "Teal Floral Casual Top2.png",
+        "isPrimary": false,
+        "productId": "cmsqaoppg001c8o8c94271vle"
+      },
+      {
+        "id": "cmsqap7av001s8o8cysc8dth0",
+        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1786551594/rk-fabrics/products/blob_ccwog1.jpg",
+        "alt": "Teal Floral Casual Top3.png",
+        "isPrimary": false,
+        "productId": "cmsqaoppg001c8o8c94271vle"
+      },
+      {
+        "id": "cmsqap851001w8o8c9yvwig1v",
+        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1786551599/rk-fabrics/products/blob_waolms.jpg",
+        "alt": "Teal Floral Casual Top5.png",
+        "isPrimary": false,
+        "productId": "cmsqaoppg001c8o8c94271vle"
+      },
+      {
+        "id": "cmsqap8k9001y8o8c5nflpp6n",
+        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1786551601/rk-fabrics/products/Teal_Floral_Casual_Top6_spog0y.jpg",
+        "alt": "Teal Floral Casual Top6.png",
+        "isPrimary": false,
+        "productId": "cmsqaoppg001c8o8c94271vle"
+      },
+      {
+        "id": "cmsqap7q4001u8o8cwro1vhdp",
+        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1786551597/rk-fabrics/products/Teal_Floral_Casual_Top4_h7c9vy.jpg",
+        "alt": "Teal Floral Casual Top4.png",
+        "isPrimary": true,
+        "productId": "cmsqaoppg001c8o8c94271vle"
+      }
+    ],
+    "reviews": []
+  },
+  {
+    "id": "cmsqbntda00238o8c7knindav",
+    "name": "Solid Square-Neck Fit and Flare",
+    "slug": "solid-square-neck-fit-and-flare-2036",
+    "description": "",
+    "detailsHtml": null,
+    "shortDescription": "Short description",
+    "category": "[\"women-western\",\"upperwear\"]",
+    "subcategory": "[\"dresses-maxi\"]",
+    "subSubcategory": "[]",
+    "gender": "women",
+    "type": "readymade",
+    "basePrice": 499,
+    "salePrice": 449.1,
+    "discountPercent": 10,
+    "isOnSale": false,
+    "isFreeDelivery": true,
+    "fabric": "Cotton Poplin",
+    "fabricDetails": null,
+    "occasion": [],
+    "tags": [],
+    "rating": 0,
+    "reviewCount": 0,
+    "isFeatured": false,
+    "isNewArrival": true,
+    "isBestseller": false,
+    "isActive": true,
+    "isReturnable": true,
+    "createdAt": "2026-08-12T16:47:02.037Z",
+    "variants": [
+      {
+        "id": "cmsqbo9km00278o8c2gn4fq59",
+        "sku": "VAR-244022",
+        "size": "S",
+        "color": "Orange",
+        "colorHex": "#DAA520",
+        "price": 499,
+        "salePrice": 449.1,
+        "stock": 10,
+        "productId": "cmsqbntda00238o8c7knindav"
+      },
+      {
+        "id": "cmsqbo9zn00298o8cn3pz16me",
+        "sku": "VAR-244562",
+        "size": "M",
+        "color": "Orange",
+        "colorHex": "#DAA520",
+        "price": 499,
+        "salePrice": 449.1,
+        "stock": 10,
+        "productId": "cmsqbntda00238o8c7knindav"
+      },
+      {
+        "id": "cmsqboaf3002b8o8cawj9e2pq",
+        "sku": "VAR-245118",
+        "size": "L",
+        "color": "Orange",
+        "colorHex": "#DAA520",
+        "price": 499,
+        "salePrice": 449.1,
+        "stock": 10,
+        "productId": "cmsqbntda00238o8c7knindav"
+      },
+      {
+        "id": "cmsqboatx002d8o8cjox6dbzn",
+        "sku": "VAR-245652",
+        "size": "XL",
+        "color": "Orange",
+        "colorHex": "#DAA520",
+        "price": 499,
+        "salePrice": 449.1,
+        "stock": 10,
+        "productId": "cmsqbntda00238o8c7knindav"
+      }
+    ],
+    "images": [
+      {
+        "id": "cmsqboboe002f8o8cyfq8ahxy",
+        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1786553228/rk-fabrics/products/blob_y3kubb.jpg",
+        "alt": "Solid Square-Neck Fit and Flare1.png",
+        "isPrimary": false,
+        "productId": "cmsqbntda00238o8c7knindav"
+      },
+      {
+        "id": "cmsqboc4g002h8o8cblgmah5t",
+        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1786553230/rk-fabrics/products/blob_f7nvgc.jpg",
+        "alt": "Solid Square-Neck Fit and Flare4.png",
+        "isPrimary": true,
+        "productId": "cmsqbntda00238o8c7knindav"
+      },
+      {
+        "id": "cmsqbocjm002j8o8cr683xv9h",
+        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1786553232/rk-fabrics/products/blob_ngilaj.jpg",
+        "alt": "Solid Square-Neck Fit and Flare5.png",
+        "isPrimary": false,
+        "productId": "cmsqbntda00238o8c7knindav"
+      },
+      {
+        "id": "cmsqbocyl002l8o8cn3cek8us",
+        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1786553238/rk-fabrics/products/blob_z73lw8.jpg",
+        "alt": "Solid Square-Neck Fit and Flare6.png",
+        "isPrimary": false,
+        "productId": "cmsqbntda00238o8c7knindav"
+      },
+      {
+        "id": "cmsqboddl002n8o8c6ua1m8ew",
+        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1786553241/rk-fabrics/products/blob_xudhyz.jpg",
+        "alt": "Solid Square-Neck Fit and Flare7.png",
+        "isPrimary": false,
+        "productId": "cmsqbntda00238o8c7knindav"
+      }
+    ],
+    "reviews": []
   }
 ];
 

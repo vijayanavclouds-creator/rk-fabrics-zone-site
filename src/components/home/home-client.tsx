@@ -141,7 +141,7 @@ function HeroSection({ banners }: { banners: any[] }) {
                   whileHover={{ scale: 1.05, zIndex: 40, transition: { duration: 0.2 } }}
                 >
                   <div className="relative w-full aspect-[3/4] rounded-[10px] lg:rounded-[12px] overflow-hidden">
-                    <Image src={imgSrc} alt={`Hero Banner ${i}`} fill className="object-cover" sizes="25vw" />
+                    <Image src={imgSrc} alt={`Hero Banner ${i}`} fill className="object-cover" sizes="25vw" priority />
                   </div>
                   
                   {/* Decorative Elements Attached to Specific Cards */}
@@ -247,6 +247,7 @@ function HeroSection({ banners }: { banners: any[] }) {
                       fill
                       className="object-cover"
                       sizes="50vw"
+                      priority
                     />
                   </div>
 

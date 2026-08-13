@@ -116,6 +116,7 @@ interface ProductCardProps {
   src={product.images.find(img => img.isPrimary)?.url || product.images[0].url}
   alt={product.name}
   fill
+  sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 20vw"
   className="object-cover group-hover:scale-110 transition-transform duration-500"
   />
   ) : (
@@ -242,7 +243,7 @@ interface ProductCardProps {
   </h3>
 
   {/* Price & Rating Row */}
-  <div className="flex items-end justify-between mt-auto">
+  <div className="flex flex-wrap items-end justify-between mt-auto gap-x-1 gap-y-1">
     <div className="flex flex-col">
       <div className="flex items-baseline gap-1">
         <span className="text-[15px] font-bold text-charcoal leading-none">

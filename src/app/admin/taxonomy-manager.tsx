@@ -2,7 +2,7 @@
 
 import { useState, useTransition, useEffect, useRef } from "react"
 import { toast } from "sonner"
-import { Plus, X, Tag, Scissors, ChevronDown, Trash2, GripVertical, Save } from "lucide-react"
+import { Plus, X, Tag, ChevronDown, Trash2, GripVertical, Save } from "lucide-react"
 import { DragDropContext, Droppable, Draggable, DropResult } from "@hello-pangea/dnd"
 import { saveStoreTaxonomy } from "@/actions/system"
 import { cn } from "@/lib/utils"

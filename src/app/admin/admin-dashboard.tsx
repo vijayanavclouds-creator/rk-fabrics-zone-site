@@ -236,7 +236,10 @@ export function AdminDashboard({
                     </div>
                   </div>
                 </td>
-                <td className="py-2 px-4 text-charcoal font-medium capitalize whitespace-nowrap text-sm">
+                <td 
+                  className="py-2 px-4 text-charcoal font-medium capitalize whitespace-nowrap text-sm overflow-hidden text-ellipsis max-w-[150px]"
+                  title={categoryStr}
+                >
                   {categoryStr}
                 </td>
                 <td className="py-2 px-4 text-charcoal font-bold whitespace-nowrap text-sm">₹{product.basePrice}</td>
