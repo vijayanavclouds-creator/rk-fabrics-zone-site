@@ -299,7 +299,7 @@ export default function ProductClient({ product }: { product: any }) {
 
  {/* Thumbnail row */}
  <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
- {product.images.map((img, i) => (
+ {product.images.map((img: any, i: number) => (
  <div
  key={img.id}
  onClick={() => setSelectedImage(i)}
@@ -396,7 +396,7 @@ export default function ProductClient({ product }: { product: any }) {
  Color: <span className="font-normal text-slate ">{uniqueColors.find((c) => c.hex === selectedColor)?.color}</span>
  </h3>
  <div className="flex gap-2.5">
- {uniqueColors.map((c) => (
+ {uniqueColors.map((c: any) => (
   <button
   key={c.hex}
   onClick={() => setSelectedColor(c.hex)}
@@ -418,7 +418,7 @@ export default function ProductClient({ product }: { product: any }) {
  <div className="mb-5">
  <h3 className="text-sm font-semibold text-charcoal mb-3">Size</h3>
  <div className="flex flex-wrap items-center gap-2">
- {uniqueSizes.map((size) => {
+ {uniqueSizes.map((size: any) => {
  const sizeAvail = availableSizes.find((s) => s.size === size);
  const inStock = sizeAvail && sizeAvail.stock > 0;
  return (
@@ -620,7 +620,7 @@ export default function ProductClient({ product }: { product: any }) {
           { label: "Category", value: (() => {
               try {
                 const cats = JSON.parse(product.category);
-                if (Array.isArray(cats)) return cats.map(c => c.replace("-", " ").replace(/\b\w/g, (char: string) => char.toUpperCase())).join(", ");
+                if (Array.isArray(cats)) return cats.map((c: any) => c.replace("-", " ").replace(/\b\w/g, (char: string) => char.toUpperCase())).join(", ");
               } catch(e) {}
               return product.category.replace("-", " ").replace(/\b\w/g, (char: string) => char.toUpperCase());
             })() },
@@ -700,7 +700,7 @@ export default function ProductClient({ product }: { product: any }) {
 
     {product.reviews && product.reviews.length > 0 ? (
       <div className="space-y-6">
-        {product.reviews.map((r, i) => (
+        {product.reviews.map((r: any, i: number) => (
           <div key={i} className="p-6 rounded-2xl bg-white border border-charcoal/5 shadow-sm">
             <div className="flex items-center gap-2 mb-3">
               <div className="flex gap-1">
@@ -810,7 +810,7 @@ export default function ProductClient({ product }: { product: any }) {
  You May Also Like
  </h2>
  <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
- {related.map((p, i) => (
+ {related.map((p: any, i: number) => (
  <ProductCard key={p.id} product={p} index={i} />
  ))}
  </div>
@@ -857,7 +857,7 @@ export default function ProductClient({ product }: { product: any }) {
            {/* Lightbox Thumbnails */}
            {product.images.length > 1 && (
              <div className="absolute bottom-6 md:bottom-8 left-1/2 -translate-x-1/2 flex gap-3 p-3 bg-white/10 backdrop-blur-xl border border-white/10 rounded-2xl overflow-x-auto max-w-[90vw] shadow-2xl">
-               {product.images.map((img, i) => (
+               {product.images.map((img: any, i: number) => (
                  <div
                    key={img.id}
                    onClick={() => setSelectedImage(i)}
