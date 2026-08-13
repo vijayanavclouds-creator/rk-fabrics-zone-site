@@ -99,9 +99,18 @@ export default function ProductClient({ product }: { product: any }) {
     }
   };
 
-  const handleDragEnd = (e: any, { offset }: any) => {
-    if (offset.x < -40) handleNextImage();
-    if (offset.x > 40) handlePrevImage();
+  const [touchStart, setTouchStart] = useState<number | null>(null);
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (!touchStart) return;
+    const distance = touchStart - e.changedTouches[0].clientX;
+    if (distance > 40) handleNextImage();
+    if (distance < -40) handlePrevImage();
+    setTouchStart(null);
   };
 
  useEffect(() => {
@@ -210,10 +219,8 @@ export default function ProductClient({ product }: { product: any }) {
  <motion.div
  initial={{ opacity: 0 }}
  animate={{ opacity: 1 }}
- drag="x"
- dragConstraints={{ left: 0, right: 0 }}
- dragElastic={0.2}
- onDragEnd={handleDragEnd}
+ onTouchStart={handleTouchStart}
+ onTouchEnd={handleTouchEnd}
  className="relative aspect-[3/4] bg-gradient-to-br from-cream-dark to-cream rounded-2xl overflow-hidden flex items-center justify-center cursor-zoom-in group"
  onClick={() => setIsLightboxOpen(true)}
  >
@@ -856,10 +863,8 @@ export default function ProductClient({ product }: { product: any }) {
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.95, opacity: 0 }}
             transition={{ type: "spring", damping: 25, stiffness: 300 }}
-            drag="x"
-            dragConstraints={{ left: 0, right: 0 }}
-            dragElastic={0.2}
-            onDragEnd={handleDragEnd}
+            onTouchStart={handleTouchStart}
+            onTouchEnd={handleTouchEnd}
             className="relative w-[100vw] h-[100vh] flex items-center justify-center"
             onClick={(e) => e.stopPropagation()}
           >
