@@ -64,12 +64,12 @@ export default function ProductClient({ product }: { product: any }) {
   // Get unique colors and sizes
  const uniqueColors = useMemo(() => {
  const map = new Map<string, { color: string; hex: string }>();
- product.variants.forEach((v) => map.set(v.colorHex, { color: v.color, hex: v.colorHex }));
+ product.variants.forEach((v: any) => map.set(v.colorHex, { color: v.color, hex: v.colorHex }));
  return Array.from(map.values());
  }, [product]);
 
  const uniqueSizes = useMemo(() => {
- return [...new Set(product.variants.map((v) => v.size))];
+ return [...new Set(product.variants.map((v: any) => v.size))];
  }, [product]);
 
  const [selectedColor, setSelectedColor] = useState(uniqueColors[0]?.hex || "");
@@ -94,8 +94,8 @@ export default function ProductClient({ product }: { product: any }) {
  // Find matching variant
  const selectedVariant = useMemo(() => {
  return product.variants.find(
- (v) => v.colorHex === selectedColor && v.size === selectedSize
- ) || product.variants.find((v) => v.colorHex === selectedColor) || product.variants[0];
+ (v: any) => v.colorHex === selectedColor && v.size === selectedSize
+ ) || product.variants.find((v: any) => v.colorHex === selectedColor) || product.variants[0];
  }, [product, selectedColor, selectedSize]);
 
   const price = selectedVariant?.salePrice || product.salePrice || selectedVariant?.price || product.basePrice;
@@ -108,8 +108,8 @@ export default function ProductClient({ product }: { product: any }) {
  // Available sizes for selected color
  const availableSizes = useMemo(() => {
  return product.variants
- .filter((v) => v.colorHex === selectedColor)
- .map((v) => ({ size: v.size, stock: v.stock }));
+ .filter((v: any) => v.colorHex === selectedColor)
+ .map((v: any) => ({ size: v.size, stock: v.stock }));
  }, [product, selectedColor]);
 
   const isVariantInCart = mounted && selectedVariant ? cartItems.some(item => item.variant.id === selectedVariant.id) : false;
