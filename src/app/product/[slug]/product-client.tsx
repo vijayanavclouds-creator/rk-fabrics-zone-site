@@ -112,7 +112,7 @@ export default function ProductClient({ product }: { product: any }) {
  .map((v: any) => ({ size: v.size, stock: v.stock }));
  }, [product, selectedColor]);
 
-  const isVariantInCart = mounted && selectedVariant ? cartItems.some(item => item.variant.id === selectedVariant.id) : false;
+  const isVariantInCart = mounted && selectedVariant ? cartItems.some((item: any) => item.variant.id === selectedVariant.id) : false;
 
   const handleAddToCart = () => {
   if (!selectedVariant || stock <= 0) return;
@@ -155,11 +155,11 @@ export default function ProductClient({ product }: { product: any }) {
   try { currentProductCats = JSON.parse(product.category); } catch(e) { currentProductCats = [product.category]; }
 
   const related = products
-  .filter((p) => {
+  .filter((p: any) => {
     if (p.id === product.id) return false;
     let pCats: string[] = [];
     try { pCats = JSON.parse(p.category); } catch(e) { pCats = [p.category]; }
-    return currentProductCats.some(c => pCats.includes(c));
+    return currentProductCats.some((c: any) => pCats.includes(c));
   })
   .slice(0, 4);
 
@@ -170,7 +170,7 @@ export default function ProductClient({ product }: { product: any }) {
   };
   const fabricEmoji = fabricMap[currentProductCats[0]] || "🧵";
 
-  const selectedColorName = uniqueColors.find(c => c.hex === selectedColor)?.color || selectedColor;
+  const selectedColorName = uniqueColors.find((c: any) => c.hex === selectedColor)?.color || selectedColor;
   const currentUrl = typeof window !== 'undefined' ? window.location.href : `https://rkfabricszone.com/product/${product.slug}`;
   const whatsappMessage = `Hi! I'm interested in the following fabric:\n\n*Product:* ${product.name}\n*Price:* ${formatPrice(price)}\n*Color:* ${selectedColorName}\n*Size:* ${selectedSize}\n\n*Link:* ${currentUrl}\n\nCould you please provide more details?`;
 
@@ -393,7 +393,7 @@ export default function ProductClient({ product }: { product: any }) {
  {/* Color Selection */}
  <div className="mb-5">
  <h3 className="text-sm font-semibold text-charcoal mb-3">
- Color: <span className="font-normal text-slate ">{uniqueColors.find((c) => c.hex === selectedColor)?.color}</span>
+ Color: <span className="font-normal text-slate ">{uniqueColors.find((c: any) => c.hex === selectedColor)?.color}</span>
  </h3>
  <div className="flex gap-2.5">
  {uniqueColors.map((c: any) => (
@@ -419,7 +419,7 @@ export default function ProductClient({ product }: { product: any }) {
  <h3 className="text-sm font-semibold text-charcoal mb-3">Size</h3>
  <div className="flex flex-wrap items-center gap-2">
  {uniqueSizes.map((size: any) => {
- const sizeAvail = availableSizes.find((s) => s.size === size);
+ const sizeAvail = availableSizes.find((s: any) => s.size === size);
  const inStock = sizeAvail && sizeAvail.stock > 0;
  return (
   <button
