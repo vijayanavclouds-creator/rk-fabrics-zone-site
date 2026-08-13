@@ -55,7 +55,7 @@ export default async function ShopPage() {
       />
       <Suspense fallback={null}>
         <ShopContent 
-          products={products} 
+          products={products as any} 
           categories={storeCats as any} 
         />
       </Suspense>
