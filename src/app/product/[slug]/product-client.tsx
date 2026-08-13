@@ -87,6 +87,23 @@ export default function ProductClient({ product }: { product: any }) {
  const [viewingCount, setViewingCount] = useState(0);
  const [isSizeGuideOpen, setIsSizeGuideOpen] = useState(false);
 
+  const handleNextImage = () => {
+    if (product.images?.length) {
+      setSelectedImage((prev: number) => (prev + 1) % product.images.length);
+    }
+  };
+
+  const handlePrevImage = () => {
+    if (product.images?.length) {
+      setSelectedImage((prev: number) => (prev - 1 + product.images.length) % product.images.length);
+    }
+  };
+
+  const handleDragEnd = (e: any, { offset }: any) => {
+    if (offset.x < -40) handleNextImage();
+    if (offset.x > 40) handlePrevImage();
+  };
+
  useEffect(() => {
    setViewingCount(Math.floor(Math.random() * 30) + 12);
  }, []);
@@ -193,6 +210,10 @@ export default function ProductClient({ product }: { product: any }) {
  <motion.div
  initial={{ opacity: 0 }}
  animate={{ opacity: 1 }}
+ drag="x"
+ dragConstraints={{ left: 0, right: 0 }}
+ dragElastic={0.2}
+ onDragEnd={handleDragEnd}
  className="relative aspect-[3/4] bg-gradient-to-br from-cream-dark to-cream rounded-2xl overflow-hidden flex items-center justify-center cursor-zoom-in group"
  onClick={() => setIsLightboxOpen(true)}
  >
@@ -290,12 +311,6 @@ export default function ProductClient({ product }: { product: any }) {
     <button onClick={(e) => { e.stopPropagation(); handleShare("copy"); }} className="w-9 h-9 rounded-full bg-slate-100 text-slate-600 flex items-center justify-center shadow-sm hover:bg-slate-200" title="Copy Link"><LinkIcon size={14} /></button>
   </div>
  </div>
-
- {/* AR Try-On Button */}
- <button className="absolute bottom-4 right-4 flex items-center gap-2 px-4 py-2.5 bg-white/80 backdrop-blur-sm rounded-xl text-sm font-semibold text-teal-600 border border-teal-600/20 hover:bg-teal-600 hover:text-white transition-all shadow-lg group">
- <Camera size={16} className="group-hover:animate-pulse" />
- Try On (AR)
- </button>
  </motion.div>
 
  {/* Thumbnail row */}
@@ -821,29 +836,33 @@ export default function ProductClient({ product }: { product: any }) {
  {/* Lightbox Modal */}
  <AnimatePresence>
    {isLightboxOpen && (
-     <motion.div
-       initial={{ opacity: 0 }}
-       animate={{ opacity: 1 }}
-       exit={{ opacity: 0 }}
-       className="fixed inset-0 z-50 flex items-center justify-center bg-black/95 backdrop-blur-2xl"
-       onClick={() => setIsLightboxOpen(false)}
-     >
-       <button 
-         onClick={(e) => { e.stopPropagation(); setIsLightboxOpen(false); }}
-         className="absolute top-6 right-6 text-white/50 hover:text-white transition-colors bg-white/10 hover:bg-white/20 p-3 rounded-full z-50"
-       >
-         <X size={24} />
-       </button>
-       
-       {product.images && product.images.length > 0 && (
-         <motion.div 
-           initial={{ scale: 0.9, opacity: 0 }}
-           animate={{ scale: 1, opacity: 1 }}
-           exit={{ scale: 0.95, opacity: 0 }}
-           transition={{ type: "spring", damping: 25, stiffness: 300 }}
-           className="relative w-[100vw] h-[100vh] flex items-center justify-center"
-           onClick={(e) => e.stopPropagation()}
-         >
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        className="fixed inset-0 z-[100] flex items-center justify-center bg-black/95 backdrop-blur-2xl"
+        onClick={() => setIsLightboxOpen(false)}
+      >
+        <button 
+          onClick={(e) => { e.stopPropagation(); setIsLightboxOpen(false); }}
+          className="absolute top-6 right-6 text-white/50 hover:text-white transition-colors bg-white/10 hover:bg-white/20 p-3 rounded-full z-[100]"
+        >
+          <X size={24} />
+        </button>
+        
+        {product.images && product.images.length > 0 && (
+          <motion.div 
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: 0.95, opacity: 0 }}
+            transition={{ type: "spring", damping: 25, stiffness: 300 }}
+            drag="x"
+            dragConstraints={{ left: 0, right: 0 }}
+            dragElastic={0.2}
+            onDragEnd={handleDragEnd}
+            className="relative w-[100vw] h-[100vh] flex items-center justify-center"
+            onClick={(e) => e.stopPropagation()}
+          >
            <div className="relative w-full h-full">
              <Image
                src={product.images[selectedImage]?.url || product.images[0].url}
