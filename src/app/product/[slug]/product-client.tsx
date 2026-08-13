@@ -201,6 +201,7 @@ export default function ProductClient({ product }: { product: any }) {
      src={product.images[selectedImage]?.url || product.images[0].url}
      alt={product.name}
      fill
+     priority
      sizes="(max-width: 768px) 100vw, 50vw"
      className="object-cover group-hover:scale-105 transition-transform duration-500"
    />
