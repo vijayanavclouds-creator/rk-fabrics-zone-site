@@ -83,6 +83,11 @@ export const metadata: Metadata = {
     statusBarStyle: "default",
     capable: true,
   },
+  verification: {
+    other: {
+      "msvalidate.01": "79E679E6698B658820E6B91730C8E531",
+    },
+  },
 };
 
 export const viewport: Viewport = {
