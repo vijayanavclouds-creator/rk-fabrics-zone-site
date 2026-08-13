@@ -2,9 +2,10 @@ import prisma from "@/lib/prisma";
 import ProductClient from "./product-client";
 import Link from "next/link";
 
-export default async function ProductPage({ params }: { params: { slug: string } }) {
+export default async function ProductPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
   const product = await prisma.product.findUnique({
-    where: { slug: params.slug },
+    where: { slug },
     include: { variants: true, images: true, reviews: true }
   });
 
