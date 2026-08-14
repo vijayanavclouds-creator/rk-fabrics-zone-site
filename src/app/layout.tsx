@@ -92,7 +92,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#FFFFFF",
+  themeColor: "#FBFDF9",
   colorScheme: "light",
 };
 
@@ -164,7 +164,7 @@ export default async function RootLayout({
       }}
     />
   </head>
-  <body className="min-h-screen flex flex-col antialiased bg-gradient-to-br from-teal-50 via-[#fdfaf6] to-blue-50/50">
+  <body className="min-h-screen flex flex-col antialiased bg-gradient-to-br from-teal-50 via-[#fdfaf6] to-blue-50/50" style={{ backgroundColor: '#FBFDF9' }}>
   <SplashScreen />
  <ThemeProvider
  attribute="class"

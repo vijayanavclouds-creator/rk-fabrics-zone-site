@@ -48,6 +48,7 @@ export function SplashScreen() {
           exit={{ opacity: 0 }}
           transition={{ duration: 0.6, ease: "easeInOut" }}
           className="fixed inset-0 z-[99999] flex flex-col items-center justify-center bg-[#FBFDF9]"
+          style={{ backgroundColor: '#FBFDF9' }}
         >
           {/* Logo Animation */}
           <motion.div
