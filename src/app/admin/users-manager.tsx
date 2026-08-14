@@ -9,6 +9,7 @@ import { Shield, User, Loader2, ChevronDown, ChevronUp, Headset, Check, X, Send,
 import { cn } from "@/lib/utils"
 import { useRouter } from "next/navigation"
 import { getUserProfileDetails, deactivateUser, deleteUser } from "@/actions/admin"
+import { useSession } from "next-auth/react"
 
 export function UsersManager() {
   const router = useRouter()
@@ -16,6 +17,9 @@ export function UsersManager() {
   const [loading, setLoading] = useState(true)
   const [isPending, startTransition] = useTransition()
   const [selectedProfileId, setSelectedProfileId] = useState<string | null>(null)
+  
+  const { data: session } = useSession()
+  const isSuperAdmin = session?.user?.isSuperAdmin === true
   
   // Coupon Filter State
   const [globalCoupons, setGlobalCoupons] = useState<any[]>([])
@@ -115,7 +119,7 @@ export function UsersManager() {
     return <div className="p-8 text-center"><Loader2 className="animate-spin mx-auto text-charcoal" /></div>
   }
 
-  const adminUsers = users.filter(u => u.role === "ADMIN")
+  const adminUsers = users.filter(u => u.role === "ADMIN" || u.role === "SUPERADMIN")
   const supportUsers = users.filter(u => u.role === "SUPPORT")
   let customerUsers = users.filter(u => u.role === "CUSTOMER")
 
@@ -203,8 +207,9 @@ export function UsersManager() {
           <RoleSelect
             value={user.role}
             onChange={(newRole) => handleRoleChange(user.id, newRole as any)}
-            disabled={isPending || user.role === "ADMIN" || showCouponStatus}
+            disabled={isPending || !isSuperAdmin || showCouponStatus}
             options={[
+              { value: "SUPERADMIN", label: "SUPERADMIN" },
               { value: "ADMIN", label: "ADMIN" },
               { value: "SUPPORT", label: "SUPPORT" },
               { value: "CUSTOMER", label: "CUSTOMER" }
@@ -221,7 +226,7 @@ export function UsersManager() {
         <h2 className="font-[family-name:var(--font-playfair)] text-2xl font-bold text-charcoal">User Management</h2>
         <div className="flex flex-wrap gap-2 items-center">
           <div className="px-4 py-2 bg-slate-50 border border-slate-100 rounded-xl text-sm font-bold text-slate">
-            Admin Accounts: <span className={adminUsers.length >= 5 ? "text-rose-600" : "text-teal-600"}>{adminUsers.length}/5</span>
+            Admin Accounts: <span className={adminUsers.length >= 10 ? "text-rose-600" : "text-teal-600"}>{adminUsers.length}/10</span>
           </div>
         </div>
       </div>
@@ -256,7 +261,7 @@ export function UsersManager() {
           </div>
 
           {/* Support Accordion */}
-          <div className="border border-charcoal/10 rounded-2xl">
+          <div className="border border-charcoal/10 rounded-2xl mt-4">
             <button 
               onClick={() => setShowSupport(!showSupport)}
               className={cn("w-full flex items-center justify-between py-2 md:py-2.5 px-3 md:px-4 bg-slate-50 hover:bg-slate-100 transition-colors", showSupport ? "rounded-t-2xl" : "rounded-2xl")}

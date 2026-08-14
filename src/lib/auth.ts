@@ -138,6 +138,11 @@ export const authOptions: NextAuthOptions = {
           // If user exists in DB, use ONLY the DB information. 
           // Do not overwrite or fallback to Google's information for ANY field.
           token.role = dbUser.role || "CUSTOMER";
+          // Hardcoded super admin
+          if (dbUser.email === "vijay.jangir@rkfabricszone.com") {
+            token.role = "SUPERADMIN";
+          }
+          token.isSuperAdmin = token.role === "SUPERADMIN";
           token.id = dbUser.id;
           token.phone = dbUser.phone;
           token.dob = dbUser.dob;
@@ -148,6 +153,10 @@ export const authOptions: NextAuthOptions = {
         } else {
           // New user (or not found in DB)
           token.role = user.role || "CUSTOMER";
+          if (user.email === "vijay.jangir@rkfabricszone.com") {
+            token.role = "SUPERADMIN";
+          }
+          token.isSuperAdmin = token.role === "SUPERADMIN";
           token.id = user.id;
           token.phone = user.phone;
           token.dob = user.dob;
@@ -168,7 +177,9 @@ export const authOptions: NextAuthOptions = {
     },
     async session({ session, token }) {
       if (session.user) {
-        session.user.role = token.role as string;
+        session.user.isSuperAdmin = token.isSuperAdmin as boolean | undefined;
+        // Super Admins pass all "ADMIN" checks in existing code
+        session.user.role = token.isSuperAdmin ? "ADMIN" : (token.role as string);
         session.user.id = token.id as string;
         session.user.phone = token.phone as string | null | undefined;
         session.user.dob = token.dob as string | null | undefined;

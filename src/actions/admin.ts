@@ -695,29 +695,26 @@ export async function toggleProductStatus(productId: string, isActive: boolean) 
   }
 }
 
-export async function updateUserRole(userId: string, newRole: "CUSTOMER" | "ADMIN" | "SUPPORT") {
+export async function updateUserRole(userId: string, newRole: "CUSTOMER" | "ADMIN" | "SUPPORT" | "SUPERADMIN") {
   try {
     const session = await getServerSession(authOptions)
-    if (!session || session.user.role !== "ADMIN") {
-      return { success: false, error: "Unauthorized" }
+    if (!session || !session.user.isSuperAdmin) {
+      return { success: false, error: "Only Super Admins can change user roles." }
     }
 
     if (userId === session.user.id) {
-      return { success: false, error: "You cannot change your own role" }
+      return { success: false, error: "You cannot change your own role." }
     }
 
-    if (newRole === "ADMIN") {
-      const adminCount = await prisma.user.count({ where: { role: "ADMIN" } })
-      if (adminCount >= 5) {
-        return { success: false, error: "Maximum limit of 5 admin accounts reached." }
+    if (newRole === "ADMIN" || newRole === "SUPERADMIN") {
+      const adminCount = await prisma.user.count({ where: { role: { in: ["ADMIN", "SUPERADMIN"] } } })
+      if (adminCount >= 10) {
+        return { success: false, error: "Maximum limit of 10 admin accounts reached." }
       }
     }
 
     const currentUser = await prisma.user.findUnique({ where: { id: userId } })
-    if (currentUser?.role === "ADMIN" && newRole !== "ADMIN") {
-      return { success: false, error: "Admin accounts cannot be demoted by other admins." }
-    }
-
+    
     await prisma.user.update({
       where: { id: userId },
       data: { role: newRole }

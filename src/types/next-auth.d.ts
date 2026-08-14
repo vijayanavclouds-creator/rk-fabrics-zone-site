@@ -3,6 +3,7 @@ import "next-auth"
 declare module "next-auth" {
   interface User {
     role?: string
+    isSuperAdmin?: boolean
     phone?: string | null
     dob?: string | null
     image?: string | null
@@ -13,6 +14,7 @@ declare module "next-auth" {
     user: User & {
       id: string
       role: string
+      isSuperAdmin?: boolean
       phone?: string | null
       dob?: string | null
       image?: string | null
@@ -25,6 +27,7 @@ declare module "next-auth/jwt" {
   interface JWT {
     id: string
     role: string
+    isSuperAdmin?: boolean
     phone?: string | null
     dob?: string | null
     image?: string | null
