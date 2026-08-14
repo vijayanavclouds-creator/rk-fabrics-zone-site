@@ -15,6 +15,7 @@ import { getAnnouncementBanner } from "@/actions/system";
 import { getNavigationLinksData } from "@/lib/data/system";
 import { HideOnMobilePortal, HideOnAllPortal, PortalMainWrapper } from "@/components/layout/global-layout-wrapper";
 import { SplashScreen } from "@/components/layout/splash-screen";
+import { PwaSplashScreens } from "@/components/layout/pwa-splash-screens";
 import "./globals.css";
 
 const playfair = Playfair_Display({
@@ -115,6 +116,7 @@ export default async function RootLayout({
   suppressHydrationWarning
   >
   <head>
+    <PwaSplashScreens />
     <Script
       id="ld-json"
       type="application/ld+json"
