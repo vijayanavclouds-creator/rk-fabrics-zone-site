@@ -17,10 +17,10 @@ export async function POST(req: Request) {
       return NextResponse.json({ success: false, error: "Account not found or unauthorized for this portal" }, { status: 401 })
     }
 
-    if (requiredRole === "ADMIN" && user.role !== "ADMIN") {
+    if (requiredRole === "ADMIN" && user.role !== "ADMIN" && user.role !== "SUPERADMIN") {
       return NextResponse.json({ success: false, error: "Unauthorized: Administrator privileges required" }, { status: 403 })
     }
-    if (requiredRole === "SUPPORT" && user.role !== "SUPPORT" && user.role !== "ADMIN") {
+    if (requiredRole === "SUPPORT" && user.role !== "SUPPORT" && user.role !== "ADMIN" && user.role !== "SUPERADMIN") {
       return NextResponse.json({ success: false, error: "Unauthorized: Staff privileges required" }, { status: 403 })
     }
     if (user.isActive === false) {
