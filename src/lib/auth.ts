@@ -138,10 +138,6 @@ export const authOptions: NextAuthOptions = {
           // If user exists in DB, use ONLY the DB information. 
           // Do not overwrite or fallback to Google's information for ANY field.
           token.role = dbUser.role || "CUSTOMER";
-          // Hardcoded super admin
-          if (dbUser.email === "vijay.jangir@rkfabricszone.com") {
-            token.role = "SUPERADMIN";
-          }
           token.isSuperAdmin = token.role === "SUPERADMIN";
           token.id = dbUser.id;
           token.phone = dbUser.phone;
@@ -153,9 +149,6 @@ export const authOptions: NextAuthOptions = {
         } else {
           // New user (or not found in DB)
           token.role = user.role || "CUSTOMER";
-          if (user.email === "vijay.jangir@rkfabricszone.com") {
-            token.role = "SUPERADMIN";
-          }
           token.isSuperAdmin = token.role === "SUPERADMIN";
           token.id = user.id;
           token.phone = user.phone;
