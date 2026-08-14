@@ -19,7 +19,6 @@ interface ProductCardProps {
 }
 
  export function ProductCard({ product, index = 0, variant = "default" }: ProductCardProps) {
-  const [isHovered, setIsHovered] = useState(false);
   const router = useRouter();
   const addItem = useCartStore((s) => s.addItem);
   const [isMounted, setIsMounted] = useState(false);
@@ -104,8 +103,6 @@ interface ProductCardProps {
   <Link
   href={productUrl}
   className="product-card block group relative bg-cream rounded-none p-[7px] shadow-neo-card transition-all duration-300 hover:shadow-neo-pressed flex flex-col h-full"
-  onMouseEnter={() => setIsHovered(true)}
-  onMouseLeave={() => setIsHovered(false)}
   >
   {/* Image Area */}
   <div className="relative aspect-[4/5] bg-cream shadow-neo-pressed rounded-none overflow-hidden shrink-0">
@@ -175,26 +172,21 @@ interface ProductCardProps {
   />
   </button>
 
-  {/* Quick Actions (on hover) */}
-  <motion.div
-  initial={{ opacity: 0, y: 20 }}
-  animate={{ opacity: isHovered ? 1 : 0, y: isHovered ? 0 : 20 }}
-  transition={{ duration: 0.2 }}
-  className="absolute bottom-2 left-2 right-2 z-10 flex gap-1.5"
-  >
+  {/* Quick Actions (on hover) - Hidden on mobile to prevent double-tap navigation bugs */}
+  <div className="hidden md:flex absolute bottom-2 left-2 right-2 z-10 gap-1.5 opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 pointer-events-none group-hover:pointer-events-auto">
   <button
   onClick={handleAddToCart}
-  className="flex-1 flex items-center justify-center gap-1.5 py-2 bg-teal-600 hover:bg-teal-700 text-white text-xs font-semibold rounded-lg shadow-lg transition-colors"
+  className="flex-1 flex items-center justify-center gap-1.5 py-2 bg-teal-600 hover:bg-teal-700 text-white text-xs font-semibold rounded-lg shadow-lg transition-colors pointer-events-auto"
   >
   <ShoppingBag size={12} /> Add
   </button>
   <button
   onClick={handleQuickView}
-  className="w-8 h-8 bg-white text-charcoal rounded-lg shadow-lg flex items-center justify-center hover:bg-teal-50 transition-colors"
+  className="w-8 h-8 bg-white text-charcoal rounded-lg shadow-lg flex items-center justify-center hover:bg-teal-50 transition-colors pointer-events-auto"
   >
   <Eye size={14} />
   </button>
-  </motion.div>
+  </div>
 
   {/* Urgency */}
   {lowStock && (

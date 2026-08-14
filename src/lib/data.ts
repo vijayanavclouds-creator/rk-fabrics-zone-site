@@ -965,127 +965,6 @@ export const products: Product[] = [
     "reviews": []
   },
   {
-    "id": "cmsqaoppg001c8o8c94271vle",
-    "name": "Teal Floral Casual Top",
-    "slug": "teal-floral-casual-top-5195",
-    "description": "",
-    "detailsHtml": null,
-    "shortDescription": "Short description",
-    "category": "[\"women-western\",\"upperwear\"]",
-    "subcategory": "[\"tops-tunics\"]",
-    "subSubcategory": "[]",
-    "gender": "women",
-    "type": "readymade",
-    "basePrice": 399,
-    "salePrice": 359.1,
-    "discountPercent": 10,
-    "isOnSale": false,
-    "isFreeDelivery": true,
-    "fabric": "Cotton Blend",
-    "fabricDetails": null,
-    "occasion": [],
-    "tags": [],
-    "rating": 0,
-    "reviewCount": 0,
-    "isFeatured": false,
-    "isNewArrival": true,
-    "isBestseller": false,
-    "isActive": true,
-    "isReturnable": true,
-    "createdAt": "2026-08-12T16:19:45.196Z",
-    "variants": [
-      {
-        "id": "cmsqap4dg001g8o8c0ab4n1rx",
-        "sku": "VAR-604324",
-        "size": "S",
-        "color": "Gray",
-        "colorHex": "#5A7C85",
-        "price": 399,
-        "salePrice": 359.1,
-        "stock": 10,
-        "productId": "cmsqaoppg001c8o8c94271vle"
-      },
-      {
-        "id": "cmsqap4sh001i8o8cszlebpeu",
-        "sku": "VAR-604864",
-        "size": "M",
-        "color": "Gray",
-        "colorHex": "#5A7C85",
-        "price": 399,
-        "salePrice": 359.1,
-        "stock": 10,
-        "productId": "cmsqaoppg001c8o8c94271vle"
-      },
-      {
-        "id": "cmsqap57h001k8o8cfhostsob",
-        "sku": "VAR-605403",
-        "size": "L",
-        "color": "Gray",
-        "colorHex": "#5A7C85",
-        "price": 399,
-        "salePrice": 359.1,
-        "stock": 10,
-        "productId": "cmsqaoppg001c8o8c94271vle"
-      },
-      {
-        "id": "cmsqap5ml001m8o8cok1p5ni1",
-        "sku": "VAR-605948",
-        "size": "XL",
-        "color": "Gray",
-        "colorHex": "#5A7C85",
-        "price": 399,
-        "salePrice": 359.1,
-        "stock": 10,
-        "productId": "cmsqaoppg001c8o8c94271vle"
-      }
-    ],
-    "images": [
-      {
-        "id": "cmsqap6h3001o8o8c25efoc8r",
-        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1786551590/rk-fabrics/products/blob_k3bmrd.jpg",
-        "alt": "Teal Floral Casual Top1.png",
-        "isPrimary": false,
-        "productId": "cmsqaoppg001c8o8c94271vle"
-      },
-      {
-        "id": "cmsqap6w7001q8o8cxya45hm0",
-        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1786551592/rk-fabrics/products/blob_q4mpsf.jpg",
-        "alt": "Teal Floral Casual Top2.png",
-        "isPrimary": false,
-        "productId": "cmsqaoppg001c8o8c94271vle"
-      },
-      {
-        "id": "cmsqap7av001s8o8cysc8dth0",
-        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1786551594/rk-fabrics/products/blob_ccwog1.jpg",
-        "alt": "Teal Floral Casual Top3.png",
-        "isPrimary": false,
-        "productId": "cmsqaoppg001c8o8c94271vle"
-      },
-      {
-        "id": "cmsqap851001w8o8c9yvwig1v",
-        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1786551599/rk-fabrics/products/blob_waolms.jpg",
-        "alt": "Teal Floral Casual Top5.png",
-        "isPrimary": false,
-        "productId": "cmsqaoppg001c8o8c94271vle"
-      },
-      {
-        "id": "cmsqap8k9001y8o8c5nflpp6n",
-        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1786551601/rk-fabrics/products/Teal_Floral_Casual_Top6_spog0y.jpg",
-        "alt": "Teal Floral Casual Top6.png",
-        "isPrimary": false,
-        "productId": "cmsqaoppg001c8o8c94271vle"
-      },
-      {
-        "id": "cmsqap7q4001u8o8cwro1vhdp",
-        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1786551597/rk-fabrics/products/Teal_Floral_Casual_Top4_h7c9vy.jpg",
-        "alt": "Teal Floral Casual Top4.png",
-        "isPrimary": true,
-        "productId": "cmsqaoppg001c8o8c94271vle"
-      }
-    ],
-    "reviews": []
-  },
-  {
     "id": "cmsqbntda00238o8c7knindav",
     "name": "Solid Square-Neck Fit and Flare",
     "slug": "solid-square-neck-fit-and-flare-2036",
@@ -1195,6 +1074,362 @@ export const products: Product[] = [
         "alt": "Solid Square-Neck Fit and Flare7.png",
         "isPrimary": false,
         "productId": "cmsqbntda00238o8c7knindav"
+      }
+    ],
+    "reviews": []
+  },
+  {
+    "id": "cmsrjrq3r0000109j6d0axoya",
+    "name": "Striped Cotton Fit and Flare Midi Dress",
+    "slug": "striped-cotton-fit-and-flare-midi-dress-8415",
+    "description": "",
+    "detailsHtml": null,
+    "shortDescription": "Short description",
+    "category": "[\"women-western\",\"upperwear\"]",
+    "subcategory": "[\"dresses-maxi\"]",
+    "subSubcategory": "[]",
+    "gender": "women",
+    "type": "readymade",
+    "basePrice": 499,
+    "salePrice": 449.1,
+    "discountPercent": 10,
+    "isOnSale": false,
+    "isFreeDelivery": true,
+    "fabric": "Cotton Linen Blend",
+    "fabricDetails": null,
+    "occasion": [],
+    "tags": [],
+    "rating": 0,
+    "reviewCount": 0,
+    "isFeatured": false,
+    "isNewArrival": true,
+    "isBestseller": false,
+    "isActive": true,
+    "isReturnable": true,
+    "createdAt": "2026-08-13T13:21:48.417Z",
+    "variants": [
+      {
+        "id": "cmsrjs6gn0004109jxjupx6tq",
+        "sku": "VAR-329719",
+        "size": "S",
+        "color": "Brown",
+        "colorHex": "#7B3F4C",
+        "price": 0,
+        "salePrice": 0,
+        "stock": 10,
+        "productId": "cmsrjrq3r0000109j6d0axoya"
+      },
+      {
+        "id": "cmsrjs6vb0006109ja7qvpkpm",
+        "sku": "VAR-330245",
+        "size": "M",
+        "color": "Brown",
+        "colorHex": "#7B3F4C",
+        "price": 0,
+        "salePrice": 0,
+        "stock": 10,
+        "productId": "cmsrjrq3r0000109j6d0axoya"
+      },
+      {
+        "id": "cmsrjs79f0008109jza56ygxl",
+        "sku": "VAR-330755",
+        "size": "L",
+        "color": "Brown",
+        "colorHex": "#7B3F4C",
+        "price": 0,
+        "salePrice": 0,
+        "stock": 10,
+        "productId": "cmsrjrq3r0000109j6d0axoya"
+      },
+      {
+        "id": "cmsrjs7nl000a109jwhpih06r",
+        "sku": "VAR-331264",
+        "size": "XL",
+        "color": "Brown",
+        "colorHex": "#7B3F4C",
+        "price": 0,
+        "salePrice": 0,
+        "stock": 10,
+        "productId": "cmsrjrq3r0000109j6d0axoya"
+      }
+    ],
+    "images": [
+      {
+        "id": "cmsrjs8ie000c109j8beb93f2",
+        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1786627313/rk-fabrics/products/blob_df9f8e.jpg",
+        "alt": "Striped Cotton Fit and Flare Midi Dress2.png",
+        "isPrimary": false,
+        "productId": "cmsrjrq3r0000109j6d0axoya"
+      },
+      {
+        "id": "cmsrjs8wx000e109jq6b299dv",
+        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1786627315/rk-fabrics/products/blob_edpago.jpg",
+        "alt": "Striped Cotton Fit and Flare Midi Dress3.png",
+        "isPrimary": false,
+        "productId": "cmsrjrq3r0000109j6d0axoya"
+      },
+      {
+        "id": "cmsrjs9bz000g109j8xogn5du",
+        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1786627318/rk-fabrics/products/blob_ohljet.jpg",
+        "alt": "Striped Cotton Fit and Flare Midi Dress4.png",
+        "isPrimary": true,
+        "productId": "cmsrjrq3r0000109j6d0axoya"
+      },
+      {
+        "id": "cmsrjs9qk000i109jj8qfhll6",
+        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1786627320/rk-fabrics/products/blob_ahhwav.jpg",
+        "alt": "Striped Cotton Fit and Flare Midi Dress.png",
+        "isPrimary": false,
+        "productId": "cmsrjrq3r0000109j6d0axoya"
+      },
+      {
+        "id": "cmsrjsa5c000k109jqroa9ewe",
+        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1786627323/rk-fabrics/products/blob_ramta7.jpg",
+        "alt": "Striped Cotton Fit and Flare Midi Dress1.png",
+        "isPrimary": false,
+        "productId": "cmsrjrq3r0000109j6d0axoya"
+      },
+      {
+        "id": "cmsrjsak1000m109jub0qyeuv",
+        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1786627327/rk-fabrics/products/blob_dg59w1.jpg",
+        "alt": "Striped Cotton Fit and Flare Midi Dress5.png",
+        "isPrimary": false,
+        "productId": "cmsrjrq3r0000109j6d0axoya"
+      }
+    ],
+    "reviews": []
+  },
+  {
+    "id": "cmssrz0jj000p109j9pje6sfc",
+    "name": "Beige Boho Floral V-Neck Tiered Dress",
+    "slug": "beige-boho-floral-v-neck-tiered-dress-1649",
+    "description": "",
+    "detailsHtml": null,
+    "shortDescription": "Short description",
+    "category": "[\"women-western\",\"upperwear\"]",
+    "subcategory": "[\"dresses-maxi\"]",
+    "subSubcategory": "[]",
+    "gender": "women",
+    "type": "readymade",
+    "basePrice": 499,
+    "salePrice": 449.1,
+    "discountPercent": 10,
+    "isOnSale": false,
+    "isFreeDelivery": true,
+    "fabric": "Cotton-Linen Blend",
+    "fabricDetails": null,
+    "occasion": [],
+    "tags": [],
+    "rating": 0,
+    "reviewCount": 0,
+    "isFeatured": false,
+    "isNewArrival": true,
+    "isBestseller": false,
+    "isActive": true,
+    "isReturnable": true,
+    "createdAt": "2026-08-14T09:59:11.650Z",
+    "variants": [
+      {
+        "id": "cmssrzgq2000t109jbor63sk3",
+        "sku": "VAR-572713",
+        "size": "S",
+        "color": "Beige",
+        "colorHex": "#F3EFE6",
+        "price": 499,
+        "salePrice": 449.1,
+        "stock": 10,
+        "productId": "cmssrz0jj000p109j9pje6sfc"
+      },
+      {
+        "id": "cmssrzh3s000v109jd1ifgpby",
+        "sku": "VAR-573207",
+        "size": "M",
+        "color": "Beige",
+        "colorHex": "#F3EFE6",
+        "price": 499,
+        "salePrice": 449.1,
+        "stock": 10,
+        "productId": "cmssrz0jj000p109j9pje6sfc"
+      },
+      {
+        "id": "cmssrzhhs000x109jsp6u9k4n",
+        "sku": "VAR-573711",
+        "size": "L",
+        "color": "Beige",
+        "colorHex": "#F3EFE6",
+        "price": 499,
+        "salePrice": 449.1,
+        "stock": 10,
+        "productId": "cmssrz0jj000p109j9pje6sfc"
+      },
+      {
+        "id": "cmssrzhvv000z109j0b1pz80v",
+        "sku": "VAR-574217",
+        "size": "XL",
+        "color": "Beige",
+        "colorHex": "#F3EFE6",
+        "price": 499,
+        "salePrice": 449.1,
+        "stock": 10,
+        "productId": "cmssrz0jj000p109j9pje6sfc"
+      }
+    ],
+    "images": [
+      {
+        "id": "cmssrzins0011109j6ba70gzi",
+        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1786701557/rk-fabrics/products/blob_hbp2iq.jpg",
+        "alt": "Beige Boho Floral V-Neck Tiered Dress1.png",
+        "isPrimary": false,
+        "productId": "cmssrz0jj000p109j9pje6sfc"
+      },
+      {
+        "id": "cmssrzj220013109ja5obssxz",
+        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1786701559/rk-fabrics/products/blob_s2jnk7.jpg",
+        "alt": "Beige Boho Floral V-Neck Tiered Dress2.png",
+        "isPrimary": false,
+        "productId": "cmssrz0jj000p109j9pje6sfc"
+      },
+      {
+        "id": "cmssrzjg00015109jm6zqyxf8",
+        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1786701565/rk-fabrics/products/blob_xmkz4q.jpg",
+        "alt": "Beige Boho Floral V-Neck Tiered Dress4.png",
+        "isPrimary": true,
+        "productId": "cmssrz0jj000p109j9pje6sfc"
+      },
+      {
+        "id": "cmssrzju40017109j9v8oygky",
+        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1786701567/rk-fabrics/products/blob_n4j08d.jpg",
+        "alt": "Beige Boho Floral V-Neck Tiered Dress6.png",
+        "isPrimary": false,
+        "productId": "cmssrz0jj000p109j9pje6sfc"
+      },
+      {
+        "id": "cmssrzk7q0019109jqbvv7bdy",
+        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1786701570/rk-fabrics/products/Beige_Boho_Floral_V-Neck_Tiered_Dress7_rd26rk.jpg",
+        "alt": "Beige Boho Floral V-Neck Tiered Dress7.png",
+        "isPrimary": false,
+        "productId": "cmssrz0jj000p109j9pje6sfc"
+      }
+    ],
+    "reviews": []
+  },
+  {
+    "id": "cmsqaoppg001c8o8c94271vle",
+    "name": "Teal Floral Casual Top",
+    "slug": "teal-floral-casual-top-5195",
+    "description": "",
+    "detailsHtml": null,
+    "shortDescription": "Short description",
+    "category": "[\"women-western\",\"upperwear\"]",
+    "subcategory": "[\"tops-tunics\"]",
+    "subSubcategory": "[]",
+    "gender": "women",
+    "type": "readymade",
+    "basePrice": 399,
+    "salePrice": 359.1,
+    "discountPercent": 10,
+    "isOnSale": false,
+    "isFreeDelivery": true,
+    "fabric": "Cotton Blend",
+    "fabricDetails": null,
+    "occasion": [],
+    "tags": [],
+    "rating": 0,
+    "reviewCount": 0,
+    "isFeatured": false,
+    "isNewArrival": true,
+    "isBestseller": false,
+    "isActive": true,
+    "isReturnable": true,
+    "createdAt": "2026-08-12T16:19:45.196Z",
+    "variants": [
+      {
+        "id": "cmsqap4dg001g8o8c0ab4n1rx",
+        "sku": "VAR-604324",
+        "size": "S",
+        "color": "Gray",
+        "colorHex": "#5A7C85",
+        "price": 399,
+        "salePrice": 359.1,
+        "stock": 10,
+        "productId": "cmsqaoppg001c8o8c94271vle"
+      },
+      {
+        "id": "cmsqap4sh001i8o8cszlebpeu",
+        "sku": "VAR-604864",
+        "size": "M",
+        "color": "Gray",
+        "colorHex": "#5A7C85",
+        "price": 399,
+        "salePrice": 359.1,
+        "stock": 10,
+        "productId": "cmsqaoppg001c8o8c94271vle"
+      },
+      {
+        "id": "cmsqap57h001k8o8cfhostsob",
+        "sku": "VAR-605403",
+        "size": "L",
+        "color": "Gray",
+        "colorHex": "#5A7C85",
+        "price": 399,
+        "salePrice": 359.1,
+        "stock": 10,
+        "productId": "cmsqaoppg001c8o8c94271vle"
+      },
+      {
+        "id": "cmsqap5ml001m8o8cok1p5ni1",
+        "sku": "VAR-605948",
+        "size": "XL",
+        "color": "Gray",
+        "colorHex": "#5A7C85",
+        "price": 399,
+        "salePrice": 359.1,
+        "stock": 10,
+        "productId": "cmsqaoppg001c8o8c94271vle"
+      }
+    ],
+    "images": [
+      {
+        "id": "cmsqap6w7001q8o8cxya45hm0",
+        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1786551592/rk-fabrics/products/blob_q4mpsf.jpg",
+        "alt": "Teal Floral Casual Top2.png",
+        "isPrimary": false,
+        "productId": "cmsqaoppg001c8o8c94271vle"
+      },
+      {
+        "id": "cmsqap7av001s8o8cysc8dth0",
+        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1786551594/rk-fabrics/products/blob_ccwog1.jpg",
+        "alt": "Teal Floral Casual Top3.png",
+        "isPrimary": false,
+        "productId": "cmsqaoppg001c8o8c94271vle"
+      },
+      {
+        "id": "cmsqap851001w8o8c9yvwig1v",
+        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1786551599/rk-fabrics/products/blob_waolms.jpg",
+        "alt": "Teal Floral Casual Top5.png",
+        "isPrimary": false,
+        "productId": "cmsqaoppg001c8o8c94271vle"
+      },
+      {
+        "id": "cmsqap8k9001y8o8c5nflpp6n",
+        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1786551601/rk-fabrics/products/Teal_Floral_Casual_Top6_spog0y.jpg",
+        "alt": "Teal Floral Casual Top6.png",
+        "isPrimary": false,
+        "productId": "cmsqaoppg001c8o8c94271vle"
+      },
+      {
+        "id": "cmsqap7q4001u8o8cwro1vhdp",
+        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1786551597/rk-fabrics/products/Teal_Floral_Casual_Top4_h7c9vy.jpg",
+        "alt": "Teal Floral Casual Top4.png",
+        "isPrimary": false,
+        "productId": "cmsqaoppg001c8o8c94271vle"
+      },
+      {
+        "id": "cmsqap6h3001o8o8c25efoc8r",
+        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1786551590/rk-fabrics/products/blob_k3bmrd.jpg",
+        "alt": "Teal Floral Casual Top1.png",
+        "isPrimary": true,
+        "productId": "cmsqaoppg001c8o8c94271vle"
       }
     ],
     "reviews": []
