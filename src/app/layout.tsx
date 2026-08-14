@@ -14,6 +14,7 @@ import { Toaster } from "sonner";
 import { getAnnouncementBanner } from "@/actions/system";
 import { getNavigationLinksData } from "@/lib/data/system";
 import { HideOnMobilePortal, HideOnAllPortal, PortalMainWrapper } from "@/components/layout/global-layout-wrapper";
+import { SplashScreen } from "@/components/layout/splash-screen";
 import "./globals.css";
 
 const playfair = Playfair_Display({
@@ -162,6 +163,7 @@ export default async function RootLayout({
     />
   </head>
   <body className="min-h-screen flex flex-col antialiased bg-gradient-to-br from-teal-50 via-[#fdfaf6] to-blue-50/50">
+  <SplashScreen />
  <ThemeProvider
  attribute="class"
  defaultTheme="light"
