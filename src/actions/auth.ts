@@ -322,10 +322,10 @@ export async function sendStaffLoginOtp(rawEmail: string, requiredRole: "ADMIN" 
       return { success: false, error: "Account not found or unauthorized for this portal" };
     }
 
-    if (requiredRole === "ADMIN" && user.role !== "ADMIN") {
+    if (requiredRole === "ADMIN" && user.role !== "ADMIN" && user.role !== "SUPERADMIN") {
       return { success: false, error: "Unauthorized: Administrator privileges required" };
     }
-    if (requiredRole === "SUPPORT" && user.role !== "SUPPORT" && user.role !== "ADMIN") {
+    if (requiredRole === "SUPPORT" && user.role !== "SUPPORT" && user.role !== "ADMIN" && user.role !== "SUPERADMIN") {
       return { success: false, error: "Unauthorized: Staff privileges required" };
     }
     if (user.isActive === false) {

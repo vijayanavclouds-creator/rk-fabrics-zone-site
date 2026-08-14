@@ -50,7 +50,7 @@ export const authOptions: NextAuthOptions = {
 
         // Portal Isolation Logic
         if (credentials.portalType === "customer") {
-          if (user.role === "ADMIN" || user.role === "SUPPORT") {
+          if (user.role === "ADMIN" || user.role === "SUPERADMIN" || user.role === "SUPPORT") {
             throw new Error("Executive accounts must log in through their authorized staff portal.");
           }
         }
@@ -58,10 +58,10 @@ export const authOptions: NextAuthOptions = {
         // Executive / Support OTP 2FA Verification
         if (credentials.portalType === "admin" || credentials.portalType === "support") {
           const requiredRole = credentials.portalType === "admin" ? "ADMIN" : "SUPPORT";
-          if (requiredRole === "ADMIN" && user.role !== "ADMIN") {
+          if (requiredRole === "ADMIN" && user.role !== "ADMIN" && user.role !== "SUPERADMIN") {
             throw new Error("Unauthorized: Administrator privileges required.");
           }
-          if (requiredRole === "SUPPORT" && user.role !== "SUPPORT" && user.role !== "ADMIN") {
+          if (requiredRole === "SUPPORT" && user.role !== "SUPPORT" && user.role !== "ADMIN" && user.role !== "SUPERADMIN") {
             throw new Error("Unauthorized: Staff privileges required.");
           }
 
