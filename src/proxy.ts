@@ -21,7 +21,7 @@ export default withAuth(
     if (isCustomerAuthPage || isAnyPortal) {
       if (isAuth) {
         // If an Admin is already logged in, redirect them to Admin HQ
-        if (token.role === 'ADMIN') {
+        if (token.role === 'ADMIN' || token.role === 'SUPERADMIN') {
           return NextResponse.redirect(new URL('/admin?tab=overview', req.url))
         }
         // If Support staff is already logged in, redirect them to Support Desk
@@ -36,7 +36,7 @@ export default withAuth(
 
     // 2. Home page redirect for staff
     if (req.nextUrl.pathname === '/') {
-      if (token?.role === 'ADMIN') {
+      if (token?.role === 'ADMIN' || token?.role === 'SUPERADMIN') {
         return NextResponse.redirect(new URL('/admin?tab=overview', req.url))
       }
       if (token?.role === 'SUPPORT') {
@@ -53,7 +53,7 @@ export default withAuth(
                                   req.nextUrl.pathname.startsWith('/wishlist')) && 
                                   !req.nextUrl.pathname.endsWith('/invoice');
       if (isCustomerOnlyRoute) {
-        if (token.role === 'ADMIN') {
+        if (token.role === 'ADMIN' || token.role === 'SUPERADMIN') {
           return NextResponse.redirect(new URL('/admin?tab=overview', req.url))
         }
         if (token.role === 'SUPPORT') {
@@ -74,12 +74,12 @@ export default withAuth(
     }
 
     // 5. Role enforcement for Admin pages
-    if (isAdminPage && token?.role !== 'ADMIN') {
+    if (isAdminPage && token?.role !== 'ADMIN' && token?.role !== 'SUPERADMIN') {
       return NextResponse.redirect(new URL('/account', req.url))
     }
 
     // 6. Role enforcement for Support pages
-    if (isSupportPage && token?.role !== 'SUPPORT' && token?.role !== 'ADMIN') {
+    if (isSupportPage && token?.role !== 'SUPPORT' && token?.role !== 'ADMIN' && token?.role !== 'SUPERADMIN') {
       return NextResponse.redirect(new URL('/account', req.url))
     }
   },
