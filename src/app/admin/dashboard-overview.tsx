@@ -351,7 +351,7 @@ export function DashboardOverview({ initialData, isSupport = false }: { initialD
           </div>
         </Link>
 
-        <Link href="/admin?tab=banner2" className="flex items-center gap-2.5 md:gap-3 p-2 md:p-3 bg-white rounded-xl border border-slate-100 hover:border-purple-200 hover:shadow-sm transition-all group">
+        <Link href="/admin?tab=banners" className="flex items-center gap-2.5 md:gap-3 p-2 md:p-3 bg-white rounded-xl border border-slate-100 hover:border-purple-200 hover:shadow-sm transition-all group">
           <div className="p-2 md:p-2.5 bg-indigo-50 text-indigo-600 rounded-lg group-hover:bg-indigo-100 transition-colors">
             <ImageIcon size={16} className="md:w-5 md:h-5" />
           </div>
