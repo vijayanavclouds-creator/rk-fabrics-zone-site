@@ -220,7 +220,7 @@ export function DashboardOverview({ initialData, isSupport = false }: { initialD
 
   const ChartCard = (
     <GlassCard className="!p-3 md:!p-6 bg-white !rounded-2xl">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-1 mb-2">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-1 mb-2 relative z-50">
         <h3 className="text-xs md:text-sm font-bold text-charcoal flex items-center gap-1.5">
           <Activity size={14} className="text-slate-400 stroke-[2.5]" />
           Performance <span className="hidden sm:inline">({timeRange === "365" ? "Last 1 Year" : timeRange === "730" ? "Last 2 Years" : timeRange === "1095" ? "Last 3 Years" : timeRange === "1460" ? "Last 4 Years" : timeRange === "1825" ? "Last 5 Years" : `Last ${timeRange} Days`})</span>
@@ -229,7 +229,7 @@ export function DashboardOverview({ initialData, isSupport = false }: { initialD
           <MetricSelect 
             value={timeRange}
             onChange={(val) => setTimeRange(val)}
-            className="flex-1 sm:flex-none"
+            className="flex-1 sm:flex-none relative z-50"
             options={[
               { value: "30", label: "Last 30 Days" },
               { value: "45", label: "Last 45 Days" },
@@ -245,7 +245,7 @@ export function DashboardOverview({ initialData, isSupport = false }: { initialD
           <MetricSelect 
             value={activeMetric}
             onChange={(val) => setActiveMetric(val as any)}
-            className="flex-1 sm:flex-none"
+            className="flex-1 sm:flex-none relative z-50"
             options={[
               { value: "all", label: "All Metrics" },
               { value: "sales", label: "Sales (₹)" },
