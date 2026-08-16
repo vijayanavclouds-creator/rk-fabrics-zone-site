@@ -48,49 +48,17 @@ export const DEFAULT_CAROUSEL_HTML = `<section class="py-12 md:py-20 bg-white">
     </div>
     
     <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-      <!-- Item 1 -->
-      <a href="/shop?category=cottons" class="group block relative rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+      {{#each newArrivals}}
+      <a href="/product/{{this.slug}}" class="group block relative rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow">
         <div class="aspect-[4/5] bg-slate-100 relative">
-          <img src="https://images.unsplash.com/photo-1584852952528-6625db197d19?auto=format&fit=crop&q=80&w=800" class="object-cover w-full h-full group-hover:scale-105 transition-transform duration-500" alt="Cottons" />
+          <img src="{{this.images.[0].url}}" class="object-cover w-full h-full group-hover:scale-105 transition-transform duration-500" alt="{{this.name}}" />
         </div>
         <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex flex-col justify-end p-4 md:p-6">
-          <h3 class="text-white font-bold text-lg md:text-xl mb-1">Pure Cottons</h3>
+          <h3 class="text-white font-bold text-lg md:text-xl mb-1">{{this.name}}</h3>
           <span class="text-white/80 text-sm font-medium flex items-center gap-1 group-hover:gap-2 transition-all">Shop Now →</span>
         </div>
       </a>
-      
-      <!-- Item 2 -->
-      <a href="/shop?category=silks" class="group block relative rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow">
-        <div class="aspect-[4/5] bg-slate-100 relative">
-          <img src="https://images.unsplash.com/photo-1596464518118-2e008d66df16?auto=format&fit=crop&q=80&w=800" class="object-cover w-full h-full group-hover:scale-105 transition-transform duration-500" alt="Silks" />
-        </div>
-        <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex flex-col justify-end p-4 md:p-6">
-          <h3 class="text-white font-bold text-lg md:text-xl mb-1">Premium Silks</h3>
-          <span class="text-white/80 text-sm font-medium flex items-center gap-1 group-hover:gap-2 transition-all">Shop Now →</span>
-        </div>
-      </a>
-      
-      <!-- Item 3 -->
-      <a href="/shop?category=chiffons" class="group block relative rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow">
-        <div class="aspect-[4/5] bg-slate-100 relative">
-          <img src="https://images.unsplash.com/photo-1588629731633-e1882d92176b?auto=format&fit=crop&q=80&w=800" class="object-cover w-full h-full group-hover:scale-105 transition-transform duration-500" alt="Chiffons" />
-        </div>
-        <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex flex-col justify-end p-4 md:p-6">
-          <h3 class="text-white font-bold text-lg md:text-xl mb-1">Elegant Chiffons</h3>
-          <span class="text-white/80 text-sm font-medium flex items-center gap-1 group-hover:gap-2 transition-all">Shop Now →</span>
-        </div>
-      </a>
-      
-      <!-- Item 4 -->
-      <a href="/shop?category=linens" class="group block relative rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow">
-        <div class="aspect-[4/5] bg-slate-100 relative">
-          <img src="https://images.unsplash.com/photo-1596464518118-2e008d66df16?auto=format&fit=crop&q=80&w=800" class="object-cover w-full h-full group-hover:scale-105 transition-transform duration-500" alt="Linens" />
-        </div>
-        <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex flex-col justify-end p-4 md:p-6">
-          <h3 class="text-white font-bold text-lg md:text-xl mb-1">Summer Linens</h3>
-          <span class="text-white/80 text-sm font-medium flex items-center gap-1 group-hover:gap-2 transition-all">Shop Now →</span>
-        </div>
-      </a>
+      {{/each}}
     </div>
   </div>
 </section>`;

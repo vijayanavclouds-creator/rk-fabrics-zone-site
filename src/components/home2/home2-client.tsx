@@ -2,12 +2,90 @@
 
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
+import { useEffect, useMemo } from "react";
+import { useRouter } from "next/navigation";
 
 export function Home2Client({ heroHtml, carouselHtml }: { heroHtml: string, carouselHtml: string }) {
+  const router = useRouter();
+
+  // Clean HTML by removing <script> tags to hide them from Elements tab
+  const { cleanHeroHtml, cleanCarouselHtml } = useMemo(() => {
+    let finalHero = heroHtml || "";
+    let finalCarousel = carouselHtml || "";
+
+    if (finalCarousel) {
+      // Strip all script tags from Carousel HTML so it's hidden from the DOM Elements inspector
+      finalCarousel = finalCarousel.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '');
+    }
+
+    if (finalHero) {
+      // Strip all script tags from Hero HTML too
+      finalHero = finalHero.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '');
+    }
+
+    return { cleanHeroHtml: finalHero, cleanCarouselHtml: finalCarousel };
+  }, [heroHtml, carouselHtml]);
+
+  useEffect(() => {
+    // 1. Run Carousel scroll UI logic securely inside React instead of inline scripts
+    document.querySelectorAll('.rfz-carousel-wrapper').forEach(wrapper => {
+      const container = wrapper.querySelector('.rfz-product-grid-4, .rfz-category-grid-5');
+      const leftBtn = wrapper.querySelector('.left-arrow') as HTMLElement;
+      const rightBtn = wrapper.querySelector('.right-arrow') as HTMLElement;
+
+      if(container) {
+        const updateArrows = () => {
+          const canScroll = container.scrollWidth > container.clientWidth;
+          if (!canScroll) {
+            if (leftBtn) leftBtn.style.display = 'none';
+            if (rightBtn) rightBtn.style.display = 'none';
+          } else {
+            if (leftBtn) leftBtn.style.display = 'flex';
+            if (rightBtn) rightBtn.style.display = 'flex';
+          }
+        };
+
+        // Initial setup
+        updateArrows();
+        
+        // Listeners
+        window.addEventListener('resize', updateArrows);
+
+        if(leftBtn) {
+          leftBtn.onclick = () => container.scrollBy({ left: -300, behavior: 'smooth' });
+        }
+        if(rightBtn) {
+          rightBtn.onclick = () => container.scrollBy({ left: 300, behavior: 'smooth' });
+        }
+      }
+    });
+
+    // 2. Fast Navigation Interceptor for dynamically injected <a> tags
+    // This allows the admin to write <a href="/product/..."> in the Handlebars template
+    // and it will route instantly without a slow full-page reload!
+    const handleInjectedClicks = (e: Event) => {
+      const target = (e.target as HTMLElement).closest('a');
+      if (target && target.href && target.href.startsWith(window.location.origin)) {
+        e.preventDefault();
+        router.push(target.pathname + target.search);
+      }
+    };
+
+    const container = document.querySelector('.rfz-carousel-wrapper');
+    if (container) {
+      container.addEventListener('click', handleInjectedClicks);
+    }
+
+    return () => {
+      if (container) {
+        container.removeEventListener('click', handleInjectedClicks);
+      }
+    };
+  }, [cleanCarouselHtml, router]);
   return (
     <div className="w-full flex flex-col min-h-screen">
-      {heroHtml ? (
-        <div suppressHydrationWarning dangerouslySetInnerHTML={{ __html: heroHtml }} />
+      {cleanHeroHtml ? (
+        <div suppressHydrationWarning dangerouslySetInnerHTML={{ __html: cleanHeroHtml }} />
       ) : (
         <section className="relative flex items-center pt-2 md:pt-6 pb-2 md:pb-12 overflow-hidden bg-white">
           <div className="relative w-full">
@@ -31,8 +109,8 @@ export function Home2Client({ heroHtml, carouselHtml }: { heroHtml: string, caro
         </section>
       )}
 
-      {carouselHtml ? (
-        <div suppressHydrationWarning dangerouslySetInnerHTML={{ __html: carouselHtml }} />
+      {cleanCarouselHtml ? (
+        <div suppressHydrationWarning dangerouslySetInnerHTML={{ __html: cleanCarouselHtml }} />
       ) : (
         <div className="py-20 text-center text-slate-500">
           Carousel HTML not set yet.

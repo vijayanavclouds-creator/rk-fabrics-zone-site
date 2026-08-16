@@ -11,6 +11,7 @@ import { useCartStore, useWishlistStore } from "@/store";
 import { toast } from "sonner";
 import type { Product } from "@/types";
 import { useSession } from "next-auth/react";
+import { maskImageUrl } from "@/lib/image-mask";
 
 interface ProductCardProps {
  product: Product;
@@ -109,7 +110,7 @@ interface ProductCardProps {
   {/* Real Product Image or Fabric Pattern Background */}
   {product.images && product.images.length > 0 ? (
   <Image
-  src={product.images.find(img => img.isPrimary)?.url || product.images[0].url}
+  src={maskImageUrl(product.images.find(img => img.isPrimary)?.url || product.images[0].url)}
   alt={product.name}
   fill
   sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 20vw"

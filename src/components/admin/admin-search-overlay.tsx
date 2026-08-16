@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Search, X, Package, User, ShoppingBag, Mail } from "lucide-react";
 import { useUIStore } from "@/store";
 import { globalAdminSearch } from "@/actions/admin";
+import { maskImageUrl } from "@/lib/image-mask";
 
 export function AdminSearchOverlay() {
   const { isAdminSearchOpen, closeAdminSearch } = useUIStore();
@@ -170,7 +171,7 @@ export function AdminSearchOverlay() {
                       >
                         <div className="w-10 h-10 rounded-lg bg-slate-100 flex items-center justify-center overflow-hidden relative shrink-0">
                           {product.images && product.images[0] ? (
-                            <Image src={product.images[0].url} alt={product.name} fill className="object-cover" />
+                            <Image src={maskImageUrl(product.images[0].url)} alt={product.name} fill className="object-cover" />
                           ) : (
                             <Package size={16} className="text-slate-400" />
                           )}

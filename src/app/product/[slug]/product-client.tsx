@@ -35,6 +35,7 @@ import { addReview } from "@/actions/reviews";
 import { useCartStore, useWishlistStore } from "@/store";
 import { DeliveryDetails } from "@/components/product/delivery-details";
 import { ProductCard } from "@/components/product/product-card";
+import { maskImageUrl } from "@/lib/image-mask";
 import { toast } from "sonner";
 import { useSession } from "next-auth/react";
 
@@ -225,14 +226,14 @@ export default function ProductClient({ product }: { product: any }) {
  onClick={() => setIsLightboxOpen(true)}
  >
  {product.images && product.images.length > 0 ? (
-   <Image
-     src={product.images[selectedImage]?.url || product.images[0].url}
-     alt={product.name}
-     fill
-     priority
-     sizes="(max-width: 768px) 100vw, 50vw"
-     className="object-cover group-hover:scale-105 transition-transform duration-500"
-   />
+    <Image
+      src={maskImageUrl(product.images[selectedImage]?.url || product.images[0].url)}
+      alt={product.name}
+      fill
+      priority
+      sizes="(max-width: 768px) 100vw, 50vw"
+      className="object-cover group-hover:scale-105 transition-transform duration-500"
+    />
  ) : (
    <span className="text-[150px] opacity-30">{fabricEmoji}</span>
  )}
@@ -332,7 +333,7 @@ export default function ProductClient({ product }: { product: any }) {
  )}
  >
    <Image
-     src={img.url}
+     src={maskImageUrl(img.url)}
      alt={`${product.name} Thumbnail ${i + 1}`}
      fill
      sizes="80px"

@@ -4,6 +4,7 @@ import { useState, useEffect } from "react"
 import { useCartStore } from "@/store"
 import { useRouter } from "next/navigation"
 import { useSession } from "next-auth/react"
+import { maskImageUrl } from "@/lib/image-mask"
 import { createOrder } from "@/actions/order"
 import { initiatePhonePePayment } from "@/actions/payment"
 import { toast } from "sonner"
@@ -346,10 +347,11 @@ export default function CheckoutPaymentPage() {
                     <div className="w-16 h-20 bg-slate-100 rounded-lg overflow-hidden flex-shrink-0 relative">
                       <Image 
                         src={
-                          (typeof item.variant.images?.[0] === 'string' ? item.variant.images[0] : (item.variant.images?.[0] as any)?.url) 
-                          || item.product.images?.find((img) => img.isPrimary)?.url
-                          || item.product.images?.[0]?.url 
-                          || "/placeholder.jpg"
+                          maskImageUrl(
+                            (typeof item.variant.images?.[0] === 'string' ? item.variant.images[0] : (item.variant.images?.[0] as any)?.url) 
+                            || item.product.images?.find((img) => img.isPrimary)?.url
+                            || item.product.images?.[0]?.url 
+                          ) || "/placeholder.jpg"
                         } 
                         alt={item.product.name} 
                         width={64} 

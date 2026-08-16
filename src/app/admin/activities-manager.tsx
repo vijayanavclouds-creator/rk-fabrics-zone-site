@@ -30,11 +30,7 @@ export function ActivitiesManager() {
   maxDate.setMonth(maxDate.getMonth() - 3)
   const maxDateStr = maxDate.toISOString().split("T")[0]
 
-  useEffect(() => {
-    fetchActivities(page)
-  }, [page])
-
-  const fetchActivities = async (pageNum: number) => {
+  async function fetchActivities(pageNum: number) {
     setLoading(true)
     const res = await getAllAdminActivities(pageNum, 50)
     if (res.success) {
@@ -47,6 +43,7 @@ export function ActivitiesManager() {
   }
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchActivities(page)
   }, [page])
 

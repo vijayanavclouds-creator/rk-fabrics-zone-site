@@ -12,6 +12,7 @@ import { toast } from "sonner";
 import Image from "next/image";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { maskImageUrl } from "@/lib/image-mask";
 import { validateCartStock } from "@/actions/cart";
 
 export default function CartPage() {
@@ -188,10 +189,11 @@ export default function CartPage() {
         <div className="w-16 h-24 md:w-20 md:h-28 bg-cream-dark rounded-xl flex items-center justify-center shrink-0 overflow-hidden relative border border-charcoal/5">
    <Image
      src={
-       (typeof item.variant.images?.[0] === 'string' ? item.variant.images[0] : (item.variant.images?.[0] as any)?.url) 
-       || item.product.images?.find((img) => img.isPrimary)?.url
-       || item.product.images?.[0]?.url 
-       || "/placeholder.jpg"
+       maskImageUrl(
+         (typeof item.variant.images?.[0] === 'string' ? item.variant.images[0] : (item.variant.images?.[0] as any)?.url) 
+         || item.product.images?.find((img) => img.isPrimary)?.url
+         || item.product.images?.[0]?.url 
+       ) || "/placeholder.jpg"
      }
      alt={item.product.name}
      fill

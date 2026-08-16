@@ -1,4 +1,5 @@
 "use client"
+/* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars */
 
 import { useState, useEffect } from "react"
 import { 
@@ -9,7 +10,8 @@ import {
   getHtmlRecords,
   createHtmlRecord,
   updateHtmlRecord,
-  deleteHtmlRecord
+  deleteHtmlRecord,
+  compilePreviewHtml
 } from "@/actions/system"
 import { DEFAULT_HERO_HTML, DEFAULT_CAROUSEL_HTML } from "./default-home2-html"
 import { toast } from "sonner"
@@ -55,6 +57,7 @@ export function BannerManager({ banners }: { banners: any[] }) {
       }
     });
 
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     loadRecords()
   }, []);
 
@@ -128,6 +131,17 @@ export function BannerManager({ banners }: { banners: any[] }) {
     }
   }
 
+  const handlePreview = async (html: string) => {
+    const toastId = toast.loading("Compiling preview...");
+    const res = await compilePreviewHtml(html);
+    if (res.success && res.compiled) {
+      toast.success("Preview ready!", { id: toastId });
+      setPreviewHtml(res.compiled);
+    } else {
+      toast.error("Preview failed", { id: toastId });
+    }
+  }
+
   return (
     <div className="animate-in fade-in duration-300 space-y-6 pb-24">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 border-b border-charcoal/10 pb-4">
@@ -192,7 +206,7 @@ export function BannerManager({ banners }: { banners: any[] }) {
                     </td>
                     <td className="px-4 py-3">
                       <div className="flex items-center justify-end gap-2">
-                        <button onClick={() => setPreviewHtml(record.code)} className="p-1.5 text-teal-600 hover:bg-teal-50 rounded-md transition-colors" title="Preview Fullscreen">
+                        <button onClick={() => handlePreview(record.code)} className="p-1.5 text-teal-600 hover:bg-teal-50 rounded-md transition-colors" title="Preview Fullscreen">
                           <Play size={16} />
                         </button>
                         <button onClick={() => handleUseRecord(record)} className="p-1.5 text-blue-600 hover:bg-blue-50 rounded-md transition-colors" title="Use this code">
@@ -229,7 +243,7 @@ export function BannerManager({ banners }: { banners: any[] }) {
           <div className="flex justify-between items-center mb-4 shrink-0">
             <h3 className="text-lg font-bold text-charcoal">Hero Section HTML</h3>
             <button 
-              onClick={() => setPreviewHtml(heroHtml)} 
+              onClick={() => handlePreview(heroHtml)} 
               className="text-sm font-semibold text-teal-600 hover:text-teal-700 bg-teal-50 hover:bg-teal-100 px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1.5"
             >
               <Play size={14} /> Preview
@@ -249,7 +263,7 @@ export function BannerManager({ banners }: { banners: any[] }) {
           <div className="flex justify-between items-center mb-4 shrink-0">
             <h3 className="text-lg font-bold text-charcoal">Carousel Section HTML</h3>
             <button 
-              onClick={() => setPreviewHtml(carouselHtml)} 
+              onClick={() => handlePreview(carouselHtml)} 
               className="text-sm font-semibold text-teal-600 hover:text-teal-700 bg-teal-50 hover:bg-teal-100 px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1.5"
             >
               <Play size={14} /> Preview

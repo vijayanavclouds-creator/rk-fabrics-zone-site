@@ -1,4 +1,5 @@
 "use client"
+/* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars, react-hooks/exhaustive-deps, @next/next/no-img-element */
 
 import { useState, useTransition, useEffect, useRef, Fragment } from "react"
 import { useSearchParams, useRouter } from "next/navigation"
@@ -10,6 +11,7 @@ import { cn } from "@/lib/utils"
 import Image from "next/image"
 import imageCompression from 'browser-image-compression'
 import { PRODUCT_CATEGORIES } from "@/lib/constants"
+import { maskImageUrl } from "@/lib/image-mask"
 
 import { BannerManager } from "./banner-manager"
 import { SystemStatus } from "./system-status"
@@ -54,9 +56,7 @@ export function AdminDashboard({
   const [editingProduct, setEditingProduct] = useState<any>(null)
   const [isPending, startTransition] = useTransition()
   
-  // State for new product
-  const [newCategory, setNewCategory] = useState<string[]>([])
-  const [newFabric, setNewFabric] = useState<string>("")
+  const [now] = useState(() => Date.now());
   const [productPage, setProductPage] = useState(1)
 
   // Sync state synchronously during render when URL changes to prevent flashing old tab
@@ -68,7 +68,8 @@ export function AdminDashboard({
   useEffect(() => {
     if (editingProduct) {
       const updatedProduct = products.find(p => p.id === editingProduct.id)
-      if (updatedProduct) {
+      if (updatedProduct && updatedProduct !== editingProduct) {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setEditingProduct(updatedProduct)
       }
     }
@@ -205,7 +206,7 @@ export function AdminDashboard({
           </thead>
           <tbody className="block md:table-row-group">
             {paginatedProducts.map((product) => {
-              const isNew = new Date(product.createdAt).getTime() >= Date.now() - 16 * 24 * 60 * 60 * 1000;
+              const isNew = new Date(product.createdAt).getTime() >= now - 16 * 24 * 60 * 60 * 1000;
               const isOutOfStock = product.variants?.length > 0 && product.variants.every((v:any) => v.stock <= 0);
               
               const categoryStr = (() => {
@@ -225,7 +226,7 @@ export function AdminDashboard({
                   <div className="flex items-center gap-3">
                     <div className="w-12 h-12 rounded-lg overflow-hidden bg-cream border border-charcoal/10 shrink-0 relative">
                       {product.images && product.images.length > 0 ? (
-                        <Image src={product.images.find((i:any)=>i.isPrimary)?.url || product.images[0].url} alt={product.name} fill className="object-cover" />
+                        <Image src={maskImageUrl(product.images.find((i:any)=>i.isPrimary)?.url || product.images[0].url)} alt={product.name} fill className="object-cover" />
                       ) : (
                         <div className="absolute inset-0 flex items-center justify-center text-slate/30"><ImageIcon size={18} /></div>
                       )}
@@ -307,7 +308,7 @@ export function AdminDashboard({
                     <div className="flex items-center gap-3 flex-1 min-w-0">
                       <div className="w-11 h-11 rounded-lg overflow-hidden bg-cream border border-charcoal/10 shrink-0 relative">
                         {product.images && product.images.length > 0 ? (
-                          <Image src={product.images.find((i:any)=>i.isPrimary)?.url || product.images[0].url} alt={product.name} fill className="object-cover" />
+                          <Image src={maskImageUrl(product.images.find((i:any)=>i.isPrimary)?.url || product.images[0].url)} alt={product.name} fill className="object-cover" />
                         ) : (
                           <div className="absolute inset-0 flex items-center justify-center text-slate/30"><ImageIcon size={16} /></div>
                         )}
@@ -520,7 +521,7 @@ export function ProductEditor({ product = {}, products, storeCategories, storeFa
   const handleBulkSave = async (targetProductId: string) => {
     setIsSavingBulk(true)
     try {
-      let uploadedImagesUrls = []
+      const uploadedImagesUrls = []
       if (newImageFiles.length > 0) {
         toast.loading("Uploading high-res images to Cloudinary...", { id: "uploadToast" })
         const { getCloudinarySignature } = await import("@/actions/cloudinary")

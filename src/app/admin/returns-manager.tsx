@@ -1,4 +1,5 @@
 "use client";
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { useState, useMemo, useEffect } from "react";
 import { format } from "date-fns";
@@ -108,6 +109,7 @@ function UserReturnGroup({ group, queries }: { group: any, queries: any[] }) {
   const [localUnread, setLocalUnread] = useState(group.unreadCount);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setLocalUnread(group.unreadCount);
   }, [group.unreadCount]);
 

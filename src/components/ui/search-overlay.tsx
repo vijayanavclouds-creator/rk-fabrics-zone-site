@@ -8,6 +8,7 @@ import { Search, X, TrendingUp, Clock } from "lucide-react";
 import { useUIStore } from "@/store";
 import { searchProducts } from "@/lib/data";
 import { formatPrice } from "@/lib/utils";
+import { maskImageUrl } from "@/lib/image-mask";
 import type { Product } from "@/types";
 
 export function SearchOverlay() {
@@ -98,7 +99,7 @@ export function SearchOverlay() {
  <div className="w-14 h-14 rounded-lg bg-cream-dark flex items-center justify-center text-2xl shrink-0 overflow-hidden relative">
  {product.images && product.images[0] ? (
    <Image
-     src={product.images[0].url}
+     src={maskImageUrl(product.images[0].url)}
      alt={product.name}
      fill
      className="object-cover"

@@ -5,6 +5,7 @@ import { revalidatePath, revalidateTag } from "next/cache";
 import { logAdminActivity } from "./admin-activity";
 import { generateDiffString } from "@/lib/utils";
 import { getNavigationLinksData, getStoreTaxonomyData, getAnnouncementBannerData, getCompanyProfileData } from "@/lib/data/system";
+import { maskHtmlContent } from "@/lib/image-mask";
 
 // Get Navigation Links
 export async function getNavigationLinks() {
@@ -220,8 +221,8 @@ export async function getHome2HtmlSettings() {
     const carouselRecord = await prisma.systemSetting.findUnique({ where: { key: "HOME2_CAROUSEL_HTML" } });
     return {
       success: true,
-      heroHtml: heroRecord ? heroRecord.value : "",
-      carouselHtml: carouselRecord ? carouselRecord.value : ""
+      heroHtml: maskHtmlContent(heroRecord ? heroRecord.value : ""),
+      carouselHtml: maskHtmlContent(carouselRecord ? carouselRecord.value : "")
     };
   } catch (error: unknown) {
     return { success: false, error: error instanceof Error ? error.message : "Unknown error" };
@@ -313,6 +314,36 @@ export async function deleteHtmlRecord(id: string) {
     return { success: true };
   } catch (error: unknown) {
     console.error("Error deleting HTML record:", error);
+    return { success: false, error: error instanceof Error ? error.message : "Unknown error" };
+  }
+}
+
+// Compile Preview HTML
+export async function compilePreviewHtml(html: string) {
+  try {
+    const { compileHomeTemplate } = await import('@/lib/template');
+    
+    // Fetch real product data
+    const newArrivals = await prisma.product.findMany({
+      where: { isNewArrival: true, isActive: true },
+      include: { images: true },
+      take: 10,
+      orderBy: { createdAt: 'desc' }
+    });
+
+    const topRated = await prisma.product.findMany({
+      where: { isActive: true },
+      include: { images: true },
+      take: 10,
+      orderBy: { rating: 'desc' }
+    });
+
+    const templateData = { newArrivals, topRated };
+    const compiled = compileHomeTemplate(html, templateData);
+    
+    return { success: true, compiled };
+  } catch (error: unknown) {
+    console.error("Error compiling preview HTML:", error);
     return { success: false, error: error instanceof Error ? error.message : "Unknown error" };
   }
 }

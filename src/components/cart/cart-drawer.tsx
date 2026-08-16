@@ -5,6 +5,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { X, Plus, Minus, Trash2, ShoppingBag, ArrowRight, Truck } from "lucide-react";
 import { useCartStore } from "@/store";
+import { toast } from "sonner";
+import { maskImageUrl } from "@/lib/image-mask";
 import { formatPrice } from "@/lib/utils";
 
 export function CartDrawer() {
@@ -120,7 +122,7 @@ export function CartDrawer() {
   <div className="w-20 h-20 bg-cream-dark rounded-lg flex items-center justify-center text-2xl shrink-0 overflow-hidden relative">
   {item.product.images && item.product.images[0] ? (
     <Image
-      src={item.product.images[0].url}
+      src={maskImageUrl(item.product.images[0].url)}
       alt={item.product.name}
       fill
       className="object-cover"

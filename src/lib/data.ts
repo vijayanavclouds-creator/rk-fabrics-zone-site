@@ -211,35 +211,35 @@ export const products: Product[] = [
     "images": [
       {
         "id": "cmrtg8qio00072o7lll03rceo",
-        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1784565519/rk-fabrics/products/m9mznz19qxcsl7md8v6t.jpg",
+        "url": "/api/media/dodcvilgs/image/upload/v1784565519/rk-fabrics/products/m9mznz19qxcsl7md8v6t.jpg",
         "alt": "Gemini_Generated_Image_e68xt6e68xt6e68x.png",
         "isPrimary": false,
         "productId": "12"
       },
       {
         "id": "cmrtg8qip00092o7l1s9otzeu",
-        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1784565521/rk-fabrics/products/kbfo6kwlovcl5sapeokf.jpg",
+        "url": "/api/media/dodcvilgs/image/upload/v1784565521/rk-fabrics/products/kbfo6kwlovcl5sapeokf.jpg",
         "alt": "Gemini_Generated_Image_f6qdf9f6qdf9f6qd.png",
         "isPrimary": false,
         "productId": "12"
       },
       {
         "id": "cmrtg8qiq000b2o7lsn5zcuv8",
-        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1784565524/rk-fabrics/products/onxrhpzojyvkfj4xrg0r.jpg",
+        "url": "/api/media/dodcvilgs/image/upload/v1784565524/rk-fabrics/products/onxrhpzojyvkfj4xrg0r.jpg",
         "alt": "Gemini_Generated_Image_omvf13omvf13omvf.png",
         "isPrimary": false,
         "productId": "12"
       },
       {
         "id": "cmrtg8qiq000d2o7lrki5eipl",
-        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1784565526/rk-fabrics/products/bggmb3mniadk901ogevf.jpg",
+        "url": "/api/media/dodcvilgs/image/upload/v1784565526/rk-fabrics/products/bggmb3mniadk901ogevf.jpg",
         "alt": "Gemini_Generated_Image_qlpc6kqlpc6kqlpc.png",
         "isPrimary": false,
         "productId": "12"
       },
       {
         "id": "cmrtg8qir000f2o7lg9f9y13d",
-        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1784565532/rk-fabrics/products/mvexvsawgp7rcwguxz0m.jpg",
+        "url": "/api/media/dodcvilgs/image/upload/v1784565532/rk-fabrics/products/mvexvsawgp7rcwguxz0m.jpg",
         "alt": "Gemini_Generated_Image_tqm9sctqm9sctqm9.png",
         "isPrimary": false,
         "productId": "12"
@@ -347,21 +347,21 @@ export const products: Product[] = [
     "images": [
       {
         "id": "cmrteipr00013a0ng27lzpqsb",
-        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1784562638/rk-fabrics/products/ij7zyin2dqn5zcrpvh9u.jpg",
+        "url": "/api/media/dodcvilgs/image/upload/v1784562638/rk-fabrics/products/ij7zyin2dqn5zcrpvh9u.jpg",
         "alt": "blob",
         "isPrimary": false,
         "productId": "1"
       },
       {
         "id": "cmrtejb8q0017a0ng8dqdli0q",
-        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1784562664/rk-fabrics/products/zw8vdqcxyyg7dokyuzit.jpg",
+        "url": "/api/media/dodcvilgs/image/upload/v1784562664/rk-fabrics/products/zw8vdqcxyyg7dokyuzit.jpg",
         "alt": "blob",
         "isPrimary": false,
         "productId": "1"
       },
       {
         "id": "cmrteishi0015a0nggcozbvyv",
-        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1784562642/rk-fabrics/products/jsq3w7ywphhkxjqpnf9u.jpg",
+        "url": "/api/media/dodcvilgs/image/upload/v1784562642/rk-fabrics/products/jsq3w7ywphhkxjqpnf9u.jpg",
         "alt": "blob",
         "isPrimary": true,
         "productId": "1"
@@ -458,28 +458,28 @@ export const products: Product[] = [
     "images": [
       {
         "id": "cmrtdn731000va0ng76mi34tb",
-        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1784561168/rk-fabrics/products/yyhgc4bdwy3xvbmqxvja.jpg",
+        "url": "/api/media/dodcvilgs/image/upload/v1784561168/rk-fabrics/products/yyhgc4bdwy3xvbmqxvja.jpg",
         "alt": "blob",
         "isPrimary": false,
         "productId": "10"
       },
       {
         "id": "cmrtdp876000xa0ng6xpo4thl",
-        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1784561263/rk-fabrics/products/kfdwxmmknzeuaawktexq.jpg",
+        "url": "/api/media/dodcvilgs/image/upload/v1784561263/rk-fabrics/products/kfdwxmmknzeuaawktexq.jpg",
         "alt": "blob",
         "isPrimary": false,
         "productId": "10"
       },
       {
         "id": "cmrtdqn06000za0ng4h91qct0",
-        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1784561329/rk-fabrics/products/id4ipaerd99abix7kjfe.jpg",
+        "url": "/api/media/dodcvilgs/image/upload/v1784561329/rk-fabrics/products/id4ipaerd99abix7kjfe.jpg",
         "alt": "blob",
         "isPrimary": false,
         "productId": "10"
       },
       {
         "id": "cmrtdsrbw0011a0ng56a8hvhv",
-        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1784561427/rk-fabrics/products/jztpjifob52wilurdkbr.jpg",
+        "url": "/api/media/dodcvilgs/image/upload/v1784561427/rk-fabrics/products/jztpjifob52wilurdkbr.jpg",
         "alt": "blob",
         "isPrimary": true,
         "productId": "10"
@@ -565,35 +565,35 @@ export const products: Product[] = [
     "images": [
       {
         "id": "cmrtfwtsv00032o7lnjklzsgl",
-        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1784564975/rk-fabrics/products/if6mv9l6lli0m6xi9j3z.jpg",
+        "url": "/api/media/dodcvilgs/image/upload/v1784564975/rk-fabrics/products/if6mv9l6lli0m6xi9j3z.jpg",
         "alt": "Gemini_Generated_Image_4okpdd4okpdd4okp.png",
         "isPrimary": false,
         "productId": "cmrtex4wp0000cyygm2lwgihs"
       },
       {
         "id": "cmrtfwtsw00052o7l6fyf7ixo",
-        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1784564976/rk-fabrics/products/pjwrf3lkizlgg59zjs9q.jpg",
+        "url": "/api/media/dodcvilgs/image/upload/v1784564976/rk-fabrics/products/pjwrf3lkizlgg59zjs9q.jpg",
         "alt": "Gemini_Generated_Image_owupo1owupo1owup.png",
         "isPrimary": false,
         "productId": "cmrtex4wp0000cyygm2lwgihs"
       },
       {
         "id": "cmru6vfle0001ybi5fe31tgt6",
-        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1784610263/rk-fabrics/products/jk0kp6dhbgrjr1sk72z4.jpg",
+        "url": "/api/media/dodcvilgs/image/upload/v1784610263/rk-fabrics/products/jk0kp6dhbgrjr1sk72z4.jpg",
         "alt": "Gemini_Generated_Image_ck2ks1ck2ks1ck2k.png",
         "isPrimary": false,
         "productId": "cmrtex4wp0000cyygm2lwgihs"
       },
       {
         "id": "cmryxu9hb000cvw6qfa5qi6ia",
-        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1784897419/rk-fabrics/products/xrjfowldspzj0atlfxtn.jpg",
+        "url": "/api/media/dodcvilgs/image/upload/v1784897419/rk-fabrics/products/xrjfowldspzj0atlfxtn.jpg",
         "alt": "Gemini_Generated_Image_4okpdd4okpdd4okp.png",
         "isPrimary": false,
         "productId": "cmrtex4wp0000cyygm2lwgihs"
       },
       {
         "id": "cmrtfwtst00012o7ljlk1fu4i",
-        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1784564973/rk-fabrics/products/we47etmugcph6nicty4l.jpg",
+        "url": "/api/media/dodcvilgs/image/upload/v1784564973/rk-fabrics/products/we47etmugcph6nicty4l.jpg",
         "alt": "Gemini_Generated_Image_3gdwad3gdwad3gdw.png",
         "isPrimary": true,
         "productId": "cmrtex4wp0000cyygm2lwgihs"
@@ -700,28 +700,28 @@ export const products: Product[] = [
     "images": [
       {
         "id": "cmrt2ahvl000ra0ngulah59se",
-        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1784542099/rk-fabrics/products/osb4jlokz7kp7rukikq1.jpg",
+        "url": "/api/media/dodcvilgs/image/upload/v1784542099/rk-fabrics/products/osb4jlokz7kp7rukikq1.jpg",
         "alt": "blob",
         "isPrimary": true,
         "productId": "3"
       },
       {
         "id": "cmrt20gx9000na0ngys9e2d3z",
-        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1784541632/rk-fabrics/products/t1hqy27rijd5dwptki2e.jpg",
+        "url": "/api/media/dodcvilgs/image/upload/v1784541632/rk-fabrics/products/t1hqy27rijd5dwptki2e.jpg",
         "alt": "blob",
         "isPrimary": false,
         "productId": "3"
       },
       {
         "id": "cmrt25twc000pa0ngdkxr43hx",
-        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1784541882/rk-fabrics/products/mdrnrvyhgycbr7j3sdc1.jpg",
+        "url": "/api/media/dodcvilgs/image/upload/v1784541882/rk-fabrics/products/mdrnrvyhgycbr7j3sdc1.jpg",
         "alt": "blob",
         "isPrimary": false,
         "productId": "3"
       },
       {
         "id": "cmrt8x60i000ta0ng6wbo224a",
-        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1784553235/rk-fabrics/products/qn6xdnihuwsrqtf2nrep.jpg",
+        "url": "/api/media/dodcvilgs/image/upload/v1784553235/rk-fabrics/products/qn6xdnihuwsrqtf2nrep.jpg",
         "alt": "blob",
         "isPrimary": false,
         "productId": "3"
@@ -807,42 +807,42 @@ export const products: Product[] = [
     "images": [
       {
         "id": "cmsq3bvij000c8o8cla82o7u1",
-        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1786539212/rk-fabrics/products/Gemini_Generated_Image_wt3njswt3njswt3n_z1eprj.jpg",
+        "url": "/api/media/dodcvilgs/image/upload/v1786539212/rk-fabrics/products/Gemini_Generated_Image_wt3njswt3njswt3n_z1eprj.jpg",
         "alt": "Gemini_Generated_Image_wt3njswt3njswt3n.png",
         "isPrimary": false,
         "productId": "cmsq3bdnz00008o8ceobqutab"
       },
       {
         "id": "cmsq3bvwy000e8o8cb5p7q25n",
-        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1786539214/rk-fabrics/products/Tie-Neck_Tiered_Gown2_djwuoj.jpg",
+        "url": "/api/media/dodcvilgs/image/upload/v1786539214/rk-fabrics/products/Tie-Neck_Tiered_Gown2_djwuoj.jpg",
         "alt": "Tie-Neck Tiered Gown2.png",
         "isPrimary": true,
         "productId": "cmsq3bdnz00008o8ceobqutab"
       },
       {
         "id": "cmsq3bwbv000g8o8cvt5k9hab",
-        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1786539215/rk-fabrics/products/Tie-Neck_Tiered_Gown3_rekzbq.jpg",
+        "url": "/api/media/dodcvilgs/image/upload/v1786539215/rk-fabrics/products/Tie-Neck_Tiered_Gown3_rekzbq.jpg",
         "alt": "Tie-Neck Tiered Gown3.png",
         "isPrimary": false,
         "productId": "cmsq3bdnz00008o8ceobqutab"
       },
       {
         "id": "cmsq3bwq6000i8o8c3kfrpib4",
-        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1786539216/rk-fabrics/products/Tie-Neck_Tiered_Gown4_mdosvz.jpg",
+        "url": "/api/media/dodcvilgs/image/upload/v1786539216/rk-fabrics/products/Tie-Neck_Tiered_Gown4_mdosvz.jpg",
         "alt": "Tie-Neck Tiered Gown4.png",
         "isPrimary": false,
         "productId": "cmsq3bdnz00008o8ceobqutab"
       },
       {
         "id": "cmsq3bx58000k8o8cdgyrhgej",
-        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1786539218/rk-fabrics/products/blob_ocgtvm.jpg",
+        "url": "/api/media/dodcvilgs/image/upload/v1786539218/rk-fabrics/products/blob_ocgtvm.jpg",
         "alt": "Tie-Neck Tiered Gown5.png",
         "isPrimary": false,
         "productId": "cmsq3bdnz00008o8ceobqutab"
       },
       {
         "id": "cmsq3bxji000m8o8ct0do7tzm",
-        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1786539223/rk-fabrics/products/Tie-Neck_Tiered_Gown7_mrrzam.jpg",
+        "url": "/api/media/dodcvilgs/image/upload/v1786539223/rk-fabrics/products/Tie-Neck_Tiered_Gown7_mrrzam.jpg",
         "alt": "Tie-Neck Tiered Gown7.png",
         "isPrimary": false,
         "productId": "cmsq3bdnz00008o8ceobqutab"
@@ -928,35 +928,35 @@ export const products: Product[] = [
     "images": [
       {
         "id": "cmsq4w3is00118o8crezzsj2r",
-        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1786541839/rk-fabrics/products/Slim-Fit_Tailored_Trousers_v0wqgq.jpg",
+        "url": "/api/media/dodcvilgs/image/upload/v1786541839/rk-fabrics/products/Slim-Fit_Tailored_Trousers_v0wqgq.jpg",
         "alt": "Slim-Fit Tailored Trousers.png",
         "isPrimary": false,
         "productId": "cmsq4vohu000p8o8cuzxdk8su"
       },
       {
         "id": "cmsq4w3xi00138o8ch05jwoep",
-        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1786541841/rk-fabrics/products/Slim-Fit_Tailored_Trousers1_lrsmkt.jpg",
+        "url": "/api/media/dodcvilgs/image/upload/v1786541841/rk-fabrics/products/Slim-Fit_Tailored_Trousers1_lrsmkt.jpg",
         "alt": "Slim-Fit Tailored Trousers1.png",
         "isPrimary": false,
         "productId": "cmsq4vohu000p8o8cuzxdk8su"
       },
       {
         "id": "cmsq4w4cm00158o8cd0qm4krd",
-        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1786541843/rk-fabrics/products/blob_asz7gg.jpg",
+        "url": "/api/media/dodcvilgs/image/upload/v1786541843/rk-fabrics/products/blob_asz7gg.jpg",
         "alt": "Slim-Fit Tailored Trousers2.png",
         "isPrimary": true,
         "productId": "cmsq4vohu000p8o8cuzxdk8su"
       },
       {
         "id": "cmsq4w4ri00178o8caom8e3ob",
-        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1786541844/rk-fabrics/products/blob_uxwt45.jpg",
+        "url": "/api/media/dodcvilgs/image/upload/v1786541844/rk-fabrics/products/blob_uxwt45.jpg",
         "alt": "Slim-Fit Tailored Trousers3.png",
         "isPrimary": false,
         "productId": "cmsq4vohu000p8o8cuzxdk8su"
       },
       {
         "id": "cmsq4w56500198o8cuk53fofd",
-        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1786541847/rk-fabrics/products/Slim-Fit_Tailored_Trousers4_gjan7n.jpg",
+        "url": "/api/media/dodcvilgs/image/upload/v1786541847/rk-fabrics/products/Slim-Fit_Tailored_Trousers4_gjan7n.jpg",
         "alt": "Slim-Fit Tailored Trousers4.png",
         "isPrimary": false,
         "productId": "cmsq4vohu000p8o8cuzxdk8su"
@@ -1042,35 +1042,35 @@ export const products: Product[] = [
     "images": [
       {
         "id": "cmsqboboe002f8o8cyfq8ahxy",
-        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1786553228/rk-fabrics/products/blob_y3kubb.jpg",
+        "url": "/api/media/dodcvilgs/image/upload/v1786553228/rk-fabrics/products/blob_y3kubb.jpg",
         "alt": "Solid Square-Neck Fit and Flare1.png",
         "isPrimary": false,
         "productId": "cmsqbntda00238o8c7knindav"
       },
       {
         "id": "cmsqboc4g002h8o8cblgmah5t",
-        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1786553230/rk-fabrics/products/blob_f7nvgc.jpg",
+        "url": "/api/media/dodcvilgs/image/upload/v1786553230/rk-fabrics/products/blob_f7nvgc.jpg",
         "alt": "Solid Square-Neck Fit and Flare4.png",
         "isPrimary": true,
         "productId": "cmsqbntda00238o8c7knindav"
       },
       {
         "id": "cmsqbocjm002j8o8cr683xv9h",
-        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1786553232/rk-fabrics/products/blob_ngilaj.jpg",
+        "url": "/api/media/dodcvilgs/image/upload/v1786553232/rk-fabrics/products/blob_ngilaj.jpg",
         "alt": "Solid Square-Neck Fit and Flare5.png",
         "isPrimary": false,
         "productId": "cmsqbntda00238o8c7knindav"
       },
       {
         "id": "cmsqbocyl002l8o8cn3cek8us",
-        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1786553238/rk-fabrics/products/blob_z73lw8.jpg",
+        "url": "/api/media/dodcvilgs/image/upload/v1786553238/rk-fabrics/products/blob_z73lw8.jpg",
         "alt": "Solid Square-Neck Fit and Flare6.png",
         "isPrimary": false,
         "productId": "cmsqbntda00238o8c7knindav"
       },
       {
         "id": "cmsqboddl002n8o8c6ua1m8ew",
-        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1786553241/rk-fabrics/products/blob_xudhyz.jpg",
+        "url": "/api/media/dodcvilgs/image/upload/v1786553241/rk-fabrics/products/blob_xudhyz.jpg",
         "alt": "Solid Square-Neck Fit and Flare7.png",
         "isPrimary": false,
         "productId": "cmsqbntda00238o8c7knindav"
@@ -1156,42 +1156,42 @@ export const products: Product[] = [
     "images": [
       {
         "id": "cmsrjs8ie000c109j8beb93f2",
-        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1786627313/rk-fabrics/products/blob_df9f8e.jpg",
+        "url": "/api/media/dodcvilgs/image/upload/v1786627313/rk-fabrics/products/blob_df9f8e.jpg",
         "alt": "Striped Cotton Fit and Flare Midi Dress2.png",
         "isPrimary": false,
         "productId": "cmsrjrq3r0000109j6d0axoya"
       },
       {
         "id": "cmsrjs8wx000e109jq6b299dv",
-        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1786627315/rk-fabrics/products/blob_edpago.jpg",
+        "url": "/api/media/dodcvilgs/image/upload/v1786627315/rk-fabrics/products/blob_edpago.jpg",
         "alt": "Striped Cotton Fit and Flare Midi Dress3.png",
         "isPrimary": false,
         "productId": "cmsrjrq3r0000109j6d0axoya"
       },
       {
         "id": "cmsrjs9bz000g109j8xogn5du",
-        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1786627318/rk-fabrics/products/blob_ohljet.jpg",
+        "url": "/api/media/dodcvilgs/image/upload/v1786627318/rk-fabrics/products/blob_ohljet.jpg",
         "alt": "Striped Cotton Fit and Flare Midi Dress4.png",
         "isPrimary": true,
         "productId": "cmsrjrq3r0000109j6d0axoya"
       },
       {
         "id": "cmsrjs9qk000i109jj8qfhll6",
-        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1786627320/rk-fabrics/products/blob_ahhwav.jpg",
+        "url": "/api/media/dodcvilgs/image/upload/v1786627320/rk-fabrics/products/blob_ahhwav.jpg",
         "alt": "Striped Cotton Fit and Flare Midi Dress.png",
         "isPrimary": false,
         "productId": "cmsrjrq3r0000109j6d0axoya"
       },
       {
         "id": "cmsrjsa5c000k109jqroa9ewe",
-        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1786627323/rk-fabrics/products/blob_ramta7.jpg",
+        "url": "/api/media/dodcvilgs/image/upload/v1786627323/rk-fabrics/products/blob_ramta7.jpg",
         "alt": "Striped Cotton Fit and Flare Midi Dress1.png",
         "isPrimary": false,
         "productId": "cmsrjrq3r0000109j6d0axoya"
       },
       {
         "id": "cmsrjsak1000m109jub0qyeuv",
-        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1786627327/rk-fabrics/products/blob_dg59w1.jpg",
+        "url": "/api/media/dodcvilgs/image/upload/v1786627327/rk-fabrics/products/blob_dg59w1.jpg",
         "alt": "Striped Cotton Fit and Flare Midi Dress5.png",
         "isPrimary": false,
         "productId": "cmsrjrq3r0000109j6d0axoya"
@@ -1277,35 +1277,35 @@ export const products: Product[] = [
     "images": [
       {
         "id": "cmssrzins0011109j6ba70gzi",
-        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1786701557/rk-fabrics/products/blob_hbp2iq.jpg",
+        "url": "/api/media/dodcvilgs/image/upload/v1786701557/rk-fabrics/products/blob_hbp2iq.jpg",
         "alt": "Beige Boho Floral V-Neck Tiered Dress1.png",
         "isPrimary": false,
         "productId": "cmssrz0jj000p109j9pje6sfc"
       },
       {
         "id": "cmssrzj220013109ja5obssxz",
-        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1786701559/rk-fabrics/products/blob_s2jnk7.jpg",
+        "url": "/api/media/dodcvilgs/image/upload/v1786701559/rk-fabrics/products/blob_s2jnk7.jpg",
         "alt": "Beige Boho Floral V-Neck Tiered Dress2.png",
         "isPrimary": false,
         "productId": "cmssrz0jj000p109j9pje6sfc"
       },
       {
         "id": "cmssrzjg00015109jm6zqyxf8",
-        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1786701565/rk-fabrics/products/blob_xmkz4q.jpg",
+        "url": "/api/media/dodcvilgs/image/upload/v1786701565/rk-fabrics/products/blob_xmkz4q.jpg",
         "alt": "Beige Boho Floral V-Neck Tiered Dress4.png",
         "isPrimary": true,
         "productId": "cmssrz0jj000p109j9pje6sfc"
       },
       {
         "id": "cmssrzju40017109j9v8oygky",
-        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1786701567/rk-fabrics/products/blob_n4j08d.jpg",
+        "url": "/api/media/dodcvilgs/image/upload/v1786701567/rk-fabrics/products/blob_n4j08d.jpg",
         "alt": "Beige Boho Floral V-Neck Tiered Dress6.png",
         "isPrimary": false,
         "productId": "cmssrz0jj000p109j9pje6sfc"
       },
       {
         "id": "cmssrzk7q0019109jqbvv7bdy",
-        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1786701570/rk-fabrics/products/Beige_Boho_Floral_V-Neck_Tiered_Dress7_rd26rk.jpg",
+        "url": "/api/media/dodcvilgs/image/upload/v1786701570/rk-fabrics/products/Beige_Boho_Floral_V-Neck_Tiered_Dress7_rd26rk.jpg",
         "alt": "Beige Boho Floral V-Neck Tiered Dress7.png",
         "isPrimary": false,
         "productId": "cmssrz0jj000p109j9pje6sfc"
@@ -1391,42 +1391,42 @@ export const products: Product[] = [
     "images": [
       {
         "id": "cmsqap6w7001q8o8cxya45hm0",
-        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1786551592/rk-fabrics/products/blob_q4mpsf.jpg",
+        "url": "/api/media/dodcvilgs/image/upload/v1786551592/rk-fabrics/products/blob_q4mpsf.jpg",
         "alt": "Teal Floral Casual Top2.png",
         "isPrimary": false,
         "productId": "cmsqaoppg001c8o8c94271vle"
       },
       {
         "id": "cmsqap7av001s8o8cysc8dth0",
-        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1786551594/rk-fabrics/products/blob_ccwog1.jpg",
+        "url": "/api/media/dodcvilgs/image/upload/v1786551594/rk-fabrics/products/blob_ccwog1.jpg",
         "alt": "Teal Floral Casual Top3.png",
         "isPrimary": false,
         "productId": "cmsqaoppg001c8o8c94271vle"
       },
       {
         "id": "cmsqap851001w8o8c9yvwig1v",
-        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1786551599/rk-fabrics/products/blob_waolms.jpg",
+        "url": "/api/media/dodcvilgs/image/upload/v1786551599/rk-fabrics/products/blob_waolms.jpg",
         "alt": "Teal Floral Casual Top5.png",
         "isPrimary": false,
         "productId": "cmsqaoppg001c8o8c94271vle"
       },
       {
         "id": "cmsqap8k9001y8o8c5nflpp6n",
-        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1786551601/rk-fabrics/products/Teal_Floral_Casual_Top6_spog0y.jpg",
+        "url": "/api/media/dodcvilgs/image/upload/v1786551601/rk-fabrics/products/Teal_Floral_Casual_Top6_spog0y.jpg",
         "alt": "Teal Floral Casual Top6.png",
         "isPrimary": false,
         "productId": "cmsqaoppg001c8o8c94271vle"
       },
       {
         "id": "cmsqap7q4001u8o8cwro1vhdp",
-        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1786551597/rk-fabrics/products/Teal_Floral_Casual_Top4_h7c9vy.jpg",
+        "url": "/api/media/dodcvilgs/image/upload/v1786551597/rk-fabrics/products/Teal_Floral_Casual_Top4_h7c9vy.jpg",
         "alt": "Teal Floral Casual Top4.png",
         "isPrimary": false,
         "productId": "cmsqaoppg001c8o8c94271vle"
       },
       {
         "id": "cmsqap6h3001o8o8c25efoc8r",
-        "url": "https://res.cloudinary.com/dodcvilgs/image/upload/v1786551590/rk-fabrics/products/blob_k3bmrd.jpg",
+        "url": "/api/media/dodcvilgs/image/upload/v1786551590/rk-fabrics/products/blob_k3bmrd.jpg",
         "alt": "Teal Floral Casual Top1.png",
         "isPrimary": true,
         "productId": "cmsqaoppg001c8o8c94271vle"

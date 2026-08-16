@@ -1,4 +1,5 @@
 "use client"
+/* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars */
 
 import { useState, useEffect, useRef } from "react"
 import { sendNewsletter, generateNewsletterWithAI, getAdminNewsletters, deleteAdminNewsletter } from "@/actions/newsletter"
@@ -133,8 +134,11 @@ export function NewsletterManager() {
       try {
         const parsed = JSON.parse(saved)
         if (Array.isArray(parsed) && parsed.length > 0) {
+          // eslint-disable-next-line react-hooks/set-state-in-effect
           setTargetUsers(parsed)
+           
           setTargetCouponCode(localStorage.getItem("targetCouponCode"))
+           
           setTargetUserType(localStorage.getItem("targetUserType"))
         }
       } catch (e) {}

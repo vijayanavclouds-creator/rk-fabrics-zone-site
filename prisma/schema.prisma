@@ -37,14 +37,14 @@ model Product {
   isReturnable     Boolean  @default(true)
   createdAt        DateTime @default(now())
 
-  variants         ProductVariant[]
-  images           ProductImage[]
-  reviews          Review[]
+  variants ProductVariant[]
+  images   ProductImage[]
+  reviews  Review[]
 }
 
 model ProductVariant {
-  id        String   @id @default(cuid())
-  sku       String   @unique
+  id        String @id @default(cuid())
+  sku       String @unique
   size      String
   color     String
   colorHex  String
@@ -53,17 +53,17 @@ model ProductVariant {
   stock     Int
 
   productId String
-  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
 }
 
 model ProductImage {
-  id        String   @id @default(cuid())
+  id        String  @id @default(cuid())
   url       String
   alt       String
-  isPrimary Boolean  @default(false)
+  isPrimary Boolean @default(false)
 
   productId String
-  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
 }
 
 model Review {
@@ -73,19 +73,19 @@ model Review {
   comment   String
   createdAt DateTime @default(now())
 
-  productId   String
-  product     Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
-  
-  userId      String?
-  user        User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
-  
-  orderItemId String?  @unique
+  productId String
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  userId String?
+  user   User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  orderItemId String?    @unique
   orderItem   OrderItem? @relation(fields: [orderItemId], references: [id], onDelete: SetNull)
 }
 
 model Banner {
   id        String   @id @default(cuid())
-  type      String   // "hero" or "carousel"
+  type      String // "hero" or "carousel"
   imageUrl  String
   title     String?
   subtitle  String?
@@ -125,33 +125,33 @@ model Session {
 }
 
 model User {
-  id            String    @id @default(cuid())
-  name          String?
-  email         String?   @unique
-  emailVerified DateTime?
-  image         String?
-  phone         String?
-  dob           String?
-  password      String?
-  role          String    @default("CUSTOMER") // "CUSTOMER" or "ADMIN"
-  isActive      Boolean   @default(true)
-  createdAt     DateTime  @default(now())
-  receiveOrderEmails Boolean  @default(true)
-  
-  accounts      Account[]
-  sessions      Session[]
-  orders        Order[]
-  addresses     Address[]
-  wishlistItems WishlistItem[]
-  coupons       Coupon[]
-  notifications Notification[]
-  queries       ContactQuery[]
-  newsletters   UserNewsletter[]
-  reviews       Review[]
-  returnRequests ReturnRequest[]
+  id                 String    @id @default(cuid())
+  name               String?
+  email              String?   @unique
+  emailVerified      DateTime?
+  image              String?
+  phone              String?
+  dob                String?
+  password           String?
+  role               String    @default("CUSTOMER") // "CUSTOMER" or "ADMIN"
+  isActive           Boolean   @default(true)
+  createdAt          DateTime  @default(now())
+  receiveOrderEmails Boolean   @default(true)
+
+  accounts          Account[]
+  sessions          Session[]
+  orders            Order[]
+  addresses         Address[]
+  wishlistItems     WishlistItem[]
+  coupons           Coupon[]
+  notifications     Notification[]
+  queries           ContactQuery[]
+  newsletters       UserNewsletter[]
+  reviews           Review[]
+  returnRequests    ReturnRequest[]
   pushSubscriptions PushSubscription[]
-  cartData      String?   // JSON string of the cart
-  cartUpdatedAt DateTime?
+  cartData          String? // JSON string of the cart
+  cartUpdatedAt     DateTime?
 }
 
 model WishlistItem {
@@ -159,9 +159,9 @@ model WishlistItem {
   userId    String
   productId String
   createdAt DateTime @default(now())
-  
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   @@unique([userId, productId])
 }
 
@@ -177,23 +177,23 @@ model Otp {
   id        String   @id @default(cuid())
   email     String
   otp       String
-  type      String   // SIGNUP, REACTIVATE, RESET_PASSWORD
+  type      String // SIGNUP, REACTIVATE, RESET_PASSWORD
   expiresAt DateTime
   createdAt DateTime @default(now())
 }
 
 model Coupon {
-  id             String   @id @default(cuid())
-  code           String   @unique
-  discountValue  Float
-  discountType   String   // "PERCENTAGE" or "FIXED"
-  validForUserId String?
-  user           User?    @relation(fields: [validForUserId], references: [id], onDelete: Cascade)
-  isUsed         Boolean  @default(false)
-  isActive       Boolean  @default(true)
-  isForNewUsersOnly Boolean @default(false)
-  expiresAt      DateTime
-  createdAt      DateTime @default(now())
+  id                String   @id @default(cuid())
+  code              String   @unique
+  discountValue     Float
+  discountType      String // "PERCENTAGE" or "FIXED"
+  validForUserId    String?
+  user              User?    @relation(fields: [validForUserId], references: [id], onDelete: Cascade)
+  isUsed            Boolean  @default(false)
+  isActive          Boolean  @default(true)
+  isForNewUsersOnly Boolean  @default(false)
+  expiresAt         DateTime
+  createdAt         DateTime @default(now())
 }
 
 model Notification {
@@ -209,9 +209,9 @@ model Notification {
 
 model AdminNotification {
   id        String   @id @default(cuid())
-  type      String   // e.g. "ORDER", "REVIEW", "QUERY", "SYSTEM"
+  type      String // e.g. "ORDER", "REVIEW", "QUERY", "SYSTEM"
   message   String
-  link      String?  // Optional link to redirect when clicked
+  link      String? // Optional link to redirect when clicked
   isRead    Boolean  @default(false)
   createdAt DateTime @default(now())
 }
@@ -232,60 +232,60 @@ model AdminSettings {
 }
 
 model Order {
-  id              String      @id @default(cuid())
-  userId          String
-  user            User        @relation(fields: [userId], references: [id], onDelete: Cascade)
-  status          String      @default("CONFIRMED") // CONFIRMED, PROCESSING, SHIPPED, DELIVERED, CANCELLED
-  totalAmount       Float
-  shippingAmount    Float
-  platformFeeAmount Float       @default(0)
-  gstAmount         Float       @default(0)
-  subtotalAmount    Float
-  discountAmount    Float       @default(0)
-  couponCode        String?
-  shippingAddress   String
-  phone           String
-  email           String
-  paymentMethod   String      @default("COD")
-  paymentStatus   String      @default("PENDING") // PENDING, PAID, FAILED
-  transactionId   String?
-  transactionDetails String?  @db.Text
-  isReadByAdmin   Boolean     @default(false)
-  createdAt       DateTime    @default(now())
-  updatedAt       DateTime    @updatedAt
-  shippedAt       DateTime?
-  deliveredAt     DateTime?
-  cancelledAt     DateTime?
-  
+  id                 String    @id @default(cuid())
+  userId             String
+  user               User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  status             String    @default("CONFIRMED") // CONFIRMED, PROCESSING, SHIPPED, DELIVERED, CANCELLED
+  totalAmount        Float
+  shippingAmount     Float
+  platformFeeAmount  Float     @default(0)
+  gstAmount          Float     @default(0)
+  subtotalAmount     Float
+  discountAmount     Float     @default(0)
+  couponCode         String?
+  shippingAddress    String
+  phone              String
+  email              String
+  paymentMethod      String    @default("COD")
+  paymentStatus      String    @default("PENDING") // PENDING, PAID, FAILED
+  transactionId      String?
+  transactionDetails String?   @db.Text
+  isReadByAdmin      Boolean   @default(false)
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+  shippedAt          DateTime?
+  deliveredAt        DateTime?
+  cancelledAt        DateTime?
+
   // Shipping Integration
-  awbNumber          String?
-  shippingProvider   String      @default("BLUEDART") // Legacy, but using DELHIVERY now
-  shippingMode       String      @default("Surface") // "Surface" or "Express"
-  waybillGenerated   Boolean     @default(false)
-  
-  items           OrderItem[]
-  returnRequest   ReturnRequest?
+  awbNumber        String?
+  shippingProvider String  @default("BLUEDART") // Legacy, but using DELHIVERY now
+  shippingMode     String  @default("Surface") // "Surface" or "Express"
+  waybillGenerated Boolean @default(false)
+
+  items         OrderItem[]
+  returnRequest ReturnRequest?
 }
 
 model OrderItem {
-  id          String   @id @default(cuid())
-  orderId     String
-  order       Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  productId   String
-  variantId   String
-  productName String
-  variantName String
-  quantity    Int
-  price       Float
-  image       String?
+  id           String  @id @default(cuid())
+  orderId      String
+  order        Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId    String
+  variantId    String
+  productName  String
+  variantName  String
+  quantity     Int
+  price        Float
+  image        String?
   isReturnable Boolean @default(true)
-  review      Review?
+  review       Review?
 }
 
 model SystemSetting {
   id        String   @id @default(cuid())
   key       String   @unique
-  value     String   // Stored as JSON string
+  value     String // Stored as JSON string
   updatedAt DateTime @updatedAt
 }
 
@@ -306,31 +306,31 @@ model Address {
 }
 
 model ContactQuery {
-  id        String   @id @default(cuid())
-  userId    String?
-  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
-  name      String
-  email     String
-  phone     String?
-  subject   String
-  orderId   String?  // Optional relation to an order for returns
+  id           String   @id @default(cuid())
+  userId       String?
+  user         User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  name         String
+  email        String
+  phone        String?
+  subject      String
+  orderId      String? // Optional relation to an order for returns
   status       String   @default("OPEN") // OPEN, RESOLVED
   isRead       Boolean  @default(false)
   isReadByUser Boolean  @default(true)
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
-  messages  QueryMessage[]
+  messages QueryMessage[]
 }
 
 model QueryMessage {
-  id          String       @id @default(cuid())
-  queryId     String
-  query       ContactQuery @relation(fields: [queryId], references: [id], onDelete: Cascade)
-  senderType  String       // CUSTOMER or ADMIN
-  message     String
-  attachment  String?
-  createdAt   DateTime     @default(now())
+  id         String       @id @default(cuid())
+  queryId    String
+  query      ContactQuery @relation(fields: [queryId], references: [id], onDelete: Cascade)
+  senderType String // CUSTOMER or ADMIN
+  message    String
+  attachment String?
+  createdAt  DateTime     @default(now())
 }
 
 model NewsletterSubscriber {
@@ -346,7 +346,7 @@ model Newsletter {
   couponCode  String?
   targetUsers String?
   createdAt   DateTime @default(now())
-  
+
   recipients UserNewsletter[]
 }
 
@@ -358,7 +358,7 @@ model UserNewsletter {
   newsletter   Newsletter @relation(fields: [newsletterId], references: [id], onDelete: Cascade)
   isRead       Boolean    @default(false)
   createdAt    DateTime   @default(now())
-  
+
   @@unique([userId, newsletterId])
 }
 
@@ -370,9 +370,9 @@ model ReturnRequest {
   user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   items         String[] // Array of order item IDs returned
   reasons       String[] // e.g. "Size Issue", "Defective Product"
-  description   String?  // custom description if "Other"
-  refundMethod  String   // e.g. "UPI", "BANK_TRANSFER", "STORE_CREDIT", "ORIGINAL_METHOD"
-  refundDetails String?  // Stores UPI ID or Bank details
+  description   String? // custom description if "Other"
+  refundMethod  String // e.g. "UPI", "BANK_TRANSFER", "STORE_CREDIT", "ORIGINAL_METHOD"
+  refundDetails String? // Stores UPI ID or Bank details
   status        String   @default("PENDING") // PENDING, RETURNED, RETURN_REJECTED
   isReadByAdmin Boolean  @default(false)
   createdAt     DateTime @default(now())
@@ -382,7 +382,7 @@ model ReturnRequest {
 model HtmlRecord {
   id        String   @id @default(cuid())
   title     String
-  type      String   // "HERO" or "CAROUSEL"
+  type      String // "HERO" or "CAROUSEL"
   code      String   @db.Text
   updatedAt DateTime @updatedAt
   createdAt DateTime @default(now())

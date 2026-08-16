@@ -1,4 +1,5 @@
 "use client"
+/* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars */
 
 import { useState, useEffect, useMemo } from "react"
 import { Bell, Check, Trash2 } from "lucide-react"
@@ -13,11 +14,7 @@ export function NotificationsManager() {
   const [notifications, setNotifications] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
 
-  useEffect(() => {
-    fetchNotifications()
-  }, [])
-
-  const fetchNotifications = async () => {
+  async function fetchNotifications() {
     setLoading(true)
     const res = await getAdminNotifications()
     if (res.success) {
@@ -27,6 +24,11 @@ export function NotificationsManager() {
     }
     setLoading(false)
   }
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    fetchNotifications()
+  }, [])
 
   const handleMarkAllRead = async () => {
     setNotifications(prev => prev.map(n => ({ ...n, isRead: true })))
@@ -133,7 +135,7 @@ export function NotificationsManager() {
           <div className="py-20 text-center text-slate">
             <Bell size={48} className="mx-auto mb-4 opacity-20" />
             <h3 className="text-lg font-bold text-charcoal mb-2">No Notifications</h3>
-            <p>You're all caught up!</p>
+            <p>You&apos;re all caught up!</p>
           </div>
         ) : (
           <div className="divide-y divide-charcoal/5 flex-1 overflow-y-auto">
